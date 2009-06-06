@@ -3,7 +3,7 @@
 
 <!--
 //	Copyright 2009 Alex Trujillo
-//	Full source available here: http://code.google.com/p/nanoblok/
+//	Full source available here under the MIT License: http://code.google.com/p/nanoblok/
 
 //	SUMMARY
 //	index.svg ties all the JavaScript together into the main document.
@@ -11,7 +11,7 @@
 //	Other event listeners help here also. Much of the UI is present here
 //	as well, but is located offscreen until UITransform.js moves it into place.
 -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" version="1.1" onload="Init(evt)" onmousedown="Grab(evt)">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" version="1.1" onload="Initialize(evt)" onmousedown="Click(evt)">
 	<title>Nanoblok 0.1 alpha</title>
 <!--	<head>
 		<link type="text/css" xlink:href="jquery/development-bundle/themes/redmond/jquery-ui-1.7.1.custom.css"/>

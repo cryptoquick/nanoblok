@@ -1,21 +1,5 @@
-//	Copyright 2008 Alex Trujillo
-//	Full source available here: http://code.google.com/p/vektornye/
-
-//	LICENSE
-//	This file is part of the Vektornye engine.
-//	
-//	Vektornye is free software: you can redistribute it and/or modify
-//	it under the terms of the GNU General Public License as published by
-//	the Free Software Foundation, either version 3 of the License, or
-//	(at your option) any later version.
-//	
-//	Vektornye is distributed in the hope that it will be useful,
-//	but WITHOUT ANY WARRANTY; without even the implied warranty of
-//	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//	GNU General Public License for more details.
-//	
-//	You should have received a copy of the GNU General Public License
-//	along with Vektornye.  If not, see <http://www.gnu.org/licenses/>.
+//	Copyright 2009 Alex Trujillo
+//	Full source available here under the MIT License: http://code.google.com/p/nanoblok/
 
 //	SUMMARY
 //	gridTransform.js uses the Sylvester javascript library. You can find it here:
@@ -24,7 +8,7 @@
 //	Sylvester, then output as paths to the display. This is also done for the debug
 //	grid. There's also code here to place SVG code into the DOM, as well as some other
 //	debugging functionality.
-
+//	Not much has changed since vektornye just yet.
 
 // General iso / block proportions
 /*var sc1 = 50; // Size of the whole block

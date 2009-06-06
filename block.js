@@ -1,5 +1,5 @@
 //	Copyright 2009 Alex Trujillo
-//	Full source available here: http://code.google.com/p/nanoblok/
+//	Full source available here under the MIT License: http://code.google.com/p/nanoblok/
 
 //	SUMMARY	
 //	drawBlock.js creates the characteristic nanoblok blocks from scratch, using hexagonal

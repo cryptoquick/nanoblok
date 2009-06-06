@@ -1,9 +1,10 @@
-//	Copyright 2008 Alex Trujillo
-//	Full source available here: http://code.google.com/p/vektornye/
+//	Copyright 2009 Alex Trujillo
+//	Full source available here under the MIT License: http://code.google.com/p/nanoblok/
 
 //	SUMMARY
 //	UITransform produces the blue and red user interface elements that are so
 //	critical to the placement and production of blocks.
+//	Not much has changed here since vektornye. This will eventually be called ui.js
 
 function UITransform(mid_x, mid_y) {
 	var M1 = [];
@@ -14,7 +15,7 @@ function UITransform(mid_x, mid_y) {
 	
 	grid_y = 12;
 	
-	extUI = Math.floor((Math.sqrt(2) * 60))
+	extUI = Math.floor((Math.sqrt(2) * 60));
 	
 	// Populate matrices with initial 2D grid
 	for (x = 0; x <= 1; x++) {
