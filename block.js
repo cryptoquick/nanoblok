@@ -9,14 +9,14 @@
 var tick = 100
 
 // Helper functions
-function array_search (array, val) {
+/*function array_search (array, val) {
 	for (var i = 0; i < array.length; i++) {
 		if (array[i][3] == val) { // Modified to look inside the nested arrays to find the colors
 			return i;
 		}
 	}
 	return false;
-}
+}*/
  
 function array_search_key(array, num) {
 	if (array[num]) return true;
@@ -172,7 +172,7 @@ function makeGroup(obj) {
 }
 
 // Finds the bounding box of the specific target
-function attachBlock(target, color, id) {
+function attachBlock(target, color, id, type) {
 	targetElement = target; // document.getElementById(target);
 	bbox = targetElement.getBBox();
 	blockBlank = makeBlock((bbox.x + 6), (bbox.y - 22))
@@ -180,4 +180,5 @@ function attachBlock(target, color, id) {
 	block.setAttributeNS(null, "id", "block" + id);
 	block.setAttributeNS(null, 'block-color', color);
 	SVGRoot.appendChild(block);
+	blockRecord(target, color, id, type);
 }
