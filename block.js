@@ -27,10 +27,10 @@ function array_search_key(array, num) {
 var svgNS = 'http://www.w3.org/2000/svg';
 
 // General iso / block proportions
-var sc1 = 50;
-var sc2 = sc1 / 2;
-var sc4 = sc1 / 4;
-var sc3 = sc2 + sc4;
+var sc1 = 50; // Size of the whole block
+var sc2 = sc1 / 2; // Half-block dimension
+var sc4 = sc1 / 4; // Quarter-block dimension
+var sc3 = sc2 + sc4; // Half+Quarter-block dimension
 
 // Draws hexagonal points in iso perspective, based on hard coordinate and size of block. Depends on an orientation array (see block-grid.png in Nanoblok Extras). Returns static coordinates of where to draw blocks on the screen.
 function hexiso (pos_x, pos_y) {

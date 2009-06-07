@@ -10,14 +10,6 @@
 //	debugging functionality.
 //	Not much has changed since vektornye just yet.
 
-// General iso / block proportions
-/*var sc1 = 50; // Size of the whole block
-var sc2 = sc1 / 2; // Half-block dimension
-var sc4 = sc1 / 4; // Quarter-block dimension
-var sc3 = sc2 + sc4; // Half+Quarter-block dimension*/
-
-//var  = 1.0;
-
 function gridTransform(grid_x, grid_y, screen_x, screen_y, rotation) {
 	
 	// Initialize variables

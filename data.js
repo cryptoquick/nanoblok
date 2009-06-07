@@ -1,5 +1,8 @@
 //	Copyright 2009 Alex Trujillo
 //	Full source available here under the MIT License: http://code.google.com/p/nanoblok/
+	
+//	SUMMARY
+//	data.js handles data inside the program, such as the positions and IDs of blocks.
 
 // Is very similar to the PHP function of the same name
 function array_search (array, val, target) {
@@ -45,19 +48,22 @@ function blockRecord(target, color, id, type) {
 	} else {
 		Field[targetIndex] = blockAttributes;
 	}
+	
+	// Add new voxel position
+	VoxArray(blockX, blockY, blockZ, blockID);
 }
 
 // Creates values within an associative arrray of established coordinates
-function VoxArray(voxel, x, y, z, value) {
-	if (voxel[x] == null) {
-		voxel[x] = new Array(x);
+function VoxArray(x, y, z, value) {
+	if (Voxel[x] == null) {
+		Voxel[x] = new Array(x);
 	}
 
-	if (voxel[x][y] == null) {
-		voxel[x][y] = new Array(y);
+	if (Voxel[x][y] == null) {
+		Voxel[x][y] = new Array(y);
 	}
 
-	voxel[x][y][z] = value;
+	Voxel[x][y][z] = value;
 }
 
 // Find grid coordinates from the sequence number from the individual grid cell.
