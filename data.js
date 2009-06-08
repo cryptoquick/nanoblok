@@ -77,3 +77,65 @@ function findGridXY(gridTarget) {
 	
 	return gridCoordinates;
 }
+
+// Adds object to grid, plus some draw order logic (to keep visual perspective sane). It's also stupidly complex, and there might be a better way.
+function blockOrder (target, block) {
+	// Find grid coordinates (x,y)
+	var coor = findGridXY(target);
+
+	// If the block northeast of the current block is present, place behind (before it on the node hierarchy)
+	// However, before we do that, this variable will keep the second statement from being executed if they're both satisfied.
+	gojo = true; // Don't ask me about the name. I couldn't think of a better one. Great way to get your hands clean, though.
+	// If the block northeast of the current block is present, place behind (before it on the node hierarchy)
+	// Take note, the origin of the X axis is southeast, and the Y axis origin is southwest.
+	if (Voxel[(coor.x - 1)] !== undefined) {
+		if (Voxel[(coor.x - 1)][coor.y] !== undefined) {
+			if (Voxel[(coor.x - 1)][coor.y][0] !== undefined) {
+				var blockEast = Voxel[(coor.x - 1)][coor.y][0];
+				SVGRoot.insertBefore(block, document.getElementById(blockEast));
+				gojo = false;
+				loggit('Block placed at ' + coor.x + ', ' + coor.y + ', ' + 0 + ', behind ' + blockEast);
+			}
+		}
+	// If the block northwest of the current block is present, place behind (before it on the node hierarchy)
+	} else if (Voxel[coor.x] !== undefined) {
+		if (Voxel[coor.x][(coor.y + 1)] !== undefined) {
+			if (Voxel[coor.x][(coor.y + 1)][0] !== undefined && Voxel[coor.x][(coor.y + 1)][0] !== block.id && gojo == true) {
+				var blockNorth = Voxel[coor.x][(coor.y + 1)][0];
+				SVGRoot.insertBefore(block, document.getElementById(blockNorth));
+				gojo = false;
+				loggit(block.id + ' placed at ' + coor.x + ', ' + coor.y + ', ' + 0 + ', behind ' + blockNorth);
+			}
+		}
+	} else if (Voxel[coor.x - 1] !== undefined && Voxel[coor.x] !== undefined) {
+		if (Voxel[(coor.x - 1)][coor.y] !== undefined && Voxel[coor.x][(coor.y + 1)] !== undefined) {
+			if (Voxel[(coor.x - 1)][coor.y][0] !== undefined && Voxel[coor.x][(coor.y + 1)][0] !== undefined && Voxel[coor.x][(coor.y + 1)][0] !== block.id && gojo == true) {
+				var blockNorth = Voxel[coor.x][(coor.y + 1)][0];
+				SVGRoot.insertBefore(block, document.getElementById(blockNorth));
+				var blockEast = Voxel[(coor.x - 1)][coor.y][0];
+				SVGRoot.insertBefore(block, document.getElementById(blockEast));
+				loggit(block.id + ' placed at ' + coor.x + ', ' + coor.y + ', ' + 0 + ', behind ' + blockNorth + ' and ' + blockEast);
+			}
+		}
+	// If placed in order, append the block as normal
+	} else {
+		SVGRoot.appendChild(block);
+		loggit(block.id + ' placed at ' + coor.x + ', ' + coor.y + ', ' + 0 + '.');
+	}
+}
+
+function nearby(target, direction) {
+	if (direction == 'x+') {
+		id = Voxel[target.x + 1][(target.y)][target.z];
+	} else if (direction == 'x-') {
+		id = Voxel[target.x + 1][(target.y)][target.z];
+	} else if (direction == 'y+') {
+		id = Voxel[target.x + 1][(target.y)][target.z];
+	} else if (direction == 'y-') {
+		id = Voxel[target.x + 1][(target.y)][target.z];
+	} else if (direction == 'z+') {
+		id = Voxel[target.x + 1][(target.y)][target.z];
+	} else if (direction == 'z-') {
+		id = Voxel[target.x + 1][(target.y)][target.z];
+	}
+}

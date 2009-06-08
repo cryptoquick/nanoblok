@@ -173,12 +173,13 @@ function makeGroup(obj) {
 
 // Finds the bounding box of the specific target
 function attachBlock(target, color, id, type) {
-	targetElement = target; // document.getElementById(target);
-	bbox = targetElement.getBBox();
+//	targetElement = target; // document.getElementById(target);
+	bbox = target.getBBox();
 	blockBlank = makeBlock((bbox.x + 6), (bbox.y - 22))
 	block = setColor(blockBlank, color);
-	block.setAttributeNS(null, "id", "block" + id);
+	block.setAttributeNS(null, 'id', id);
 	block.setAttributeNS(null, 'block-color', color);
-	SVGRoot.appendChild(block);
+	blockOrder(target, block);
+//	SVGRoot.appendChild(block);
 	blockRecord(target, color, id, type);
 }
