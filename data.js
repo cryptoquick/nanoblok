@@ -77,7 +77,7 @@ function findGridXY(gridTarget) {
 	
 	return gridCoordinates;
 }
-
+/*
 // Adds object to grid, plus some draw order logic (to keep visual perspective sane). It's also stupidly complex, and there might be a better way.
 function blockOrder (target, block) {
 	// Find grid coordinates (x,y)
@@ -123,19 +123,48 @@ function blockOrder (target, block) {
 		loggit(block.id + ' placed at ' + coor.x + ', ' + coor.y + ', ' + 0 + '.');
 	}
 }
+*/
 
-function nearby(target, direction) {
+function detection(target) {
+	
+}
+
+// Detects neighboring blocks based on a target position, and returns their ids.
+function neighbor(target) {
+	// Additional undefined id logic for when the player places a block on the grid.
+	// This doesn't apply for z-axis voxels.
+	
+	
 	if (direction == 'x+') {
-		id = Voxel[target.x + 1][(target.y)][target.z];
+		id = Voxel[target.x + 1][target.y][target.z];
+		if (id == undefined || id == false) {
+			id = Voxel[target.x + 1][target.y][target.z - 1];
+		}
 	} else if (direction == 'x-') {
-		id = Voxel[target.x + 1][(target.y)][target.z];
+		id = Voxel[target.x - 1][target.y][target.z];
+		if (id == undefined || id == false) {
+			id = Voxel[target.x - 1][target.y][target.z - 1];
+		}
 	} else if (direction == 'y+') {
-		id = Voxel[target.x + 1][(target.y)][target.z];
+		id = Voxel[target.x][target.y + 1][target.z];
+		if (id == undefined || id == false) {
+			id = Voxel[target.x][target.y + 1][target.z - 1];
+		}
 	} else if (direction == 'y-') {
-		id = Voxel[target.x + 1][(target.y)][target.z];
+		id = Voxel[target.x][target.y - 1][target.z];
+		if (id == undefined || id == false) {
+			id = Voxel[target.x][target.y - 1][target.z - 1];
+		}
 	} else if (direction == 'z+') {
-		id = Voxel[target.x + 1][(target.y)][target.z];
+		id = Voxel[target.x][target.y][target.z + 1];
 	} else if (direction == 'z-') {
-		id = Voxel[target.x + 1][(target.y)][target.z];
+		id = Voxel[target.x][target.y][target.z - 1];
+	}
+	
+	// Return the object if it exists, otherwise, log an error.
+	if (id !== undefined) {
+		return id;
+	} else {
+		loggit('neighbor function error');
 	}
 }

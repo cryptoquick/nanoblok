@@ -137,8 +137,11 @@ function setColor(obj, colorname) {
 	var colorLines = "rgb(" + (colorR + 50) + ", " + (colorG + 50) + ", " + (colorB + 50) + ")";
 	
 	obj.left.setAttributeNS(null, "fill", colorLeft);
+	obj.left.setAttributeNS(null, "id", 'left');
 	obj.right.setAttributeNS(null, "fill", colorRight);
+	obj.right.setAttributeNS(null, "id", 'right');
 	obj.top.setAttributeNS(null, "fill", colorTop);
+	obj.top.setAttributeNS(null, "id", 'top');
 	obj.inset1.setAttributeNS(null, "stroke", colorLines);
 	obj.inset1.setAttributeNS(null, "fill", "none");
 	obj.inset2.setAttributeNS(null, "stroke", colorLines);
@@ -171,7 +174,7 @@ function makeGroup(obj) {
 	return group;
 }
 
-// Finds the bounding box of the specific target
+// Finds the bounding box of the element that has been clicked (the target), then builds a block to place on top of it.
 function attachBlock(target, color, id, type) {
 //	targetElement = target; // document.getElementById(target);
 	bbox = target.getBBox();
@@ -179,7 +182,25 @@ function attachBlock(target, color, id, type) {
 	block = setColor(blockBlank, color);
 	block.setAttributeNS(null, 'id', id);
 	block.setAttributeNS(null, 'block-color', color);
-	blockOrder(target, block);
-//	SVGRoot.appendChild(block);
+//	blockOrder(target, block);
+	SVGRoot.appendChild(block);
+	blockRecord(target, color, id, type);
+}
+
+// Receives the ID of the target clicked, the parent block (if there is one), and type of draw function (for example, if the user clicks the side of a block).
+function drawBlock(target, block, type) {
+	neighborID = neighbor(target, type);
+	neighborElement = document.getElementById(neighborID);
+	bbox = neighborElement.getBBox();
+	
+	// Manually tweaked offset
+	blockBlank = makeBlock((bbox.x + 6), (bbox.y - 22))
+	
+	block = setColor(blockBlank, color);
+	block.setAttributeNS(null, 'id', id);
+	block.setAttributeNS(null, 'block-color', color);
+	
+//	blockOrder(target, block);
+	SVGRoot.appendChild(block);
 	blockRecord(target, color, id, type);
 }

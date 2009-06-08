@@ -67,14 +67,20 @@ window.onresize = function() {
 
 function Click(evt) {
 	// Find out which element we clicked on
-	var targetElement = evt.target;
+	var target = evt.target;
 
 	// Set the block ID to the sequential number.
 	blockID = 'block-' + blockTick;
 	blockTick++;
 
-	if (targetElement.id.substr(0,6) == 'bgGrid') {
-		attachBlock(targetElement, 'blue', blockID, 'grid');
+	if (target.id.substr(0,6) == 'bgGrid') {
+		attachBlock(target, 'blue', blockID, 'grid');
+	} else if (target.id == 'left') {
+		drawBlock(target, target.parentNode.id, '-y');
+	} else if (target.id == 'right') {
+		drawBlock(target, target.parentNode.id, '+x');
+	} else if (target.id == 'top') {
+		drawBlock(target, target.parentNode.id, '+z');
 	}
 
 //	attachBlock(targetElement, 'blue', '123');

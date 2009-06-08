@@ -76,8 +76,10 @@ function gridTransform(grid_x, grid_y, screen_x, screen_y, rotation) {
 		N = M.round(); // Whole numbers
 		N = N.add(M26); // Translate coordinates
 		
+		var gridID = 'bgGrid-' + i;
+		
 		pathElement = document.createElementNS(svgNS, 'path');
-		pathElement.setAttributeNS(null, 'id', 'bgGrid-' + i);
+		pathElement.setAttributeNS(null, 'id', gridID);
 		
 		path = '';
 		path += 'M ' + N.e(1,1) + ' ' + N.e(1,2);
@@ -88,6 +90,12 @@ function gridTransform(grid_x, grid_y, screen_x, screen_y, rotation) {
 		
 		pathElement.setAttributeNS(null, 'd', path);
 		gridGroup.appendChild(pathElement);
+		
+		// This function probably adds more overhead than necessary.
+		var gridcoors = findGridXY(pathElement);
+		
+		// Add new voxel position
+		VoxArray(gridcoors.x, gridcoors.y, -1, gridID);
 	}
 	
 	// Build UI before the grid is built
