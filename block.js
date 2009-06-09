@@ -27,15 +27,15 @@ function array_search_key(array, num) {
 var svgNS = 'http://www.w3.org/2000/svg';
 
 // General iso / block proportions
-var sc1 = 50; // Size of the whole block
+var sc1 = 60; // Size of the whole block
 var sc2 = sc1 / 2; // Half-block dimension
 var sc4 = sc1 / 4; // Quarter-block dimension
 var sc3 = sc2 + sc4; // Half+Quarter-block dimension
 
 // Draws hexagonal points in iso perspective, based on hard coordinate and size of block. Depends on an orientation array (see block-grid.png in Nanoblok Extras). Returns static coordinates of where to draw blocks on the screen.
-function hexiso (pos_x, pos_y) {
-	var scX = pos_x;
-	var scY = pos_y;
+function hexiso (scX, scY, offsetX, offsetY) {
+	scX += offsetX;
+	scY += offsetY;
 	
 	// Builds an array of points that corresponds to an entire isometric block (six points), including center (7). Arrays for both X and Y coordinates. Offset added to hexagon proportions.	
 	
@@ -88,10 +88,44 @@ function transformBlock () {
 	
 }
 
+function voxelBBox (x, y, z) {
+	elementID = Voxel[x][y][z];
+	targetElement = document.getElementById(elementID);
+	bbox = targetElement.getBBox();
+	if (z == -1) {
+		return {x: bbox.x + 2, y: bbox.y - sc2 + 1};
+	} else {
+		return {x: bbox.x + 0, y: bbox.y - sc2 - 2};
+	}
+}
+
 // Creates the various coordinates necessary to make an isometric block
 // from the coordinates provided by hexiso().
 function makeBlock (posX, posY) {
-	var coorSet = hexiso(posX, posY);
+	offsetX = 0;
+	offsetY = 0;
+	
+	var coorSet = hexiso(posX, posY, offsetX, offsetY);
+	
+	var blokTop 	= drawSet([1, 2, 7, 6], coorSet, true);
+	var blokRight 	= drawSet([2, 3, 4, 7], coorSet, true);
+	var blokLeft 	= drawSet([7, 4, 5, 6], coorSet, true);
+	var blokInset1 	= drawSet([6, 7, 2], 	coorSet, false);
+	var blokInset2 	= drawSet([7, 4], 		coorSet, false);
+	var blokOutline = drawSet([1, 2, 3, 4, 5, 6], coorSet, true);
+	
+	return {top: blokTop,
+		right: blokRight,
+		left: blokLeft,
+		inset1: blokInset1,
+		inset2: blokInset2,
+		outline: blokOutline};
+}
+
+// Creates the various coordinates necessary to make an isometric block
+// from the coordinates provided by hexiso().
+function makeObject (posX, posY, offsetX, offsetY) {
+	var coorSet = hexiso(posX, posY, offsetX, offsetY);
 	
 	var blokTop 	= drawSet([1, 2, 7, 6], coorSet, true);
 	var blokRight 	= drawSet([2, 3, 4, 7], coorSet, true);
@@ -175,32 +209,19 @@ function makeGroup(obj) {
 }
 
 // Finds the bounding box of the element that has been clicked (the target), then builds a block to place on top of it.
-function attachBlock(target, color, id, type) {
-//	targetElement = target; // document.getElementById(target);
-	bbox = target.getBBox();
-	blockBlank = makeBlock((bbox.x + 6), (bbox.y - 22))
+function attachBlock(position, axis) {
+	blockID = 'block-' + blockTick;
+	blockTick++;
+	
+	bbox = voxelBBox(position.x, position.y, position.z);
+	color = 'bla';
+//	bbox = target.getBBox();
+	blockBlank = makeBlock(bbox.x, bbox.y);
 	block = setColor(blockBlank, color);
-	block.setAttributeNS(null, 'id', id);
-	block.setAttributeNS(null, 'block-color', color);
+	block.setAttributeNS(null, 'id', blockID);
+//	block.setAttributeNS(null, 'block-color', color);
 //	blockOrder(target, block);
 	SVGRoot.appendChild(block);
-	blockRecord(target, color, id, type);
-}
-
-// Receives the ID of the target clicked, the parent block (if there is one), and type of draw function (for example, if the user clicks the side of a block).
-function drawBlock(target, block, type) {
-	neighborID = neighbor(target, type);
-	neighborElement = document.getElementById(neighborID);
-	bbox = neighborElement.getBBox();
-	
-	// Manually tweaked offset
-	blockBlank = makeBlock((bbox.x + 6), (bbox.y - 22))
-	
-	block = setColor(blockBlank, color);
-	block.setAttributeNS(null, 'id', id);
-	block.setAttributeNS(null, 'block-color', color);
-	
-//	blockOrder(target, block);
-	SVGRoot.appendChild(block);
-	blockRecord(target, color, id, type);
+	voxelCoordinates = blockRecord(blockID, position, axis);
+//	loggit('Block placed on the grid at ' + voxelCoordinates.x + ', ' + voxelCoordinates.y);
 }

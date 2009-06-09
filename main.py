@@ -1,17 +1,17 @@
 # !/usr/bin/env python
 # Bulk of this document is based on code from here: http://code.google.com/appengine/articles/rpc.html
-
+'''
 import os
 
 from django.utils import simplejson
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp import util
+'''
+#from google.appengine.ext import db
 
-from google.appengine.ext import db
-
-import zlib
-
+#import zlib
+'''
 class MainPage(webapp.RequestHandler):
 	""" Renders the main template."""
 	def get(self):
@@ -19,9 +19,9 @@ class MainPage(webapp.RequestHandler):
 		self.response.headers['Content-Type'] = "image/svg+xml"
 		path = os.path.join(os.path.dirname(__file__), "index.svg")
 		self.response.out.write(template.render(path, template_values))
+'''
 
-
-class RPCHandler(webapp.RequestHandler):
+'''class RPCHandler(webapp.RequestHandler):
 	""" Allows the functions defined in the RPCMethods class to be RPCed."""
 	def __init__(self):
 		webapp.RequestHandler.__init__(self)
@@ -87,3 +87,4 @@ def main():
 
 if __name__ == '__main__':
 	main()
+	'''

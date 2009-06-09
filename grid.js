@@ -96,6 +96,8 @@ function gridTransform(grid_x, grid_y, screen_x, screen_y, rotation) {
 		
 		// Add new voxel position
 		VoxArray(gridcoors.x, gridcoors.y, -1, gridID);
+
+		GridField['bgGrid-' + i] = {x: gridcoors.x, y: gridcoors.y, z: -1};
 	}
 	
 	// Build UI before the grid is built

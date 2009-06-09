@@ -72,15 +72,24 @@ function Click(evt) {
 	// Set the block ID to the sequential number.
 	blockID = 'block-' + blockTick;
 	blockTick++;
-
+	
+	var axis = {x: false, y: false, z: false};
+	
 	if (target.id.substr(0,6) == 'bgGrid') {
-		attachBlock(target, 'blue', blockID, 'grid');
+		axis.z = +1;
+		var position = GridField[target.id];
+		attachBlock(position, axis);
 	} else if (target.id == 'left') {
-		drawBlock(target, target.parentNode.id, '-y');
+		axis.y = -1;
+		var targetBlock = Field[target.parentNode.id];
+		attachBlock(targetBlock.position, targetBlock.axis); // y-
 	} else if (target.id == 'right') {
-		drawBlock(target, target.parentNode.id, '+x');
+		axis.x = 1;
+		var targetBlock = Field[target.parentNode.id];
+		attachBlock(targetBlock.position, targetBlock.axis); // x+
 	} else if (target.id == 'top') {
-		drawBlock(target, target.parentNode.id, '+z');
+		var targetBlock = Field[target.parentNode.id];
+		attachBlock(targetBlock.position, targetBlock.axis); // z+
 	}
 
 //	attachBlock(targetElement, 'blue', '123');
