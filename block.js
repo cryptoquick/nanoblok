@@ -34,8 +34,8 @@ var sc3 = sc2 + sc4; // Half+Quarter-block dimension
 
 // Draws hexagonal points in iso perspective, based on hard coordinate and size of block. Depends on an orientation array (see block-grid.png in Nanoblok Extras). Returns static coordinates of where to draw blocks on the screen.
 function hexiso (scX, scY, offsetX, offsetY) {
-	scX += offsetX;
-	scY += offsetY;
+//	scX = offsetX;
+//	scY = offsetY;
 	
 	// Builds an array of points that corresponds to an entire isometric block (six points), including center (7). Arrays for both X and Y coordinates. Offset added to hexagon proportions.	
 	
@@ -88,13 +88,34 @@ function transformBlock () {
 	
 }
 
-function voxelBBox (x, y, z) {
-	elementID = Voxel[x][y][z];
+var direction;
+
+// Find a nearby block and then find its bounding box.
+function voxelBBox (position) {
+	var neighborIDs = neighbors(position);
+
+	for (i = 0; i < 5; i++) {
+		if (neighbors[i] !== undefined) {
+			nearbyElement = neighborIDs[i];
+			direction = i;
+			break;
+		}
+	}
+	
+	if (direction % 2) { // odd
+		position[direction]--;
+	} else { // even
+		position[direction]++;
+	}
+	
 	targetElement = document.getElementById(elementID);
 	bbox = targetElement.getBBox();
+	
 	if (z == -1) {
+		// For blocks placed on the grid
 		return {x: bbox.x + 2, y: bbox.y - sc2 + 1};
 	} else {
+		// For blocks placed above other blocks
 		return {x: bbox.x + 0, y: bbox.y - sc2 - 2};
 	}
 }
@@ -212,16 +233,15 @@ function makeGroup(obj) {
 function attachBlock(position, axis) {
 	blockID = 'block-' + blockTick;
 	blockTick++;
-	
-	bbox = voxelBBox(position.x, position.y, position.z);
+	bbox = voxelBBox(position);
 	color = 'bla';
-//	bbox = target.getBBox();
-	blockBlank = makeBlock(bbox.x, bbox.y);
+//	offset = voxelBBox(position.x + axis.x, position.x + axis.y, position.z + axis.z - 1);
+	blockBlank = makeObject(bbox.x, bbox.y, 0, 0); //offset.x, offset.y);
 	block = setColor(blockBlank, color);
 	block.setAttributeNS(null, 'id', blockID);
 //	block.setAttributeNS(null, 'block-color', color);
 //	blockOrder(target, block);
 	SVGRoot.appendChild(block);
-	voxelCoordinates = blockRecord(blockID, position, axis);
+	voxelCoordinates = blockRecord(blockID, position);
 //	loggit('Block placed on the grid at ' + voxelCoordinates.x + ', ' + voxelCoordinates.y);
 }

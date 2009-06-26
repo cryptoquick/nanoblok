@@ -24,18 +24,18 @@ var GridField = new Object();
 var Voxel = new Array();
 
 // The primary, generic function to intelligently record the position and state of all objects blockular in nature. 
-function blockRecord(blockID, position, axis) {
+function blockRecord(blockID, position) {
 
 //	var blockAttributes = new Array(blockID, position, axis);
 	
-	currentPosition = {x: position.x + axis.x, y: position.y + axis.y, z: position.z + axis.z};
+//	currentPosition = {x: position.x + axis.x, y: position.y + axis.y, z: position.z};
 	
-	Field[blockID] = {position: currentPosition, axis: axis};
+	Field[blockID] = {position: position};
 	
 	// Add new voxel position
-	VoxArray(currentPosition.x, currentPosition.y, currentPosition.z, blockID);
+	VoxArray(position.x, position.y, position.z, blockID);
 	
-	loggit('Block placed on the grid at ' + currentPosition.x + ', ' + currentPosition.y + ', ' + currentPosition.z);
+	loggit('Block placed on the grid at ' + position.x + ', ' + position.y + ', ' + position.z);
 	
 //	return {x: blockX, y: blockY, z: blockZ};
 }
@@ -128,53 +128,37 @@ function detection(target) {
 }
 
 // Bunch of terrible code that detects neighboring blocks based on a target position, and returns their neighbors.
-function neighbor(target, targetAxis) {
+function neighbors(position) {
 	// Additional undefined neighbors logic for when the player places a block on the grid.
 	// This doesn't apply for z-axis voxels.
 	
 	neighbors = new Array();
 	
-	neighbors[targetAxis] = target;
-	
+//	neighbors[targetAxis] = target;
+	/*
 	for (i = 0; i < 5; i++) {
 		blockAxis ();
 	}
+	*/
 	
-	if (direction == 'x+') {
-		neighbors[0] = Voxel[target.x + 1][target.y][target.z];
-		if (neighbors[0] == undefined || neighbors[0] == false) {
-			neighbors[0] = Voxel[target.x + 1][target.y][target.z - 1];
-		}
-	} else if (direction == 'x-') {
-		neighbors[1] = Voxel[target.x - 1][target.y][target.z];
-		if (neighbors[1] == undefined || neighbors[1] == false) {
-			neighbors[1] = Voxel[target.x - 1][target.y][target.z - 1];
-		}
-	} else if (direction == 'y+') {
-		neighbors = Voxel[target.x][target.y + 1][target.z];
-		if (neighbors == undefined || neighbors == false) {
-			neighbors = Voxel[target.x][target.y + 1][target.z - 1];
-		}
-	} else if (direction == 'y-') {
-		neighbors = Voxel[target.x][target.y - 1][target.z];
-		if (neighbors == undefined || neighbors == false) {
-			neighbors = Voxel[target.x][target.y - 1][target.z - 1];
-		}
-	} else if (direction == 'z+') {
-		neighbors = Voxel[target.x][target.y][target.z + 1];
-	} else if (direction == 'z-') {
-		neighbors = Voxel[target.x][target.y][target.z - 1];
-	}
+	neighbors[0] = Voxel[position.x + 1][position.y][position.z];
+	neighbors[1] = Voxel[position.x - 1][position.y][position.z];
+	neighbors[2] = Voxel[position.x][position.y + 1][position.z];
+	neighbors[3] = Voxel[position.x][position.y - 1][position.z];
+	neighbors[4] = Voxel[position.x][position.y][position.z + 1];
+	neighbors[5] = Voxel[position.x][position.y][position.z - 1];
 	
 	// 0 = x+, 1 = x-, and so on.
 	loggit('x+: ' + neighbors[0] + ', x-: ' + neighbors[1] + ', y+: ' + neighbors[2] + ', y-: ' + neighbors[3] + ', z+: ' + neighbors[4] + ', z-: ' + neighbors[5] + '.');
+	
+	return neighbors;
 }
-
-function Neighbors(target) {
-	this.target = target;
+/*
+function neighbors(target) {
+	target = target;
 	
 }
-
+*/
 /*
 Neighbors.prototype = {
 	// Axes which have a block nearby. Syntax is 0 = x+, 1 = x-, and so on.
