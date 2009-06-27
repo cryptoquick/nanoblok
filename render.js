@@ -31,16 +31,17 @@ function voxRender (canvasID, size) {
 	context.lineWidth = 0;
 	context.strokeStyle = 'none';
 	
-	degrees = 45;
-//	rotation = degrees * Math.PI / 180;
+	degrees = -45;
+	rotation = degrees * Math.PI / 180;
 
+//	context.translate(-8 * size, 16 * size);
+	context.translate(0 * size, 8 * size);
 	context.scale(1, 0.5);
 	context.rotate(degrees * Math.PI / 180);
-	context.translate(16 * size, 0);
-	
-//	context.transform(m11, m12, m21, m22, dx, dy);
-	
-	context.strokeStyle = 'red';
+
+	context.fillStyle = '#ccc';
+	context.fillRect(0, 0, 16 * size, 16 * size);
+	context.strokeStyle = 'black';
 	context.strokeRect(0, 0, 16 * size, 16 * size);
 
 	for (var i = 0; i < fieldData.length; i++) {
