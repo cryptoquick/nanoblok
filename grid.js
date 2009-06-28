@@ -89,7 +89,7 @@ function gridTransform(grid_x, grid_y, screen_x, screen_y, rotation) {
 		path += ' z';
 		
 		pathElement.setAttributeNS(null, 'd', path);
-		gridGroup.appendChild(pathElement);
+//		gridGroup.appendChild(pathElement);
 		
 		// This function probably adds more overhead than necessary.
 		var gridcoors = findGridXY(pathElement);
@@ -98,7 +98,7 @@ function gridTransform(grid_x, grid_y, screen_x, screen_y, rotation) {
 		VoxArray(gridcoors.x, gridcoors.y, -1, gridID);
 
 		GridField['bgGrid-' + i] = {x: gridcoors.x, y: gridcoors.y, z: -1};
-	}
+	}	
 	
 	// Build UI before the grid is built
 	UITransform(offset_x, offset_y);
@@ -156,4 +156,64 @@ function gridTransform(grid_x, grid_y, screen_x, screen_y, rotation) {
 	movesubject = document.getElementById('nanoblok');
 	textoffset = movesubject.getBBox();
 	movesubject.setAttributeNS(null, 'transform', 'translate(' + ((screen_x / 2) - (textoffset.width / 2)) + ', ' + (screen_y - 50) + ')');
+}
+
+// Number of columns, rows
+var gridCol = 16;
+var gridRow = 16;
+
+var grid = new Object();
+var offset = new Object();
+
+var gridContainer = document.getElementById('gridContainer');
+
+function drawGrid () {
+	var i = 0;
+	
+	for (x = 0; x <= 15; x++) {
+		for (y = 0; y <= 15; y++) {
+			var gridX = (x * sc2) + (y * sc2);
+			var gridY = ((y * sc4) + (grid.x - x * sc4));
+			
+			var set = hexiso(gridX, gridY);
+			
+			var tile = drawSet([1, 2, 7, 6], set, true);
+			
+			tile.setAttributeNS(null, 'id', 'gridTile-' + i);
+			
+			gridContainer.appendChild(tile);
+			i++;
+		}
+	}
+}
+
+function alignGrid () {
+	var area = gridDimensions();
+	gridContainer.setAttributeNS(null, 'x', area.offset.x);
+	gridContainer.setAttributeNS(null, 'y', area.offset.y);
+	gridContainer.setAttributeNS(null, 'width', area.grid.x);
+	gridContainer.setAttributeNS(null, 'height', area.grid.y);
+}
+
+//block = setColor(blockBlank, color);
+//block.setAttributeNS(null, 'id', blockID);
+
+
+function gridDimensions () {
+	// Calculate the height and width of the grid area
+	grid = {x: sc1 * gridCol, y: sc2 * gridRow};
+	
+	// Find the upper left corner of the grid area from the window dimensions
+	offset = {x: nanoWindow.x / 2 - grid.x / 2, y: nanoWindow.y / 2 - grid.y / 2};
+	
+	// Offsets and dimensions of the grid
+	return {offset: offset, grid: grid};
+}
+
+function makeGridElement (position) {
+	var coorSet = hexiso(position.x, position.y);
+	
+	var blokTop = drawSet([1, 2, 7, 6], coorSet, true);
+
+	return blokTop;
 }

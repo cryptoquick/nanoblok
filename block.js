@@ -33,7 +33,7 @@ var sc4 = sc1 / 4; // Quarter-block dimension
 var sc3 = sc2 + sc4; // Half+Quarter-block dimension
 
 // Draws hexagonal points in iso perspective, based on hard coordinate and size of block. Depends on an orientation array (see block-grid.png in Nanoblok Extras). Returns static coordinates of where to draw blocks on the screen.
-function hexiso (scX, scY, offsetX, offsetY) {
+function hexiso (scX, scY) {
 //	scX = offsetX;
 //	scY = offsetY;
 	
@@ -93,14 +93,10 @@ var direction;
 // Find a nearby block and then find its bounding box.
 function voxelBBox (position) {
 	var neighborIDs = neighbors(position);
-
-	for (i = 0; i < 5; i++) {
-		if (neighbors[i] !== undefined) {
-			nearbyElement = neighborIDs[i];
-			direction = i;
-			break;
-		}
-	}
+	
+	
+	
+	alert(position.x);
 	
 	if (direction % 2) { // odd
 		position[direction]--;
@@ -108,8 +104,12 @@ function voxelBBox (position) {
 		position[direction]++;
 	}
 	
+//	alert(position[direction]);
+	
 	targetElement = document.getElementById(elementID);
 	bbox = targetElement.getBBox();
+	
+//	alert ('x: ' + bbox.x);
 	
 	if (z == -1) {
 		// For blocks placed on the grid
@@ -126,7 +126,7 @@ function makeBlock (posX, posY) {
 	offsetX = 0;
 	offsetY = 0;
 	
-	var coorSet = hexiso(posX, posY, offsetX, offsetY);
+	var coorSet = hexiso(posX, posY);
 	
 	var blokTop 	= drawSet([1, 2, 7, 6], coorSet, true);
 	var blokRight 	= drawSet([2, 3, 4, 7], coorSet, true);
@@ -145,8 +145,8 @@ function makeBlock (posX, posY) {
 
 // Creates the various coordinates necessary to make an isometric block
 // from the coordinates provided by hexiso().
-function makeObject (posX, posY, offsetX, offsetY) {
-	var coorSet = hexiso(posX, posY, offsetX, offsetY);
+function makeObject (posX, posY) {
+	var coorSet = hexiso(posX, posY);
 	
 	var blokTop 	= drawSet([1, 2, 7, 6], coorSet, true);
 	var blokRight 	= drawSet([2, 3, 4, 7], coorSet, true);
@@ -233,10 +233,11 @@ function makeGroup(obj) {
 function attachBlock(position, axis) {
 	blockID = 'block-' + blockTick;
 	blockTick++;
-	bbox = voxelBBox(position);
+//	bbox = voxelBBox(position);
+	bbox = targetElement.getBBox();
 	color = 'bla';
 //	offset = voxelBBox(position.x + axis.x, position.x + axis.y, position.z + axis.z - 1);
-	blockBlank = makeObject(bbox.x, bbox.y, 0, 0); //offset.x, offset.y);
+	blockBlank = makeObject(bbox.x, bbox.y); //offset.x, offset.y);
 	block = setColor(blockBlank, color);
 	block.setAttributeNS(null, 'id', blockID);
 //	block.setAttributeNS(null, 'block-color', color);
