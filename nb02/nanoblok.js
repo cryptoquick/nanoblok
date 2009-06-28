@@ -23,30 +23,30 @@ var sc4 = blockscale / 4;
 var sc3 = sc2 + sc4;
 
 var Voxel = new Array();
-var Field = new Array();
+var Field = new Object();
 
 // Creates values within an associative arrray of established coordinates
-function VoxArray(voxel, field, x, y, z, value) {
-	if (voxel[x] == null) {
-		voxel[x] = new Array(x);
+function VoxArray(x, y, z, value) {
+	if (Voxel[x] == null) {
+		Voxel[x] = new Array(x);
 	}
 
-	if (voxel[x][y] == null) {
-		voxel[x][y] = new Array(y);
+	if (Voxel[x][y] == null) {
+		Voxel[x][y] = new Array(y);
 	}
 
-	voxel[x][y][z] = value;
-	
-	var voxobj = new Object();
-	voxobj.x = x;
-	voxobj.y = y;
-	voxobj.z = z;
-	
-	field.push(voxobj);
+	Voxel[x][y][z] = value;
 }
 
-window.onload = function () {
+function FieldRecord(blockID, position) {	
+	Field[blockID] = position;
+}
 
+window.addEventListener('load', function () {
+	Init();
+}, false);
+
+function Init () {
 	// Helps to know how fast things are going -- TEMP
 	var init0 = new Date();
 
@@ -58,7 +58,7 @@ window.onload = function () {
 	
 //	placeBlok(2, 3, nano);
 	
-//	drawBlok(150, 400, blockscale, nano);
+	drawBlok(150, 400, blockscale, nano);
 	
 
 	
@@ -165,14 +165,11 @@ function drawGrid(nano, scale) { // Offset might be something I could code in la
 			gridElement.attr({stroke: "#777", fill: "#DDD"})
 			
 			gridElement.click(function () {		// Not sure if this piece of code needs less OOP. Based on a Raphael example. REVIEW
+				blok = placeBlok(gridX, gridY, nano);
 			}).mouseover(function () {
 				this.animate({fill: "#fcaf3e"}, 0);
 			}).mouseout(function () {
 				this.animate({fill: "#DDD"}, 200);
-			}).click(function () {
-			//	alert('click ' + gridX + ', ' + gridY);
-				blok = placeBlok(gridX, gridY, nano);
-			//	blok.insertAfter(gridElement); // TEMP
 			});
 			
 //			voxArray[gridX][gridY][-1] = gridElement;
