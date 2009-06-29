@@ -62,36 +62,68 @@ var lastSquare;
 
 function rotateSquare (direction, nano) {	
 	if (direction == 'left') {
-		angle-= 0.5;
+	//	angle-= 0.5;
+		angle--;
 	} else if (direction == 'right') {
-		angle+= 0.5;
+	//	angle+= 0.5;
+		angle++;
 	}
 	
 	var cos = Math.cos(degRads(angle));
 	var sin = Math.sin(degRads(angle));
 	
-	var rotation =
+	rotation =
 	{x: $M([
-			[cos, -sin],
-			[sin, cos]
+			[1,	0, 0],
+			[0, cos, -sin],
+			[0, sin, cos],
 		]),
 	 y: $M([
-			[cos, sin],
-			[-sin, cos]
+			[cos, 0, sin],
+			[0, 1, 0],
+			[-sin, 0, cos]
+		]),
+	 z: $M([
+			[cos, -sin, 0],
+			[sin, cos, 0],
+			[0, 0, 1]
 		])
 	};
+
+	var scale = {x: 1, y: 1};
+	
+	scaling = $M([
+			[scale.x, 0, 0],
+			[0, scale.y, 0],
+			[0, 0, 1]
+		]);
+	
+//	var transform = rotation.x.x(rotation.y);
+//	var transform = rotation.z.x(translation);
+	var transform = scaling.x(rotation.z);
+	
+	var size = 50;
 	
 	var square = $M([
-		[200, 200, 300, 300],
-		[200, 300, 300, 200]
+		[0, 0, size, size],
+		[0, size, size, 0],
+		[0, 0, 0, 0]
 	]);
+	
+	var trans = {x: 100, y: 100};
+	
+	translate = $M([
+			[1, 0, trans.x],
+			[0, 1, trans.y],
+			[0, 0, 1]
+		]);
 	
 	var sq = new Array(4);
 	
 	for (i = 0; i < 4; i++) {
-		sq[i] = rotation.x.x(square.col(i + 1));
+		sq[i] = transform.x(square.col(i + 1));
 	}
-//	alert(rotation.x.x(square.col(3)).inspect());
+//	alert(transform.inspect());
 	
 	var degsDiv = document.getElementById('degs');	
 	degsDiv.innerHTML = 'Angle: ' + angle;
