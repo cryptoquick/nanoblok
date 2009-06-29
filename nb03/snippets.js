@@ -69,13 +69,20 @@ for (i = 0; i < 4; i++) {
 
 
 
-	/*	var rotation =
-		{x: $M([
-				[cos, -sin],
-				[sin, cos]
-			]),
-		 y: $M([
-				[cos, sin],
-				[-sin, cos]
-			])
-		}; */
+/*var rotation =
+{x: $M([
+		[cos, -sin],
+		[sin, cos]
+	]),
+ y: $M([
+		[cos, sin],
+		[-sin, cos]
+	])
+}; */
+
+translate = $M([
+		[trans.x],
+		[trans.y],
+		[1],
+		[1]
+	]);
