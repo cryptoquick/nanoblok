@@ -6,7 +6,7 @@
  */
  
 // Universal constants
-var size = 25;
+var size = 35;
 var angle = 45;
 var scale = {x: 1, y: 0.5};
 var grid = {r: 16, c: 16};
@@ -24,16 +24,21 @@ function Init () {
 	var charCode;
 	
 //	buildSquare(size, axis, angle, scale, trans, nano)
-	buildSquare(size, 'z', 45, {x: 1, y: 0.5}, {x: 100, y: 200}, nano);
+//	buildSquare(size, 'z', 45, {x: 1, y: 0.5}, {x: 100, y: 200}, nano);
 	
 //	grid, axis, angle, scale, trans, nano
-	gridMatrix(grid, 'z', angle, scale, {x: 0, y: 0}, nano)
+	gridMatrix(grid, 'z', angle, scale, {x: 400, y: 100}, nano)
 	
 	var init1 = new Date();
-	var debug = document.getElementById('debug');
-	debug.innerHTML = 'Program initialized in ' + (init1 - init0) + ' milliseconds.';
+	
+	debug('Program initialized in ' + (init1 - init0) + ' milliseconds.');
 	
 //	testInput();
+}
+
+function debug(input) {
+	var debug = document.getElementById('debug');
+	debug.innerHTML = debug.innerHTML + '<br>' + input;
 }
 
 // Function not being used right now, but might be useful later.
@@ -63,8 +68,8 @@ function testInput() {
 /* Grid Functions */
 
 function buildGrid (grid, nano) {
-	for (x = 0; x < grid.c; x++) {
-		for (y = 0; y < grid.r; y++) {
+	for (var x = 0; x < grid.c; x++) {
+		for (var y = 0; y < grid.r; y++) {
 			var tile = {x: x * size, y: y * size};
 			var gridTile = buildSquare(size, 'z', angle, scale, {x: tile.x, y: tile.y}, nano);
 		}
@@ -79,18 +84,36 @@ function gridMatrix(grid, axis, angle, scale, trans, nano) {
 		[1]
 		])
 	
-	var grid = gridTiles (tiles, grid);
+	var matrix = gridTiles (tiles, grid);
+	
+	for (var i = 0; i < grid.c * grid.r + 1; i++) {
+		var slice = matrixSlice (matrix, i);
+		var rotated = matrixRotate (slice, axis, angle);
+		var scaled = matrixScale (rotated, scale);
+		var translated = matrixTranslate (scaled, trans);
+		var arrayed = matrixArray (matrix, translated, i);
+		var tile = drawTiles(arrayed, i, nano);
+	}
+	
+//	return board;
 }
 
+// Creates a rectangular grid of coordinates.
 function gridTiles (tiles, grid) {
-	for (x = 0; x < grid.c; x++) {
-		for (y = 0; y < grid.r; y++) {
+	for (var x = 0; x < grid.c; x++) {
+		for (var y = 0; y < grid.r; y++) {
 			var tile = $V([x * size, y * size, 0, 1]);
-			tiles.augment(tile);
+		//	var tile = $M([[x * size], [y * size], [0], [0]]);
+			var tiles = tiles.augment(tile);
 		}
 	}
-	alert(tiles.cols());
+//	debug(tiles.inspect());
 	return tiles;
+}
+
+function drawTiles (sq, i, nano) {
+	var tile = buildSquare(size, 'z', 45, {x: 1, y: 0.5}, {x: sq[i].e(1,1), y: sq[i].e(2,1)}, nano);
+	return tile;
 }
 
 /* Main Square Function */
@@ -102,7 +125,7 @@ function buildSquare(size, axis, angle, scale, trans, nano) {
 	// Rotate the square; x is a vertical rotation, y is a horizontal rotation,
 	// and z rotates around the screen. Trust me, it makes sense.
 	
-	for (i = 0; i < 4; i++) {
+	for (var i = 0; i < 4; i++) {
 		var slice = matrixSlice (square, i);
 		var rotated = matrixRotate (slice, axis, angle);
 		var scaled = matrixScale (rotated, scale);
@@ -200,6 +223,7 @@ function drawSquare (sq, nano) {
 	lineTo(sq[0].e(1,1), sq[0].e(2,1));
 	
 	square.attr('stroke', '#333');
+	square.attr('fill', '#ddd');
 	square.attr('stroke-width', '1');
 	
 	return square;
