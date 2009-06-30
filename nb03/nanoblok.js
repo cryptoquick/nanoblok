@@ -7,8 +7,8 @@
  
 // Universal constants
 var size = 35;
-var angle = 45;
-var scale = {x: 1, y: 0.5};
+//var angle = 45;
+var scale = {x: 1, y: 1};
 var grid = {r: 16, c: 16};
 
 window.addEventListener('load', function () {
@@ -26,8 +26,8 @@ function Init () {
 //	buildSquare(size, axis, angle, scale, trans, nano)
 //	buildSquare(size, 'z', 45, {x: 1, y: 0.5}, {x: 100, y: 200}, nano);
 	
-//	grid, axis, angle, scale, trans, nano
-	var isogrid = gridMatrix(grid, 'z', angle, scale, {x: 400, y: 100}, nano);
+//	grid, angle, scale, trans, nano
+	var isogrid = gridMatrix(grid, {x: Math.asin(Math.tan(degRads(30))), y: degRads(45), z: degRads(0)}, scale, {x: 400, y: 200}, nano);
 	
 	var init1 = new Date();
 	
@@ -58,13 +58,13 @@ function testInput(isogrid, nano) {
 		if (charCode == 37) {
 			removeGrid (isogrid);
 			angle++;
-			isogrid = gridMatrix(grid, 'z', angle, scale, {x: 400, y: 100}, nano);
+			isogrid = gridMatrix(grid, angle, scale, {x: 400, y: 100}, nano);
 		}
 		// Right arrow key
 		if (charCode == 39) {
 			removeGrid (isogrid);
 			angle--;
-			isogrid = gridMatrix(grid, 'z', angle, scale, {x: 400, y: 100}, nano);
+			isogrid = gridMatrix(grid, angle, scale, {x: 400, y: 100}, nano);
 		}
 	}, false);
 //	return isogrid;
@@ -72,7 +72,18 @@ function testInput(isogrid, nano) {
 
 /* Grid Functions */
 
-function gridMatrix(grid, axis, angle, scale, trans, nano) {
+/*function changePerspective (isogrid, perspective, nano) {
+	switch(perspective) {
+		case 'iso45':
+		
+		case ''
+	}
+	
+	removeGrid (isogrid);
+	isogrid = gridMatrix(grid, angle, scale, {x: 400, y: 100}, nano);
+}*/
+
+function gridMatrix(grid, angle, scale, trans, nano) {
 	var tiles = $M([
 		[0],
 		[0],
@@ -85,8 +96,19 @@ function gridMatrix(grid, axis, angle, scale, trans, nano) {
 	
 	for (var i = 0; i < grid.c * grid.r + 1; i++) {
 		var slice = matrixSlice (matrix, i);
-		var rotated = matrixRotate (slice, axis, angle);
-		var scaled = matrixScale (rotated, scale);
+
+		// Add each transformation together.
+		if (angle.x !== 0) {
+			var slice = matrixRotate (slice, 'x', angle);
+		}
+		if (angle.y !== 0) {
+			var slice = matrixRotate (slice, 'y', angle);
+		}
+		if (angle.z !== 0) {
+			var slice = matrixRotate (slice, 'z', angle);
+		}
+
+		var scaled = matrixScale (slice, scale);
 		var translated = matrixTranslate (scaled, trans);
 		var arrayed = matrixArray (matrix, translated, i);
 		var tile = drawTiles(arrayed, angle, i, nano);
@@ -111,7 +133,7 @@ function gridTiles (tiles, grid) {
 }
 
 function drawTiles (sq, angle, i, nano) {
-	var tile = buildSquare(size, 'z', angle, {x: 1, y: 0.5}, {x: sq[i].e(1,1), y: sq[i].e(2,1)}, nano);
+	var tile = buildSquare(size, angle, {x: 1, y: 1}, {x: sq[i].e(1,1), y: sq[i].e(2,1)}, nano);
 	return tile;
 }
 
@@ -126,7 +148,7 @@ function removeGrid (isogrid) {
 }
 
 /* Main Square Function */
-function buildSquare(size, axis, angle, scale, trans, nano) {
+function buildSquare(size, angle, scale, trans, nano) {
 	var coors = new Array(4);
 
 	var square = matrixCoors (size);
@@ -136,8 +158,20 @@ function buildSquare(size, axis, angle, scale, trans, nano) {
 	
 	for (var i = 0; i < 4; i++) {
 		var slice = matrixSlice (square, i);
-		var rotated = matrixRotate (slice, axis, angle);
-		var scaled = matrixScale (rotated, scale);
+		
+		// Add each transformation together.
+		if (angle.x !== 0) {
+			var slice = matrixRotate (slice, 'x', angle);
+		}
+		if (angle.y !== 0) {
+			var slice = matrixRotate (slice, 'y', angle);
+		}
+		if (angle.z !== 0) {
+			var slice = matrixRotate (slice, 'z', angle);
+		}
+		
+		// Scale, Translate, and add into an array.
+		var scaled = matrixScale (slice, scale);
 		var translated = matrixTranslate (scaled, trans);
 		var arrayed = matrixArray (coors, translated, i);
 	}
@@ -153,7 +187,7 @@ function matrixSlice (coors, i) {
 }
 
 function degRads (angle) {
-	return angle * Math.PI / 180;
+        return angle * Math.PI / 180;
 }
 
 function matrixCoors (size) {	
@@ -168,20 +202,20 @@ function matrixCoors (size) {
 }
 
 function matrixRotate (matrix, axis, angle) {
-	var cos = Math.cos(degRads(angle));
-	var sin = Math.sin(degRads(angle));
+	var cos = Math.cos(angle[axis]);
+	var sin = Math.sin(angle[axis]);
 	
 	var rotation =
 	{x: $M([
 			[1,	0, 0, 0],
-			[0, cos, -sin, 0],
-			[0, sin, cos, 0],
+			[0, cos, sin, 0],
+			[0, -sin, cos, 0],
 			[0, 0, 0, 1]
 		]),
 	 y: $M([
-			[cos, 0, sin, 0],
+			[cos, 0, -sin, 0],
 			[0, 1, 0, 0],
-			[-sin, 0, cos, 0],
+			[sin, 0, cos, 0],
 			[0, 0, 0, 1]
 		]),
 	 z: $M([
@@ -191,7 +225,7 @@ function matrixRotate (matrix, axis, angle) {
 			[0, 0, 0, 1]
 		])
 	};
-
+	
 	return rotation[axis].x(matrix);
 }
 
@@ -211,7 +245,6 @@ function matrixTranslate (matrix, trans) {
 	var translate = $V(
 			[trans.x, trans.y, 0, 1]
 		);
-
 
 	return translate.add(matrix);
 }
