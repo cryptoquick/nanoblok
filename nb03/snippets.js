@@ -147,3 +147,47 @@ function testInput() {
 	} else if (axis == 'z'){
 		return matrix.x(rotation.z);
 	} */
+	
+	
+function buildGrid (grid, nano) {
+/*	var sz = {
+		full: size,
+		half: size / 2,
+		quarter: size / 4,
+		three: size / 2 + size / 4
+	} */
+
+	sz = {full: 50, half: 40, quarter: 20, three: 37.5};
+
+	var dim = {
+		w: grid.c * sz.full,
+		h: grid.c * sz.full / 2
+	}
+
+	for (x = 0; x < grid.c; x++) {
+		for (y = 0; y < grid.r; y++) {
+			var tile = {
+				x: (x * sz.half) + (y * sz.half),
+				y: (y * sz.quarter) + (dim.h - x * sz.quarter)
+			};
+
+		//	var num = nano.text(gridX + sc2, gridY + sc3, x + ", " + y); // TEMP
+
+			var gridElement = buildSquare(size, 'z', angle, scale, {x: tile.x, y: tile.y}, nano);
+/*
+			gridElement.attr({stroke: "#777", fill: "#DDD"})
+
+			gridElement.click(function () {		// Not sure if this piece of code needs less OOP. Based on a Raphael example. REVIEW
+				blok = placeBlok(gridX, gridY, nano);
+			}).mouseover(function () {
+				this.animate({fill: "#fcaf3e"}, 0);
+			}).mouseout(function () {
+				this.animate({fill: "#DDD"}, 200);
+			});
+
+//			voxArray[gridX][gridY][-1] = gridElement;*/
+		}
+	}
+
+
+}

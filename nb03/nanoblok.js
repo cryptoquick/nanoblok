@@ -6,26 +6,97 @@
  */
  
 // Universal constants
-var blockscale = 20;
+var size = 25;
+var angle = 45;
+var scale = {x: 1, y: 0.5};
+var grid = {r: 16, c: 16};
 
 window.addEventListener('load', function () {
 	Init();
 }, false);
 
 function Init () {
+	// Helps to know how fast things are going -- TEMP
+	var init0 = new Date();
+	
 	var nano = Raphael("nano", 800, 650);
 	
 	var charCode;
 	
 //	buildSquare(size, axis, angle, scale, trans, nano)
-	buildSquare(50, 'x', 0, {x: 1, y: 1}, {x: 100, y: 100}, nano);	
+	buildSquare(size, 'z', 45, {x: 1, y: 0.5}, {x: 100, y: 200}, nano);
+	
+//	grid, axis, angle, scale, trans, nano
+	gridMatrix(grid, 'z', angle, scale, {x: 0, y: 0}, nano)
+	
+	var init1 = new Date();
+	var debug = document.getElementById('debug');
+	debug.innerHTML = 'Program initialized in ' + (init1 - init0) + ' milliseconds.';
+	
+//	testInput();
 }
 
-/* Main Block function */
+// Function not being used right now, but might be useful later.
+function testInput() {
+	window.addEventListener("keydown", function(evt) {
+		// Input Handling
+		if (evt.type == "keydown") {
+			// Some browsers support evt.charCode, some only evt.keyCode
+			if (evt.charCode) {
+				charCode = evt.charCode;
+			}
+			else {
+				charCode = evt.keyCode;
+			}
+		}
+		// Right arrow key
+		if (charCode == 37) {
+			rotateSquare('right', nano);
+		}
+		// Left arrow key
+		if (charCode == 39) {
+			rotateSquare('left', nano);
+		}
+	}, false);
+}
+
+/* Grid Functions */
+
+function buildGrid (grid, nano) {
+	for (x = 0; x < grid.c; x++) {
+		for (y = 0; y < grid.r; y++) {
+			var tile = {x: x * size, y: y * size};
+			var gridTile = buildSquare(size, 'z', angle, scale, {x: tile.x, y: tile.y}, nano);
+		}
+	}
+}
+
+function gridMatrix(grid, axis, angle, scale, trans, nano) {
+	var tiles = $M([
+		[0],
+		[0],
+		[0],
+		[1]
+		])
+	
+	var grid = gridTiles (tiles, grid);
+}
+
+function gridTiles (tiles, grid) {
+	for (x = 0; x < grid.c; x++) {
+		for (y = 0; y < grid.r; y++) {
+			var tile = $V([x * size, y * size, 0, 1]);
+			tiles.augment(tile);
+		}
+	}
+	alert(tiles.cols());
+	return tiles;
+}
+
+/* Main Square Function */
 function buildSquare(size, axis, angle, scale, trans, nano) {
 	var coors = new Array(4);
-	
-	// Create a 50px square
+
 	var square = matrixCoors (size);
 	
 	// Rotate the square; x is a vertical rotation, y is a horizontal rotation,
@@ -128,8 +199,8 @@ function drawSquare (sq, nano) {
 	lineTo(sq[3].e(1,4), sq[3].e(2,4)).
 	lineTo(sq[0].e(1,1), sq[0].e(2,1));
 	
-	square.attr('stroke', 'black');
-	square.attr('stroke-width', '2');
+	square.attr('stroke', '#333');
+	square.attr('stroke-width', '1');
 	
 	return square;
 }
