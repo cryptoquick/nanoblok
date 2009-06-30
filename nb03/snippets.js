@@ -86,3 +86,64 @@ translate = $M([
 		[1],
 		[1]
 	]);
+	
+/* var square = $M([
+	[200, 200],
+	[200, 300],
+	[300, 300],
+	[300, 200]
+]); */
+var sq1 = $V([200, 200]);
+var sq2 = $V([200, 300]);
+var sq3 = $V([300, 300]);
+var sq4 = $V([300, 200]);
+
+//	var transform = rotation.x.x(rotation.y);
+//	var transform = rotation.z.x(translation);
+	
+	
+function rotateSquare (direction, nano) {	
+	if (direction == 'left') {
+	//	angle-= 0.5;
+		angle++;
+	} else if (direction == 'right') {
+	//	angle+= 0.5;
+		angle--;
+	}
+}
+
+
+// Function not being used right now, but might be useful later.
+function testInput() {
+	window.addEventListener("keydown", function(evt) {
+		// Input Handling
+		if (evt.type == "keydown") {
+			// Some browsers support evt.charCode, some only evt.keyCode
+			if (evt.charCode) {
+				charCode = evt.charCode;
+			}
+			else {
+				charCode = evt.keyCode;
+			}
+		}
+		// Right arrow key
+		if (charCode == 37) {
+			rotateSquare('right', nano);
+		}
+		// Left arrow key
+		if (charCode == 39) {
+			rotateSquare('left', nano);
+		}
+	}, false);
+}
+
+//	return matrix.x(rotation[axis]);
+//	return rotation[axis].x(matrix);	
+	
+/*	if (axis == 'x'){
+		return matrix.x(rotation.x);
+	} else if (axis == 'y'){
+		return matrix.x(rotation.y);
+	} else if (axis == 'z'){
+		return matrix.x(rotation.z);
+	} */
