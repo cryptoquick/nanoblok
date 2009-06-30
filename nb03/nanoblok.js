@@ -27,13 +27,13 @@ function Init () {
 //	buildSquare(size, 'z', 45, {x: 1, y: 0.5}, {x: 100, y: 200}, nano);
 	
 //	grid, axis, angle, scale, trans, nano
-	gridMatrix(grid, 'z', angle, scale, {x: 400, y: 100}, nano)
+	var isogrid = gridMatrix(grid, 'z', angle, scale, {x: 400, y: 100}, nano);
 	
 	var init1 = new Date();
 	
 	debug('Program initialized in ' + (init1 - init0) + ' milliseconds.');
 	
-//	testInput();
+	testInput(isogrid, nano);
 }
 
 function debug(input) {
@@ -42,7 +42,7 @@ function debug(input) {
 }
 
 // Function not being used right now, but might be useful later.
-function testInput() {
+function testInput(isogrid, nano) {
 	window.addEventListener("keydown", function(evt) {
 		// Input Handling
 		if (evt.type == "keydown") {
@@ -54,27 +54,23 @@ function testInput() {
 				charCode = evt.keyCode;
 			}
 		}
-		// Right arrow key
-		if (charCode == 37) {
-			rotateSquare('right', nano);
-		}
 		// Left arrow key
+		if (charCode == 37) {
+			removeGrid (isogrid);
+			angle++;
+			isogrid = gridMatrix(grid, 'z', angle, scale, {x: 400, y: 100}, nano);
+		}
+		// Right arrow key
 		if (charCode == 39) {
-			rotateSquare('left', nano);
+			removeGrid (isogrid);
+			angle--;
+			isogrid = gridMatrix(grid, 'z', angle, scale, {x: 400, y: 100}, nano);
 		}
 	}, false);
+//	return isogrid;
 }
 
 /* Grid Functions */
-
-function buildGrid (grid, nano) {
-	for (var x = 0; x < grid.c; x++) {
-		for (var y = 0; y < grid.r; y++) {
-			var tile = {x: x * size, y: y * size};
-			var gridTile = buildSquare(size, 'z', angle, scale, {x: tile.x, y: tile.y}, nano);
-		}
-	}
-}
 
 function gridMatrix(grid, axis, angle, scale, trans, nano) {
 	var tiles = $M([
@@ -85,6 +81,7 @@ function gridMatrix(grid, axis, angle, scale, trans, nano) {
 		])
 	
 	var matrix = gridTiles (tiles, grid);
+	var board = new Array();
 	
 	for (var i = 0; i < grid.c * grid.r + 1; i++) {
 		var slice = matrixSlice (matrix, i);
@@ -92,10 +89,12 @@ function gridMatrix(grid, axis, angle, scale, trans, nano) {
 		var scaled = matrixScale (rotated, scale);
 		var translated = matrixTranslate (scaled, trans);
 		var arrayed = matrixArray (matrix, translated, i);
-		var tile = drawTiles(arrayed, i, nano);
+		var tile = drawTiles(arrayed, angle, i, nano);
+		board[i] = tile;
+//		board = groupTiles(board, tile, i);
 	}
 	
-//	return board;
+	return board;
 }
 
 // Creates a rectangular grid of coordinates.
@@ -107,13 +106,23 @@ function gridTiles (tiles, grid) {
 			var tiles = tiles.augment(tile);
 		}
 	}
-//	debug(tiles.inspect());
+	
 	return tiles;
 }
 
-function drawTiles (sq, i, nano) {
-	var tile = buildSquare(size, 'z', 45, {x: 1, y: 0.5}, {x: sq[i].e(1,1), y: sq[i].e(2,1)}, nano);
+function drawTiles (sq, angle, i, nano) {
+	var tile = buildSquare(size, 'z', angle, {x: 1, y: 0.5}, {x: sq[i].e(1,1), y: sq[i].e(2,1)}, nano);
 	return tile;
+}
+
+function groupTiles (board, tile, i) {
+	
+}
+
+function removeGrid (isogrid) {
+	for (var i = 0; i < grid.c * grid.r + 1; i++) {
+		isogrid[i].remove();
+	}
 }
 
 /* Main Square Function */
@@ -182,7 +191,7 @@ function matrixRotate (matrix, axis, angle) {
 			[0, 0, 0, 1]
 		])
 	};
-//	alert(matrix.x(rotation[axis]).inspect());
+
 	return rotation[axis].x(matrix);
 }
 
@@ -194,23 +203,22 @@ function matrixScale (matrix, scale) {
 			[0, 0, 0, 1]
 		]);
 		
-//	alert((scaling.x(matrix)).inspect());
+
 	return scaling.x(matrix);
 }
 
 function matrixTranslate (matrix, trans) {
-//	var trans = {x: 100, y: 100};	
 	var translate = $V(
 			[trans.x, trans.y, 0, 1]
 		);
 
-//	alert(translate.add(matrix).inspect());
+
 	return translate.add(matrix);
 }
 
 function matrixArray (coors, matrix, i) {
 	coors[i] = matrix;
-//	alert(coors[i].e(1,1));
+
 	return coors;
 }
 
