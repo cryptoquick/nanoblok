@@ -3,10 +3,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta http-equiv="Content-Style-Type" content="text/css"/>
+	
 	<title>nanoblok r03</title>
-	<script src="raphael.js" type="text/javascript" charset="utf-8"></script>
-	<script src="sylvester.js" type="text/javascript" charset="utf-8"></script>
-	<script src="nanoblok.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script type="text/javascript" charset="utf-8" src="raphael.js"></script>
+	<script type="text/javascript" charset="utf-8" src="sylvester.js"></script>
+	<script type="text/javascript" charset="utf-8" src="jquery/js/jquery-1.3.2.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="jquery/js/jquery-ui-1.7.2.custom.min.js" ></script>
+	<script type="text/javascript" charset="utf-8" src="nanoblok.js"></script>
+	
+	<link rel="stylesheet" type="text/css" href="jquery/css/ui-lightness/jquery-ui-1.7.2.custom.css"/>
+	
 	<style type="text/css" media="screen">
 		body {
 			margin: 0;
@@ -19,10 +27,17 @@
             text-align: left;
             width: 800px;
         }
+		#progress {
+			width: 800px;
+			height: 10px;
+			margin: 0 auto;
+			margin-top: 10px;
+		}
 	</style>
 </head>
 <body>
-	<div id="nano" style="border: 1px solid black"></div>
+	<div id="progress"></div>
+	<div id="nano"></div>
 	<div id="debug"></div>
 </body>
 </html>
