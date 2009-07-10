@@ -18,8 +18,6 @@ function Init () {
 	// Helps to know how fast things are going -- TEMP
 	var init0 = new Date();
 	
-	$("#progress").progressbar({ value: 50 });
-	
 	// Initialize the nano element as a Raphael canvas
 	var nano = Raphael("nano", 800, 650);
 	
@@ -34,7 +32,6 @@ function Init () {
 	var isogrid = gridMatrix(grid, angle, scale, {x: 0, y: 300}, nano);
 	
 	var init1 = new Date();
-	
 	debug('Program initialized in ' + (init1 - init0) + ' milliseconds.');
 	
 	testInput(isogrid, angle, nano);
@@ -48,18 +45,13 @@ function debug(input) {
 	debug.innerHTML = debug.innerHTML + '<br>' + input;
 }
 
-// Uses a fraction made by dividing the step 
-function progress(step, base) {
+// Creates a fraction made by dividing the step, then changes progress bar width with each step.
+function progressBar(step, base, rect2) {
 	
-	var percentage = Math.floor((step / base) * 100);
+	var factor = Math.floor((step / base));
 	
-//	$(function(percentage) {
-		//getter
-	//	var value = $('#progress').progressbar('option', 'value');
-		//setter
-		$('#progress').progressbar('option', 'value', percentage);
-//	});
-
+	// Multiply width by factor indicating loading progress
+	rect2.attr = ("width", 792 * factor);
 }
 
 // Function not being used right now, but might be useful later.
@@ -167,8 +159,14 @@ function gridMatrix(grid, angle2, scale, trans, nano) {
 	var board = new Array();
 	var gridSize = grid.c * grid.r + 1;
 	
+	// For progress bar
+	var rect1 = nano.rect(3, 13, 794, 15, 2);
+	rect1.attr({stroke: "#f57900", fill: "white"});
+	var rect2 = nano.rect(4, 14, 0, 15, 0);
+	rect2.attr({stroke: "none", fill: "#fcaf3e"});
+	
 	for (var i = 0; i < gridSize; i++) {
-		progress(i, gridSize - 1);
+		progressBar (i, gridSize - 1, rect2);
 		
 		var slice = matrixSlice (matrix, i);
 		var angle = angleIso (angle2);
