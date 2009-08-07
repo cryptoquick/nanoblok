@@ -31,5 +31,5 @@
 	</style>
 
 	<g id="nano"></g>
-	<g id="debug"></g>
+	<text id="debug" x="100" y="410"></text>
 </svg>
