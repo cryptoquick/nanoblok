@@ -7,29 +7,9 @@
 	<title>nanoblok r04</title>
 	
 	<script type="text/javascript" xlink:href="nanoblok.js"/>
-	
-<!--	<link rel="stylesheet" type="text/css" href="styles.css"/> -->
-	
-	<style type="text/css" media="screen">
-		body {
-			margin: 0;
-			padding: 0;
-            text-align: center;
-		}
-		#nano {
-            height: 400px;
-            margin: 0 auto;
-            text-align: left;
-            width: 800px;
-        }
-		#progress {
-			width: 800px;
-			height: 10px;
-			margin: 0 auto;
-			margin-top: 10px;
-		}
-	</style>
 
 	<g id="nano"></g>
+	<g id="blok"></g>
+	
 	<text id="debug" x="20" y="20"></text>
 </svg>

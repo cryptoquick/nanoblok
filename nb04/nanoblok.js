@@ -28,6 +28,7 @@ function Init () {
 	
 	drawGrid();
 	testInput();
+	drawBlock();
 	
 	var init1 = new Date();
 	debug('Program initialized in ' + (init1 - init0) + ' milliseconds.');
@@ -146,4 +147,44 @@ function animateGrid() {
 	if (angle < 45) {
 		flat = false;
 	}
+}
+
+function drawSide(block, coors, transform, color) {
+	var rect = document.createElementNS(svgNS, 'rect');
+	rect.setAttributeNS(null, 'x', coors.x * size);
+	rect.setAttributeNS(null, 'y', coors.y * size);
+	rect.setAttributeNS(null, 'width', size);
+	rect.setAttributeNS(null, 'height', size);
+	rect.setAttributeNS(null, 'transform', transform);
+	rect.setAttributeNS(null, 'fill', color);
+	
+	var group = document.createElementNS(svgNS, 'g');
+	
+	
+	var group2 = document.createElementNS(svgNS, 'g');
+	
+	
+	group.appendChild(rect);
+	group2.appendChild(group);
+	block.appendChild(group2);
+}
+
+function drawBlock() {
+	var blokID = document.getElementById('blok');
+	
+	var block = document.createElementNS(svgNS, 'g');
+	
+	var skew = Math.atan(0.5) * (180 / Math.PI);
+	var skew2 = Math.atan(1) * (180 / Math.PI);
+	
+	drawSide(block, {x: 0, y: 0}, 'skewY('+ skew +'), scale(1)', 'rgb(171,135,78)'); // Left Side
+	drawSide(block, {x: 1, y: 1}, 'skewY('+ -skew +'), scale(1)', 'rgb(191,155,98)'); // Right Side
+	drawSide(block, {x: 0, y: -1}, 'skewY('+ skew +'), skewX('+ -skew2 +')', 'rgb(211,175,118)'); // Top Side
+	
+	block.setAttributeNS(null, 'stroke', 'rgb(231,195,138)');
+	block.setAttributeNS(null, 'stroke-width', 1.5);
+	block.setAttributeNS(null, 'transform', 'translate('+ 100 +', 100)');
+	block.setAttributeNS(null, 'id', 'grid');
+	
+	blokID.appendChild(block);
 }
