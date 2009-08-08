@@ -127,8 +127,23 @@ function testInput() {
 	}, false);
 }
 
+var flat = false;
+
 function animateGrid() {
-	angle += .5;
-	scaleY += 55; // .0055
-	perspective(scaleY / 10000, angle);
+	if (flat === false) {
+		angle += .5;
+		scaleY += 55; // .0055
+		perspective(scaleY / 10000, angle);
+	}
+	if (angle > 90) {
+		flat = true;
+	}
+	if (flat === true) {
+		angle -= .5;
+		scaleY -= 55; // .0055
+		perspective(scaleY / 10000, angle);
+	}
+	if (angle < 45) {
+		flat = false;
+	}
 }
