@@ -6,19 +6,23 @@
  */
  
 // Universal constants
-var size = 50;
+var size = 30;
 var scale = {x: 1, y: 1};
 var grid = {r: 16, c: 16};
 var svgNS = 'http://www.w3.org/2000/svg';
 
 var angle = 45;
-var scaleY = 0.5;
+var scaleY = 5000;
+
+var gridPosX = 0;
 
 window.addEventListener('load', function () {
 	Init();
 }, false);
 
 function Init () {
+	gridPosX = window.innerWidth / 2;
+	
 	// Helps to know how fast things are going -- TEMP
 	var init0 = new Date();
 	
@@ -27,12 +31,12 @@ function Init () {
 	
 	var init1 = new Date();
 	debug('Program initialized in ' + (init1 - init0) + ' milliseconds.');
-	}
+}
 
 /* Utility Functions */
 function debug(input) {
 	var debug = document.getElementById('debug');
-	debug.textContent = debug.textContent + ' ' + input;
+	debug.textContent = input;
 }
 
 function drawRects(group, coors) {
@@ -41,6 +45,7 @@ function drawRects(group, coors) {
 	rect.setAttributeNS(null, 'y', coors.y * size);
 	rect.setAttributeNS(null, 'width', size);
 	rect.setAttributeNS(null, 'height', size);
+	rect.setAttributeNS(null, 'name', 'tile');
 	
 	// matrix(scaleX, 0, transformX, 0, )
 	rect.setAttributeNS(null, 'transform', 'rotate(45)');
@@ -59,23 +64,33 @@ function drawGrid() {
 		}
 	}
 	
-	group.setAttributeNS(null, 'stroke', 'black');
-	group.setAttributeNS(null, 'stroke-width', 1);
-	group.setAttributeNS(null, 'fill', 'white');
-	group.setAttributeNS(null, 'transform', 'scale(1, 0.5), translate(100, 100)');
-	group.setAttributeNS(null, 'id', 'rect1');
+	group.setAttributeNS(null, 'stroke', '#777');
+	group.setAttributeNS(null, 'stroke-width', 1.5);
+	group.setAttributeNS(null, 'fill', '#DDD');
+	group.setAttributeNS(null, 'transform', 'scale(1, 0.5), translate('+ gridPosX +', 100)');
+	group.setAttributeNS(null, 'id', 'grid');
 //	group.setAttributeNS(null, 'transform', 'matrix(1, 0, 100, 0, 0.5, 100)');
 	
 	nano.appendChild(group);
 }
 
 function perspective(scaleY, angle) {
-	rect = document.getElementById('rect1');
-	rect.setAttributeNS(null, 'transform', 'scale(1, '+ scaleY +'), translate(100, 100)');
-	rect.firstChild.setAttributeNS(null, 'transform', 'rotate('+ angle +')');
+	var init0 = new Date();
+	
+	var group = document.getElementById('grid');
+	group.setAttributeNS(null, 'transform', 'scale(1, '+ scaleY +'), translate('+ gridPosX +', 100)');
+	var rects = group.getElementsByTagName('rect');
+	for (var i = 0; i < 256; i++) {
+		rects[i].setAttributeNS(null, 'transform', 'rotate('+ angle +')');
+	}
+	
+	var init1 = new Date();
+	debug('Grid updated in ' + (init1 - init0) + 'ms. Angle: ' + angle + ', Scale: ' + scaleY);
 }
 
 function testInput() {
+	var smoothRotate;
+	var spaceToggle = false;
 	window.addEventListener('keydown', function(evt) {
 		// Input Handling
 		if (evt.type == 'keydown') {
@@ -89,16 +104,31 @@ function testInput() {
 		}
 		// Left arrow key
 		if (charCode == 37) {
-			angle++;
-			scaleY++;
-			perspective(scaleY / 20, angle);
+			angle += .5;
+			scaleY += 55; // .0055
+			perspective(scaleY / 10000, angle);
 		}
 		// Right arrow key
 		if (charCode == 39) {
-			angle--;
-			scaleY--;
-			perspective(scaleY / 20, angle);
+			angle -= .5;
+			scaleY -= 55; // .0055
+			perspective(scaleY / 10000, angle);
+		}
+		// Space Bar
+		if (charCode == 32) {
+			if (spaceToggle === false) {
+				spaceToggle = true;
+				smoothRotate = window.setInterval("animateGrid()", 30);
+			} else { // spaceToggle = true;
+				spaceToggle = false;
+				window.clearInterval(smoothRotate);
+			}
 		}
 	}, false);
-//	return isogrid;
+}
+
+function animateGrid() {
+	angle += .5;
+	scaleY += 55; // .0055
+	perspective(scaleY / 10000, angle);
 }

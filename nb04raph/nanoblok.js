@@ -33,13 +33,11 @@ function debug(input) {
 	debug.innerHTML = debug.innerHTML + '<br>' + input;
 }
 
-function drawInitialRects(nano) {
-	
-	var rect = nano.rect(100, 100, 50, 50);
+function drawGrid(nano) {
+	var rect = nano.rect(coors.x * size, coors.y * size, size, size);
 	
 //	rect.rotate(45);
-	rect.attr({
-	
+	group.attr({
 		stroke: '#333',
 		'stroke-width': 2,
 		fill: '#ddd'
