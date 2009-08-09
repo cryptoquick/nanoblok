@@ -5,8 +5,10 @@
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
  
-// Universal constants
-var size = 35;
+/* Global constants */
+
+// Average size of blocks & tiles
+var size = 25;
 var scale = {x: 1, y: 1};
 var grid = {r: 16, c: 16};
 var svgNS = 'http://www.w3.org/2000/svg';
@@ -21,7 +23,7 @@ function Init () {
 	
 	var nano = Raphael("nano", 800, 400);
 	
-	drawInitialRects(nano);
+	drawGrid(nano);
 	
 	var init1 = new Date();
 	debug('Program initialized in ' + (init1 - init0) + ' milliseconds.');
@@ -33,20 +35,30 @@ function debug(input) {
 	debug.innerHTML = debug.innerHTML + '<br>' + input;
 }
 
+/* Graphics Functions */
+
 function drawGrid(nano) {
-	var rect = nano.rect(coors.x * size, coors.y * size, size, size);
+	var group = nano.set();
 	
-//	rect.rotate(45);
+	// Draw a 2D grid.
+	for (x = 0; x <= 15; x++) {
+		for (y = 0; y <= 15; y++) {
+			var rect = nano.rect(x * size, y * size, size, size);
+			group.push(rect);
+		}
+	}
+	
 	group.attr({
 		stroke: '#333',
-		'stroke-width': 2,
-		fill: '#ddd'
+		'stroke-width': 1.5,
+		fill: '#ddd',
 	});
+	
+	group.rotate(45);
 	
 		// rotation: 45,
 		// scale: '1, 0.5',
 	
 //	rect.scale(1, 0.5);
 	//		scale: '1, 0.5',
-	return rect;
 }

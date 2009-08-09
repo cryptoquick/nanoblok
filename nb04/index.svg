@@ -10,6 +10,7 @@
 
 	<g id="nano"></g>
 	<g id="blok"></g>
+	<canvas id="canvasGrid"></canvas>
 	
 	<text id="debug" x="20" y="20"></text>
 </svg>

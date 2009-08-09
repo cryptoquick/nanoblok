@@ -36,9 +36,10 @@ function Init () {
 	var init0 = new Date();
 	
 	// Call my experimental functions directly.
-	drawGrid();
+//	drawGrid();
 	testInput();
 	drawBlock();
+	canvasGrid();
 	
 	var init1 = new Date();
 	debug('Program initialized in ' + (init1 - init0) + ' milliseconds.');
@@ -50,7 +51,17 @@ function debug(input) {
 	debug.textContent = input;
 }
 
-/* Graphics Functions */
+function context(element) {
+	// Get the canvas element.
+	var canvas = document.getElementById(element);
+	// Get its 2D context
+	if (canvas.getContext) {
+		var context = canvas.getContext('2d');
+	}
+	return context;
+}
+
+/* Scalable Graphics Functions */
 function drawRects(group, coors, transform, color) {
 	// First, create the rect element.
 	var rect = document.createElementNS(svgNS, 'rect');
@@ -64,6 +75,7 @@ function drawRects(group, coors, transform, color) {
 	rect.setAttributeNS(null, 'transform', transform);
 	rect.setAttributeNS(null, 'fill', color);
 	
+	// Finally, make that rect a child of the specified group.
 	group.appendChild(rect);
 }
 
@@ -129,6 +141,22 @@ function drawBlock() {
 	block.setAttributeNS(null, 'id', 'grid');
 	
 	blokID.appendChild(block);
+}
+
+/* Canvas Graphics Functions */
+
+function canvasGrid () {
+	var c = context('canvasGrid');
+	// Grid styles
+	c.fillStyle   = '#ddd';
+	c.strokeStyle = '#777';
+	c.lineWidth   = 1.5;
+
+	for (x = 0; x <= 15; x++) {
+		for (y = 0; y <= 15; y++) {
+			c.fillRect(x * size, y * size, x * size + size, y * size + size);
+		}
+	}
 }
 
 /* Animation Functions */
