@@ -30,13 +30,13 @@ window.addEventListener('load', function () {
 
 function Init () {
 	// Center the grid to the window resolution.
-	gridPosX = window.innerWidth / 2;
+	gridPosX = 400;
 	
 	// Helps to know how fast things are going -- TEMP
 	var init0 = new Date();
 	
 	// Call my experimental functions directly.
-//	drawGrid();
+	drawGrid();
 	testInput();
 	drawBlock();
 	canvasGrid();

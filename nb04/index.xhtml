@@ -15,22 +15,27 @@
 			padding: 0;
             text-align: center;
 		}
-		#nano {
-            height: 400px;
-            margin: 0 auto;
-            text-align: left;
-            width: 800px;
-        }
+		
+		#canvasGrid, #nano {
+			position: absolute;
+			top: 0px;
+			left: 50%;
+			margin-left: -400px;
+		}
+		
+		#canvasGrid {
+			z-index: -1;
+		}
 	</style>
 </head>
 <body>
-	<svg:svg id='display' width='800' height='400'>
+	<canvas id="canvasGrid" width="800" height="400"></canvas>
+	
+	<svg:svg id='display' width="800" height="400">
 		<svg:g id="nano"></svg:g>
 		<svg:g id="blok"></svg:g>
 	</svg:svg>
 
-	<canvas id="canvasGrid"></canvas>
-	
 	<div id="debug"></div>
 </body>
 </html>
