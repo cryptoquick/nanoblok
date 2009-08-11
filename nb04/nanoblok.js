@@ -36,7 +36,7 @@ function Init () {
 	var init0 = new Date();
 	
 	// Call my experimental functions directly.
-	drawGrid();
+//	drawGrid();
 	testInput();
 	drawBlock();
 	canvasGrid();
@@ -48,7 +48,7 @@ function Init () {
 /* Utility Functions */
 function debug(input) {
 	var debug = document.getElementById('debug');
-	debug.textContent = input;
+	debug.innerText = input;
 }
 
 function context(element) {
@@ -87,7 +87,7 @@ function drawGrid() {
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'stroke', '#777');
 	group.setAttributeNS(null, 'stroke-width', 1.5);
-	group.setAttributeNS(null, 'transform', 'scale(1, 0.5), translate('+ gridPosX +', 100)'); // Centers the grid.
+	group.setAttributeNS(null, 'transform', 'scale(1, 0.5), translate('+ gridPosX +', 0)'); // Centers the grid.
 	group.setAttributeNS(null, 'id', 'grid');
 	
 	// Draw a 2D grid. This rotates the entire grid 45 degrees, just to keep things simple.
@@ -107,7 +107,7 @@ function perspective(scaleY, angle) {
 	// Get the grid group
 	var group = document.getElementById('grid');
 	// Set the transform; scaling it vertically. Its grid position remains static, however, it changes due to window size.
-	group.setAttributeNS(null, 'transform', 'scale(1, '+ scaleY +'), translate('+ gridPosX +', 100)');
+	group.setAttributeNS(null, 'transform', 'scale(1, '+ scaleY +'), translate('+ gridPosX +', 0)');
 	// Get all rects within the group.
 	var rects = group.getElementsByTagName('rect');
 	// The length attribute was sketchy, so I just multiplied.
@@ -137,7 +137,7 @@ function drawBlock() {
 	// Block Attributes
 	block.setAttributeNS(null, 'stroke', 'rgb(231,195,138)');
 	block.setAttributeNS(null, 'stroke-width', 1.5);
-	block.setAttributeNS(null, 'transform', 'translate('+ 402 +', 199), scale(.7)');
+	block.setAttributeNS(null, 'transform', 'translate('+ 400 +', 192), scale(.7)');
 	block.setAttributeNS(null, 'id', 'grid');
 	
 	blokID.appendChild(block);
@@ -151,10 +151,16 @@ function canvasGrid () {
 	c.fillStyle   = '#ddd';
 	c.strokeStyle = '#777';
 	c.lineWidth   = 1.5;
+	// Grid transforms
+	c.translate(400, 0);
+	c.scale(1, 0.5);
+	c.rotate(Math.atan(1));
 
+	// Draw tiles.
 	for (x = 0; x <= 15; x++) {
 		for (y = 0; y <= 15; y++) {
-			c.fillRect(x * size, y * size, x * size + size, y * size + size);
+			c.fillRect(x * size, y * size, size, size);
+			c.strokeRect(x * size, y * size, size, size);
 		}
 	}
 }
