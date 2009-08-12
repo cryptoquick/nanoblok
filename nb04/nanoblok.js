@@ -169,7 +169,7 @@ function canvasGrid (scaleY, angle) {
 	c.save();
 }
 
-/// Loader Bar function
+/// Fancy little Loader Bar function
 var numr = 0; // Numerator
 var lodr
 var lodrRun = false;
@@ -186,42 +186,49 @@ function loaderBar (dnom) { // Denominator
 		// The outline box
 		c.fillStyle   = '#fff';
 		c.strokeStyle = '#333';
-		c.lineWidth   = 1.5;
-		// c.rect(10, 10, 236, 16);
+		c.lineWidth   = 2;
 	
 		// End caps
 		c.beginPath();
+		// Left cap
 		c.arc(11, 18, 8, 1.57079633, 4.71238898, false); // 90 deg, 270 deg.
-		// c.fill();
-		// c.stroke();
-		// c.closePath();
-		// c.beginPath();
-	//	c.moveTo(11, 18);
+		// Top line
 		c.lineTo(230, 10);
-	//	c.closePath();
 		c.stroke();
 		c.beginPath();
 		c.moveTo(11, 26);
+		// Right cap
 		c.arc(230, 18, 8, 1.57079633, 4.71238898, true); // 90 deg, 270 deg.
-		// c.fill();
 		c.stroke();
 		c.closePath();
-
-		// Remove line from circle
-		// c.fillRect(9, 11, 3, 14);
 		
+		// Left barometer cap
+		c.fillStyle   = '#333';
+		c.beginPath();
+		c.arc(11, 18, 5, 1.57079633, 4.71238898, false);
+		c.fill();
+		c.closePath();
+		
+		// Don't draw this again.
 		lodrRun = true;
 	}
-	// The inside bar
-	c.fillStyle   = '#333';
-
-	c.fillRect(13, 13, width, 10);
 	
-	// Increment
-	numr += 10;
+	// The progress fill barometer
+	c.fillStyle = '#333';
+	c.fillRect(10, 13, width, 10);
+	
+	// Right barometer cap
+	c.fillStyle   = '#333';
+	c.beginPath();
+	c.arc(width + 10, 18, 5, 1.57079633, 4.71238898, true);
+	c.fill();
+	c.closePath();
+	
+	// Increment, determines how fast the loader goes.
+	numr += 5;
 	
 	// Stop going once the bar has reached the end
-	if (numr > 215) {
+	if (numr > 220) {
 		window.clearInterval(lodr);
 	}
 }
