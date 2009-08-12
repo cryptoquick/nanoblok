@@ -15,7 +15,7 @@ var grid = {r: 16, c: 16};
 
 // Global scale and angle variables; these change.
 var scale = {x: 1, y: 1};
-var angle = 45;
+var angle = Math.atan(1);
 
 // SVG Namespace, required for instantiating new SVG elements.
 var svgNS = 'http://www.w3.org/2000/svg';
@@ -39,7 +39,10 @@ function Init () {
 //	drawGrid();
 	testInput();
 	drawBlock();
-	canvasGrid();
+	canvasGrid(0.5, angle);
+//	loaderBar(100);
+	
+	lodr = window.setInterval('loaderBar(100)', 30);
 	
 	var init1 = new Date();
 	debug('Program initialized in ' + (init1 - init0) + ' milliseconds.');
@@ -145,7 +148,7 @@ function drawBlock() {
 
 /* Canvas Graphics Functions */
 
-function canvasGrid () {
+function canvasGrid (scaleY, angle) {
 	var c = context('canvasGrid');
 	// Grid styles
 	c.fillStyle   = '#ddd';
@@ -153,8 +156,8 @@ function canvasGrid () {
 	c.lineWidth   = 1.5;
 	// Grid transforms
 	c.translate(400, 0);
-	c.scale(1, 0.5);
-	c.rotate(Math.atan(1));
+	c.scale(1, scaleY);
+	c.rotate(angle);
 
 	// Draw tiles.
 	for (x = 0; x <= 15; x++) {
@@ -162,6 +165,64 @@ function canvasGrid () {
 			c.fillRect(x * size, y * size, size, size);
 			c.strokeRect(x * size, y * size, size, size);
 		}
+	}
+	c.save();
+}
+
+/// Loader Bar function
+var numr = 0; // Numerator
+var lodr
+var lodrRun = false;
+
+function loaderBar (dnom) { // Denominator
+	// Compute the width
+	var width = numr / dnom * 100;
+	
+	// Get the context
+	var c = context('lodrBar');
+	
+	// Run the outline code only once
+	if (lodrRun === false) {
+		// The outline box
+		c.fillStyle   = '#fff';
+		c.strokeStyle = '#333';
+		c.lineWidth   = 1.5;
+		// c.rect(10, 10, 236, 16);
+	
+		// End caps
+		c.beginPath();
+		c.arc(11, 18, 8, 1.57079633, 4.71238898, false); // 90 deg, 270 deg.
+		// c.fill();
+		// c.stroke();
+		// c.closePath();
+		// c.beginPath();
+	//	c.moveTo(11, 18);
+		c.lineTo(230, 10);
+	//	c.closePath();
+		c.stroke();
+		c.beginPath();
+		c.moveTo(11, 26);
+		c.arc(230, 18, 8, 1.57079633, 4.71238898, true); // 90 deg, 270 deg.
+		// c.fill();
+		c.stroke();
+		c.closePath();
+
+		// Remove line from circle
+		// c.fillRect(9, 11, 3, 14);
+		
+		lodrRun = true;
+	}
+	// The inside bar
+	c.fillStyle   = '#333';
+
+	c.fillRect(13, 13, width, 10);
+	
+	// Increment
+	numr += 10;
+	
+	// Stop going once the bar has reached the end
+	if (numr > 215) {
+		window.clearInterval(lodr);
 	}
 }
 
@@ -174,22 +235,22 @@ function animateGrid() {
 	// If we're in isometric perspective, gradually move towards flat perspective.
 	if (flat === false) {
 		// Change the angle by half-degrees.
-		angle += .5;
+		angle += .01;
 		scaleY += 55; // .0055
 		// Set the place value here. This is important due to rounding errors with floating-point numbers within JavaScript.
-		perspective(scaleY / 10000, angle);
+		canvasGrid(scaleY / 10000, angle);
 	}
 	// If the grid is flat, switch directions.
-	if (angle > 90) {
+	if (angle > 0.5) {
 		flat = true;
 	}
 	if (flat === true) {
-		angle -= .5;
+		angle -= .01;
 		scaleY -= 55; // .0055
-		perspective(scaleY / 10000, angle);
+		canvasGrid(scaleY / 10000, angle);
 	}
 	// If the grid is fully isometric, switch directions.
-	if (angle < 45) {
+	if (angle < 1) {
 		flat = false;
 	}
 }
