@@ -15,7 +15,7 @@ var grid = {r: 16, c: 16};
 
 // Global scale and angle variables; these change.
 var scale = {x: 1, y: 1};
-var angle = Math.atan(1);
+var angle = degrad(45);
 
 // SVG Namespace, required for instantiating new SVG elements.
 var svgNS = 'http://www.w3.org/2000/svg';
@@ -39,9 +39,9 @@ function Init () {
 //	drawGrid();
 	testInput();
 	drawBlock();
-	canvasGrid(0.5, angle);
-//	loaderBar(100);
+	canvasGrid(0.5, angle, true);
 	
+	// Enables the cool little loader bar
 	lodr = window.setInterval('loaderBar(100)', 30);
 	
 	var init1 = new Date();
@@ -62,6 +62,14 @@ function context(element) {
 		var context = canvas.getContext('2d');
 	}
 	return context;
+}
+
+function degrad (deg) {
+	return (Math.PI * deg) / 180;
+}
+
+function raddeg (rad) {
+	return (rad * 180) / Math.PI;
 }
 
 /* Scalable Graphics Functions */
@@ -148,7 +156,7 @@ function drawBlock() {
 
 /* Canvas Graphics Functions */
 
-function canvasGrid (scaleY, angle) {
+function canvasGrid (scaleY, angle, init) {	
 	var c = context('canvasGrid');
 	// Grid styles
 	c.fillStyle   = '#ddd';
@@ -159,14 +167,23 @@ function canvasGrid (scaleY, angle) {
 	c.scale(1, scaleY);
 	c.rotate(angle);
 
-	// Draw tiles.
-	for (x = 0; x <= 15; x++) {
-		for (y = 0; y <= 15; y++) {
-			c.fillRect(x * size, y * size, size, size);
-			c.strokeRect(x * size, y * size, size, size);
+	// If init is true, Draw tiles.
+	// if (init) {
+		for (x = 0; x <= 15; x++) {
+			for (y = 0; y <= 15; y++) {
+				c.fillRect(x * size, y * size, size, size);
+				c.strokeRect(x * size, y * size, size, size);
+			}
 		}
-	}
-	c.save();
+	// }
+
+}
+
+function canvasPersp (scaleY, angle) {
+	var c = context('canvasGrid');
+	c.scale(1, scaleY);
+	c.rotate(angle);
+	c.save;
 }
 
 /// Fancy little Loader Bar function
@@ -239,27 +256,31 @@ function loaderBar (dnom) { // Denominator
 var flat = false;
 
 function animateGrid() {
+	scaleIncr = 0.00; // Scale Increment
+	angleIncr = degrad(0.0); // Angle Increment
+	
 	// If we're in isometric perspective, gradually move towards flat perspective.
 	if (flat === false) {
 		// Change the angle by half-degrees.
-		angle += .01;
-		scaleY += 55; // .0055
+		// angle += angleIncr;
+		// scaleY += scaleIncr; // .0055
 		// Set the place value here. This is important due to rounding errors with floating-point numbers within JavaScript.
-		canvasGrid(scaleY / 10000, angle);
+		canvasGrid(scaleY, angle, false);
 	}
 	// If the grid is flat, switch directions.
-	if (angle > 0.5) {
+	if (angle > 90) {
 		flat = true;
 	}
 	if (flat === true) {
-		angle -= .01;
-		scaleY -= 55; // .0055
-		canvasGrid(scaleY / 10000, angle);
+		// angle -= angleIncr;
+		// scaleY -= scaleIncr; // .0055
+		canvasGrid(scaleY, angle, false);
 	}
 	// If the grid is fully isometric, switch directions.
-	if (angle < 1) {
+	if (angle < 45) {
 		flat = false;
 	}
+	debug(raddeg(angle));
 }
 
 /* Input Functions */
@@ -294,8 +315,8 @@ function testInput() {
 			// Space toggles animation play.
 			if (spaceToggle === false) {
 				spaceToggle = true;
-				// Animate the grid at, ideally, 33FPS.
-				smoothRotate = window.setInterval("animateGrid()", 30);
+				// Animate the grid4
+				smoothRotate = window.setInterval("animateGrid()", 50);
 			} else { // spaceToggle = true;
 				spaceToggle = false;
 				window.clearInterval(smoothRotate);
