@@ -12,7 +12,7 @@ var grid_x = 16;
 var grid_y = 16;
 //var rotation = 1.0;
 
-//var initialized = false;
+var initialized = false;
 
 //var gridAngle = 0.0;
 
@@ -42,19 +42,22 @@ function testScript() {
 }
 */
 
-var nanoWindow = {x: window.innerWidth, y: window.innerHeight};
-
-function transformGrid(rotation) {
-	// Make the grid (x,y) by getting the width & height of the root SVG element
-	gridTransform(grid_x, grid_y, nanoWindow.x, nanoWindow.y, rotation);
+function transformGrid() {
+	var grid = {c: 16, r: 16};
+	var windowsize = {x: window.innerWidth, y: window.innerHeight};
+	
+	gridTransform(grid, windowsize);
 }
 
 function Initialize(evt)
 {
 	var init0 = new Date();
 	
-//	transformGrid(1.0); // 45 degree rotation;
-	drawGrid();
+	var gridDims = {c: 16, r: 16};
+	var windowSize = {x: window.innerWidth, y: window.innerHeight};
+	var offsY = 75;
+	
+	drawGrid(gridDims, windowSize, offsY);
 	
 	var init1 = new Date();
 	

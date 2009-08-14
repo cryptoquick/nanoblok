@@ -10,19 +10,22 @@
 //	debugging functionality.
 //	Not much has changed since vektornye just yet.
 
-function gridTransform(grid_x, grid_y, screen_x, screen_y, rotation) {
+/*function gridTransform(grid, winsize) {
 	
-	// Initialize variables
-	var size_x = 45;
-	var size_y = 45;
+	// Initialize variables	
+	var blockSize = {x: 45, y: 45};
 	
-	var gridsize_x = Math.floor(Math.sqrt(2) * size_x * grid_x);
-	var gridsize_y = Math.floor(gridsize_x / 2);
+	var gridSize = {
+		x: Math.floor(Math.sqrt(2) * size.x * grid_x),
+		y: Math.floor(gridsize_x / 2)
+	};
 	
-	var offset_x = Math.floor((screen_x / 2) - gridsize_x / 2);
-	var offset_y = (screen_y - gridsize_y) + 145;
+	var gridOffset = {
+		x: Math.floor((winsize.x / 2) - gridsize.x / 2),
+		y: offset_y = (screen_y - gridsize_y) + 145
+	};*/
 
-	var UIbar = 3;
+/*	var UIbar = 3;
 	var M1 = [];
 	var z = 0;
 		
@@ -30,10 +33,10 @@ function gridTransform(grid_x, grid_y, screen_x, screen_y, rotation) {
 	for (x = 0; x <= (grid_x - 1); x++) {
 		for (y = 0; y <= (grid_y - 1); y++) {
 			M1[z] = $M([
-				[(x * size_x), (y * size_y)],
-				[(x * size_x + size_x), (y * size_y)],
-				[(x * size_x + size_x), (y * size_y + size_y)],
-				[(x * size_x), (y * size_y + size_y)]
+				[(x * blockSize.x), (y * blockSize.y)],
+				[(x * blockSize.x + blockSize.x), (y * blockSize.y)],
+				[(x * blockSize.x + blockSize.x), (y * blockSize.y + blockSize.y)],
+				[(x * blockSize.x), (y * blockSize.y + blockSize.y)]
 			]);
 			z++;
 		}
@@ -98,8 +101,8 @@ function gridTransform(grid_x, grid_y, screen_x, screen_y, rotation) {
 		VoxArray(gridcoors.x, gridcoors.y, -1, gridID);
 
 		GridField['bgGrid-' + i] = {x: gridcoors.x, y: gridcoors.y, z: -1};
-	}	
-	
+	}	*/
+	/*
 	// Build UI before the grid is built
 	UITransform(offset_x, offset_y);
 
@@ -149,33 +152,51 @@ function gridTransform(grid_x, grid_y, screen_x, screen_y, rotation) {
 	movesubject.setAttributeNS(null, 'd', path);
 	
 	// Position blockBeta	
-/*	movesubject = document.getElementById('blockBeta');
-	movesubject.setAttributeNS(null, 'transform', 'translate(' + ((screen_x / 2) - 26) + ', ' + (screen_y - 93) + ')');*/
+	// movesubject = document.getElementById('blockBeta');
+	// movesubject.setAttributeNS(null, 'transform', 'translate(' + ((screen_x / 2) - 26) + ', ' + (screen_y - 93) + ')');
 	
 	// Position title text under blockBeta
 	movesubject = document.getElementById('nanoblok');
 	textoffset = movesubject.getBBox();
 	movesubject.setAttributeNS(null, 'transform', 'translate(' + ((screen_x / 2) - (textoffset.width / 2)) + ', ' + (screen_y - 50) + ')');
-}
+}*/
 
-// Number of columns, rows
-var gridCol = 16;
-var gridRow = 16;
+// Initialize variables	
 
-var grid = new Object();
-var offset = new Object();
+// General iso / block proportions
+var sc1 = 45; // Size of the whole block
+var sc2 = sc1 / 2; // Half-block dimension
+var sc4 = sc1 / 4; // Quarter-block dimension
+var sc3 = sc2 + sc4; // Half+Quarter-block dimension
 
-var gridContainer = document.getElementById('gridContainer');
+function drawGrid (gridDims, windowSize, offsY) {
+	// Grid-specific variables
 
-function drawGrid () {
+/*	var gridSize = { x: Math.floor(Math.sqrt(2) * sc1 * gridDims.c) };
+	gridSize.y = Math.floor(gridSize.x / 2);
+
+	var gridOffset = {
+		x: Math.floor((windowSize.x / 2) - gridSize.x / 2),
+		y: (windowSize.y - gridSize.y) + 145
+	};*/
+	
+	var gridSize = {
+		x: gridDims.c * sc1,
+		y: gridDims.r * sc4
+	};
+	
+	var gridContainer = document.getElementById('gridContainer');	
+	
 	var i = 0;
 	
-	for (x = 0; x <= 15; x++) {
-		for (y = 0; y <= 15; y++) {
-			var gridX = (x * sc2) + (y * sc2);
-			var gridY = ((y * sc4) + (grid.x - x * sc4));
-			
-			var set = hexiso(gridX, gridY);
+	for (var x = 0; x <= gridDims.c; x++) {
+		for (var y = 0; y <= gridDims.r; y++) {
+			var tile = {
+				x: (x * sc2) + (y * sc2),
+				y: ((y * sc4) + (gridSize.y - x * sc4)) + offsY
+			};
+
+			var set = hexiso(tile.x, tile.y);
 			
 			var tile = drawSet([1, 2, 7, 6], set, true);
 			
