@@ -7,10 +7,10 @@
  
 /* Global constants */
 
-// Average size of blocks
+// Average size of blocks and tiles.
 var size = 30;
 
-// 
+// How many rows and columns should the grid have.
 var grid = {r: 16, c: 16};
 
 // Global scale and angle variables; these change.
@@ -20,9 +20,11 @@ var angle = degrad(45);
 // SVG Namespace, required for instantiating new SVG elements.
 var svgNS = 'http://www.w3.org/2000/svg';
 
+//
 var scaleY = 5000;
 
-var gridPosX = 0;
+// Grid offset
+var gridoffs = {x: 0, y: 100};
 
 window.addEventListener('load', function () {
 	Init();
@@ -30,23 +32,33 @@ window.addEventListener('load', function () {
 
 function Init () {
 	// Center the grid to the window resolution.
-	gridPosX = 400;
+	gridoffs.x = 400;
 	
 	// Helps to know how fast things are going -- TEMP
 	var init0 = new Date();
 	
 	// Call my experimental functions directly.
-//	drawGrid();
+	drawGrid();
 	testInput();
-	drawBlock();
-	canvasGrid(0.5, angle, true);
+//	drawBlock({x: 0, y: 10});
+
+//	canvasGrid(0.5, angle, true);
 	
 	// Enables the cool little loader bar
-	lodr = window.setInterval('loaderBar(100)', 30);
+//	lodr = window.setInterval('loaderBar(100)', 30);
 	
 	var init1 = new Date();
 	debug('Program initialized in ' + (init1 - init0) + ' milliseconds.');
+	
+	gridPerspPlace({c: 3, r: 5});
 }
+
+window.addEventListener('click', function (evt) {
+	var target = evt.target;
+	var c = target.getAttribute('c');
+	var r = target.getAttribute('r');
+	gridPerspPlace({c: c, r: r});
+}, false);
 
 /* Utility Functions */
 function debug(input) {
@@ -54,6 +66,7 @@ function debug(input) {
 	debug.innerText = input;
 }
 
+// Returns a canvas context based on its element id.
 function context(element) {
 	// Get the canvas element.
 	var canvas = document.getElementById(element);
@@ -64,10 +77,12 @@ function context(element) {
 	return context;
 }
 
+// Degrees into radians
 function degrad (deg) {
 	return (Math.PI * deg) / 180;
 }
 
+// Radians into degrees
 function raddeg (rad) {
 	return (rad * 180) / Math.PI;
 }
@@ -86,6 +101,10 @@ function drawRects(group, coors, transform, color) {
 	rect.setAttributeNS(null, 'transform', transform);
 	rect.setAttributeNS(null, 'fill', color);
 	
+	// Set the column and row of the tile
+	rect.setAttributeNS(null, 'c', coors.x);
+	rect.setAttributeNS(null, 'r', coors.y);
+	
 	// Finally, make that rect a child of the specified group.
 	group.appendChild(rect);
 }
@@ -98,7 +117,7 @@ function drawGrid() {
 	var group = document.createElementNS(svgNS, 'g');
 	group.setAttributeNS(null, 'stroke', '#777');
 	group.setAttributeNS(null, 'stroke-width', 1.5);
-	group.setAttributeNS(null, 'transform', 'scale(1, 0.5), translate('+ gridPosX +', 0)'); // Centers the grid.
+	group.setAttributeNS(null, 'transform', 'scale(1, 0.5), translate('+ gridoffs.x +', '+ gridoffs.y +')'); // Centers the grid.
 	group.setAttributeNS(null, 'id', 'grid');
 	
 	// Draw a 2D grid. This rotates the entire grid 45 degrees, just to keep things simple.
@@ -118,7 +137,7 @@ function perspective(scaleY, angle) {
 	// Get the grid group
 	var group = document.getElementById('grid');
 	// Set the transform; scaling it vertically. Its grid position remains static, however, it changes due to window size.
-	group.setAttributeNS(null, 'transform', 'scale(1, '+ scaleY +'), translate('+ gridPosX +', 0)');
+	group.setAttributeNS(null, 'transform', 'scale(1, '+ scaleY +'), translate('+ gridoffs.x +', 0)');
 	// Get all rects within the group.
 	var rects = group.getElementsByTagName('rect');
 	// The length attribute was sketchy, so I just multiplied.
@@ -132,26 +151,60 @@ function perspective(scaleY, angle) {
 	debug('Grid updated in ' + (init1 - init0) + 'ms. Angle: ' + angle + ', Scale: ' + scaleY);
 }
 
-function drawBlock() {
-	var blokID = document.getElementById('blok');
-	
+function drawBlock(trans) {
+	// Make a block in the specified place.
+	var blokID = document.getElementById('blok');	
 	var block = document.createElementNS(svgNS, 'g');
 	
-	var skew = Math.atan(0.5) * (180 / Math.PI);
-	var skew2 = Math.atan(1) * (180 / Math.PI);
+	// Block position & perspective.
+//	var grid = {c: 3, r: 5};
+//	var trans = {x: 0, y: 10};
+	var skew = 26.565;
+	var skew2 = 45;
 	
 	// Draw block's sides, with appropriate transformations and colors.
 	drawRects(block, {x: 0, y: 0}, 'skewY('+ skew +'), scale(1)', 'rgb(171,135,78)'); // Left Side
 	drawRects(block, {x: 1, y: 1}, 'skewY('+ -skew +'), scale(1)', 'rgb(191,155,98)'); // Right Side
-	drawRects(block, {x: 0, y: -1}, 'skewY('+ skew +'), skewX('+ -skew2 +')', 'rgb(211,175,118)'); // Top Side
+	drawRects(block, {x: 0, y: 0}, 'skewY('+ -skew +'), skewX('+ skew2 +')', 'rgb(211,175,118)'); // Top Side
 
 	// Block Attributes
 	block.setAttributeNS(null, 'stroke', 'rgb(231,195,138)');
 	block.setAttributeNS(null, 'stroke-width', 1.5);
-	block.setAttributeNS(null, 'transform', 'translate('+ 400 +', 192), scale(.7)');
+	block.setAttributeNS(null, 'transform', 'translate('+ trans.x +', '+ trans.y +'), scale(.7)');
 	block.setAttributeNS(null, 'id', 'grid');
 	
 	blokID.appendChild(block);
+}
+
+// Transform grid coordinates (column, row) into pixel coordinates.
+function gridPerspPlace (grid) {
+	
+//	grid = {c: 4, r: 4};
+	// Flat 2D grid
+	var col = grid.c * size;
+	var row = grid.r * size;
+	
+//	var skewX = -26.565;
+//	var skewY = 45;
+	
+	var angle = 45;
+	
+	// Come up with a proper block offset (not perspective-proof, unfortunately)
+	//	var blockoffs = {x: -20 + grid.c * 8, y: -60 + grid.r * 4}; // 0, 0
+	//	var blockoffs = {x: -14 + grid.c * 8, y: -74 + grid.r * 4}; // 4, 4
+	//	var blockoffs = {x: -8 + grid.c * 8, y:  -85 + grid.r * 4}; // 7, 7
+	//	var blockoffs = {x: -3 + grid.c * 8, y:  -95 + grid.r * 4}; // 10, 10
+	//	var blockoffs = {x: + 6 + grid.c * 8, y: -112 + grid.r * 4}; // 15, 15
+//	var blockoffs = {x: -14 + grid.c * 8, y: -74 + grid.r * 4};
+	
+	var blockoffs = {x: 18, y: -58};
+	
+	// Transform rotation and scale
+	x = Math.cos(angle) * col - Math.sin(angle) * row + gridoffs.x + blockoffs.x;
+	y = (Math.sin(angle) * col + Math.cos(angle) * row) / 2 + gridoffs.y + blockoffs.y;
+	
+//	alert(x + ', ' + y);
+	drawBlock ({x: x, y: y});
 }
 
 /* Canvas Graphics Functions */
@@ -251,76 +304,71 @@ function loaderBar (dnom) { // Denominator
 }
 
 /* Animation Functions */
-
 // Used to determine which direction to animate.
 var flat = false;
 
 function animateGrid() {
-	scaleIncr = 0.00; // Scale Increment
-	angleIncr = degrad(0.0); // Angle Increment
-	
-	// If we're in isometric perspective, gradually move towards flat perspective.
-	if (flat === false) {
-		// Change the angle by half-degrees.
-		// angle += angleIncr;
-		// scaleY += scaleIncr; // .0055
-		// Set the place value here. This is important due to rounding errors with floating-point numbers within JavaScript.
-		canvasGrid(scaleY, angle, false);
-	}
-	// If the grid is flat, switch directions.
-	if (angle > 90) {
-		flat = true;
-	}
-	if (flat === true) {
-		// angle -= angleIncr;
-		// scaleY -= scaleIncr; // .0055
-		canvasGrid(scaleY, angle, false);
-	}
-	// If the grid is fully isometric, switch directions.
-	if (angle < 45) {
-		flat = false;
-	}
-	debug(raddeg(angle));
+        // If we're in isometric perspective, gradually move towards flat perspective.
+        if (flat === false) {
+                // Change the angle by half-degrees.
+                angle += .5;
+                scaleY += 55; // .0055
+                // Set the place value here. This is important due to rounding errors with floating-point numbers within JavaScript.
+                perspective(scaleY / 10000, angle);
+        }
+        // If the grid is flat, switch directions.
+        if (angle > 90) {
+                flat = true;
+        }
+        if (flat === true) {
+                angle -= .5;
+                scaleY -= 55; // .0055
+                perspective(scaleY / 10000, angle);
+        }
+        // If the grid is fully isometric, switch directions.
+        if (angle < 45) {
+                flat = false;
+        }
 }
 
 /* Input Functions */
 function testInput() {
-	var smoothRotate;
-	var spaceToggle = false;
-	window.addEventListener('keydown', function(evt) {
-		// Input Handling
-		if (evt.type == 'keydown') {
-			// Some browsers support evt.charCode, some only evt.keyCode
-			if (evt.charCode) {
-				charCode = evt.charCode;
-			}
-			else {
-				charCode = evt.keyCode;
-			}
-		}
-		// Left arrow key
-		if (charCode == 37) {
-			angle += .5;
-			scaleY += 55; // .0055
-			perspective(scaleY / 10000, angle);
-		}
-		// Right arrow key
-		if (charCode == 39) {
-			angle -= .5;
-			scaleY -= 55; // .0055
-			perspective(scaleY / 10000, angle);
-		}
-		// Space Bar
-		if (charCode == 32) {
-			// Space toggles animation play.
-			if (spaceToggle === false) {
-				spaceToggle = true;
-				// Animate the grid4
-				smoothRotate = window.setInterval("animateGrid()", 50);
-			} else { // spaceToggle = true;
-				spaceToggle = false;
-				window.clearInterval(smoothRotate);
-			}
-		}
-	}, false);
+        var smoothRotate;
+        var spaceToggle = false;
+        window.addEventListener('keydown', function(evt) {
+                // Input Handling
+                if (evt.type == 'keydown') {
+                        // Some browsers support evt.charCode, some only evt.keyCode
+                        if (evt.charCode) {
+                                charCode = evt.charCode;
+                        }
+                        else {
+                                charCode = evt.keyCode;
+                        }
+                }
+                // Left arrow key
+                if (charCode == 37) {
+                        angle += .5;
+                        scaleY += 55; // .0055
+                        perspective(scaleY / 10000, angle);
+                }
+                // Right arrow key
+                if (charCode == 39) {
+                        angle -= .5;
+                        scaleY -= 55; // .0055
+                        perspective(scaleY / 10000, angle);
+                }
+                // Space Bar
+                if (charCode == 32) {
+                        // Space toggles animation play.
+                        if (spaceToggle === false) {
+                                spaceToggle = true;
+                                // Animate the grid at, ideally, 33FPS.
+                                smoothRotate = window.setInterval("animateGrid()", 30);
+                        } else { // spaceToggle = true;
+                                spaceToggle = false;
+                                window.clearInterval(smoothRotate);
+                        }
+                }
+        }, false);
 }
