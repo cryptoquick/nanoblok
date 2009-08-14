@@ -1,0 +1,12 @@
+body {
+	margin: 0;
+	padding: 0;
+       text-align: center;
+}
+
+#display {
+	position: absolute;
+	top: 0px;
+	left: 50%;
+	margin-left: -400px;
+}

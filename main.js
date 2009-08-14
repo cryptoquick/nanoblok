@@ -42,6 +42,13 @@ function testScript() {
 }
 */
 
+// Event listeners
+window.addEventListener('load', function () {
+	Initialize();
+
+}, false);
+
+// Main Functions
 function transformGrid() {
 	var grid = {c: 16, r: 16};
 	var windowsize = {x: window.innerWidth, y: window.innerHeight};
@@ -49,13 +56,13 @@ function transformGrid() {
 	gridTransform(grid, windowsize);
 }
 
-function Initialize(evt)
+function Initialize()
 {
 	var init0 = new Date();
 	
 	var gridDims = {c: 16, r: 16};
 	var windowSize = {x: window.innerWidth, y: window.innerHeight};
-	var offsY = 75;
+	var offsY = 15;
 	
 	drawGrid(gridDims, windowSize, offsY);
 	
