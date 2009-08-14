@@ -45,7 +45,7 @@ function Init () {
 //	canvasGrid(0.5, angle, true);
 	
 	// Enables the cool little loader bar
-//	lodr = window.setInterval('loaderBar(100)', 30);
+	lodr = window.setInterval('loaderBar(100)', 30);
 	
 	var init1 = new Date();
 	debug('Program initialized in ' + (init1 - init0) + ' milliseconds.');
@@ -58,6 +58,7 @@ window.addEventListener('click', function (evt) {
 	var c = target.getAttribute('c');
 	var r = target.getAttribute('r');
 	gridPerspPlace({c: c, r: r});
+//	alert(x +', '+ y + ', ' + target.id);
 }, false);
 
 /* Utility Functions */
@@ -85,6 +86,11 @@ function degrad (deg) {
 // Radians into degrees
 function raddeg (rad) {
 	return (rad * 180) / Math.PI;
+}
+
+function getEl (id) {
+	var element = document.getElementById(id);
+	return element;
 }
 
 /* Scalable Graphics Functions */
@@ -176,6 +182,12 @@ function drawBlock(trans) {
 	blokID.appendChild(block);
 }
 
+// Draw a block to a certain angle of perspective, at a certain location on the grid.
+function drawPerspBlock(angle, gridloc) {
+	var blok = getEl('blok');
+	var blokGroup = document.createElementNS(svgNS, 'g');
+}
+
 // Transform grid coordinates (column, row) into pixel coordinates.
 function gridPerspPlace (grid) {
 	
@@ -197,7 +209,7 @@ function gridPerspPlace (grid) {
 	//	var blockoffs = {x: + 6 + grid.c * 8, y: -112 + grid.r * 4}; // 15, 15
 //	var blockoffs = {x: -14 + grid.c * 8, y: -74 + grid.r * 4};
 	
-	var blockoffs = {x: 18, y: -58};
+	var blockoffs = {x: 0, y: 0};
 	
 	// Transform rotation and scale
 	x = Math.cos(angle) * col - Math.sin(angle) * row + gridoffs.x + blockoffs.x;
@@ -312,7 +324,7 @@ function animateGrid() {
         if (flat === false) {
                 // Change the angle by half-degrees.
                 angle += .5;
-                scaleY += 55; // .0055
+                scaleY += 40; // .0055
                 // Set the place value here. This is important due to rounding errors with floating-point numbers within JavaScript.
                 perspective(scaleY / 10000, angle);
         }
@@ -322,7 +334,7 @@ function animateGrid() {
         }
         if (flat === true) {
                 angle -= .5;
-                scaleY -= 55; // .0055
+                scaleY -= 40; // .0055
                 perspective(scaleY / 10000, angle);
         }
         // If the grid is fully isometric, switch directions.
@@ -333,42 +345,42 @@ function animateGrid() {
 
 /* Input Functions */
 function testInput() {
-        var smoothRotate;
-        var spaceToggle = false;
-        window.addEventListener('keydown', function(evt) {
-                // Input Handling
-                if (evt.type == 'keydown') {
-                        // Some browsers support evt.charCode, some only evt.keyCode
-                        if (evt.charCode) {
-                                charCode = evt.charCode;
-                        }
-                        else {
-                                charCode = evt.keyCode;
-                        }
-                }
-                // Left arrow key
-                if (charCode == 37) {
-                        angle += .5;
-                        scaleY += 55; // .0055
-                        perspective(scaleY / 10000, angle);
-                }
-                // Right arrow key
-                if (charCode == 39) {
-                        angle -= .5;
-                        scaleY -= 55; // .0055
-                        perspective(scaleY / 10000, angle);
-                }
-                // Space Bar
-                if (charCode == 32) {
-                        // Space toggles animation play.
-                        if (spaceToggle === false) {
-                                spaceToggle = true;
-                                // Animate the grid at, ideally, 33FPS.
-                                smoothRotate = window.setInterval("animateGrid()", 30);
-                        } else { // spaceToggle = true;
-                                spaceToggle = false;
-                                window.clearInterval(smoothRotate);
-                        }
-                }
-        }, false);
+	var smoothRotate;
+	var spaceToggle = false;
+	window.addEventListener('keydown', function(evt) {
+		// Input Handling
+		if (evt.type == 'keydown') {
+			// Some browsers support evt.charCode, some only evt.keyCode
+			if (evt.charCode) {
+				charCode = evt.charCode;
+			}
+			else {
+				charCode = evt.keyCode;
+			}
+		}
+		// Left arrow key
+		if (charCode == 37) {
+			angle += .5;
+			scaleY += 55; // .0055
+			perspective(scaleY / 10000, angle);
+		}
+		// Right arrow key
+		if (charCode == 39) {
+			angle -= .5;
+			scaleY -= 55; // .0055
+			perspective(scaleY / 10000, angle);
+		}
+		// Space Bar
+		if (charCode == 32) {
+			// Space toggles animation play.
+			if (spaceToggle === false) {
+				spaceToggle = true;
+				// Animate the grid at, ideally, 33FPS.
+				smoothRotate = window.setInterval("animateGrid()", 30);
+			} else { // spaceToggle = true;
+				spaceToggle = false;
+				window.clearInterval(smoothRotate);
+			}
+		}
+	}, false);
 }
