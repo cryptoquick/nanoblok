@@ -4,9 +4,9 @@ body {
        text-align: center;
 }
 
-#display {
+#grid {
 	position: absolute;
 	top: 0px;
 	left: 50%;
-	margin-left: -400px;
+	margin-left: -382.5px;
 }

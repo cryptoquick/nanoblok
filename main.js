@@ -45,22 +45,18 @@ function testScript() {
 // Event listeners
 window.addEventListener('load', function () {
 	Initialize();
+}, false);
 
+window.addEventListener('click', function (evt) {
+	Click(evt);
 }, false);
 
 // Main Functions
-function transformGrid() {
-	var grid = {c: 16, r: 16};
-	var windowsize = {x: window.innerWidth, y: window.innerHeight};
-	
-	gridTransform(grid, windowsize);
-}
-
 function Initialize()
 {
 	var init0 = new Date();
 	
-	var gridDims = {c: 16, r: 16};
+	var gridDims = {c: 32, r: 32};
 	var windowSize = {x: window.innerWidth, y: window.innerHeight};
 	var offsY = 15;
 	
