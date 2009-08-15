@@ -1,12 +1,20 @@
 body {
 	margin: 0;
 	padding: 0;
-       text-align: center;
+	text-align: center;
 }
 
 #grid {
 	position: absolute;
 	top: 0px;
 	left: 50%;
-	margin-left: -382.5px;
+	margin-left: -412.5px;
+}
+
+#status {
+	position: absolute;
+	top: 0px;
+	left: 50%;
+	margin-left: -510px;
+	width: 510px;
 }
