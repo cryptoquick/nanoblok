@@ -8,10 +8,10 @@ function tileHover (target, inout) {
 	
 	if (inout == 'in') {
 		tile.setAttributeNS(null, 'fill', 'orange');
-		tile.setAttributeNS(null, 'stroke', '#aaa');
+	//	tile.setAttributeNS(null, 'stroke', '#aaa');
 	}
 	if (inout == 'out') {
 		tile.setAttributeNS(null, 'fill', '#ddd');
-		tile.setAttributeNS(null, 'stroke', '#aaa');
+	//	tile.setAttributeNS(null, 'stroke', '#aaa');
 	}
 }

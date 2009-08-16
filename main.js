@@ -76,6 +76,15 @@ function Initialize ()
 	
 	drawGrid(gridDims, windowSize, offsY);
 	
+	// Draw the nanoblok logo:
+	var blockBlank = makeObject(30, 7); //offset.x, offset.y);
+	var block = setColor(blockBlank, 'bla');
+	block.setAttributeNS(null, 'id', 'nanoblok-logo');
+	block.setAttributeNS(null, 'transform', 'scale(3)');
+	var statusGroup = document.getElementById('status');
+	var logoText = document.getElementById('logotext');
+	statusGroup.insertBefore(block, logoText);
+	
 	var init1 = new Date();
 	
 	loggit('Program initialized in ' + (init1 - init0) + ' milliseconds.');

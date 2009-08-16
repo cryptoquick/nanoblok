@@ -55,6 +55,8 @@ function drawGrid (gridDims, windowSize, offsY) {
 			
 			gridContainer.appendChild(tile);
 			i++;
+			
+			GridField['gridTile-' + i] = {x: x, y: y, z: -1};
 		}
 	}
 }

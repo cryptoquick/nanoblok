@@ -199,7 +199,7 @@ function setColor(obj, colorname) {
 	
 	var group = makeGroup(obj);
 
-	group.setAttributeNS(null, "stroke-width", 2);
+	group.setAttributeNS(null, "stroke-width", 1);
 	group.setAttributeNS(null, "fill-opacity", 1.0);
 	group.setAttributeNS(null, "stroke-opacity", 1.0);
 
