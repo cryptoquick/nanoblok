@@ -75,7 +75,8 @@ function Initialize ()
 	var offsY = 15;
 	
 	drawGrid(gridDims, windowSize, offsY);
-	
+	canvasBG();
+
 	// Draw the nanoblok logo:
 	var blockBlank = makeObject(30, 7); //offset.x, offset.y);
 	var block = setColor(blockBlank, 'bla');

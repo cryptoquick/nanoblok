@@ -62,7 +62,7 @@ function canvasDrawTile (x, y) {
 //	ctx.strokeRect(x * size, y * size, size, size);
 }
 
-function fadeOut () {
+function canvasBG () {
 	var ctx = context('effects');
 
 	// Make the grid background
@@ -81,7 +81,4 @@ function fadeOut () {
 	ctx.closePath();
 	ctx.fill();
 	ctx.scale(16, 16);
-
-	// Not sure...
-	ctx.globalCompositeOperation = 'lighter';
 }
