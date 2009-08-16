@@ -42,7 +42,7 @@ function testScript() {
 }
 */
 
-// Event listeners
+/* Event listeners */
 window.addEventListener('load', function () {
 	Initialize();
 }, false);
@@ -51,8 +51,22 @@ window.addEventListener('click', function (evt) {
 	Click(evt);
 }, false);
 
-// Main Functions
-function Initialize()
+window.addEventListener('mouseover', function (evt) {
+	Hover(evt, 'in');
+}, false);
+
+window.addEventListener('mouseout', function (evt) {
+	Hover(evt, 'out');
+}, false);
+
+window.onresize = function() {
+	if(initialized) {
+		loggit('Resolution change detected-- please refresh your browser for best results.');
+	}
+}
+
+/* Main Functions */
+function Initialize ()
 {
 	var init0 = new Date();
 	
@@ -68,19 +82,13 @@ function Initialize()
 	initialized = true;
 }
 
-window.onresize = function() {
-	if(initialized) {
-		loggit('Resolution change detected-- please refresh your browser for best results.');
-	}
-}
-
-function Click(evt) {
+function Click (evt) {
 	// Find out which element we clicked on
 	var target = evt.target;
 	
 //	var axis = {x: 0, y: 0, z: 0};
 	
-	if (target.id.substr(0,6) == 'bgGrid') {
+	if (target.id.substr(0,8) == 'gridTile') {
 		var position = GridField[target.id];
 		position.z++;
 		attachBlock(position);
@@ -96,6 +104,11 @@ function Click(evt) {
 		var targetBlock = Field[target.parentNode.id];
 		attachBlock(targetBlock.position, targetBlock.axis); // z+
 	}
+}
 
-//	attachBlock(targetElement, 'blue', '123');
+function Hover (evt, inout) {
+	var target = evt.target;
+	if (target.id.substr(0,8) == 'gridTile') {
+		tileHover(target, inout);
+	}
 }

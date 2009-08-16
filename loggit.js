@@ -13,7 +13,7 @@ function loggit(str) {
 	
 	var childCount = log.getElementsByTagName('tspan').length;
 
-	if(childCount >= 4){
+	if(childCount >= 3){
 		log.removeChild(log.firstChild);
 		log.firstChild.setAttributeNS(null, 'dy', 5);
 	}

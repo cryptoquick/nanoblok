@@ -38,8 +38,8 @@ function drawGrid (gridDims, windowSize, offsY) {
 	
 	var i = 0;
 	
-	for (var x = 0; x <= gridDims.c; x++) {
-		for (var y = 0; y <= gridDims.r; y++) {
+	for (var x = 0; x < gridDims.c; x++) {
+		for (var y = 0; y < gridDims.r; y++) {
 			var tile = {
 				x: (x * sc2) + (y * sc2),
 				y: ((y * sc4) + (gridSize.y - x * sc4)) + offsY
@@ -50,6 +50,8 @@ function drawGrid (gridDims, windowSize, offsY) {
 			var tile = drawSet([1, 2, 7, 6], set, true);
 			
 			tile.setAttributeNS(null, 'id', 'gridTile-' + i);
+			tile.setAttributeNS(null, 'c', x);
+			tile.setAttributeNS(null, 'r', y);
 			
 			gridContainer.appendChild(tile);
 			i++;
