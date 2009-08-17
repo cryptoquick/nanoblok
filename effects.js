@@ -24,10 +24,10 @@ function tileHover (target, inout) {
 		canvasDrawTile(bbox.x, bbox.y);
 	//	tile.setAttributeNS(null, 'stroke', '#aaa');
 	}
-/*	if (inout == 'out') {
-		tile.setAttributeNS(null, 'fill', '#ddd');
+	if (inout == 'out') {
+		canvasBG();
 	//	tile.setAttributeNS(null, 'stroke', '#aaa');
-	}*/
+	}
 	
 //	fadeInterval = window.setInterval("fadeOut()", 25);
 	
@@ -39,11 +39,12 @@ function canvasDrawTile (x, y) {
 	var ctx = context('effects');
 	var size = 25;
 	var tile = hexiso(x, y);
-	
+
+	ctx.scale(1, 1);
+
 	// Grid styles
-	ctx.fillStyle   = 'orange';
-//	ctx.strokeStyle = '#777';
-//	ctx.lineWidth   = 1.5;
+	ctx.fillStyle = 'red';
+
 	// Grid transforms
 	ctx.beginPath();
 	ctx.moveTo(tile.x[1], tile.y[1]);
@@ -53,13 +54,7 @@ function canvasDrawTile (x, y) {
 	ctx.closePath();
 	ctx.fill();
 	
-//	ctx.globalAlpha = 0.5;
-	
-	ctx.save();
-//	ctx.strokeRect(x, y, size, size);
-	
-//	ctx.fillRect(x * size, y * size, size, size);
-//	ctx.strokeRect(x * size, y * size, size, size);
+	ctx.globalAlpha = 0.5;
 }
 
 function canvasBG () {
@@ -72,6 +67,9 @@ function canvasBG () {
 	
 	var offsY = 21;
 
+//	ctx.globalCompositeOperation = 'lighter';
+	
+	ctx.scale(1, 1);
 	ctx.fillStyle   = '#ddd';
 	ctx.beginPath();
 	ctx.moveTo(gr2, 0 + offsY);
@@ -80,5 +78,5 @@ function canvasBG () {
 	ctx.lineTo(0, gr4 + offsY);
 	ctx.closePath();
 	ctx.fill();
-	ctx.scale(16, 16);
+	ctx.save();
 }

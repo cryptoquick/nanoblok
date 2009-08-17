@@ -1,10 +1,9 @@
-//	Copyright 2009 Alex Trujillo
-//	Full source available here under the MIT License: http://code.google.com/p/nanoblok/
-
-//	SUMMARY	
-//	drawBlock.js creates the characteristic nanoblok blocks from scratch, using hexagonal
-//	proportions. It will then update the coordinates with the current matrix transformation,
-//	set the block's colors, and attach the block to the document.
+/*
+ * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
+ * http://code.google.com/p/nanoblok/
+ * Copyright (c) 2009 Alex Trujillo
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ */
 
 var tick = 100
 
@@ -224,7 +223,7 @@ function makeGroup(obj) {
 }
 
 // Finds the bounding box of the element that has been clicked (the target), then builds a block to place on top of it.
-function attachBlock(position, axis) {
+function attachBlock(position) {
 	blockID = 'block-' + blockTick;
 	blockTick++;
 //	bbox = voxelBBox(position);
