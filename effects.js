@@ -57,6 +57,7 @@ function canvasDrawTile (x, y) {
 	ctx.globalAlpha = 0.5;
 }
 
+// Draws background grid.
 function canvasBG () {
 	var ctx = context('effects');
 
@@ -71,6 +72,7 @@ function canvasBG () {
 	
 	ctx.scale(1, 1);
 	ctx.fillStyle   = '#ddd';
+	ctx.strokeStyle = '#333';
 	ctx.beginPath();
 	ctx.moveTo(gr2, 0 + offsY);
 	ctx.lineTo(gr1, gr4 + offsY);
