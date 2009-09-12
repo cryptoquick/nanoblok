@@ -26,29 +26,29 @@ function array_search_key(array, num) {
 var svgNS = 'http://www.w3.org/2000/svg';
 
 // Draws hexagonal points in iso perspective, based on hard coordinate and size of block. Depends on an orientation array (see block-grid.png in Nanoblok Extras). Returns static coordinates of where to draw blocks on the screen.
-function hexiso (scX, scY) {
-//	scX = offsetX;
-//	scY = offsetY;
+function hexiso (offset, blockSize) {
+//	offset.x = offsetX;
+//	offset.y = offsetY;
 	
 	// Builds an array of points that corresponds to an entire isometric block (six points), including center (7). Arrays for both X and Y coordinates. Offset added to hexagon proportions.	
 	
 	var isoX = Array();
-	isoX [1] = sc2 + scX;
-	isoX [2] = sc1 + scX;
-	isoX [3] = sc1 + scX;
-	isoX [4] = sc2 + scX;
-	isoX [5] = scX;
-	isoX [6] = scX;
-	isoX [7] = sc2 + scX;
+	isoX [1] = blockSize.half + offset.x;
+	isoX [2] = blockSize.full + offset.x;
+	isoX [3] = blockSize.full + offset.x;
+	isoX [4] = blockSize.half + offset.x;
+	isoX [5] = offset.x;
+	isoX [6] = offset.x;
+	isoX [7] = blockSize.half + offset.x;
 
 	var isoY = Array();
-	isoY [1] = scY;
-	isoY [2] = sc4 + scY;
-	isoY [3] = sc3 + scY;
-	isoY [4] = sc1 + scY;
-	isoY [5] = sc3 + scY;
-	isoY [6] = sc4 + scY;
-	isoY [7] = sc2 + scY;
+	isoY [1] = offset.y;
+	isoY [2] = blockSize.quarter + offset.y;
+	isoY [3] = blockSize.third + offset.y;
+	isoY [4] = blockSize.full + offset.y;
+	isoY [5] = blockSize.third + offset.y;
+	isoY [6] = blockSize.quarter + offset.y;
+	isoY [7] = blockSize.half + offset.y;
 	
 	return {x: isoX, y: isoY};
 }
@@ -106,20 +106,18 @@ function voxelBBox (position) {
 	
 	if (z == -1) {
 		// For blocks placed on the grid
-		return {x: bbox.x + 2, y: bbox.y - sc2 + 1};
+		return {x: bbox.x + 2, y: bbox.y - blockSize.half + 1};
 	} else {
 		// For blocks placed above other blocks
-		return {x: bbox.x + 0, y: bbox.y - sc2 - 2};
+		return {x: bbox.x + 0, y: bbox.y - blockSize.half - 2};
 	}
 }
 
 // Creates the various coordinates necessary to make an isometric block
 // from the coordinates provided by hexiso().
-function makeBlock (posX, posY) {
-	offsetX = 0;
-	offsetY = 0;
+/* function makeBlock (offset, blockSize) {
 	
-	var coorSet = hexiso(posX, posY);
+	var coorSet = hexiso(offset, blockSize);
 	
 	var blokTop 	= drawSet([1, 2, 7, 6], coorSet, true);
 	var blokRight 	= drawSet([2, 3, 4, 7], coorSet, true);
@@ -134,12 +132,12 @@ function makeBlock (posX, posY) {
 		inset1: blokInset1,
 		inset2: blokInset2,
 		outline: blokOutline};
-}
+} */
 
 // Creates the various coordinates necessary to make an isometric block
 // from the coordinates provided by hexiso().
-function makeObject (posX, posY) {
-	var coorSet = hexiso(posX, posY);
+function makeObject (position, blockSize) {
+	var coorSet = hexiso(position, blockSize);
 	
 	var blokTop 	= drawSet([1, 2, 7, 6], coorSet, true);
 	var blokRight 	= drawSet([2, 3, 4, 7], coorSet, true);
@@ -223,14 +221,14 @@ function makeGroup(obj) {
 }
 
 // Finds the bounding box of the element that has been clicked (the target), then builds a block to place on top of it.
-function attachBlock(position) {
+function attachBlock(position, blockSize) {
 	blockID = 'block-' + blockTick;
 	blockTick++;
 //	bbox = voxelBBox(position);
 	bbox = targetElement.getBBox();
 	color = 'bla';
 //	offset = voxelBBox(position.x + axis.x, position.x + axis.y, position.z + axis.z - 1);
-	blockBlank = makeObject(bbox.x, bbox.y); //offset.x, offset.y);
+	blockBlank = makeObject(bbox, blockSize); //offset.x, offset.y);
 	block = setColor(blockBlank, color);
 	block.setAttributeNS(null, 'id', blockID);
 //	block.setAttributeNS(null, 'block-color', color);

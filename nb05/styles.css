@@ -5,7 +5,11 @@ body {
 }
 
 #grid {
-	margin-top: -400px;
+	width: 100%;
+}
+
+#effects {
+	width: 100%;
 }
 
 /*

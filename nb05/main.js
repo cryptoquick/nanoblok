@@ -61,7 +61,7 @@ window.addEventListener('mouseout', function (evt) {
 
 window.onresize = function() {
 	if(initialized) {
-		loggit('Resolution change detected-- please refresh your browser for best results.');
+		loggit('Resolution change detected-- please refresh.');
 	}
 }
 
@@ -70,22 +70,33 @@ function Initialize ()
 {
 	var init0 = new Date();
 	
+	// Basic dimensions.	
+	var blockDims = 25; // Size of blocks / tiles.
+	var blockSize = {
+		full: blockDims,
+		half: blockDims / 2,
+		third: blockDims / 2 + blockDims / 4,
+		quarter: blockDims / 4
+	}
+	
 	var gridDims = {c: 32, r: 32};
-	var windowSize = {x: window.innerWidth, y: window.innerHeight};
-	var offsY = 15;
+	var gridSize = {
+		x: gridDims.c * blockSize.full,
+		y: gridDims.r * blockSize.quarter
+	};
 	
-	drawGrid(gridDims, windowSize, offsY);
-	canvasBG();
+	var windowSize = {x: window.innerWidth, y: window.innerHeight};	
+	var offset = {
+		x: (windowSize.x - gridSize.x) / 2,
+		y: windowSize.y - gridSize.y * 2
+	};
 
-	// Draw the nanoblok logo:
-	var blockBlank = makeObject(30, 7); //offset.x, offset.y);
-	var block = setColor(blockBlank, 'bla');
-	block.setAttributeNS(null, 'id', 'nanoblok-logo');
-	block.setAttributeNS(null, 'transform', 'scale(3)');
-	var statusGroup = document.getElementById('status');
-	var logoText = document.getElementById('logotext');
-	statusGroup.insertBefore(block, logoText);
+	// Run core graphics functions.
+	drawUI(windowSize, blockSize);
+	drawGrid(blockSize, gridDims, gridSize, offset);
+//	canvasBG();
 	
+	// Post-initialization tasks.
 	var init1 = new Date();
 	
 	loggit('Program initialized in ' + (init1 - init0) + ' milliseconds.');

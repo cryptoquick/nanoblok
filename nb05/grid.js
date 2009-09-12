@@ -10,15 +10,7 @@
 //	debugging functionality.
 //	Not much has changed since vektornye just yet.
 
-// Initialize variables	
-
-// General iso / block proportions
-var sc1 = 25; // Size of the whole block
-var sc2 = sc1 / 2; // Half-block dimension
-var sc4 = sc1 / 4; // Quarter-block dimension
-var sc3 = sc2 + sc4; // Half+Quarter-block dimension
-
-function drawGrid (gridDims, windowSize, offsY) {
+function drawGrid (blockSize, gridDims, gridSize, offset) {
 	// Grid-specific variables
 
 /*	var gridSize = { x: Math.floor(Math.sqrt(2) * sc1 * gridDims.c) };
@@ -29,11 +21,6 @@ function drawGrid (gridDims, windowSize, offsY) {
 		y: (windowSize.y - gridSize.y) + 145
 	};*/
 	
-	var gridSize = {
-		x: gridDims.c * sc1,
-		y: gridDims.r * sc4
-	};
-	
 	var gridContainer = document.getElementById('gridContainer');	
 	
 	var i = 0;
@@ -41,11 +28,11 @@ function drawGrid (gridDims, windowSize, offsY) {
 	for (var x = 0; x < gridDims.c; x++) {
 		for (var y = 0; y < gridDims.r; y++) {
 			var tile = {
-				x: (x * sc2) + (y * sc2),
-				y: ((y * sc4) + (gridSize.y - x * sc4)) + offsY
+				x: (x * blockSize.half) + (y * blockSize.half) + offset.x,
+				y: ((y * blockSize.quarter) + (gridSize.y - x * blockSize.quarter)) + offset.y
 			};
 
-			var set = hexiso(tile.x, tile.y);
+			var set = hexiso(tile, blockSize);
 			
 			var tile = drawSet([1, 2, 7, 6], set, true);
 			
@@ -60,7 +47,7 @@ function drawGrid (gridDims, windowSize, offsY) {
 		}
 	}
 }
-
+/*
 function alignGrid () {
 	var area = gridDimensions();
 	gridContainer.setAttributeNS(null, 'x', area.offset.x);
@@ -90,4 +77,4 @@ function makeGridElement (position) {
 	var blokTop = drawSet([1, 2, 7, 6], coorSet, true);
 
 	return blokTop;
-}
+}*/
