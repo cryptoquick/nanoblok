@@ -9,21 +9,8 @@ body {
 }
 
 #effects {
-	width: 100%;
-}
-
-/*
-#grid, #effects {
 	position: absolute;
 	top: 0px;
-	left: 50%;
-	margin-left: -412.5px;
+	left: 0px;
+	z-index: -1;
 }
-
-#status {
-	position: absolute;
-	top: 0px;
-	left: 50%;
-	margin-left: -510px;
-	width: 510px;
-}*/

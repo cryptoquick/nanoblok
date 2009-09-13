@@ -19,6 +19,11 @@ function drawUI (windowSize, gridSize, blockSize) {
 	// Set grid height.
 	gridElement.setAttributeNS(null, "height", windowSize.y - 5);
 	
+	// Set effects canvas dimensions.
+	var effectsElement = document.getElementById("effects");
+	effectsElement.setAttributeNS(null, "height", windowSize.y - 5);
+	effectsElement.setAttributeNS(null, "width", windowSize.x);
+	
 	// Position debug / status
 	var debugBox = document.getElementById("statusContainer");
 	debugBox.setAttributeNS(null, "transform", "translate(" + edges.left + ", " + edges.top + ")");

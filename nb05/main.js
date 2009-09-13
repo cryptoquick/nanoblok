@@ -42,28 +42,9 @@ function testScript() {
 }
 */
 
-/* Event listeners */
 window.addEventListener('load', function () {
 	Initialize();
 }, false);
-
-window.addEventListener('click', function (evt) {
-	Click(evt);
-}, false);
-
-window.addEventListener('mouseover', function (evt) {
-	Hover(evt, 'in');
-}, false);
-
-window.addEventListener('mouseout', function (evt) {
-	Hover(evt, 'out');
-}, false);
-
-window.onresize = function() {
-	if(initialized) {
-		loggit('Resolution change detected-- please refresh.');
-	}
-}
 
 /* Main Functions */
 function Initialize ()
@@ -94,13 +75,32 @@ function Initialize ()
 	// Run core graphics functions.
 	drawUI(windowSize, gridSize, blockSize);
 	drawGrid(blockSize, gridDims, gridSize, offset);
-//	canvasBG();
+	canvasBG(offset);
 	
 	// Post-initialization tasks.
 	var init1 = new Date();
 	
 	loggit('Program initialized in ' + (init1 - init0) + ' milliseconds.');
 	initialized = true;
+	
+	/* Event listeners */
+	window.addEventListener('click', function (evt) {
+		Click(evt);
+	}, false);
+
+	window.addEventListener('mouseover', function (evt) {
+		Hover(evt, 'in', offset, blockSize);
+	}, false);
+
+	window.addEventListener('mouseout', function (evt) {
+		Hover(evt, 'out', offset, blockSize);
+	}, false);
+
+	window.onresize = function() {
+		if(initialized) {
+			loggit('Resolution change detected-- please refresh.');
+		}
+	}
 }
 
 function Click (evt) {
@@ -127,9 +127,9 @@ function Click (evt) {
 	}
 }
 
-function Hover (evt, inout) {
+function Hover (evt, inout, offset, blockSize) {
 	var target = evt.target;
 	if (target.id.substr(0,8) == 'gridTile') {
-		tileHover(target, inout);
+		tileHover(target, inout, offset, blockSize);
 	}
 }

@@ -13,7 +13,7 @@ function context(element) {
 
 var fadeInterval;
 
-function tileHover (target, inout) {
+function tileHover (target, inout, offset, blockSize) {
 	var init0 = new Date();
 	
 //	window.clearInterval(fadeInterval);
@@ -21,11 +21,11 @@ function tileHover (target, inout) {
 	
 	if (inout == 'in') {
 		var bbox = tile.getBBox();
-		canvasDrawTile(bbox.x, bbox.y);
+		canvasDrawTile(bbox.x, bbox.y, offset, blockSize);
 	//	tile.setAttributeNS(null, 'stroke', '#aaa');
 	}
 	if (inout == 'out') {
-		canvasBG();
+		canvasBG(offset);
 	//	tile.setAttributeNS(null, 'stroke', '#aaa');
 	}
 	
@@ -35,10 +35,10 @@ function tileHover (target, inout) {
 	loggit(target.id + ': ' + target.getAttribute('c') + ', ' + target.getAttribute('r') + '. ' + (init1 - init0) + 'ms.');
 }
 
-function canvasDrawTile (x, y) {
+function canvasDrawTile (x, y, offset, blockSize) {
 	var ctx = context('effects');
 	var size = 25;
-	var tile = hexiso(x, y);
+	var tile = hexiso({x: x, y: y - 35}, blockSize);
 
 	ctx.scale(1, 1);
 
@@ -54,11 +54,13 @@ function canvasDrawTile (x, y) {
 	ctx.closePath();
 	ctx.fill();
 	
+	loggit(tile.x[6]);
+	
 	ctx.globalAlpha = 0.5;
 }
 
 // Draws background grid.
-function canvasBG () {
+function canvasBG (offset) {
 	var ctx = context('effects');
 
 	// Make the grid background
@@ -66,7 +68,7 @@ function canvasBG () {
 	var gr2 = gr1 / 2;
 	var gr4 = gr1 / 4;
 	
-	var offsY = 21;
+	var offsY = offset.y - 29;
 
 //	ctx.globalCompositeOperation = 'lighter';
 	
@@ -74,10 +76,10 @@ function canvasBG () {
 	ctx.fillStyle   = '#ddd';
 	ctx.strokeStyle = '#333';
 	ctx.beginPath();
-	ctx.moveTo(gr2, 0 + offsY);
-	ctx.lineTo(gr1, gr4 + offsY);
-	ctx.lineTo(gr2, gr2 + offsY);
-	ctx.lineTo(0, gr4 + offsY);
+	ctx.moveTo(gr2 + offset.x, 0 + offsY);
+	ctx.lineTo(gr1 + offset.x, gr4 + offsY);
+	ctx.lineTo(gr2 + offset.x, gr2 + offsY);
+	ctx.lineTo(0 + offset.x, gr4 + offsY);
 	ctx.closePath();
 	ctx.fill();
 	ctx.save();
