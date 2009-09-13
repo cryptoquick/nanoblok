@@ -92,7 +92,7 @@ function Initialize ()
 	};
 
 	// Run core graphics functions.
-	drawUI(windowSize, blockSize);
+	drawUI(windowSize, gridSize, blockSize);
 	drawGrid(blockSize, gridDims, gridSize, offset);
 //	canvasBG();
 	

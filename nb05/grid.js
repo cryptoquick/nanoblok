@@ -12,14 +12,6 @@
 
 function drawGrid (blockSize, gridDims, gridSize, offset) {
 	// Grid-specific variables
-
-/*	var gridSize = { x: Math.floor(Math.sqrt(2) * sc1 * gridDims.c) };
-	gridSize.y = Math.floor(gridSize.x / 2);
-
-	var gridOffset = {
-		x: Math.floor((windowSize.x / 2) - gridSize.x / 2),
-		y: (windowSize.y - gridSize.y) + 145
-	};*/
 	
 	var gridContainer = document.getElementById('gridContainer');	
 	
@@ -47,34 +39,3 @@ function drawGrid (blockSize, gridDims, gridSize, offset) {
 		}
 	}
 }
-/*
-function alignGrid () {
-	var area = gridDimensions();
-	gridContainer.setAttributeNS(null, 'x', area.offset.x);
-	gridContainer.setAttributeNS(null, 'y', area.offset.y);
-	gridContainer.setAttributeNS(null, 'width', area.grid.x);
-	gridContainer.setAttributeNS(null, 'height', area.grid.y);
-}
-
-//block = setColor(blockBlank, color);
-//block.setAttributeNS(null, 'id', blockID);
-
-
-function gridDimensions () {
-	// Calculate the height and width of the grid area
-	grid = {x: sc1 * gridCol, y: sc2 * gridRow};
-	
-	// Find the upper left corner of the grid area from the window dimensions
-	offset = {x: nanoWindow.x / 2 - grid.x / 2, y: nanoWindow.y / 2 - grid.y / 2};
-	
-	// Offsets and dimensions of the grid
-	return {offset: offset, grid: grid};
-}
-
-function makeGridElement (position) {
-	var coorSet = hexiso(position.x, position.y);
-	
-	var blokTop = drawSet([1, 2, 7, 6], coorSet, true);
-
-	return blokTop;
-}*/

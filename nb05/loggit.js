@@ -15,7 +15,7 @@ function loggit(str) {
 
 	var numLines = 3;
 
-	if (navigator.userAgent.indexOf('Firefox') !=-1)
+	if (navigator.userAgent.indexOf('Firefox') != -1)
 	{
 		numLines = 2;
 	}
