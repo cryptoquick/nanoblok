@@ -25,11 +25,9 @@ function tileHover (target, inout, offset, blockSize) {
 	//	tile.setAttributeNS(null, 'stroke', '#aaa');
 	}
 	if (inout == 'out') {
-		canvasBG(offset);
+	//	canvasBG(offset);
 	//	tile.setAttributeNS(null, 'stroke', '#aaa');
 	}
-	
-//	fadeInterval = window.setInterval("fadeOut()", 25);
 	
 	var init1 = new Date();
 	loggit(target.id + ': ' + target.getAttribute('c') + ', ' + target.getAttribute('r') + '. ' + (init1 - init0) + 'ms.');
@@ -43,7 +41,7 @@ function canvasDrawTile (x, y, offset, blockSize) {
 	ctx.scale(1, 1);
 
 	// Grid styles
-	ctx.fillStyle = 'red';
+//	ctx.fillStyle = 'red';
 
 	// Grid transforms
 	ctx.beginPath();
@@ -54,17 +52,15 @@ function canvasDrawTile (x, y, offset, blockSize) {
 	ctx.closePath();
 	ctx.fill();
 	
-	loggit(tile.x[6]);
-	
 	ctx.globalAlpha = 0.5;
 }
 
 // Draws background grid.
-function canvasBG (offset) {
+function canvasBG (gridSize, offset, edges, side) {
 	var ctx = context('effects');
 
-	// Make the grid background
-	var gr1 = 800;
+	// Grid dimensions
+	var gr1 = gridSize.x;
 	var gr2 = gr1 / 2;
 	var gr4 = gr1 / 4;
 	
@@ -73,13 +69,32 @@ function canvasBG (offset) {
 //	ctx.globalCompositeOperation = 'lighter';
 	
 	ctx.scale(1, 1);
-	ctx.fillStyle   = '#ddd';
 	ctx.strokeStyle = '#333';
-	ctx.beginPath();
-	ctx.moveTo(gr2 + offset.x, 0 + offsY);
-	ctx.lineTo(gr1 + offset.x, gr4 + offsY);
-	ctx.lineTo(gr2 + offset.x, gr2 + offsY);
-	ctx.lineTo(0 + offset.x, gr4 + offsY);
+	
+	if (side == "bottom") {
+		ctx.fillStyle   = '#eee';
+		ctx.beginPath();
+		ctx.moveTo(gr2 + offset.x, 0 + offsY);
+		ctx.lineTo(gr1 + offset.x, gr4 + offsY);
+		ctx.lineTo(gr2 + offset.x, gr2 + offsY);
+		ctx.lineTo(0 + offset.x, gr4 + offsY);
+	}
+	if (side == "left") {
+		ctx.fillStyle   = '#ddd';
+		ctx.beginPath();
+		ctx.moveTo(gr2 + offset.x, offsY - gridSize.y * 2);
+		ctx.lineTo(gr2 + offset.x, gridSize.y - gr4 + offsY);
+		ctx.lineTo(0 + offset.x, offsY + gr4);
+		ctx.lineTo(0 + offset.x, offsY - gridSize.y);
+	}
+	if (side == "right") {
+		ctx.fillStyle   = '#ccc';
+		ctx.beginPath();
+		ctx.moveTo(gr2 + offset.x, offsY - gridSize.y * 2);
+		ctx.lineTo(gr1 + offset.x, offsY - gr4);
+		ctx.lineTo(gr1 + offset.x, offsY + gr4);
+		ctx.lineTo(gr2 + offset.x, offsY);
+	}
 	ctx.closePath();
 	ctx.fill();
 	ctx.save();

@@ -52,7 +52,7 @@ function Initialize ()
 	var init0 = new Date();
 	
 	// Basic dimensions.	
-	var blockDims = 25; // Size of blocks / tiles.
+	var blockDims = 20; // Size of blocks / tiles.
 	var blockSize = {
 		full: blockDims,
 		half: blockDims / 2,
@@ -67,15 +67,38 @@ function Initialize ()
 	};
 	
 	var windowSize = {x: window.innerWidth, y: window.innerHeight};	
+	
+	var center = {x: windowSize.x / 2, y: windowSize.y / 2};
+	
+	// Grid edges
+	var edges = {
+		left: center.x - gridSize.x / 2,
+		top: windowSize.y - gridSize.y * 2
+	};
+	
 	var offset = {
 		x: (windowSize.x - gridSize.x) / 2,
 		y: windowSize.y - gridSize.y * 2
 	};
+/*	var offsetLeft = {
+		x: (windowSize.x - gridSize.x) / 2,
+		y: windowSize.y - gridSize.y * 2
+	};
+	var offsetRight = {
+		x: (windowSize.x - gridSize.x) / 2,
+		y: windowSize.y - gridSize.y * 2
+	};*/
 
 	// Run core graphics functions.
-	drawUI(windowSize, gridSize, blockSize);
-	drawGrid(blockSize, gridDims, gridSize, offset);
-	canvasBG(offset);
+	drawUI(windowSize, gridSize, center, edges, blockSize);
+	
+	drawGrid(blockSize, gridDims, gridSize, offset, "bottom");
+	drawGrid(blockSize, gridDims, gridSize, offset, "left");
+	drawGrid(blockSize, gridDims, gridSize, offset, "right");
+	
+	canvasBG(gridSize, offset, edges, "bottom");
+	canvasBG(gridSize, offset, edges, "left");
+	canvasBG(gridSize, offset, edges, "right");
 	
 	// Post-initialization tasks.
 	var init1 = new Date();
@@ -109,7 +132,7 @@ function Click (evt) {
 	
 //	var axis = {x: 0, y: 0, z: 0};
 	
-	if (target.id.substr(0,8) == 'gridTile') {
+	if (target.id.substr(0,1) == 'x' || target.id.substr(0,1) == 'y' || target.id.substr(0,1) == 'z') {
 		var position = GridField[target.id];
 		position.z++;
 		attachBlock(position);
@@ -129,7 +152,7 @@ function Click (evt) {
 
 function Hover (evt, inout, offset, blockSize) {
 	var target = evt.target;
-	if (target.id.substr(0,8) == 'gridTile') {
+	if (target.id.substr(0,1) == 'x' || target.id.substr(0,1) == 'y' || target.id.substr(0,1) == 'z') {
 		tileHover(target, inout, offset, blockSize);
 	}
 }

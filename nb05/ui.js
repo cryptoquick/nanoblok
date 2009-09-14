@@ -1,12 +1,4 @@
-function drawUI (windowSize, gridSize, blockSize) {
-	var center = {x: windowSize.x / 2, y: windowSize.y / 2};
-	
-	// Grid edges
-	var edges = {
-		left: center.x - gridSize.x / 2,
-		top: windowSize.y - gridSize.y * 2
-	}
-
+function drawUI (windowSize, gridSize, center, edges, blockSize) {
 	// Draw the nanoblok logo.
 	var blockBlank = makeObject({x: 5, y: 5}, blockSize); //offset.x, offset.y);
 	var block = setColor(blockBlank, 'bla');
@@ -16,7 +8,7 @@ function drawUI (windowSize, gridSize, blockSize) {
 	var statusContainer = document.getElementById('gridContainer');
 	gridElement.insertBefore(block, statusContainer);
 	
-	// Set grid height.
+	// Set viewport height.
 	gridElement.setAttributeNS(null, "height", windowSize.y - 5);
 	
 	// Set effects canvas dimensions.
@@ -26,5 +18,5 @@ function drawUI (windowSize, gridSize, blockSize) {
 	
 	// Position debug / status
 	var debugBox = document.getElementById("statusContainer");
-	debugBox.setAttributeNS(null, "transform", "translate(" + edges.left + ", " + edges.top + ")");
+	debugBox.setAttributeNS(null, "transform", "translate(" + edges.left + ", " + (edges.top - 40) + ")");
 }
