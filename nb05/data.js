@@ -30,7 +30,7 @@ function blockRecord(blockID, position) {
 	
 //	currentPosition = {x: position.x + axis.x, y: position.y + axis.y, z: position.z};
 	
-	Field[blockID] = {position: position};
+	Field[blockID] = {x: position.x, y: position.y, z: position.z};
 	
 	// Add new voxel position
 	VoxArray(position.x, position.y, position.z, blockID);

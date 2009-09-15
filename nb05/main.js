@@ -96,9 +96,13 @@ function Initialize ()
 	drawGrid(blockSize, gridDims, gridSize, offset, "left");
 	drawGrid(blockSize, gridDims, gridSize, offset, "right");
 	
-	canvasBG(gridSize, offset, edges, "bottom");
-	canvasBG(gridSize, offset, edges, "left");
-	canvasBG(gridSize, offset, edges, "right");
+	// canvasBG(blockSize, gridDims, gridSize, offset, edges, "bottom");
+	// canvasBG(blockSize, gridDims, gridSize, offset, edges, "left");
+	// canvasBG(blockSize, gridDims, gridSize, offset, edges, "right");
+	
+	canvasGrid(gridDims, gridSize, blockSize, offset, "bottom");
+	canvasGrid(gridDims, gridSize, blockSize, offset, "left");
+	canvasGrid(gridDims, gridSize, blockSize, offset, "right");
 	
 	// Post-initialization tasks.
 	var init1 = new Date();
@@ -133,7 +137,7 @@ function Click (evt) {
 //	var axis = {x: 0, y: 0, z: 0};
 	
 	if (target.id.substr(0,1) == 'x' || target.id.substr(0,1) == 'y' || target.id.substr(0,1) == 'z') {
-		var position = GridField[target.id];
+		var position = Field[target.id];
 		position.z++;
 		attachBlock(position);
 	} else if (target.id == 'left') {

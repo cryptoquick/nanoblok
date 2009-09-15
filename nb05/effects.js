@@ -20,8 +20,8 @@ function tileHover (target, inout, offset, blockSize) {
 	var tile = document.getElementById(target.id);
 	
 	if (inout == 'in') {
-		var bbox = tile.getBBox();
-		canvasDrawTile(bbox.x, bbox.y, offset, blockSize);
+	//	var bbox = tile.getBBox();
+	//	canvasDrawTile(bbox, offset, blockSize);
 	//	tile.setAttributeNS(null, 'stroke', '#aaa');
 	}
 	if (inout == 'out') {
@@ -33,30 +33,34 @@ function tileHover (target, inout, offset, blockSize) {
 	loggit(target.id + ': ' + target.getAttribute('c') + ', ' + target.getAttribute('r') + '. ' + (init1 - init0) + 'ms.');
 }
 
-function canvasDrawTile (x, y, offset, blockSize) {
+function canvasDrawTile (bbox, offset, blockSize, hexSide, color) {
 	var ctx = context('effects');
-	var size = 25;
-	var tile = hexiso({x: x, y: y - 35}, blockSize);
+//	var size = 25;
+	var tile = hexiso(bbox, blockSize);
 
-	ctx.scale(1, 1);
+//	ctx.scale(1, 1);
 
 	// Grid styles
-//	ctx.fillStyle = 'red';
+	ctx.strokeStyle = '#aaa';
+	ctx.fillStyle = color;
+	
+	var offsY = 35;
 
 	// Grid transforms
 	ctx.beginPath();
-	ctx.moveTo(tile.x[1], tile.y[1]);
-	ctx.lineTo(tile.x[2], tile.y[2]);
-	ctx.lineTo(tile.x[7], tile.y[7]);
-	ctx.lineTo(tile.x[6], tile.y[6]);
+	ctx.moveTo(tile.x[hexSide[0]], tile.y[hexSide[0]] - offsY);
+	ctx.lineTo(tile.x[hexSide[1]], tile.y[hexSide[1]] - offsY);
+	ctx.lineTo(tile.x[hexSide[2]], tile.y[hexSide[2]] - offsY);
+	ctx.lineTo(tile.x[hexSide[3]], tile.y[hexSide[3]] - offsY);
 	ctx.closePath();
+	ctx.stroke();
 	ctx.fill();
 	
-	ctx.globalAlpha = 0.5;
+	ctx.globalAlpha = .75;
 }
 
 // Draws background grid.
-function canvasBG (gridSize, offset, edges, side) {
+function canvasBG (blockSize, gridDims, gridSize, offset, edges, side) {
 	var ctx = context('effects');
 
 	// Grid dimensions
@@ -69,10 +73,10 @@ function canvasBG (gridSize, offset, edges, side) {
 //	ctx.globalCompositeOperation = 'lighter';
 	
 	ctx.scale(1, 1);
-	ctx.strokeStyle = '#333';
+//	ctx.strokeStyle = '#333';
 	
 	if (side == "bottom") {
-		ctx.fillStyle   = '#eee';
+		ctx.fillStyle = '#eee';
 		ctx.beginPath();
 		ctx.moveTo(gr2 + offset.x, 0 + offsY);
 		ctx.lineTo(gr1 + offset.x, gr4 + offsY);
@@ -80,7 +84,7 @@ function canvasBG (gridSize, offset, edges, side) {
 		ctx.lineTo(0 + offset.x, gr4 + offsY);
 	}
 	if (side == "left") {
-		ctx.fillStyle   = '#ddd';
+		ctx.fillStyle = '#ddd';
 		ctx.beginPath();
 		ctx.moveTo(gr2 + offset.x, offsY - gridSize.y * 2);
 		ctx.lineTo(gr2 + offset.x, gridSize.y - gr4 + offsY);
@@ -88,7 +92,7 @@ function canvasBG (gridSize, offset, edges, side) {
 		ctx.lineTo(0 + offset.x, offsY - gridSize.y);
 	}
 	if (side == "right") {
-		ctx.fillStyle   = '#ccc';
+		ctx.fillStyle = '#ccc';
 		ctx.beginPath();
 		ctx.moveTo(gr2 + offset.x, offsY - gridSize.y * 2);
 		ctx.lineTo(gr1 + offset.x, offsY - gr4);
@@ -98,4 +102,45 @@ function canvasBG (gridSize, offset, edges, side) {
 	ctx.closePath();
 	ctx.fill();
 	ctx.save();
+	
+	if (side == "bottom") {
+		canvasGrid(gridDims, gridSize, blockSize, offset, "bottom");
+	}
+	if (side == "left") {
+		canvasGrid(gridDims, gridSize, blockSize, offset, "left");
+	}
+	if (side == "right") {
+		canvasGrid(gridDims, gridSize, blockSize, offset, "right");
+	}
+}
+
+function canvasGrid (gridDims, gridSize, blockSize, offset, side) {
+	for (var x = 0; x < gridDims.c; x++) {
+		for (var y = 0; y < gridDims.r; y++) {
+			if (side == "bottom") {
+				var hexSide = [1, 2, 7, 6];
+				var tile = {
+					x: (x * blockSize.half) + (y * blockSize.half) + offset.x,
+					y: ((y * blockSize.quarter) + (gridSize.y - x * blockSize.quarter)) + offset.y
+				};
+				canvasDrawTile(tile, offset, blockSize, hexSide, '#eee');
+			}
+			if (side == "left") {
+				var hexSide = [1, 7, 5, 6];
+				var tile = {
+					x: (x * blockSize.half)  + offset.x,
+					y: ((y * blockSize.half) + (-gridSize.y - x * blockSize.quarter)) + offset.y
+				};
+				canvasDrawTile(tile, offset, blockSize, hexSide, '#ddd');
+			}
+			if (side == "right") {
+				var hexSide = [6, 7, 4, 5];
+				var tile = {
+					x: (x * blockSize.half) + gridSize.x / 2 + offset.x,
+					y: ((y * blockSize.half) + (-gridSize.y * 2 + x * blockSize.quarter)) + offset.y
+				};
+				canvasDrawTile(tile, offset, blockSize, hexSide, '#ccc');
+			}
+		}
+	}
 }

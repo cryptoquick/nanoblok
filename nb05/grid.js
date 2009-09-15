@@ -54,6 +54,8 @@ function drawGrid (blockSize, gridDims, gridSize, offset, side) {
 			if (side == "right") {
 				tile.setAttributeNS(null, 'id', 'z-' + i);
 			}
+			
+			// Column, Row
 			tile.setAttributeNS(null, 'c', x);
 			tile.setAttributeNS(null, 'r', y);
 			
