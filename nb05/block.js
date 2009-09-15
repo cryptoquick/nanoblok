@@ -237,3 +237,7 @@ function attachBlock(position, blockSize) {
 	voxelCoordinates = blockRecord(blockID, position);
 //	loggit('Block placed on the grid at ' + voxelCoordinates.x + ', ' + voxelCoordinates.y);
 }
+
+function canvasBlock(position, blockSize) {
+	
+}

@@ -75,6 +75,7 @@ function findBlockXY(gridTarget) {
 	
 	return gridCoordinates;
 }
+
 /*
 // Adds object to grid, plus some draw order logic (to keep visual perspective sane). It's also stupidly complex, and there might be a better way.
 function blockOrder (target, block) {

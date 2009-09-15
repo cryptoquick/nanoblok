@@ -66,8 +66,10 @@ function Initialize ()
 		y: gridDims.r * blockSize.quarter
 	};
 	
+	// Viewport information from the browser.
 	var windowSize = {x: window.innerWidth, y: window.innerHeight};	
 	
+	// Center of the window
 	var center = {x: windowSize.x / 2, y: windowSize.y / 2};
 	
 	// Grid edges
@@ -80,6 +82,17 @@ function Initialize ()
 		x: (windowSize.x - gridSize.x) / 2,
 		y: windowSize.y - gridSize.y * 2
 	};
+	
+	var commonVars = {
+		blockDims: blockDims,
+		blockSize: blockSize,
+		gridDims: gridDims,
+		gridSize: gridSize,
+		windowSize: windowSize,
+		center: center,
+		edges: edges,
+		offset: offset
+	}
 /*	var offsetLeft = {
 		x: (windowSize.x - gridSize.x) / 2,
 		y: windowSize.y - gridSize.y * 2
@@ -89,20 +102,8 @@ function Initialize ()
 		y: windowSize.y - gridSize.y * 2
 	};*/
 
-	// Run core graphics functions.
-	drawUI(windowSize, gridSize, center, edges, blockSize);
-	
-	drawGrid(blockSize, gridDims, gridSize, offset, "bottom");
-	drawGrid(blockSize, gridDims, gridSize, offset, "left");
-	drawGrid(blockSize, gridDims, gridSize, offset, "right");
-	
-	// canvasBG(blockSize, gridDims, gridSize, offset, edges, "bottom");
-	// canvasBG(blockSize, gridDims, gridSize, offset, edges, "left");
-	// canvasBG(blockSize, gridDims, gridSize, offset, edges, "right");
-	
-	canvasGrid(gridDims, gridSize, blockSize, offset, "bottom");
-	canvasGrid(gridDims, gridSize, blockSize, offset, "left");
-	canvasGrid(gridDims, gridSize, blockSize, offset, "right");
+	// Run core graphics functions in default state.
+	Update("resize", {gridMode: "standard"});
 	
 	// Post-initialization tasks.
 	var init1 = new Date();
@@ -125,8 +126,32 @@ function Initialize ()
 
 	window.onresize = function() {
 		if(initialized) {
-			loggit('Resolution change detected-- please refresh.');
+			loggit('Resolution change detected, updating screen.');
 		}
+		Update("resize", {gridMode: "standard"});
+	}
+}
+
+// Redraw grid, redraw UI, redraw canvas...
+function Update(updateMode, updateSettings, commonVars) {
+	if (updateMode == "resize") {
+	//	removeUI();
+	}
+	
+	if (updateMode == "resize") {
+		drawUI(commonVars);
+	}
+	
+	if (updateMode == "resize") {
+		drawGrid(commonVars, "bottom");
+		drawGrid(commonVars, "left");
+		drawGrid(commonVars, "right");
+	}
+
+	if (updateMode == "resize" || updateMode == "canvas") {
+		canvasGrid(commonVars, "bottom", updateSettings.gridMode);
+		canvasGrid(commonVars, "left", updateSettings.gridMode);
+		canvasGrid(commonVars, "right", updateSettings.gridMode);
 	}
 }
 

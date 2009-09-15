@@ -114,33 +114,73 @@ function canvasBG (blockSize, gridDims, gridSize, offset, edges, side) {
 	}
 }
 
-function canvasGrid (gridDims, gridSize, blockSize, offset, side) {
+function canvasGrid (gridDims, gridSize, blockSize, offset, side, mode) {
+	var i = 0;
+		
 	for (var x = 0; x < gridDims.c; x++) {
 		for (var y = 0; y < gridDims.r; y++) {
 			if (side == "bottom") {
 				var hexSide = [1, 2, 7, 6];
-				var tile = {
-					x: (x * blockSize.half) + (y * blockSize.half) + offset.x,
-					y: ((y * blockSize.quarter) + (gridSize.y - x * blockSize.quarter)) + offset.y
-				};
-				canvasDrawTile(tile, offset, blockSize, hexSide, '#eee');
+				var tile = GridField["x-" + i].coors;
+				
+				if (mode == "standard") {
+					tileColor = '#eee';
+				}
+				if (mode == "number") {
+					var tileColor = "rgb(" + (255 - i / 4) + ", " + (255 - i / 4) + ", " + (255 - i / 4) + ")";
+				}
+				
+				canvasDrawTile(tile, offset, blockSize, hexSide, tileColor);
 			}
 			if (side == "left") {
 				var hexSide = [1, 7, 5, 6];
-				var tile = {
-					x: (x * blockSize.half)  + offset.x,
-					y: ((y * blockSize.half) + (-gridSize.y - x * blockSize.quarter)) + offset.y
-				};
-				canvasDrawTile(tile, offset, blockSize, hexSide, '#ddd');
+				var tile = GridField["y-" + i].coors;
+				
+				if (mode == "standard") {
+					tileColor = '#ddd';
+				}
+				if (mode == "number") {
+					var tileColor = "rgb(" + (255 - i / 4) + ", " + (255 - i / 4) + ", " + (255 - i / 4) + ")";
+				}
+				
+				canvasDrawTile(tile, offset, blockSize, hexSide, tileColor);
 			}
 			if (side == "right") {
 				var hexSide = [6, 7, 4, 5];
-				var tile = {
-					x: (x * blockSize.half) + gridSize.x / 2 + offset.x,
-					y: ((y * blockSize.half) + (-gridSize.y * 2 + x * blockSize.quarter)) + offset.y
-				};
-				canvasDrawTile(tile, offset, blockSize, hexSide, '#ccc');
+				var tile = GridField["z-" + i].coors;
+				
+				if (mode == "standard") {
+					tileColor = '#ccc';
+				}
+				if (mode == "number") {
+					var tileColor = "rgb(" + (255 - i / 4) + ", " + (255 - i / 4) + ", " + (255 - i / 4) + ")";
+				}
+				
+				canvasDrawTile(tile, offset, blockSize, hexSide, tileColor);
 			}
+			
+			i++;
 		}
 	}
+}
+
+function attachBlock(position, blockSize) {
+	blockID = 'block-' + blockTick;
+	blockTick++;
+//	bbox = voxelBBox(position);
+	bbox = targetElement.getBBox();
+	color = 'bla';
+//	offset = voxelBBox(position.x + axis.x, position.x + axis.y, position.z + axis.z - 1);
+	blockBlank = makeObject(bbox, blockSize); //offset.x, offset.y);
+	block = setColor(blockBlank, color);
+	block.setAttributeNS(null, 'id', blockID);
+//	block.setAttributeNS(null, 'block-color', color);
+//	blockOrder(target, block);
+	SVGRoot.appendChild(block);
+	voxelCoordinates = blockRecord(blockID, position);
+//	loggit('Block placed on the grid at ' + voxelCoordinates.x + ', ' + voxelCoordinates.y);
+}
+
+function canvasBlock(position, blockSize) {
+	canvasDrawTile (coors, offset, blockSize, hexSide, color)
 }
