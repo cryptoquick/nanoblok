@@ -94,16 +94,6 @@ function Initialize ()
 		offset: offset
 	};
 	
-	loggit(commonVars.offset.x);
-/*	var offsetLeft = {
-		x: (windowSize.x - gridSize.x) / 2,
-		y: windowSize.y - gridSize.y * 2
-	};
-	var offsetRight = {
-		x: (windowSize.x - gridSize.x) / 2,
-		y: windowSize.y - gridSize.y * 2
-	};*/
-
 	// Run core graphics functions in default state.
 	Update("resize", {gridMode: "standard"}, commonVars);
 	
@@ -134,8 +124,12 @@ function Initialize ()
 	}
 }
 
+var loadTimer;
+
 // Redraw grid, redraw UI, redraw canvas...
 function Update(updateMode, updateSettings, commonVars) {
+	loadTimer = window.setInterval("timeBlokLoop(true)", 300);
+	
 	if (updateMode == "resize") {
 	//	removeUI();
 	}
@@ -155,6 +149,18 @@ function Update(updateMode, updateSettings, commonVars) {
 		canvasGrid(commonVars, "left", updateSettings.gridMode);
 		canvasGrid(commonVars, "right", updateSettings.gridMode);
 	}
+	
+	// Timer/Loader
+	if (timerRuns > 2) {
+		window.clearTimeout(loadTimer);
+		timeBlokLoop(false);
+	} else {
+		window.clearTimeout(loadTimer);
+		timeBlokLoop(true);
+		timeBlokLoop(false);
+		timeBlokLoop(false);
+	}
+	timerRuns = 0;
 }
 
 function Click (evt) {
