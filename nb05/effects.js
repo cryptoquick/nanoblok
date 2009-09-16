@@ -36,7 +36,7 @@ function tileHover (target, inout, commonVars) {
 function canvasDrawTile (bbox, commonVars, hexSide, color, stroke) {
 	var ctx = context('effects');
 //	var size = 25;
-	var tile = hexiso(bbox, commonVars.blockSize);
+	var tile = hexiso(bbox, commonVars);
 
 //	ctx.scale(1, 1);
 
@@ -57,6 +57,35 @@ function canvasDrawTile (bbox, commonVars, hexSide, color, stroke) {
 	ctx.fill();
 	
 	ctx.globalAlpha = 1;
+}
+
+function canvasDrawSet (hexSet, offset, commonVars, closed, color, stroke) {
+	var ctx = context('effects');
+	ctx.globalAlpha = 1;
+	ctx.strokeStyle = stroke;
+	ctx.fillStyle = color;
+	
+	var hexSpot = hexSet.pop();
+	var coorSet = hexiso(offset, commonVars);
+	var offsY = -35;
+	
+	ctx.beginPath();
+	ctx.moveTo(coorSet.x[hexSpot], coorSet.y[hexSpot] + offsY);
+	
+	var i = 0;
+
+	while (i < hexSet.length || i == 7) {
+		hexSpot = hexSet.pop();
+		ctx.lineTo(coorSet.x[hexSpot], coorSet.y[hexSpot] + offsY);
+		i = i++;
+	}
+	
+	if (closed) {
+		ctx.closePath();
+	}
+	
+	ctx.stroke();
+	ctx.fill();
 }
 
 // Draws background grid.
@@ -121,49 +150,50 @@ function canvasGrid (commonVars, side, mode) {
 	for (var x = 0; x < commonVars.gridDims.c; x++) {
 		for (var y = 0; y < commonVars.gridDims.r; y++) {
 			if (side == "bottom") {
-				var hexSide = [1, 2, 7, 6];
-				var tile = GridField["x-" + i].coors;
+				var hexSet = [1, 2, 7, 6];
+				var offset = GridField["x-" + i].coors;
 				
 				if (mode == "standard") {
-					var tileColor = "#eee";
+					var fill = "#eee";
 					var stroke = "#aaa";
 				}
 				if (mode == "number") {
-					var tileColor = "rgb(" + (255 - i / 4) + ", " + 0 + ", " + 0 + ")";
+					var fill = "rgb(" + (255 - i / 4) + ", " + 0 + ", " + 0 + ")";
 					var stroke = "black";
 				}
 				
-				canvasDrawTile(tile, commonVars, hexSide, tileColor, stroke);
+				// hexSet, offset, commonVars, closed, color, stroke
+				canvasDrawSet(hexSet, offset, commonVars, true, fill, stroke);
 			}
 			if (side == "left") {
-				var hexSide = [1, 7, 5, 6];
-				var tile = GridField["y-" + i].coors;
+				var hexSet = [1, 7, 5, 6];
+				var offset = GridField["y-" + i].coors;
 				
 				if (mode == "standard") {
-					var tileColor = "#ddd";
+					var fill = "#ddd";
 					var stroke = "#aaa";
 				}
 				if (mode == "number") {
-					var tileColor = "rgb(" + 0 + ", " + (255 - i / 4) + ", " + 0 + ")";
+					var fill = "rgb(" + 0 + ", " + (255 - i / 4) + ", " + 0 + ")";
 					var stroke = "black";
 				}
 				
-				canvasDrawTile(tile, commonVars, hexSide, tileColor, stroke);
+				canvasDrawSet(hexSet, offset, commonVars, true, fill, stroke);
 			}
 			if (side == "right") {
-				var hexSide = [6, 7, 4, 5];
-				var tile = GridField["z-" + i].coors;
+				var hexSet = [6, 7, 4, 5];
+				var offset = GridField["z-" + i].coors;
 				
 				if (mode == "standard") {
-					var tileColor = "#ccc";
+					var fill = "#ccc";
 					var stroke = "#aaa";
 				}
 				if (mode == "number") {
-					var tileColor = "rgb(" + 0 + ", " + 0 + ", " + (255 - i / 4) + ")";
+					var fill = "rgb(" + 0 + ", " + 0 + ", " + (255 - i / 4) + ")";
 					var stroke = "black";
 				}
 				
-				canvasDrawTile(tile, commonVars, hexSide, tileColor, stroke);
+				canvasDrawSet(hexSet, offset, commonVars, true, fill, stroke);
 			}
 			
 			i++;

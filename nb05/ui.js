@@ -1,6 +1,6 @@
 function drawUI (commonVars) {
 	// Draw the nanoblok logo.
-	var blockBlank = makeObject({x: 5, y: 5}, commonVars.blockSize);
+	var blockBlank = makeObject({x: 5, y: 5}, commonVars);
 	var block = setColor(blockBlank, 'bla');
 	block.setAttributeNS(null, 'id', 'nanoblok-logo');
 	block.setAttributeNS(null, 'transform', 'scale(3)');
@@ -47,7 +47,7 @@ function populatePalette (commonVars) {
 	
 	for (var i = 0; i < 9; i++) {
 		var colorBlock = document.createElementNS(svgNS, 'rect');
-		colorBlock.setAttributeNS(null, "id", defaultPalette[i][3]);
+		colorBlock.setAttributeNS(null, "id", "color" + i + defaultPalette[i][3]);
 		colorBlock.setAttributeNS(null, "x", -35);
 		colorBlock.setAttributeNS(null, "y", 40 * i);
 		colorBlock.setAttributeNS(null, "height", 35);

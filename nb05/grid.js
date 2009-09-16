@@ -44,7 +44,7 @@ function drawGrid (commonVars, side) {
 				};
 			}
 
-			var set = hexiso(tileCoors, commonVars.blockSize);
+			var set = hexiso(tileCoors, commonVars);
 			
 			var tile = drawSet(hexSide, set, true);
 			

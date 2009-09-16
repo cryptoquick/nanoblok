@@ -51,6 +51,39 @@ function Initialize ()
 {
 	var init0 = new Date();
 	
+	var commonVars = computeCommonVars();
+	
+	// Run core graphics functions in default state.
+	Update("resize", {gridMode: "standard"}, commonVars);
+	
+	// Post-initialization tasks.
+	var init1 = new Date();
+	
+	loggit('Program initialized in ' + (init1 - init0) + ' milliseconds.');
+	initialized = true;
+	
+	/* Event listeners */
+	window.addEventListener('click', function (evt) {
+		Click(evt, commonVars);
+	}, false);
+
+	window.addEventListener('mouseover', function (evt) {
+		Hover(evt, 'in', commonVars.offset, commonVars.blockSize);
+	}, false);
+
+	window.addEventListener('mouseout', function (evt) {
+		Hover(evt, 'out', commonVars.offset, commonVars.blockSize);
+	}, false);
+
+	window.onresize = function() {
+		if(initialized) {
+			loggit('Resolution change detected, updating screen.');
+		}
+		Update("resize", {gridMode: "standard"}, commonVars);
+	}
+}
+
+function computeCommonVars () {
 	// Basic dimensions.	
 	var blockDims = 20; // Size of blocks / tiles.
 	var blockSize = {
@@ -84,6 +117,8 @@ function Initialize ()
 		y: windowSize.y - gridSize.y * 2
 	};
 	
+	var hexPoints = new Object();
+	
 	var commonVars = {
 		blockDims: blockDims,
 		blockSize: blockSize,
@@ -92,37 +127,13 @@ function Initialize ()
 		windowSize: windowSize,
 		center: center,
 		edges: edges,
-		offset: offset
+		offset: offset,
+		hexPoints: hexPoints
 	};
 	
-	// Run core graphics functions in default state.
-	Update("resize", {gridMode: "standard"}, commonVars);
+	var commonVars = hexInit(commonVars);
 	
-	// Post-initialization tasks.
-	var init1 = new Date();
-	
-	loggit('Program initialized in ' + (init1 - init0) + ' milliseconds.');
-	initialized = true;
-	
-	/* Event listeners */
-	window.addEventListener('click', function (evt) {
-		Click(evt, commonVars);
-	}, false);
-
-	window.addEventListener('mouseover', function (evt) {
-		Hover(evt, 'in', offset, blockSize);
-	}, false);
-
-	window.addEventListener('mouseout', function (evt) {
-		Hover(evt, 'out', offset, blockSize);
-	}, false);
-
-	window.onresize = function() {
-		if(initialized) {
-			loggit('Resolution change detected, updating screen.');
-		}
-	//	Update("resize", {gridMode: "standard"});
-	}
+	return commonVars;
 }
 
 var loadTimer;
@@ -149,6 +160,15 @@ function Update (updateMode, updateSettings, commonVars) {
 		canvasGrid(commonVars, "bottom", updateSettings.gridMode);
 		canvasGrid(commonVars, "left", updateSettings.gridMode);
 		canvasGrid(commonVars, "right", updateSettings.gridMode);
+		
+		if (updateSettings.gridMode == "standard") {
+			document.getElementById("standardButton").setAttributeNS(null, "fill-opacity", 1.0);
+			document.getElementById("numberButton").setAttributeNS(null, "fill-opacity", 0.5);
+		}
+		else if (updateSettings.gridMode == "number") {
+			document.getElementById("numberButton").setAttributeNS(null, "fill-opacity", 1.0);
+			document.getElementById("standardButton").setAttributeNS(null, "fill-opacity", 0.5);
+		}
 	}
 	
 	// Timer/Loader
@@ -186,19 +206,33 @@ function Click (evt, commonVars) {
 		var targetBlock = Field[target.parentNode.id];
 		attachBlock(targetBlock.position, targetBlock.axis); // z+
 	}
-	else if (target.id == "standardButton" || target.id == "standardText") {
+	
+	// Left-side mode settings buttons
+	if (target.id == "standardButton" || target.id == "standardText") {
 		Update("canvas", {gridMode: "standard"}, commonVars);
-		loggit("Standard view.");
+		loggit("Set to standard view.");
 	}
 	else if (target.id == "numberButton" || target.id == "numberText") {
 		Update("canvas", {gridMode: "number"}, commonVars);
-		loggit("Number view.")
+		loggit("Set to number view.")
 	}
 }
 
 function Hover (evt, inout, offset, blockSize) {
 	var target = evt.target;
-	if (target.id.substr(0,1) == 'x' || target.id.substr(0,1) == 'y' || target.id.substr(0,1) == 'z') {
+	// Hands id of hovered grid tile to let the user know what tile their mouse is over.
+	if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-') {
 		tileHover(target, inout, offset, blockSize);
+	}
+	// Display the color of the hovered object in the event log.
+	if (target.id.substr(0,5) == "color") {
+		loggit("Color " + defaultPalette[target.id.substr(5,1)][3]);
+	}
+	// Same as above, but for the left-side buttons.
+	if (target.id == "standardButton") {
+		loggit("Standard view");
+	}
+	if (target.id == "numberButton") {
+		loggit("Number view");
 	}
 }
