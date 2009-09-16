@@ -18,8 +18,8 @@ function drawGrid (commonVars, side) {
 	var i = 0;
 	
 	// Grid loop builds an absolute position tile, then places it at a specific x/y position on the grid.
-	for (var x = 0; x < gridDims.c; x++) {
-		for (var y = 0; y < gridDims.r; y++) {
+	for (var x = 0; x < commonVars.gridDims.c; x++) {
+		for (var y = 0; y < commonVars.gridDims.r; y++) {
 			var tileCoors;
 			
 			if (side == "bottom") {

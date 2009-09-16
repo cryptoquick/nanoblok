@@ -92,7 +92,9 @@ function Initialize ()
 		center: center,
 		edges: edges,
 		offset: offset
-	}
+	};
+	
+	loggit(commonVars.offset.x);
 /*	var offsetLeft = {
 		x: (windowSize.x - gridSize.x) / 2,
 		y: windowSize.y - gridSize.y * 2
@@ -103,7 +105,7 @@ function Initialize ()
 	};*/
 
 	// Run core graphics functions in default state.
-	Update("resize", {gridMode: "standard"});
+	Update("resize", {gridMode: "standard"}, commonVars);
 	
 	// Post-initialization tasks.
 	var init1 = new Date();

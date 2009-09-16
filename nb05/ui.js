@@ -2,7 +2,7 @@
 
 function drawUI (commonVars) {
 	// Draw the nanoblok logo.
-	var blockBlank = makeObject({x: 5, y: 5}, commonVars.blockSize); //offset.x, offset.y);
+	var blockBlank = makeObject({x: 5, y: 5}, commonVars.blockSize);
 	var block = setColor(blockBlank, 'bla');
 	block.setAttributeNS(null, 'id', 'nanoblok-logo');
 	block.setAttributeNS(null, 'transform', 'scale(3)');

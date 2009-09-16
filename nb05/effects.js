@@ -13,7 +13,7 @@ function context(element) {
 
 var fadeInterval;
 
-function tileHover (target, inout, offset, blockSize) {
+function tileHover (target, inout, commonVars) {
 	var init0 = new Date();
 	
 //	window.clearInterval(fadeInterval);
@@ -33,10 +33,10 @@ function tileHover (target, inout, offset, blockSize) {
 	loggit(target.id + ': ' + target.getAttribute('c') + ', ' + target.getAttribute('r') + '. ' + (init1 - init0) + 'ms.');
 }
 
-function canvasDrawTile (bbox, offset, blockSize, hexSide, color) {
+function canvasDrawTile (bbox, commonVars, hexSide, color) {
 	var ctx = context('effects');
 //	var size = 25;
-	var tile = hexiso(bbox, blockSize);
+	var tile = hexiso(bbox, commonVars.blockSize);
 
 //	ctx.scale(1, 1);
 
@@ -60,15 +60,15 @@ function canvasDrawTile (bbox, offset, blockSize, hexSide, color) {
 }
 
 // Draws background grid.
-function canvasBG (blockSize, gridDims, gridSize, offset, edges, side) {
+function canvasBG (commonVars) {
 	var ctx = context('effects');
 
 	// Grid dimensions
-	var gr1 = gridSize.x;
+	var gr1 = commonVars.gridSize.x;
 	var gr2 = gr1 / 2;
 	var gr4 = gr1 / 4;
 	
-	var offsY = offset.y - 29;
+	var offsY = commonVars.offset.y - 29;
 
 //	ctx.globalCompositeOperation = 'lighter';
 	
@@ -78,47 +78,47 @@ function canvasBG (blockSize, gridDims, gridSize, offset, edges, side) {
 	if (side == "bottom") {
 		ctx.fillStyle = '#eee';
 		ctx.beginPath();
-		ctx.moveTo(gr2 + offset.x, 0 + offsY);
-		ctx.lineTo(gr1 + offset.x, gr4 + offsY);
-		ctx.lineTo(gr2 + offset.x, gr2 + offsY);
-		ctx.lineTo(0 + offset.x, gr4 + offsY);
+		ctx.moveTo(gr2 + commonVars.offset.x, 0 + offsY);
+		ctx.lineTo(gr1 + commonVars.offset.x, gr4 + offsY);
+		ctx.lineTo(gr2 + commonVars.offset.x, gr2 + offsY);
+		ctx.lineTo(0 + commonVars.offset.x, gr4 + offsY);
 	}
 	if (side == "left") {
 		ctx.fillStyle = '#ddd';
 		ctx.beginPath();
-		ctx.moveTo(gr2 + offset.x, offsY - gridSize.y * 2);
-		ctx.lineTo(gr2 + offset.x, gridSize.y - gr4 + offsY);
-		ctx.lineTo(0 + offset.x, offsY + gr4);
-		ctx.lineTo(0 + offset.x, offsY - gridSize.y);
+		ctx.moveTo(gr2 + commonVars.offset.x, offsY - commonVars.gridSize.y * 2);
+		ctx.lineTo(gr2 + commonVars.offset.x, commonVars.gridSize.y - gr4 + offsY);
+		ctx.lineTo(0 + commonVars.offset.x, offsY + gr4);
+		ctx.lineTo(0 + commonVars.offset.x, offsY - commonVars.gridSize.y);
 	}
 	if (side == "right") {
 		ctx.fillStyle = '#ccc';
 		ctx.beginPath();
-		ctx.moveTo(gr2 + offset.x, offsY - gridSize.y * 2);
-		ctx.lineTo(gr1 + offset.x, offsY - gr4);
-		ctx.lineTo(gr1 + offset.x, offsY + gr4);
-		ctx.lineTo(gr2 + offset.x, offsY);
+		ctx.moveTo(gr2 + commonVars.offset.x, offsY - commonVars.gridSize.y * 2);
+		ctx.lineTo(gr1 + commonVars.offset.x, offsY - gr4);
+		ctx.lineTo(gr1 + commonVars.offset.x, offsY + gr4);
+		ctx.lineTo(gr2 + commonVars.offset.x, offsY);
 	}
 	ctx.closePath();
 	ctx.fill();
 	ctx.save();
 	
 	if (side == "bottom") {
-		canvasGrid(gridDims, gridSize, blockSize, offset, "bottom");
+		canvasGrid(commonVars, "bottom");
 	}
 	if (side == "left") {
-		canvasGrid(gridDims, gridSize, blockSize, offset, "left");
+		canvasGrid(commonVars, "left");
 	}
 	if (side == "right") {
-		canvasGrid(gridDims, gridSize, blockSize, offset, "right");
+		canvasGrid(commonVars, "right");
 	}
 }
 
-function canvasGrid (gridDims, gridSize, blockSize, offset, side, mode) {
+function canvasGrid (commonVars, side, mode) {
 	var i = 0;
 		
-	for (var x = 0; x < gridDims.c; x++) {
-		for (var y = 0; y < gridDims.r; y++) {
+	for (var x = 0; x < commonVars.gridDims.c; x++) {
+		for (var y = 0; y < commonVars.gridDims.r; y++) {
 			if (side == "bottom") {
 				var hexSide = [1, 2, 7, 6];
 				var tile = GridField["x-" + i].coors;
@@ -130,7 +130,7 @@ function canvasGrid (gridDims, gridSize, blockSize, offset, side, mode) {
 					var tileColor = "rgb(" + (255 - i / 4) + ", " + (255 - i / 4) + ", " + (255 - i / 4) + ")";
 				}
 				
-				canvasDrawTile(tile, offset, blockSize, hexSide, tileColor);
+				canvasDrawTile(tile, commonVars, hexSide, tileColor);
 			}
 			if (side == "left") {
 				var hexSide = [1, 7, 5, 6];
@@ -143,7 +143,7 @@ function canvasGrid (gridDims, gridSize, blockSize, offset, side, mode) {
 					var tileColor = "rgb(" + (255 - i / 4) + ", " + (255 - i / 4) + ", " + (255 - i / 4) + ")";
 				}
 				
-				canvasDrawTile(tile, offset, blockSize, hexSide, tileColor);
+				canvasDrawTile(tile, commonVars, hexSide, tileColor);
 			}
 			if (side == "right") {
 				var hexSide = [6, 7, 4, 5];
@@ -156,7 +156,7 @@ function canvasGrid (gridDims, gridSize, blockSize, offset, side, mode) {
 					var tileColor = "rgb(" + (255 - i / 4) + ", " + (255 - i / 4) + ", " + (255 - i / 4) + ")";
 				}
 				
-				canvasDrawTile(tile, offset, blockSize, hexSide, tileColor);
+				canvasDrawTile(tile, commonVars, hexSide, tileColor);
 			}
 			
 			i++;
@@ -164,14 +164,14 @@ function canvasGrid (gridDims, gridSize, blockSize, offset, side, mode) {
 	}
 }
 
-function attachBlock(position, blockSize) {
+function attachBlock(position, commonVars) {
 	blockID = 'block-' + blockTick;
 	blockTick++;
 //	bbox = voxelBBox(position);
 	bbox = targetElement.getBBox();
 	color = 'bla';
 //	offset = voxelBBox(position.x + axis.x, position.x + axis.y, position.z + axis.z - 1);
-	blockBlank = makeObject(bbox, blockSize); //offset.x, offset.y);
+	blockBlank = makeObject(bbox, commonVars.blockSize); //offset.x, offset.y);
 	block = setColor(blockBlank, color);
 	block.setAttributeNS(null, 'id', blockID);
 //	block.setAttributeNS(null, 'block-color', color);
@@ -181,6 +181,6 @@ function attachBlock(position, blockSize) {
 //	loggit('Block placed on the grid at ' + voxelCoordinates.x + ', ' + voxelCoordinates.y);
 }
 
-function canvasBlock(position, blockSize) {
-	canvasDrawTile (coors, offset, blockSize, hexSide, color)
+function canvasBlock(position, commonVars) {
+	canvasDrawTile (coors, commonVars, hexSide, color)
 }
