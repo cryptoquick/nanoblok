@@ -75,6 +75,7 @@ function Initialize ()
 	// Grid edges
 	var edges = {
 		left: center.x - gridSize.x / 2,
+		right: center.x + gridSize.x / 2,
 		top: windowSize.y - gridSize.y * 2
 	};
 	
@@ -105,7 +106,7 @@ function Initialize ()
 	
 	/* Event listeners */
 	window.addEventListener('click', function (evt) {
-		Click(evt);
+		Click(evt, commonVars);
 	}, false);
 
 	window.addEventListener('mouseover', function (evt) {
@@ -120,14 +121,14 @@ function Initialize ()
 		if(initialized) {
 			loggit('Resolution change detected, updating screen.');
 		}
-		Update("resize", {gridMode: "standard"});
+	//	Update("resize", {gridMode: "standard"});
 	}
 }
 
 var loadTimer;
 
 // Redraw grid, redraw UI, redraw canvas...
-function Update(updateMode, updateSettings, commonVars) {
+function Update (updateMode, updateSettings, commonVars) {
 	loadTimer = window.setInterval("timeBlokLoop(true)", 300);
 	
 	if (updateMode == "resize") {
@@ -163,7 +164,7 @@ function Update(updateMode, updateSettings, commonVars) {
 	timerRuns = 0;
 }
 
-function Click (evt) {
+function Click (evt, commonVars) {
 	// Find out which element we clicked on
 	var target = evt.target;
 	
@@ -184,6 +185,14 @@ function Click (evt) {
 	} else if (target.id == 'top') {
 		var targetBlock = Field[target.parentNode.id];
 		attachBlock(targetBlock.position, targetBlock.axis); // z+
+	}
+	else if (target.id == "standardButton" || target.id == "standardText") {
+		Update("canvas", {gridMode: "standard"}, commonVars);
+		loggit("Standard view.");
+	}
+	else if (target.id == "numberButton" || target.id == "numberText") {
+		Update("canvas", {gridMode: "number"}, commonVars);
+		loggit("Number view.")
 	}
 }
 

@@ -52,7 +52,7 @@ function drawGrid (commonVars, side) {
 				var blockID = 'x-' + i;
 				tile.setAttributeNS(null, 'id', blockID);
 				GridField['x-' + i] = {x: x, y: y, z: -1, coors: tileCoors};
-			//	Voxel[x][0][0] = ;
+			//	Voxel[x][y][-1] = ;
 			}
 			if (side == "left") {
 				var blockID = 'y-' + i;
