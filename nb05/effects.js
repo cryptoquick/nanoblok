@@ -59,11 +59,13 @@ function canvasDrawTile (bbox, commonVars, hexSide, color, stroke) {
 	ctx.globalAlpha = 1;
 }
 
-function canvasDrawSet (hexSet, offset, commonVars, closed, color, stroke) {
+function canvasDrawSet (hexSet, offset, commonVars, settings) {
 	var ctx = context('effects');
 	ctx.globalAlpha = 1;
-	ctx.strokeStyle = stroke;
-	ctx.fillStyle = color;
+	ctx.strokeStyle = settings.stroke;
+	if (settings.fill !== false) {
+		ctx.fillStyle = settings.fill;
+	}
 	
 	var hexSpot = hexSet.pop();
 	var coorSet = hexiso(offset, commonVars);
@@ -80,12 +82,14 @@ function canvasDrawSet (hexSet, offset, commonVars, closed, color, stroke) {
 		i = i++;
 	}
 	
-	if (closed) {
+	if (settings.closed) {
 		ctx.closePath();
 	}
 	
 	ctx.stroke();
-	ctx.fill();
+	if (settings.fill !== false) {
+		ctx.fill();
+	}
 }
 
 // Draws background grid.
@@ -163,7 +167,8 @@ function canvasGrid (commonVars, side, mode) {
 				}
 				
 				// hexSet, offset, commonVars, closed, color, stroke
-				canvasDrawSet(hexSet, offset, commonVars, true, fill, stroke);
+				canvasDrawSet(hexSet, offset, commonVars,
+					{closed: true, fill: fill, stroke: stroke});
 			}
 			if (side == "left") {
 				var hexSet = [1, 7, 5, 6];
@@ -178,7 +183,8 @@ function canvasGrid (commonVars, side, mode) {
 					var stroke = "black";
 				}
 				
-				canvasDrawSet(hexSet, offset, commonVars, true, fill, stroke);
+				canvasDrawSet(hexSet, offset, commonVars,
+					{closed: true, fill: fill, stroke: stroke});
 			}
 			if (side == "right") {
 				var hexSet = [6, 7, 4, 5];
@@ -193,12 +199,28 @@ function canvasGrid (commonVars, side, mode) {
 					var stroke = "black";
 				}
 				
-				canvasDrawSet(hexSet, offset, commonVars, true, fill, stroke);
+				canvasDrawSet(hexSet, offset, commonVars,
+					{closed: true, fill: fill, stroke: stroke});
 			}
 			
 			i++;
 		}
 	}
+	
+	var blockDims = commonVars.blockSize.full * commonVars.gridDims.c; // Size of blocks / tiles.
+	var blockSize = {
+		full: blockDims,
+		half: blockDims / 2,
+		third: blockDims / 2 + blockDims / 4,
+		quarter: blockDims / 4
+	}
+	
+	var bigCommonVars = commonVars;
+	bigCommonVars.blockSize = blockSize;
+	
+	var upperLeft = {x: commonVars.edges.left, y: (commonVars.edges.top - commonVars.gridSize.y * 2)};
+	canvasDrawSet([1, 2, 3, 4, 5, 6], upperLeft, bigCommonVars,
+		{closed: true, fill: false, stroke: "#aaa"});
 }
 
 function attachBlock (position, commonVars) {
@@ -220,6 +242,10 @@ function attachBlock (position, commonVars) {
 
 function canvasBlock (position, commonVars) {
 	canvasDrawTile (bbox, commonVars, [1, 6, 7, 2], color);
+	
+	var upperLeft = {x: commonVars.edges.left, y: (commonVars.edges.top - commonVars.gridSize.y * 2)};
+	canvasDrawSet([1, 2, 3, 4, 5, 6], upperLeft, bigCommonVars,
+		{closed: true, fill: false, stroke: "#aaa"});
 }
 
 function colorBlock (color) {
