@@ -25,49 +25,77 @@ function array_search_key(array, num) {
 // SVG namespace so that objects can be attached to the document.
 var svgNS = 'http://www.w3.org/2000/svg';
 
-// Builds an array of points that corresponds to an entire isometric block (six points), including center (7). Arrays for both X and Y coordinates. Offset added to hexagon proportions.	
-function hexInit (commonVars) {
-	var blockSize = commonVars.blockSize;
-	
-//	loggit (commonVars.hexPoints);
-	
-	var isoX = Array();
-	isoX [1] = blockSize.half;
-	isoX [2] = blockSize.full;
-	isoX [3] = blockSize.full;
-	isoX [4] = blockSize.half;
-	isoX [5] = 0;
-	isoX [6] = 0;
-	isoX [7] = blockSize.half;
-
-	var isoY = Array();
-	isoY [1] = 0;
-	isoY [2] = blockSize.quarter;
-	isoY [3] = blockSize.third;
-	isoY [4] = blockSize.full;
-	isoY [5] = blockSize.third;
-	isoY [6] = blockSize.quarter;
-	isoY [7] = blockSize.half;
-	
-	commonVars.hexPoints = {x: isoX, y: isoY};
-	
-	return commonVars;
-}
+// // Builds an array of points that corresponds to an entire isometric block (six points), including center (7). Arrays for both X and Y coordinates. Offset added to hexagon proportions.	
+// function hexInit (commonVars) {
+// 	var blockSize = commonVars.blockSize;
+// 	
+// //	loggit (commonVars.hexPoints);
+// 	
+// 	var isoX = Array();
+// 	isoX [1] = blockSize.half;
+// 	isoX [2] = blockSize.full;
+// 	isoX [3] = blockSize.full;
+// 	isoX [4] = blockSize.half;
+// 	isoX [5] = 0;
+// 	isoX [6] = 0;
+// 	isoX [7] = blockSize.half;
+// 
+// 	var isoY = Array();
+// 	isoY [1] = 0;
+// 	isoY [2] = blockSize.quarter;
+// 	isoY [3] = blockSize.third;
+// 	isoY [4] = blockSize.full;
+// 	isoY [5] = blockSize.third;
+// 	isoY [6] = blockSize.quarter;
+// 	isoY [7] = blockSize.half;
+// 	
+// 	commonVars.hexPoints = {x: isoX, y: isoY};
+// 	
+// 	return commonVars;
+// }
+// 
+// // Draws hexagonal points in iso perspective, based on hard coordinate and size of block. Depends on an orientation array (see block-grid.png in Nanoblok Extras). Returns static coordinates of where to draw blocks on the screen.
+// function hexiso (offset, commonVars) {
+// 	var isoX = new Array();
+// 	var isoY = new Array();
+// 	
+// //	loggit(commonVars.hexPoints.x);
+// 	
+// 	for (var i = 1; i <= 7; i++) {
+// 		isoX[i] = commonVars.hexPoints.x[i] + offset.x;
+// 		isoY[i] = commonVars.hexPoints.y[i] + offset.y;
+// 	}
+// 	
+// 	return {x: isoX, y: isoY};
+// }
 
 // Draws hexagonal points in iso perspective, based on hard coordinate and size of block. Depends on an orientation array (see block-grid.png in Nanoblok Extras). Returns static coordinates of where to draw blocks on the screen.
 function hexiso (offset, commonVars) {
-	var isoX = new Array();
-	var isoY = new Array();
+	var blockSize = commonVars.blockSize;
 	
-//	loggit(commonVars.hexPoints.x);
+	// Builds an array of points that corresponds to an entire isometric block (six points), including center (7). Arrays for both X and Y coordinates. Offset added to hexagon proportions.	
 	
-	for (var i = 1; i <= 7; i++) {
-		isoX[i] = commonVars.hexPoints.x[i] + offset.x;
-		isoY[i] = commonVars.hexPoints.y[i] + offset.y;
-	}
+	var isoX = Array();
+	isoX [1] = blockSize.half + offset.x;
+	isoX [2] = blockSize.full + offset.x;
+	isoX [3] = blockSize.full + offset.x;
+	isoX [4] = blockSize.half + offset.x;
+	isoX [5] = offset.x;
+	isoX [6] = offset.x;
+	isoX [7] = blockSize.half + offset.x;
+
+	var isoY = Array();
+	isoY [1] = offset.y;
+	isoY [2] = blockSize.quarter + offset.y;
+	isoY [3] = blockSize.third + offset.y;
+	isoY [4] = blockSize.full + offset.y;
+	isoY [5] = blockSize.third + offset.y;
+	isoY [6] = blockSize.quarter + offset.y;
+	isoY [7] = blockSize.half + offset.y;
 	
 	return {x: isoX, y: isoY};
 }
+
 
 function drawSet (hexSet, coorSet, closed) {
 	pathElement = document.createElementNS(svgNS, 'path');

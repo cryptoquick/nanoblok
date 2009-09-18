@@ -27,27 +27,13 @@ function drawUI (commonVars) {
 	populatePalette(commonVars);
 }
 
-// From Tango Project colors:
-// http://tango.freedesktop.org/Tango_Icon_Theme_Guidelines
-var defaultPalette = new Array();
-defaultPalette[0] = [164, 0, 0, 'red', null];
-defaultPalette[1] = [211, 127, 4, 'orange', null];
-defaultPalette[2] = [213, 184, 8, 'yellow', null];
-defaultPalette[3] = [42, 197, 18, 'green', null];
-defaultPalette[4] = [43, 84, 200, 'blue', null];
-defaultPalette[5] = [147, 29, 199, 'purple', null];
-defaultPalette[6] = [190, 67, 180, 'pink', null];
-defaultPalette[7] = [201, 202, 188, 'white', null];
-defaultPalette[8] = [55, 48, 51, 'black', null];
-defaultPalette[9] = [255, 255, 255, 'transparent', null];
-
 function populatePalette (commonVars) {
 	var sideColorsRight = document.getElementById("sideColorsRight");
 	sideColorsRight.setAttributeNS(null, "transform", "translate(" + (commonVars.edges.right + 40) + ", " + (commonVars.edges.top - commonVars.gridSize.y - 10) + ")");
 	
 	for (var i = 0; i < 9; i++) {
 		var colorBlock = document.createElementNS(svgNS, 'rect');
-		colorBlock.setAttributeNS(null, "id", "color" + i + defaultPalette[i][3]);
+		colorBlock.setAttributeNS(null, "id", "color" + i + commonVars.palette[i][3]);
 		colorBlock.setAttributeNS(null, "x", -35);
 		colorBlock.setAttributeNS(null, "y", 40 * i);
 		colorBlock.setAttributeNS(null, "height", 35);
@@ -61,9 +47,9 @@ function populatePalette (commonVars) {
 
 function getDefaultColor (paletteNum) {
 	rgbOutput = "rgb("
-		+ (defaultPalette[paletteNum][0] + 40) + ", "
-	 	+ (defaultPalette[paletteNum][1] + 40) + ", "
-		+ (defaultPalette[paletteNum][2] + 40) + ")";
+		+ (palette[paletteNum][0] + 40) + ", "
+	 	+ (palette[paletteNum][1] + 40) + ", "
+		+ (palette[paletteNum][2] + 40) + ")";
 	return rgbOutput;
 }
 

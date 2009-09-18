@@ -207,7 +207,7 @@ function canvasGrid (commonVars, side, mode) {
 		}
 	}
 	
-	var blockDims = commonVars.blockSize.full * commonVars.gridDims.c; // Size of blocks / tiles.
+/*	var blockDims = commonVars.blockSize.full * commonVars.gridDims.c; // Size of blocks / tiles.
 	var blockSize = {
 		full: blockDims,
 		half: blockDims / 2,
@@ -217,10 +217,9 @@ function canvasGrid (commonVars, side, mode) {
 	
 	var bigCommonVars = commonVars;
 	bigCommonVars.blockSize = blockSize;
-	
 	var upperLeft = {x: commonVars.edges.left, y: (commonVars.edges.top - commonVars.gridSize.y * 2)};
-	canvasDrawSet([1, 2, 3, 4, 5, 6], upperLeft, bigCommonVars,
-		{closed: true, fill: false, stroke: "#aaa"});
+	
+	canvasDrawSet([1, 2, 3, 4, 5, 6], upperLeft, bigCommonVars, {closed: true, fill: false, stroke: "#aaa"});*/
 }
 
 function attachBlock (position, commonVars) {
@@ -240,16 +239,25 @@ function attachBlock (position, commonVars) {
 //	loggit('Block placed on the grid at ' + voxelCoordinates.x + ', ' + voxelCoordinates.y);
 }
 
-function canvasBlock (position, commonVars) {
-	canvasDrawTile (bbox, commonVars, [1, 6, 7, 2], color);
+function canvasBlock (position, commonVars, colorID) {
+//	var blockTarget = document.getElementById(target.id);
+	// var xPos = blockTarget.getAttribute("c") * commonVars.blockSize.full + commonVars.offset.x;
+	// var yPos = blockTarget.getAttribute("r") * commonVars.blockSize.full + commonVars.offset.y;
+	// position = {x: xPos, y: yPos};
 	
-	var upperLeft = {x: commonVars.edges.left, y: (commonVars.edges.top - commonVars.gridSize.y * 2)};
-	canvasDrawSet([1, 2, 3, 4, 5, 6], upperLeft, bigCommonVars,
-		{closed: true, fill: false, stroke: "#aaa"});
+	var adjustedPosition = {x: position.x, y: position.y - commonVars.blockSize.half};
+	
+	var color = colorBlock(colorID, commonVars);
+	
+	canvasDrawSet ([1, 6, 7, 2], adjustedPosition, commonVars, {closed: true, fill: color.top, stroke: color.inset});
+	canvasDrawSet ([2, 7, 4, 3], adjustedPosition, commonVars, {closed: true, fill: color.right, stroke: color.inset});
+	canvasDrawSet ([6, 7, 4, 5], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
+		
+//	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, commonVars, {closed: true, fill: false, stroke: "#aaa"});
 }
 
-function colorBlock (color) {
-	var color = palette[3]; // kludge
+function colorBlock (colorID, commonVars) {
+	var color = commonVars.palette[colorID];
 	var colorR = color[0];
 	var colorG = color[1];
 	var colorB = color[2];
@@ -257,4 +265,6 @@ function colorBlock (color) {
 	var colorRight = "rgb(" + (colorR + 20) + ", " + (colorG + 20) + ", " + (colorB + 20) + ")";
 	var colorTop = "rgb(" + (colorR + 40) + ", " + (colorG + 40) + ", " + (colorB + 40) + ")";
 	var colorLines = "rgb(" + (colorR + 50) + ", " + (colorG + 50) + ", " + (colorB + 50) + ")";
+	
+	return {left: colorLeft, right: colorRight, top: colorTop, inset: colorLines};
 }

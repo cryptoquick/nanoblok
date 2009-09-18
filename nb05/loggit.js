@@ -13,7 +13,7 @@ function loggit(str) {
 	
 	var childCount = log.getElementsByTagName('tspan').length;
 
-	var numLines = 3;
+	var numLines = 2;
 
 	if (navigator.userAgent.indexOf('Firefox') != -1)
 	{
@@ -22,7 +22,7 @@ function loggit(str) {
 
 	if(childCount >= numLines){
 		log.removeChild(log.firstChild);
-		log.firstChild.setAttributeNS(null, 'dy', 5);
+		log.getElementsByTagName('tspan')[0].setAttributeNS(null, 'dy', 5);
 	}
 	
 	var textElement = document.createElementNS(svgNS, 'tspan');

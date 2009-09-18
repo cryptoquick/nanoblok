@@ -68,11 +68,11 @@ function Initialize ()
 	}, false);
 
 	window.addEventListener('mouseover', function (evt) {
-		Hover(evt, 'in', commonVars.offset, commonVars.blockSize);
+		Hover(evt, 'in', commonVars);
 	}, false);
 
 	window.addEventListener('mouseout', function (evt) {
-		Hover(evt, 'out', commonVars.offset, commonVars.blockSize);
+		Hover(evt, 'out', commonVars);
 	}, false);
 
 	window.onresize = function() {
@@ -117,7 +117,22 @@ function computeCommonVars () {
 		y: windowSize.y - gridSize.y * 2
 	};
 	
-	var hexPoints = new Object();
+	// From Tango Project colors:
+	// http://tango.freedesktop.org/Tango_Icon_Theme_Guidelines
+	var defaultPalette = [
+		[164, 0, 0, 'red', null],
+		[211, 127, 4, 'orange', null],
+		[213, 184, 8, 'yellow', null],
+		[42, 197, 18, 'green', null],
+		[43, 84, 200, 'blue', null],
+		[147, 29, 199, 'purple', null],
+		[190, 67, 180, 'pink', null],
+		[201, 202, 188, 'white', null],
+		[55, 48, 51, 'black', null],
+		[255, 255, 255, 'transparent', null]
+	];
+	
+	selectedColor = 0;
 	
 	var commonVars = {
 		blockDims: blockDims,
@@ -128,10 +143,11 @@ function computeCommonVars () {
 		center: center,
 		edges: edges,
 		offset: offset,
-		hexPoints: hexPoints
+		palette: defaultPalette,
+		selectedColor: selectedColor
 	};
 	
-	var commonVars = hexInit(commonVars);
+//	var commonVars = hexInit(commonVars);
 	
 	return commonVars;
 }
@@ -189,7 +205,7 @@ function Click (evt, commonVars) {
 	var target = evt.target;
 	
 //	var axis = {x: 0, y: 0, z: 0};
-	
+	/*
 	if (target.id.substr(0,1) == 'x' || target.id.substr(0,1) == 'y' || target.id.substr(0,1) == 'z') {
 		var position = Field[target.id];
 		position.z++;
@@ -205,9 +221,9 @@ function Click (evt, commonVars) {
 	} else if (target.id == 'top') {
 		var targetBlock = Field[target.parentNode.id];
 		attachBlock(targetBlock.position, targetBlock.axis); // z+
-	}
+	}*/
 	
-	// Left-side mode settings buttons
+	// Left-side mode settings buttons.
 	if (target.id == "standardButton" || target.id == "standardText") {
 		Update("canvas", {gridMode: "standard"}, commonVars);
 		loggit("Set to standard view.");
@@ -216,17 +232,33 @@ function Click (evt, commonVars) {
 		Update("canvas", {gridMode: "number"}, commonVars);
 		loggit("Set to number view.")
 	}
+	
+	// Color selection.
+	if (target.id.substr(0,5) == "color") {
+		var oldColorIndex = commonVars.selectedColor;
+		document.getElementById("color" + oldColorIndex + commonVars.palette[oldColorIndex][3])
+		.setAttributeNS(null, "stroke-opacity", "0.0");
+		commonVars.selectedColor = target.id.substr(5,1);
+		loggit("Selected color is: " + commonVars.palette[commonVars.selectedColor][3] + ".");
+		document.getElementById(target.id).setAttributeNS(null, "stroke-opacity", "1.0");
+	}
+	
+	// Block placement.
+	if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-') {
+		canvasBlock(GridField[target.id].coors, commonVars, commonVars.selectedColor);
+		loggit("Block placed at " + GridField[target.id].x + ", " + GridField[target.id].y + ", " + GridField[target.id].z + ".")
+	}
 }
 
-function Hover (evt, inout, offset, blockSize) {
+function Hover (evt, inout, commonVars) {
 	var target = evt.target;
 	// Hands id of hovered grid tile to let the user know what tile their mouse is over.
 	if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-') {
-		tileHover(target, inout, offset, blockSize);
+		tileHover(target, inout, commonVars.offset, commonVars.blockSize);
 	}
 	// Display the color of the hovered object in the event log.
 	if (target.id.substr(0,5) == "color") {
-		loggit("Color " + defaultPalette[target.id.substr(5,1)][3]);
+		loggit("Color " + commonVars.palette[target.id.substr(5,1)][3]);
 	}
 	// Same as above, but for the left-side buttons.
 	if (target.id == "standardButton") {
