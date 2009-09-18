@@ -46,6 +46,8 @@ window.addEventListener('load', function () {
 	Initialize();
 }, false);
 
+var mouseDown = false;
+
 /* Main Functions */
 function Initialize ()
 {
@@ -63,8 +65,13 @@ function Initialize ()
 	initialized = true;
 	
 	/* Event listeners */
-	window.addEventListener('click', function (evt) {
+	window.addEventListener('mousedown', function (evt) {
 		Click(evt, commonVars);
+		mouseDown = true;
+	}, false);
+	
+	window.addEventListener('mouseup', function (evt) {
+		mouseDown = false;
 	}, false);
 
 	window.addEventListener('mouseover', function (evt) {
@@ -148,6 +155,17 @@ function computeCommonVars () {
 	};
 	
 //	var commonVars = hexInit(commonVars);
+	
+	// Initialize the voxel array.
+	for (var x = 0; x < gridDims.r; x++) {
+		Voxel[x] = new Array();
+		for (var y = 0; y < gridDims.r; y++) {
+		Voxel[x][y] = new Array();
+			for (var z = 0; z < gridDims.c; z++) {
+				Voxel[x][y][z] = -1;
+			}
+		}
+	}
 	
 	return commonVars;
 }
@@ -244,18 +262,37 @@ function Click (evt, commonVars) {
 	}
 	
 	// Block placement.
-	if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-') {
-		canvasBlock(GridField[target.id].coors, commonVars, commonVars.selectedColor);
-		loggit("Block placed at " + GridField[target.id].x + ", " + GridField[target.id].y + ", " + GridField[target.id].z + ".")
+	if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-')
+	{
+		placeBlock(target, commonVars);
 	}
+}
+
+function placeBlock (target, commonVars) {
+	
+	var location = {
+		x: GridField[target.id].x,
+		y: GridField[target.id].y,
+		z: 0
+	}
+	
+	while (Voxel[location.x][location.y][location.z] !== -1) {
+		location.z++;
+	}
+	
+	canvasBlock(GridField[target.id].coors, location, commonVars, commonVars.selectedColor);
+	
+	Voxel[location.x][location.y][location.z] = commonVars.selectedColor;
+	
+	loggit("Block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
 }
 
 function Hover (evt, inout, commonVars) {
 	var target = evt.target;
 	// Hands id of hovered grid tile to let the user know what tile their mouse is over.
-	if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-') {
-		tileHover(target, inout, commonVars.offset, commonVars.blockSize);
-	}
+	// if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-') {
+	// 	tileHover(target, inout, commonVars.offset, commonVars.blockSize);
+	// }
 	// Display the color of the hovered object in the event log.
 	if (target.id.substr(0,5) == "color") {
 		loggit("Color " + commonVars.palette[target.id.substr(5,1)][3]);
@@ -266,5 +303,12 @@ function Hover (evt, inout, commonVars) {
 	}
 	if (target.id == "numberButton") {
 		loggit("Number view");
+	}
+	
+	if ((target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-') && mouseDown) {
+		placeBlock(target, commonVars);
+	} else if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-')
+	{
+		tileHover(target, inout, commonVars.offset, commonVars.blockSize);
 	}
 }

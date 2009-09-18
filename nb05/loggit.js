@@ -17,7 +17,7 @@ function loggit(str) {
 
 	if (navigator.userAgent.indexOf('Firefox') != -1)
 	{
-		numLines = 2;
+		numLines = 1;
 	}
 
 	if(childCount >= numLines){

@@ -239,20 +239,25 @@ function attachBlock (position, commonVars) {
 //	loggit('Block placed on the grid at ' + voxelCoordinates.x + ', ' + voxelCoordinates.y);
 }
 
-function canvasBlock (position, commonVars, colorID) {
+function canvasBlock (position, location, commonVars, colorID) {
 //	var blockTarget = document.getElementById(target.id);
 	// var xPos = blockTarget.getAttribute("c") * commonVars.blockSize.full + commonVars.offset.x;
 	// var yPos = blockTarget.getAttribute("r") * commonVars.blockSize.full + commonVars.offset.y;
 	// position = {x: xPos, y: yPos};
 	
-	var adjustedPosition = {x: position.x, y: position.y - commonVars.blockSize.half};
+	var adjustedPosition = {x: position.x, y: position.y - commonVars.blockSize.half * location.z};
 	
 	var color = colorBlock(colorID, commonVars);
 	
-	canvasDrawSet ([1, 6, 7, 2], adjustedPosition, commonVars, {closed: true, fill: color.top, stroke: color.inset});
-	canvasDrawSet ([2, 7, 4, 3], adjustedPosition, commonVars, {closed: true, fill: color.right, stroke: color.inset});
-	canvasDrawSet ([6, 7, 4, 5], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
-		
+//	if (Voxel[location.x - 1][location.y][0] == -1) {
+		canvasDrawSet([1, 6, 7, 2], adjustedPosition, commonVars, {closed: true, fill: color.top, stroke: color.inset});
+//	}
+	if (Voxel[location.x - 1][location.y][0] == -1) {
+		canvasDrawSet([6, 7, 4, 5], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
+	}
+	if (Voxel[location.x][location.y + 1][0] == -1) {
+		canvasDrawSet([2, 7, 4, 3], adjustedPosition, commonVars, {closed: true, fill: color.right, stroke: color.inset});
+	}
 //	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, commonVars, {closed: true, fill: false, stroke: "#aaa"});
 }
 
