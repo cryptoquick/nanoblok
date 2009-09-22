@@ -13,7 +13,7 @@ function loggit(str) {
 	
 	var childCount = log.getElementsByTagName('tspan').length;
 
-	var numLines = 2;
+	var numLines = 1;
 
 	if (navigator.userAgent.indexOf('Firefox') != -1)
 	{

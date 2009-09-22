@@ -51,6 +51,8 @@ var mouseDown = false;
 /* Main Functions */
 function Initialize ()
 {
+	loggit("Program loaded.");
+	
 	var init0 = new Date();
 	
 	var commonVars = computeCommonVars();
@@ -154,8 +156,6 @@ function computeCommonVars () {
 		selectedColor: selectedColor
 	};
 	
-//	var commonVars = hexInit(commonVars);
-	
 	// Initialize the voxel array.
 	for (var x = 0; x < gridDims.r; x++) {
 		Voxel[x] = new Array();
@@ -178,19 +178,17 @@ function Update (updateMode, updateSettings, commonVars) {
 	
 	if (updateMode == "resize") {
 	//	removeUI();
+	//	removeGrid();
 	}
 	
-	if (updateMode == "resize") {
+	if (updateMode == "resize" || updateMode == "initialize") {
 		drawUI(commonVars);
-	}
-	
-	if (updateMode == "resize") {
 		drawGrid(commonVars, "bottom");
 		drawGrid(commonVars, "left");
 		drawGrid(commonVars, "right");
 	}
 
-	if (updateMode == "resize" || updateMode == "canvas") {
+	if (updateMode == "resize" || updateMode == "canvas" || updateMode == "initialize") {
 		canvasGrid(commonVars, "bottom", updateSettings.gridMode);
 		canvasGrid(commonVars, "left", updateSettings.gridMode);
 		canvasGrid(commonVars, "right", updateSettings.gridMode);
@@ -198,6 +196,9 @@ function Update (updateMode, updateSettings, commonVars) {
 		if (updateSettings.gridMode == "standard") {
 			document.getElementById("standardButton").setAttributeNS(null, "fill-opacity", 1.0);
 			document.getElementById("numberButton").setAttributeNS(null, "fill-opacity", 0.5);
+			
+			// Select color button at update.
+			document.getElementById("color" + commonVars.selectedColor + commonVars.palette[commonVars.selectedColor][3]).setAttributeNS(null, "stroke-opacity", "1.0");
 		}
 		else if (updateSettings.gridMode == "number") {
 			document.getElementById("numberButton").setAttributeNS(null, "fill-opacity", 1.0);
@@ -254,10 +255,14 @@ function Click (evt, commonVars) {
 	// Color selection.
 	if (target.id.substr(0,5) == "color") {
 		var oldColorIndex = commonVars.selectedColor;
+		
 		document.getElementById("color" + oldColorIndex + commonVars.palette[oldColorIndex][3])
 		.setAttributeNS(null, "stroke-opacity", "0.0");
+		
 		commonVars.selectedColor = target.id.substr(5,1);
+		
 		loggit("Selected color is: " + commonVars.palette[commonVars.selectedColor][3] + ".");
+		
 		document.getElementById(target.id).setAttributeNS(null, "stroke-opacity", "1.0");
 	}
 	
@@ -269,7 +274,6 @@ function Click (evt, commonVars) {
 }
 
 function placeBlock (target, commonVars) {
-	
 	var location = {
 		x: GridField[target.id].x,
 		y: GridField[target.id].y,
@@ -277,14 +281,19 @@ function placeBlock (target, commonVars) {
 	}
 	
 	while (Voxel[location.x][location.y][location.z] !== -1) {
-		location.z++;
+		if (Voxel[location.x][location.y][location.z] < commonVars.gridDims.c) {
+			location.z++;
+		} else {
+			loggit("Outside bounds.");
+			return 0;
+		}
 	}
 	
 	canvasBlock(GridField[target.id].coors, location, commonVars, commonVars.selectedColor);
 	
 	Voxel[location.x][location.y][location.z] = commonVars.selectedColor;
 	
-	loggit("Block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
+	loggit("A " + commonVars.palette[commonVars.selectedColor][3] + " block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
 }
 
 function Hover (evt, inout, commonVars) {
@@ -305,7 +314,7 @@ function Hover (evt, inout, commonVars) {
 		loggit("Number view");
 	}
 	
-	if ((target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-') && mouseDown) {
+	if ((target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-') && mouseDown && inout == "in") {
 		placeBlock(target, commonVars);
 	} else if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-')
 	{

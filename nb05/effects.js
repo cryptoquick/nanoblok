@@ -245,7 +245,7 @@ function canvasBlock (position, location, commonVars, colorID) {
 	// var yPos = blockTarget.getAttribute("r") * commonVars.blockSize.full + commonVars.offset.y;
 	// position = {x: xPos, y: yPos};
 	
-	var adjustedPosition = {x: position.x, y: position.y - commonVars.blockSize.half * location.z};
+	var adjustedPosition = {x: position.x, y: position.y - commonVars.blockSize.half * (location.z + 1)};
 	
 	var color = colorBlock(colorID, commonVars);
 	
