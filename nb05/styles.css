@@ -8,7 +8,7 @@ body {
 	width: 100%;
 }
 
-#effects {
+#effects, #overlays {
 	position: absolute;
 	top: 0px;
 	left: 0px;

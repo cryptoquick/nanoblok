@@ -58,7 +58,7 @@ function Initialize ()
 	var commonVars = computeCommonVars();
 	
 	// Run core graphics functions in default state.
-	Update("resize", {gridMode: "standard"}, commonVars);
+	Update("initialize", {gridMode: "standard"}, commonVars);
 	
 	// Post-initialization tasks.
 	var init1 = new Date();
@@ -93,8 +93,15 @@ function Initialize ()
 }
 
 function computeCommonVars () {
-	// Basic dimensions.	
-	var blockDims = 20; // Size of blocks / tiles.
+	// Viewport information from the browser.
+	var windowSize = {x: window.innerWidth, y: window.innerHeight};
+	
+	// Size of blocks / tiles.
+	if (windowSize.x < 725 || windowSize.y < 760)
+		var blockDims = 15; // For smaller screens
+	else {
+		var blockDims = 20; // Regular size
+	}
 	var blockSize = {
 		full: blockDims,
 		half: blockDims / 2,
@@ -107,9 +114,6 @@ function computeCommonVars () {
 		x: gridDims.c * blockSize.full,
 		y: gridDims.r * blockSize.quarter
 	};
-	
-	// Viewport information from the browser.
-	var windowSize = {x: window.innerWidth, y: window.innerHeight};	
 	
 	// Center of the window
 	var center = {x: windowSize.x / 2, y: windowSize.y / 2};
@@ -181,18 +185,22 @@ function Update (updateMode, updateSettings, commonVars) {
 	//	removeGrid();
 	}
 	
+	// Draw SVG grid
 	if (updateMode == "resize" || updateMode == "initialize") {
 		drawUI(commonVars);
 		drawGrid(commonVars, "bottom");
 		drawGrid(commonVars, "left");
 		drawGrid(commonVars, "right");
+		drawMarkers(commonVars);
 	}
 
-	if (updateMode == "resize" || updateMode == "canvas" || updateMode == "initialize") {
+	// Draw canvas grid...
+	if (updateMode == "resize" || updateMode == "canvas" || updateMode == "initialize") {		
 		canvasGrid(commonVars, "bottom", updateSettings.gridMode);
 		canvasGrid(commonVars, "left", updateSettings.gridMode);
 		canvasGrid(commonVars, "right", updateSettings.gridMode);
 		
+		// ...and some logic for button outlines / selection.
 		if (updateSettings.gridMode == "standard") {
 			document.getElementById("standardButton").setAttributeNS(null, "fill-opacity", 1.0);
 			document.getElementById("numberButton").setAttributeNS(null, "fill-opacity", 0.5);
@@ -296,8 +304,11 @@ function placeBlock (target, commonVars) {
 	loggit("A " + commonVars.palette[commonVars.selectedColor][3] + " block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
 }
 
+var marker = document.getElementById("markerY0");
+
 function Hover (evt, inout, commonVars) {
 	var target = evt.target;
+	
 	// Hands id of hovered grid tile to let the user know what tile their mouse is over.
 	// if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-') {
 	// 	tileHover(target, inout, commonVars.offset, commonVars.blockSize);
@@ -316,8 +327,19 @@ function Hover (evt, inout, commonVars) {
 	
 	if ((target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-') && mouseDown && inout == "in") {
 		placeBlock(target, commonVars);
-	} else if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-')
-	{
-		tileHover(target, inout, commonVars.offset, commonVars.blockSize);
+	}
+	
+	else if (target.id.substr(0,2) == 'x-') {
+		marker = document.getElementById("markerY" + target.getAttribute("c"));
+		marker.setAttributeNS(null, "fill-opacity", "1.0");
+	}
+	else if (target.id.substr(0,2) == 'y-') {
+		marker.setAttributeNS(null, "fill-opacity", "0.0");
+		marker = document.getElementById("markerY" + target.getAttribute("r"));
+		marker.setAttributeNS(null, "fill-opacity", "1.0");
+	}
+	else if (target.id.substr(0,2) == 'z-') {
+		marker = document.getElementById("markerY" + target.getAttribute("c"));
+		marker.setAttributeNS(null, "fill-opacity", "1.0");
 	}
 }

@@ -74,3 +74,42 @@ function drawGrid (commonVars, side) {
 		}
 	}
 }
+
+function drawMarkers (commonVars) {
+	var markerPoints = document.getElementById("markerPoints");
+	
+	for (var i = 0; i < commonVars.gridDims.c; i++) {
+		// Y marker
+		var markerCoors = {
+			x: commonVars.offset.x - 12,
+			y: i * commonVars.blockSize.half + (commonVars.offset.y - commonVars.gridSize.y - 34)
+		}
+		var set = hexiso(markerCoors, commonVars);
+		var marker = drawSet([6, 7, 5], set, true);
+		marker.setAttributeNS(null, "id", "markerY" + i);
+		marker.setAttributeNS(null, "fill", "green");
+		markerPoints.appendChild(marker);
+		
+		// X marker
+		var markerCoors = {
+			x: i * commonVars.blockSize.half + commonVars.offset.x - 6,
+			y: i * commonVars.blockSize.quarter + (commonVars.offset.y + commonVars.gridSize.y - 36)
+		}
+		var set = hexiso(markerCoors, commonVars);
+		var marker = drawSet([5, 7, 4], set, true);
+		marker.setAttributeNS(null, "id", "markerX" + i);
+		marker.setAttributeNS(null, "fill", "red");
+		markerPoints.appendChild(marker);
+		
+		// Z marker
+		var markerCoors = {
+			x: (commonVars.offset.x + commonVars.gridSize.x - 15) - i * commonVars.blockSize.half,
+			y: i * commonVars.blockSize.quarter + (commonVars.offset.y + commonVars.gridSize.y - 36)
+		}
+		var set = hexiso(markerCoors, commonVars);
+		var marker = drawSet([7, 4, 3], set, true);
+		marker.setAttributeNS(null, "id", "markerZ" + i);
+		marker.setAttributeNS(null, "fill", "blue");
+		markerPoints.appendChild(marker);
+	}
+}
