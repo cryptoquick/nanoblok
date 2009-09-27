@@ -11,10 +11,7 @@
 //	Not much has changed since vektornye just yet.
 
 //blockSize, gridDims, gridSize, offset, side
-function drawGrid (commonVars, side) {
-	// Grid-specific variables
-	var gridContainer = document.getElementById('gridContainer');	
-	
+function gridCoors (commonVars, side) {	
 	var i = 0;
 	
 	// Grid loop builds an absolute position tile, then places it at a specific x/y position on the grid.
@@ -43,33 +40,50 @@ function drawGrid (commonVars, side) {
 					y: ((y * commonVars.blockSize.half) + (-commonVars.gridSize.y * 2 + x * commonVars.blockSize.quarter)) + commonVars.offset.y
 				};
 			}
-
-			var set = hexiso(tileCoors, commonVars);
-			
-			var tile = drawSet(hexSide, set, true);
 			
 			if (side == "bottom") {
-				var blockID = 'x-' + i;
-				tile.setAttributeNS(null, 'id', blockID);
 				GridField['x-' + i] = {x: x, y: y, z: -1, coors: tileCoors};
 			//	Voxel[x][y][-1] = ;
 			}
+			/* KLUDGE! z-axis... */
 			if (side == "left") {
-				var blockID = 'y-' + i;
-				tile.setAttributeNS(null, 'id', 'y-' + i);
+				// var blockID = 'y-' + i;
+				// tile.setAttributeNS(null, 'id', 'y-' + i);
 				GridField['y-' + i] = {x: x, y: y, z: -1, coors: tileCoors};
 			}
 			if (side == "right") {
-				var blockID = 'z-' + i;
-				tile.setAttributeNS(null, 'id', 'z-' + i);
+				// var blockID = 'z-' + i;
+				// tile.setAttributeNS(null, 'id', 'z-' + i);
 				GridField['z-' + i] = {x: x, y: y, z: -1, coors: tileCoors};
 			}
+
+			i++;
+		}
+	}
+}
+
+function drawGrid (commonVars, side) {
+	var gridContainer = document.getElementById('gridContainer');
+	
+	var i = 0;
+	
+	for (var x = 0; x < commonVars.gridDims.c; x++) {
+		for (var y = 0; y < commonVars.gridDims.r; y++) {
+			var tileCoors = GridField['x-' + i];
+			var hexSide = [1, 2, 7, 6];
+			
+			var set = hexiso(tileCoors.coors, commonVars.blockSize);
+			var tile = drawSet(hexSide, set, true);
 			
 			// Column, Row
 			tile.setAttributeNS(null, 'c', x);
 			tile.setAttributeNS(null, 'r', y);
 			
+			var blockID = 'x-' + i;
+			tile.setAttributeNS(null, 'id', blockID);
+			
 			gridContainer.appendChild(tile);
+			
 			i++;
 		}
 	}
@@ -77,15 +91,23 @@ function drawGrid (commonVars, side) {
 
 function drawMarkers (commonVars) {
 	var markerPoints = document.getElementById("markerPoints");
+
+	var blockDims = 10; // Size of blocks / tiles.
+	var blockSize = {
+		full: blockDims,
+		half: blockDims / 2,
+		third: blockDims / 2 + blockDims / 4,
+		quarter: blockDims / 4
+	}
 	
 	for (var i = 0; i < commonVars.gridDims.c; i++) {
 		// Y marker
 		var markerCoors = {
 			x: commonVars.offset.x - 12,
-			y: i * commonVars.blockSize.half + (commonVars.offset.y - commonVars.gridSize.y - 34)
+			y: i * commonVars.blockSize.half + (commonVars.offset.y - commonVars.gridSize.y - 28)
 		}
-		var set = hexiso(markerCoors, commonVars);
-		var marker = drawSet([6, 7, 5], set, true);
+		var set = hexiso(markerCoors, blockSize);
+		var marker = drawSet([6, 2, 4, 7], set, true);
 		marker.setAttributeNS(null, "id", "markerY" + i);
 		marker.setAttributeNS(null, "fill", "green");
 		markerPoints.appendChild(marker);
@@ -93,21 +115,21 @@ function drawMarkers (commonVars) {
 		// X marker
 		var markerCoors = {
 			x: i * commonVars.blockSize.half + commonVars.offset.x - 6,
-			y: i * commonVars.blockSize.quarter + (commonVars.offset.y + commonVars.gridSize.y - 36)
+			y: i * commonVars.blockSize.quarter + (commonVars.offset.y + commonVars.gridSize.y - 28)
 		}
-		var set = hexiso(markerCoors, commonVars);
-		var marker = drawSet([5, 7, 4], set, true);
+		var set = hexiso(markerCoors, blockSize);
+		var marker = drawSet([6, 2, 4, 7], set, true);
 		marker.setAttributeNS(null, "id", "markerX" + i);
 		marker.setAttributeNS(null, "fill", "red");
 		markerPoints.appendChild(marker);
 		
 		// Z marker
 		var markerCoors = {
-			x: (commonVars.offset.x + commonVars.gridSize.x - 15) - i * commonVars.blockSize.half,
-			y: i * commonVars.blockSize.quarter + (commonVars.offset.y + commonVars.gridSize.y - 36)
+			x: (commonVars.offset.x + commonVars.gridSize.x - 4) - i * commonVars.blockSize.half,
+			y: i * commonVars.blockSize.quarter + (commonVars.offset.y + commonVars.gridSize.y - 28)
 		}
-		var set = hexiso(markerCoors, commonVars);
-		var marker = drawSet([7, 4, 3], set, true);
+		var set = hexiso(markerCoors, blockSize);
+		var marker = drawSet([6, 4, 7, 2], set, true);
 		marker.setAttributeNS(null, "id", "markerZ" + i);
 		marker.setAttributeNS(null, "fill", "blue");
 		markerPoints.appendChild(marker);

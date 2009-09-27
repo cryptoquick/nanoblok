@@ -36,7 +36,7 @@ function tileHover (target, inout, commonVars) {
 function canvasDrawTile (bbox, commonVars, hexSide, color, stroke) {
 	var ctx = context('effects');
 //	var size = 25;
-	var tile = hexiso(bbox, commonVars);
+	var tile = hexiso(bbox, commonVars.blockSize);
 
 //	ctx.scale(1, 1);
 
@@ -68,7 +68,7 @@ function canvasDrawSet (hexSet, offset, commonVars, settings) {
 	}
 	
 	var hexSpot = hexSet.pop();
-	var coorSet = hexiso(offset, commonVars);
+	var coorSet = hexiso(offset, commonVars.blockSize);
 	var offsY = -35;
 	
 	ctx.beginPath();

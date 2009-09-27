@@ -70,8 +70,7 @@ var svgNS = 'http://www.w3.org/2000/svg';
 // }
 
 // Draws hexagonal points in iso perspective, based on hard coordinate and size of block. Depends on an orientation array (see block-grid.png in Nanoblok Extras). Returns static coordinates of where to draw blocks on the screen.
-function hexiso (offset, commonVars) {
-	var blockSize = commonVars.blockSize;
+function hexiso (offset, blockSize) {
 	
 	// Builds an array of points that corresponds to an entire isometric block (six points), including center (7). Arrays for both X and Y coordinates. Offset added to hexagon proportions.	
 	
@@ -181,7 +180,7 @@ function voxelBBox (position) {
 // Creates the various coordinates necessary to make an isometric block
 // from the coordinates provided by hexiso().
 function makeObject (position, commonVars) {
-	var coorSet = hexiso(position, commonVars);
+	var coorSet = hexiso(position, commonVars.blockSize);
 	
 	var blokTop 	= drawSet([1, 2, 7, 6], coorSet, true);
 	var blokRight 	= drawSet([2, 3, 4, 7], coorSet, true);

@@ -1,4 +1,6 @@
 function drawUI (commonVars) {
+	// Initialize all SVG tags.
+	
 	// Draw the Nanoblok logo.
 	var blockBlank = makeObject({x: 5, y: 5}, commonVars);
 	var block = setColor(blockBlank, 'bla');

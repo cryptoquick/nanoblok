@@ -147,6 +147,8 @@ function computeCommonVars () {
 	
 	selectedColor = 0;
 	
+	layerOffset = {x: 0, y: 0, z: 0};
+	
 	var commonVars = {
 		blockDims: blockDims,
 		blockSize: blockSize,
@@ -157,7 +159,8 @@ function computeCommonVars () {
 		edges: edges,
 		offset: offset,
 		palette: defaultPalette,
-		selectedColor: selectedColor
+		selectedColor: selectedColor,
+		layerOffset: layerOffset
 	};
 	
 	// Initialize the voxel array.
@@ -180,7 +183,10 @@ var loadTimer;
 function Update (updateMode, updateSettings, commonVars) {
 	loadTimer = window.setInterval("timeBlokLoop(true)", 300);
 	
-	if (updateMode == "resize") {
+	if (updateMode == "resize" || updateMode == "initialize") {
+		gridCoors(commonVars, "bottom");
+		gridCoors(commonVars, "left");
+		gridCoors(commonVars, "right");
 	//	removeUI();
 	//	removeGrid();
 	}
@@ -189,8 +195,8 @@ function Update (updateMode, updateSettings, commonVars) {
 	if (updateMode == "resize" || updateMode == "initialize") {
 		drawUI(commonVars);
 		drawGrid(commonVars, "bottom");
-		drawGrid(commonVars, "left");
-		drawGrid(commonVars, "right");
+	//	drawGrid(commonVars, "left");
+	//	drawGrid(commonVars, "right");
 		drawMarkers(commonVars);
 	}
 
@@ -285,9 +291,9 @@ function placeBlock (target, commonVars) {
 	var location = {
 		x: GridField[target.id].x,
 		y: GridField[target.id].y,
-		z: 0
+		z: 0 + commonVars.layerOffset.z
 	}
-	
+/*	
 	while (Voxel[location.x][location.y][location.z] !== -1) {
 		if (Voxel[location.x][location.y][location.z] < commonVars.gridDims.c) {
 			location.z++;
@@ -295,8 +301,9 @@ function placeBlock (target, commonVars) {
 			loggit("Outside bounds.");
 			return 0;
 		}
-	}
+	}*/
 	
+//	if (Voxel[location.x][location.y][location.z];
 	canvasBlock(GridField[target.id].coors, location, commonVars, commonVars.selectedColor);
 	
 	Voxel[location.x][location.y][location.z] = commonVars.selectedColor;
@@ -304,7 +311,9 @@ function placeBlock (target, commonVars) {
 	loggit("A " + commonVars.palette[commonVars.selectedColor][3] + " block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
 }
 
-var marker = document.getElementById("markerY0");
+var markerX;
+var markerY;
+var markerZ;
 
 function Hover (evt, inout, commonVars) {
 	var target = evt.target;
@@ -330,16 +339,24 @@ function Hover (evt, inout, commonVars) {
 	}
 	
 	else if (target.id.substr(0,2) == 'x-') {
-		marker = document.getElementById("markerY" + target.getAttribute("c"));
-		marker.setAttributeNS(null, "fill-opacity", "1.0");
+		if (markerX != null) {
+			markerX.setAttributeNS(null, "fill-opacity", "0.0");
+		}
+		markerX = document.getElementById("markerX" + target.getAttribute("r"));
+		markerX.setAttributeNS(null, "fill-opacity", "0.7");
 	}
 	else if (target.id.substr(0,2) == 'y-') {
-		marker.setAttributeNS(null, "fill-opacity", "0.0");
-		marker = document.getElementById("markerY" + target.getAttribute("r"));
-		marker.setAttributeNS(null, "fill-opacity", "1.0");
+		if (markerY != null) {
+			markerY.setAttributeNS(null, "fill-opacity", "0.0");
+		}
+		markerY = document.getElementById("markerY" + target.getAttribute("r"));
+		markerY.setAttributeNS(null, "fill-opacity", "0.7");
 	}
 	else if (target.id.substr(0,2) == 'z-') {
-		marker = document.getElementById("markerY" + target.getAttribute("c"));
-		marker.setAttributeNS(null, "fill-opacity", "1.0");
+		if (markerZ != null) {
+			markerZ.setAttributeNS(null, "fill-opacity", "0.0");
+		}
+		markerZ = document.getElementById("markerZ" + target.getAttribute("r"));
+		markerZ.setAttributeNS(null, "fill-opacity", "0.7");
 	}
 }
