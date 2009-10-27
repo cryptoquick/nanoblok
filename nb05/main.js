@@ -145,9 +145,15 @@ function computeCommonVars () {
 		[255, 255, 255, 'transparent', null]
 	];
 	
-	selectedColor = 0;
+	var selectedColor = 0;
 	
-	layerOffset = {x: 0, y: 0, z: 0};
+	var layerOffset = {x: 0, y: 0, z: 0};
+	
+	var markerPosition = {
+		x: 0,
+		y: 0,
+		z: 0
+	}
 	
 	var commonVars = {
 		blockDims: blockDims,
@@ -161,6 +167,7 @@ function computeCommonVars () {
 		palette: defaultPalette,
 		selectedColor: selectedColor,
 		layerOffset: layerOffset,
+		markerPosition: markerPosition,
 		currentLayer: 0
 	};
 	
@@ -342,7 +349,13 @@ function Hover (evt, inout, commonVars) {
 	
 	// Position Indicators
 	if (target.id.substr(0,2) == 'x-') {
-		positionIndicatorRed(commonVars, inout, target.getAttribute("c"));
+		commonVars.markerPosition.x = target.getAttribute("c");
+		commonVars.markerPosition.z = target.getAttribute("r");
+		positionIndicator(commonVars, inout);
+	}
+	if (target.id.substr(0,2) == 'z-') {
+		commonVars.markerPosition.z = target.getAttribute("r");
+		positionIndicator(commonVars, inout);
 	}
 	
 	/* Marker code
