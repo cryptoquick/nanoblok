@@ -273,3 +273,32 @@ function colorBlock (colorID, commonVars) {
 	
 	return {left: colorLeft, right: colorRight, top: colorTop, inset: colorLines};
 }
+
+function positionIndicatorRed (commonVars, inout, position) {
+	var ctx = context('overlays');
+	
+	ctx.clearRect(0, 0, commonVars.windowSize.y, commonVars.windowSize.x);
+	
+	var gr1 = commonVars.blockSize.full;
+	var gr2 = gr1 / 2;
+	var gr4 = gr1 / 4;
+	
+	var offsY = commonVars.offset.y - 30;
+	// this calculation should be added to commonvars
+	var offsYtop = (commonVars.edges.top - commonVars.gridSize.y - 30)
+		- (position * commonVars.blockSize.quarter)
+		+ (commonVars.gridDims.c - commonVars.currentLayer - 1) * commonVars.blockSize.half;
+	var offsX = commonVars.offset.x + position * commonVars.blockSize.half;
+	
+	ctx.fillStyle = '#f00';
+	ctx.beginPath();
+	
+	ctx.moveTo(offsX, 0 + offsYtop);
+	ctx.lineTo(gr2 + offsX, offsYtop - gr4);
+	ctx.lineTo(gr2 + offsX, gr4 + offsYtop);
+	ctx.lineTo(0 + offsX, gr2 + offsYtop);
+	
+	ctx.closePath();
+	ctx.fill();
+	ctx.save();
+}

@@ -160,7 +160,8 @@ function computeCommonVars () {
 		offset: offset,
 		palette: defaultPalette,
 		selectedColor: selectedColor,
-		layerOffset: layerOffset
+		layerOffset: layerOffset,
+		currentLayer: 0
 	};
 	
 	// Initialize the voxel array.
@@ -303,17 +304,18 @@ function placeBlock (target, commonVars) {
 		}
 	}*/
 	
-//	if (Voxel[location.x][location.y][location.z];
-	canvasBlock(GridField[target.id].coors, location, commonVars, commonVars.selectedColor);
-	
-	Voxel[location.x][location.y][location.z] = commonVars.selectedColor;
-	
-	loggit("A " + commonVars.palette[commonVars.selectedColor][3] + " block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
+	if (Voxel[location.x][location.y][location.z] == -1) {
+		canvasBlock(GridField[target.id].coors, location, commonVars, commonVars.selectedColor);
+		Voxel[location.x][location.y][location.z] = commonVars.selectedColor;
+		loggit("A " + commonVars.palette[commonVars.selectedColor][3] + " block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
+	} else {
+		loggit("A block already exists here.");
+	}
 }
 
-var markerX;
-var markerY;
-var markerZ;
+// var markerX;
+// var markerY;
+// var markerZ;
 
 function Hover (evt, inout, commonVars) {
 	var target = evt.target;
@@ -338,6 +340,12 @@ function Hover (evt, inout, commonVars) {
 		placeBlock(target, commonVars);
 	}
 	
+	// Position Indicators
+	if (target.id.substr(0,2) == 'x-') {
+		positionIndicatorRed(commonVars, inout, target.getAttribute("c"));
+	}
+	
+	/* Marker code
 	else if (target.id.substr(0,2) == 'x-') {
 		if (markerX != null) {
 			markerX.setAttributeNS(null, "fill-opacity", "0.0");
@@ -358,5 +366,5 @@ function Hover (evt, inout, commonVars) {
 		}
 		markerZ = document.getElementById("markerZ" + target.getAttribute("r"));
 		markerZ.setAttributeNS(null, "fill-opacity", "0.7");
-	}
+	}*/
 }
