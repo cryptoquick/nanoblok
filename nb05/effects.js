@@ -250,12 +250,21 @@ function canvasBlock (position, location, commonVars, colorID) {
 	var color = colorBlock(colorID, commonVars);
 	
 //	if (Voxel[location.x - 1][location.y][0] == -1) {
-		canvasDrawSet([1, 6, 7, 2], adjustedPosition, commonVars, {closed: true, fill: color.top, stroke: color.inset});
+	
+	// Top side. Always placed.
+	canvasDrawSet([1, 6, 7, 2], adjustedPosition, commonVars, {closed: true, fill: color.top, stroke: color.inset});
 //	}
-	if (Voxel[location.x - 1][location.y][0] == -1) {
+	
+	// Left side.
+	if (Voxel[location.x - 1][location.y][commonVars.layerOffset.z] == -1) {
 		canvasDrawSet([6, 7, 4, 5], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
+	} else if ((Voxel[location.x + 1][location.y + 1][commonVars.layerOffset.z] != -1)){
+		//	&& (Voxel[location.x][location.y][commonVars.layerOffset.z] == -1)) {
+		canvasDrawSet([6, 7, 5], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
 	}
-	if (Voxel[location.x][location.y + 1][0] == -1) {
+	
+	// Right side.
+	if (Voxel[location.x][location.y + 1][commonVars.layerOffset.z] == -1) {
 		canvasDrawSet([2, 7, 4, 3], adjustedPosition, commonVars, {closed: true, fill: color.right, stroke: color.inset});
 	}
 //	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, commonVars, {closed: true, fill: false, stroke: "#aaa"});
@@ -279,6 +288,7 @@ function positionIndicator (commonVars, inout) {
 	var ctx = context('overlays');
 	
 	ctx.clearRect(0, 0, commonVars.windowSize.x, commonVars.windowSize.y);
+	ctx.globalAlpha = 0.7;
 	
 	var gr1 = commonVars.blockSize.full;
 	var gr2 = gr1 / 2;
@@ -288,7 +298,7 @@ function positionIndicator (commonVars, inout) {
 	var offsY = commonVars.offset.y - 30;
 	var offsYtop = (commonVars.edges.top - commonVars.gridSize.y - 30)
 		- (commonVars.markerPosition.x * commonVars.blockSize.quarter)
-		+ (commonVars.gridDims.c - commonVars.currentLayer - 1) * commonVars.blockSize.half;
+		+ (commonVars.gridDims.c - commonVars.layerOffset.z - 1) * commonVars.blockSize.half;
 	var offsX = commonVars.offset.x + commonVars.markerPosition.x * commonVars.blockSize.half;
 	
 	ctx.fillStyle = '#f00';
@@ -305,7 +315,7 @@ function positionIndicator (commonVars, inout) {
 	// Blue Marker
 	offsYtop = (commonVars.edges.top - commonVars.gridSize.y - 184)
 		+ (commonVars.markerPosition.z * commonVars.blockSize.quarter)
-		+ (commonVars.gridDims.c - commonVars.currentLayer - 1) * commonVars.blockSize.half;
+		+ (commonVars.gridDims.c - commonVars.layerOffset.z - 1) * commonVars.blockSize.half;
 	offsX = commonVars.offset.x + commonVars.gridSize.x / 2 + (commonVars.markerPosition.z * commonVars.blockSize.half);
 	
 	ctx.fillStyle = '#00f';
@@ -318,6 +328,24 @@ function positionIndicator (commonVars, inout) {
 	
 	ctx.closePath();
 	ctx.fill();
+	
+	// Green Cursor
+	offsX = commonVars.offset.x + (commonVars.markerPosition.x * commonVars.blockSize.half) + (commonVars.markerPosition.z * commonVars.blockSize.half);
+	offsYtop = commonVars.edges.top + (commonVars.markerPosition.z * commonVars.blockSize.quarter) + (commonVars.gridSize.y - commonVars.markerPosition.x * commonVars.blockSize.quarter) - 45;
+	
+	ctx.strokeStyle = '#0f0';
+	ctx.beginPath();
+	
+	// Points 1-6, in order.
+	ctx.moveTo(offsX + gr2, offsYtop);
+	ctx.lineTo(offsX + gr1, offsYtop + gr4);
+	ctx.lineTo(offsX + gr1, offsYtop + gr4 + gr2);
+	ctx.lineTo(offsX + gr2, offsYtop + gr1);
+	ctx.lineTo(offsX, offsYtop + gr4 + gr2);
+	ctx.lineTo(offsX, offsYtop + gr4);
+	
+	ctx.closePath();
+	ctx.stroke();
 	
 	ctx.save();
 }

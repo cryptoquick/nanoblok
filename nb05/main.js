@@ -167,8 +167,7 @@ function computeCommonVars () {
 		palette: defaultPalette,
 		selectedColor: selectedColor,
 		layerOffset: layerOffset,
-		markerPosition: markerPosition,
-		currentLayer: 0
+		markerPosition: markerPosition
 	};
 	
 	// Initialize the voxel array.
@@ -311,13 +310,13 @@ function placeBlock (target, commonVars) {
 		}
 	}*/
 	
-	if (Voxel[location.x][location.y][location.z] == -1) {
+//	if (Voxel[location.x][location.y][location.z] == -1) {
 		canvasBlock(GridField[target.id].coors, location, commonVars, commonVars.selectedColor);
 		Voxel[location.x][location.y][location.z] = commonVars.selectedColor;
 		loggit("A " + commonVars.palette[commonVars.selectedColor][3] + " block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
-	} else {
+/*	} else {
 		loggit("A block already exists here.");
-	}
+	}*/
 }
 
 // var markerX;
