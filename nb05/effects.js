@@ -239,7 +239,7 @@ function attachBlock (position, commonVars) {
 //	loggit('Block placed on the grid at ' + voxelCoordinates.x + ', ' + voxelCoordinates.y);
 }
 
-function canvasBlock (position, location, commonVars, colorID) {
+function canvasBlock (position, location, commonVars, color) {
 //	var blockTarget = document.getElementById(target.id);
 	// var xPos = blockTarget.getAttribute("c") * commonVars.blockSize.full + commonVars.offset.x;
 	// var yPos = blockTarget.getAttribute("r") * commonVars.blockSize.full + commonVars.offset.y;
@@ -247,7 +247,7 @@ function canvasBlock (position, location, commonVars, colorID) {
 	
 	var adjustedPosition = {x: position.x, y: position.y - commonVars.blockSize.half * (location.z + 1)};
 	
-	var color = colorBlock(colorID, commonVars);
+//	var color = colorBlock(colorID, commonVars);
 	
 //	if (Voxel[location.x - 1][location.y][0] == -1) {
 	
@@ -256,17 +256,27 @@ function canvasBlock (position, location, commonVars, colorID) {
 //	}
 	
 	// Left side.
-	if (Voxel[location.x - 1][location.y][commonVars.layerOffset.z] == -1) {
+	
+	if (Voxel[location.x - 1][location.y][commonVars.layerOffset.z] == -1
+			&& Voxel[location.x - 1][location.y + 1][commonVars.layerOffset.z] == -1) {
 		canvasDrawSet([6, 7, 4, 5], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
-	} else if ((Voxel[location.x + 1][location.y + 1][commonVars.layerOffset.z] != -1)){
-		//	&& (Voxel[location.x][location.y][commonVars.layerOffset.z] == -1)) {
+	} else if (Voxel[location.x - 1][location.y + 1][commonVars.layerOffset.z] != -1
+			&& Voxel[location.x - 1][location.y][commonVars.layerOffset.z] == -1) {
 		canvasDrawSet([6, 7, 5], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
 	}
 	
 	// Right side.
-	if (Voxel[location.x][location.y + 1][commonVars.layerOffset.z] == -1) {
-		canvasDrawSet([2, 7, 4, 3], adjustedPosition, commonVars, {closed: true, fill: color.right, stroke: color.inset});
+	if (Voxel[location.x][location.y + 1][commonVars.layerOffset.z] == -1
+			&& Voxel[location.x - 1][location.y + 1][commonVars.layerOffset.z] == -1) {
+		canvasDrawSet([2, 7, 4, 3], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
+	} else if (Voxel[location.x - 1][location.y + 1][commonVars.layerOffset.z] != -1
+			&& Voxel[location.x][location.y + 1][commonVars.layerOffset.z] == -1) {
+		canvasDrawSet([2, 7, 3], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
 	}
+
+/*	if (Voxel[location.x][location.y + 1][commonVars.layerOffset.z] == -1) {
+		canvasDrawSet([2, 7, 4, 3], adjustedPosition, commonVars, {closed: true, fill: color.right, stroke: color.inset});
+	}*/
 //	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, commonVars, {closed: true, fill: false, stroke: "#aaa"});
 }
 
@@ -313,7 +323,7 @@ function positionIndicator (commonVars, inout) {
 	ctx.fill();
 	
 	// Blue Marker
-	offsYtop = (commonVars.edges.top - commonVars.gridSize.y - 184)
+	offsYtop = (commonVars.edges.top - commonVars.gridSize.y - 185)
 		+ (commonVars.markerPosition.z * commonVars.blockSize.quarter)
 		+ (commonVars.gridDims.c - commonVars.layerOffset.z - 1) * commonVars.blockSize.half;
 	offsX = commonVars.offset.x + commonVars.gridSize.x / 2 + (commonVars.markerPosition.z * commonVars.blockSize.half);

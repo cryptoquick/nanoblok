@@ -47,6 +47,7 @@ window.addEventListener('load', function () {
 }, false);
 
 var mouseDown = false;
+var displayResized = false;
 
 /* Main Functions */
 function Initialize ()
@@ -86,9 +87,9 @@ function Initialize ()
 
 	window.onresize = function() {
 		if(initialized) {
-			loggit('Resolution change detected, updating screen.');
+			loggit('Resolution change detected, click refresh button.');
 		}
-		Update("resize", {gridMode: "standard"}, commonVars);
+		displayResized = true;
 	}
 }
 
@@ -146,6 +147,12 @@ function computeCommonVars () {
 	];
 	
 	var selectedColor = 0;
+	var selectedTool = "color";
+	var selected = {
+		color: 0,
+		tool: "color",
+		area: {x: 0, y: 0, z: 0, l: 0, w: 0, h: 0}
+	};
 	
 	var layerOffset = {x: 0, y: 0, z: 0};
 	
@@ -153,7 +160,7 @@ function computeCommonVars () {
 		x: 0,
 		y: 0,
 		z: 0
-	}
+	};
 	
 	var commonVars = {
 		blockDims: blockDims,
@@ -166,6 +173,7 @@ function computeCommonVars () {
 		offset: offset,
 		palette: defaultPalette,
 		selectedColor: selectedColor,
+		selectedTool: selectedTool,
 		layerOffset: layerOffset,
 		markerPosition: markerPosition
 	};
@@ -215,8 +223,8 @@ function Update (updateMode, updateSettings, commonVars) {
 		
 		// ...and some logic for button outlines / selection.
 		if (updateSettings.gridMode == "standard") {
-			document.getElementById("standardButton").setAttributeNS(null, "fill-opacity", 1.0);
-			document.getElementById("numberButton").setAttributeNS(null, "fill-opacity", 0.5);
+		//	document.getElementById("standardButton").setAttributeNS(null, "fill-opacity", 1.0);
+		//	document.getElementById("numberButton").setAttributeNS(null, "fill-opacity", 0.5);
 			
 			// Select color button at update.
 			document.getElementById("color" + commonVars.selectedColor + commonVars.palette[commonVars.selectedColor][3]).setAttributeNS(null, "stroke-opacity", "1.0");
@@ -264,13 +272,13 @@ function Click (evt, commonVars) {
 	}*/
 	
 	// Left-side mode settings buttons.
-	if (target.id == "standardButton" || target.id == "standardText") {
-		Update("canvas", {gridMode: "standard"}, commonVars);
-		loggit("Set to standard view.");
+	if (target.id == "refreshButton" || target.id == "standardText") {
+		Update("refresh", {gridMode: "standard"}, commonVars);
+		loggit("Canvas refreshed.");
 	}
-	else if (target.id == "numberButton" || target.id == "numberText") {
-		Update("canvas", {gridMode: "number"}, commonVars);
-		loggit("Set to number view.")
+	else if (target.id == "deleteButton" || target.id == "numberText") {
+		commonVars.selectedTool = "delete";
+		loggit("Deletion tool selected.");
 	}
 	
 	// Color selection.
@@ -311,12 +319,26 @@ function placeBlock (target, commonVars) {
 	}*/
 	
 //	if (Voxel[location.x][location.y][location.z] == -1) {
-		canvasBlock(GridField[target.id].coors, location, commonVars, commonVars.selectedColor);
+		canvasBlock(GridField[target.id].coors, location, commonVars, colorBlock(commonVars.selectedColor, commonVars));
 		Voxel[location.x][location.y][location.z] = commonVars.selectedColor;
 		loggit("A " + commonVars.palette[commonVars.selectedColor][3] + " block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
 /*	} else {
 		loggit("A block already exists here.");
 	}*/
+}
+
+function deleteBlock (target, commonVars) {
+	var location = {
+		x: GridField[target.id].x,
+		y: GridField[target.id].y,
+		z: 0 + commonVars.layerOffset.z
+	}
+	
+	var color = {left: "#eee", right: "#eee", top: "#eee", inset: "#aaa"};
+	
+	canvasBlock(GridField[target.id].coors, location, commonVars, color);
+	Voxel[location.x][location.y][location.z] = -1;
+	loggit(" The block placed at " + location.x + ", " + location.y + ", " + location.z + " was deleted.")
 }
 
 // var markerX;
