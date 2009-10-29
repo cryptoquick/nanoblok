@@ -14,8 +14,8 @@ function array_search (array, val, target) {
 	return false;
 }
 	
-// Field is short for Playfield, and each element contains 5 values; X, Y, Z, color, and functionality.
-var Field = new Object();
+// Field is short for Playfield, and each element contains 4 values; X, Y, Z, and color.
+var Field = new Array();
 //Field.length = 0;
 
 var GridField = new Object();
@@ -171,10 +171,8 @@ Neighbors.prototype = {
 }
 */
 
-
-
-
-
-
-
-
+// Field is the term for only the blocks on the board.
+function saveField () {
+	var fieldString = JSON.stringify(Field);
+	document.getElementById("saveFile").innerHTML = fieldString;
+}

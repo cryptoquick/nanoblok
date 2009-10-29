@@ -48,6 +48,7 @@ function populatePalette (commonVars) {
 	
 	for (var i = 0; i < 9; i++) {
 		var colorBlock = document.createElementNS(svgNS, 'rect');
+		
 		colorBlock.setAttributeNS(null, "id", "color" + i + commonVars.palette[i][3]);
 		colorBlock.setAttributeNS(null, "x", -35);
 		colorBlock.setAttributeNS(null, "y", 35 * i);
@@ -56,6 +57,7 @@ function populatePalette (commonVars) {
 		colorBlock.setAttributeNS(null, "fill", getDefaultColor(i));
 		colorBlock.setAttributeNS(null, "rx", 3);
 		colorBlock.setAttributeNS(null, "transform", "skewY(26.565)");
+		
 		sideColorsRight.appendChild(colorBlock);
 	}
 }

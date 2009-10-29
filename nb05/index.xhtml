@@ -8,7 +8,7 @@
 //	The Init() function is run when the document is loaded in the SVG root.
 //	Debug menu is skewed into place.
 -->
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg" xmlns:html="http://www.w3.org/1999/xhtml">
 	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta http-equiv="Content-Style-Type" content="text/css"/>
@@ -23,6 +23,7 @@
 	<script type="text/javascript" src="text.js"></script>
 	<script type="text/javascript" src="effects.js"></script>
 	<script type="text/javascript" src="ui.js"></script>
+	<script type="text/javascript" src="json.js"></script>
 	
 	<link rel="stylesheet" type="text/css" href="styles.css"/>
 	
@@ -45,14 +46,24 @@
 		</svg:g>
 	</svg:g>
 	
+	<!-- <svg:foreignobject x="10" y="10" width="100" height="20"> -->
+		<html:body xmlns="http://www.w3.org/1999/xhtml">
+			<html:input id="saveFile" type="text" size="100" value="bla"></html:input>
+		</html:body>
+	<!-- </svg:foreignobject> -->
+	
 	<svg:text id="logoText" x="49" y="90" font-family="Verdana" font-size="16" font-weight="bold" fill="white"
 		transform="skewY(-26.565)">nb</svg:text>
 		
-	<svg:g id="sideButtonsLeft">
-		<svg:rect id="refreshButton" x="0" y="0" width="35" height="35" fill="orange" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
-		<svg:text id="refreshText" x="12" y="23" font-family="Verdana" font-size="18" fill="white" transform="skewY(26.565)">♺</svg:text>
-		<svg:rect id="deleteButton" x="0" y="45" width="35" height="35" fill="orange" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
-		<svg:text id="deleteText" x="5" y="68" font-family="Verdana" font-size="12" fill="white" transform="skewY(26.565)">X</svg:text>
+	<svg:g id="sideButtonsLeft" stroke="black" stroke-width="3" stroke-opacity="0.0">
+		<svg:rect id="saveButton" x="0" y="0" width="35" height="35" fill="orange" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
+		<svg:text id="saveText" x="8" y="25" font-family="Verdana" font-size="18" fill="white" transform="skewY(26.565)">S↑</svg:text>
+		<svg:rect id="loadButton" x="0" y="45" width="35" height="35" fill="orange" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
+		<svg:text id="loadText" x="9" y="69" font-family="Verdana" font-size="16" fill="white" transform="skewY(26.565)">L↓</svg:text>
+		<svg:rect id="refreshButton" x="45" y="0" width="35" height="35" fill="orange" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
+		<svg:text id="refreshText" x="48" y="25" font-family="Verdana" font-size="18" fill="white" transform="skewY(26.565)">R↺</svg:text>
+		<svg:rect id="deleteButton" x="45" y="45" width="35" height="35" fill="orange" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
+		<svg:text id="deleteText" x="48" y="69" font-family="Verdana" font-size="16" fill="white" transform="skewY(26.565)">X⌫</svg:text>
 	</svg:g>
 	
 	<svg:g id="sideColorsRight" stroke="black" stroke-width="3" stroke-opacity="0.0"></svg:g>

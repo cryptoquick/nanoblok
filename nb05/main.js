@@ -172,6 +172,7 @@ function computeCommonVars () {
 		edges: edges,
 		offset: offset,
 		palette: defaultPalette,
+		selected: selected,
 		selectedColor: selectedColor,
 		selectedTool: selectedTool,
 		layerOffset: layerOffset,
@@ -179,11 +180,11 @@ function computeCommonVars () {
 	};
 	
 	// Initialize the voxel array.
-	for (var x = 0; x < gridDims.r; x++) {
+	for (var x = -1; x < gridDims.r + 1; x++) {
 		Voxel[x] = new Array();
-		for (var y = 0; y < gridDims.r; y++) {
+		for (var y = -1; y < gridDims.r + 1; y++) {
 		Voxel[x][y] = new Array();
-			for (var z = 0; z < gridDims.c; z++) {
+			for (var z = -1; z < gridDims.c +1; z++) {
 				Voxel[x][y][z] = -1;
 			}
 		}
@@ -272,13 +273,23 @@ function Click (evt, commonVars) {
 	}*/
 	
 	// Left-side mode settings buttons.
-	if (target.id == "refreshButton" || target.id == "standardText") {
+	if (target.id == "refreshButton" || target.id == "refreshText") {
 		Update("refresh", {gridMode: "standard"}, commonVars);
 		loggit("Canvas refreshed.");
 	}
-	else if (target.id == "deleteButton" || target.id == "numberText") {
-		commonVars.selectedTool = "delete";
-		loggit("Deletion tool selected.");
+	else if (target.id == "deleteButton" || target.id == "deleteText") {
+		if (commonVars.selected.tool == "color") {
+			commonVars.selected.tool = "delete";
+			document.getElementById("deleteButton").setAttributeNS(null, "stroke-opacity", "1.0");
+			loggit("Deletion tool selected.");
+		}
+		else if (commonVars.selected.tool == "delete") {
+			commonVars.selected.tool = "color";
+			document.getElementById("deleteButton").setAttributeNS(null, "stroke-opacity", "0.0");
+			loggit("Deletion tool deselected.");
+		}
+	} else if (target.id == "saveButton" || target.id == "saveText") {
+		saveField();
 	}
 	
 	// Color selection.
@@ -288,15 +299,17 @@ function Click (evt, commonVars) {
 		document.getElementById("color" + oldColorIndex + commonVars.palette[oldColorIndex][3])
 		.setAttributeNS(null, "stroke-opacity", "0.0");
 		
-		commonVars.selectedColor = target.id.substr(5,1);
+		commonVars.selectedColor = parseInt(target.id.substr(5,1));
 		
 		loggit("Selected color is: " + commonVars.palette[commonVars.selectedColor][3] + ".");
 		
 		document.getElementById(target.id).setAttributeNS(null, "stroke-opacity", "1.0");
 	}
 	
-	// Block placement.
-	if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-')
+	// Block placement (first click, and if only one single click)
+	if (commonVars.selected.tool == "delete") {
+		deleteBlock(target, commonVars);
+	} else if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-')
 	{
 		placeBlock(target, commonVars);
 	}
@@ -321,6 +334,7 @@ function placeBlock (target, commonVars) {
 //	if (Voxel[location.x][location.y][location.z] == -1) {
 		canvasBlock(GridField[target.id].coors, location, commonVars, colorBlock(commonVars.selectedColor, commonVars));
 		Voxel[location.x][location.y][location.z] = commonVars.selectedColor;
+		Field.push([location.x, location.y, location.z, commonVars.selectedColor]);
 		loggit("A " + commonVars.palette[commonVars.selectedColor][3] + " block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
 /*	} else {
 		loggit("A block already exists here.");
@@ -334,9 +348,7 @@ function deleteBlock (target, commonVars) {
 		z: 0 + commonVars.layerOffset.z
 	}
 	
-	var color = {left: "#eee", right: "#eee", top: "#eee", inset: "#aaa"};
-	
-	canvasBlock(GridField[target.id].coors, location, commonVars, color);
+	canvasBlockDelete(GridField[target.id].coors, location, commonVars);
 	Voxel[location.x][location.y][location.z] = -1;
 	loggit(" The block placed at " + location.x + ", " + location.y + ", " + location.z + " was deleted.")
 }
@@ -353,16 +365,16 @@ function Hover (evt, inout, commonVars) {
 	// 	tileHover(target, inout, commonVars.offset, commonVars.blockSize);
 	// }
 	// Display the color of the hovered object in the event log.
-	if (target.id.substr(0,5) == "color") {
+/*	if (target.id.substr(0,5) == "color") {
 		loggit("Color " + commonVars.palette[target.id.substr(5,1)][3]);
 	}
 	// Same as above, but for the left-side buttons.
-	if (target.id == "standardButton") {
-		loggit("Standard view");
+	if (target.id == "refreshButton") {
+		loggit("Refresh.");
 	}
-	if (target.id == "numberButton") {
-		loggit("Number view");
-	}
+	if (target.id == "deleteButton") {
+		loggit("Delete.");
+	}*/
 	
 	if ((target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-') && mouseDown && inout == "in") {
 		placeBlock(target, commonVars);

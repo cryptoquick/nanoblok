@@ -280,6 +280,33 @@ function canvasBlock (position, location, commonVars, color) {
 //	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, commonVars, {closed: true, fill: false, stroke: "#aaa"});
 }
 
+function canvasBlockDelete () {
+	var color = {left: "#eee", right: "#eee", top: "#eee", inset: "#aaa"};
+	
+	// Top side. Always placed.
+	canvasDrawSet([1, 6, 7, 2], adjustedPosition, commonVars, {closed: true, fill: color.top, stroke: color.inset});
+//	}
+
+	// Left side.
+
+	if (Voxel[location.x - 1][location.y][commonVars.layerOffset.z] == -1
+			&& Voxel[location.x - 1][location.y + 1][commonVars.layerOffset.z] == -1) {
+		canvasDrawSet([6, 7, 4, 5], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
+	} else if (Voxel[location.x - 1][location.y + 1][commonVars.layerOffset.z] != -1
+			&& Voxel[location.x - 1][location.y][commonVars.layerOffset.z] == -1) {
+		canvasDrawSet([6, 7, 5], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
+	}
+
+	// Right side.
+	if (Voxel[location.x][location.y + 1][commonVars.layerOffset.z] == -1
+			&& Voxel[location.x - 1][location.y + 1][commonVars.layerOffset.z] == -1) {
+		canvasDrawSet([2, 7, 4, 3], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
+	} else if (Voxel[location.x - 1][location.y + 1][commonVars.layerOffset.z] != -1
+			&& Voxel[location.x][location.y + 1][commonVars.layerOffset.z] == -1) {
+		canvasDrawSet([2, 7, 3], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
+	}
+}
+
 function colorBlock (colorID, commonVars) {
 	var color = commonVars.palette[colorID];
 	var colorR = color[0];
