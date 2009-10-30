@@ -49,6 +49,31 @@ function gridCoors (commonVars, side) {
 	}
 }
 
+// Versatile function for drawing tiles. Perhaps a bit too versatile.
+function drawSet (hexSet, coorSet, closed) {
+	pathElement = document.createElementNS(svgNS, 'path');
+	
+	var hexSpot = hexSet.pop();
+	var path = '';
+	path += 'M ' + coorSet.x[hexSpot] + ' ' + coorSet.y[hexSpot];
+	
+	var i = 0;
+
+	while (i < hexSet.length || i == 7) {
+		hexSpot = hexSet.pop();
+		path += ' L ' + coorSet.x[hexSpot] + ' ' + coorSet.y[hexSpot];
+		i = i++;
+	}
+	
+	if (closed) {
+		path += ' Z';
+	}
+	
+	pathElement.setAttributeNS(null, 'd', path);
+	
+	return pathElement;
+}
+
 // Draws the invisible SVG grid for mouse detection.
 function drawGrid (commonVars, side) {
 	var gridContainer = document.getElementById('gridContainer');

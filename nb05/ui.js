@@ -10,15 +10,6 @@
  */
 
 function drawUI (commonVars) {	
-	// Draw the Nanoblok logo.
-	var blockBlank = makeObject({x: 5, y: 5}, commonVars);
-	var block = setColor(blockBlank, 'bla');
-	block.setAttributeNS(null, 'id', 'nanoblok-logo');
-	block.setAttributeNS(null, 'transform', 'scale(3)');
-	var gridElement = document.getElementById('grid');
-	var statusContainer = document.getElementById('gridContainer');
-	gridElement.insertBefore(block, statusContainer);
-	
 	// Nanoblok logo text	
 	var logoText = document.getElementById('logoText');
 	logoText.setAttributeNS(null, "transform", "skewY(-26.565) scale(" + commonVars.blockDims / 20 + ")");
@@ -27,6 +18,7 @@ function drawUI (commonVars) {
 	logoText.setAttributeNS(null, "font-size", 16 * (commonVars.blockDims / 20));*/
 		
 	// Set viewport height.
+	var gridElement = document.getElementById('grid');
 	gridElement.setAttributeNS(null, "height", commonVars.windowSize.y - 5);
 	
 	// Set effects canvas dimensions.
@@ -63,7 +55,7 @@ function populatePalette (commonVars) {
 		colorBlock.setAttributeNS(null, "y", 35 * i);
 		colorBlock.setAttributeNS(null, "height", 30);
 		colorBlock.setAttributeNS(null, "width", 30);
-		colorBlock.setAttributeNS(null, "fill", getDefaultColor(i));
+		colorBlock.setAttributeNS(null, "fill", getDefaultColor(commonVars, i));
 		colorBlock.setAttributeNS(null, "rx", 3);
 		colorBlock.setAttributeNS(null, "transform", "skewY(26.565)");
 		
@@ -71,53 +63,10 @@ function populatePalette (commonVars) {
 	}
 }
 
-function getDefaultColor (paletteNum) {
+function getDefaultColor (commonVars, paletteNum) {
 	rgbOutput = "rgb("
-		+ (palette[paletteNum][0] + 40) + ", "
-	 	+ (palette[paletteNum][1] + 40) + ", "
-		+ (palette[paletteNum][2] + 40) + ")";
+		+ (commonVars.palette[paletteNum][0] + 40) + ", "
+	 	+ (commonVars.palette[paletteNum][1] + 40) + ", "
+		+ (commonVars.palette[paletteNum][2] + 40) + ")";
 	return rgbOutput;
-}
-
-// Animates the nanoblok logo in the upper left-hand corner.
-// Order steps are: left, right, top (0, 1, 2)
-// THIS TOTALLY DOESN'T WORK RIGHT.
-var step = 0;
-var nbLogo;
-var timerRuns = 0;
-	
-function timeBlok () {	
-	if (step == 0) {
-		nbLogo[0].setAttributeNS(null, "fill-opacity", 0.3);
-		nbLogo[2].setAttributeNS(null, "fill-opacity", 1.0);
-	}
-	else if (step == 1) {
-		nbLogo[1].setAttributeNS(null, "fill-opacity", 0.3);
-		nbLogo[0].setAttributeNS(null, "fill-opacity", 1.0);
-	}
-	else if (step == 2) {
-		nbLogo[2].setAttributeNS(null, "fill-opacity", 0.3);
-		nbLogo[1].setAttributeNS(null, "fill-opacity", 1.0);
-		step = -1;
-	}
-}
-
-// this is meant to run the loop at least once, just so the user knows that something has loaded.
-function timeBlokLoop (toggle) {
-	nbLogo = document.getElementById("nanoblok-logo").childNodes;
-	
-	if (toggle === true) {
-		for (var i = 0; i < 3; i++) {
-			window.setTimeout("timeBlok()", 100);
-		}
-	}
-	
-	if (toggle === false) {
-		nbLogo[0].setAttributeNS(null, "fill-opacity", 1.0);
-		nbLogo[1].setAttributeNS(null, "fill-opacity", 1.0);
-		nbLogo[2].setAttributeNS(null, "fill-opacity", 1.0);
-	}
-	
-	step++;
-	timerRuns++;
 }
