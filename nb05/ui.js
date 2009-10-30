@@ -1,6 +1,15 @@
-function drawUI (commonVars) {
-	// Initialize all SVG tags.
-	
+/*
+ * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
+ * http://code.google.com/p/nanoblok/
+ * Copyright (c) 2009 Alex Trujillo
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ * 
+ * Summary for ui.js:
+ * Organizes a static user interface layout based upon window size and absolute positioning, but with proportions so that the interface looks similar from window to window.
+ * Contains some flawed animation code that needs to be deprecated.
+ */
+
+function drawUI (commonVars) {	
 	// Draw the Nanoblok logo.
 	var blockBlank = makeObject({x: 5, y: 5}, commonVars);
 	var block = setColor(blockBlank, 'bla');
