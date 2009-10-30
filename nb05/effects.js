@@ -134,7 +134,6 @@ function canvasBG (commonVars) {
 	}
 	ctx.closePath();
 	ctx.fill();
-	ctx.save();
 	
 	if (side == "bottom") {
 		canvasGrid(commonVars, "bottom");
@@ -145,6 +144,8 @@ function canvasBG (commonVars) {
 	if (side == "right") {
 		canvasGrid(commonVars, "right");
 	}
+
+	ctx.save();
 }
 
 // Lots of nested loops here. Individual loops for each grid.
@@ -321,11 +322,19 @@ function colorBlock (colorID, commonVars) {
 }
 
 // Updates the position indicators
-function positionIndicator (commonVars, inout) {
-	var ctx = context('overlays');
+function positionIndicator (commonVars) {
+	// Benchmark!
+	var init0 = new Date();
 	
-	ctx.clearRect(0, 0, commonVars.windowSize.x, commonVars.windowSize.y);
-	ctx.globalAlpha = 0.7;
+	var bg = document.getElementById('effects');
+	var ctx = context('overlays'); //overlays
+	// ctx.save();
+	
+	// ctx.clearRect(0, 0, commonVars.windowSize.x, commonVars.windowSize.y);
+	// ctx.globalAlpha = 0.7;
+	//alert(bg);
+	ctx.globalCompositeOperation = "copy";
+	ctx.drawImage(bg, 0, 0, bg.width, bg.height);
 	
 	var gr1 = commonVars.blockSize.full;
 	var gr2 = gr1 / 2;
@@ -338,7 +347,7 @@ function positionIndicator (commonVars, inout) {
 		+ (commonVars.gridDims.c - commonVars.layerOffset.z - 1) * commonVars.blockSize.half;
 	var offsX = commonVars.offset.x + commonVars.markerPosition.x * commonVars.blockSize.half;
 	
-	ctx.fillStyle = '#f00';
+	ctx.fillStyle = "rgba(255,0,0,0.7)";
 	ctx.beginPath();
 	
 	ctx.moveTo(offsX, 0 + offsYtop);
@@ -355,7 +364,7 @@ function positionIndicator (commonVars, inout) {
 		+ (commonVars.gridDims.c - commonVars.layerOffset.z - 1) * commonVars.blockSize.half;
 	offsX = commonVars.offset.x + commonVars.gridSize.x / 2 + (commonVars.markerPosition.z * commonVars.blockSize.half);
 	
-	ctx.fillStyle = '#00f';
+	ctx.fillStyle = "rgba(0,0,255,0.7)";
 	ctx.beginPath();
 	
 	ctx.moveTo(offsX, offsYtop - gr4);
@@ -370,7 +379,7 @@ function positionIndicator (commonVars, inout) {
 	offsX = commonVars.offset.x + (commonVars.markerPosition.x * commonVars.blockSize.half) + (commonVars.markerPosition.z * commonVars.blockSize.half);
 	offsYtop = commonVars.edges.top + (commonVars.markerPosition.z * commonVars.blockSize.quarter) + (commonVars.gridSize.y - commonVars.markerPosition.x * commonVars.blockSize.quarter) - 45;
 	
-	ctx.strokeStyle = '#0f0';
+	ctx.strokeStyle = "rgba(0,255,0,0.7)";
 	ctx.beginPath();
 	
 	// Points 1-6, in order.
@@ -384,5 +393,8 @@ function positionIndicator (commonVars, inout) {
 	ctx.closePath();
 	ctx.stroke();
 	
-	ctx.save();
+	// experimental
+	var init1 = new Date();
+	loggit('Effects load speed is ' + (init1 - init0) + ' milliseconds.');
+	// ctx.restore();
 }

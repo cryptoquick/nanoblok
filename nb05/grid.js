@@ -89,7 +89,7 @@ function drawGrid (commonVars, side) {
 	}
 }
 
-function drawMarkers (commonVars) {
+/*function drawMarkers (commonVars) {
 	var markerPoints = document.getElementById("markerPoints");
 
 	var blockDims = 10; // Size of blocks / tiles.
@@ -134,4 +134,4 @@ function drawMarkers (commonVars) {
 		marker.setAttributeNS(null, "fill", "blue");
 		markerPoints.appendChild(marker);
 	}
-}
+}*/

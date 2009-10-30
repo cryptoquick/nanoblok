@@ -213,7 +213,7 @@ function Update (updateMode, updateSettings, commonVars) {
 		drawGrid(commonVars, "bottom");
 	//	drawGrid(commonVars, "left");
 	//	drawGrid(commonVars, "right");
-		drawMarkers(commonVars);
+		// drawMarkers(commonVars);
 	}
 
 	// Draw canvas grid...
@@ -221,6 +221,9 @@ function Update (updateMode, updateSettings, commonVars) {
 		canvasGrid(commonVars, "bottom", updateSettings.gridMode);
 		canvasGrid(commonVars, "left", updateSettings.gridMode);
 		canvasGrid(commonVars, "right", updateSettings.gridMode);
+		
+		// Needed to keep from having a blank screen with the effects canvas in the background.
+		positionIndicator(commonVars);
 		
 		// ...and some logic for button outlines / selection.
 		if (updateSettings.gridMode == "standard") {
@@ -312,6 +315,7 @@ function Click (evt, commonVars) {
 	} else if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-')
 	{
 		placeBlock(target, commonVars);
+		positionIndicator(commonVars);
 	}
 }
 
@@ -381,14 +385,14 @@ function Hover (evt, inout, commonVars) {
 	}
 	
 	// Position Indicators
-	if (target.id.substr(0,2) == 'x-') {
+	if (target.id.substr(0,2) == 'x-' && inout == "in") {
 		commonVars.markerPosition.x = target.getAttribute("c");
 		commonVars.markerPosition.z = target.getAttribute("r");
-		positionIndicator(commonVars, inout);
+		positionIndicator(commonVars);
 	}
-	if (target.id.substr(0,2) == 'z-') {
+	if (target.id.substr(0,2) == 'z-' && inout == "in") {
 		commonVars.markerPosition.z = target.getAttribute("r");
-		positionIndicator(commonVars, inout);
+		positionIndicator(commonVars);
 	}
 	
 	/* Marker code
