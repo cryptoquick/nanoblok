@@ -5,7 +5,7 @@
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  * 
  * Summary for grid.js:
- * Contains two functions-- one to come up with coordinates for the grids, then the function to draw the SVG grid.
+ * Contains grid-related functions; one for the math to setup the points used by the grids, then an SVG-based grid plotter, and then a canvas-based grid plotter.
  */
 
 // The gridCoors function creates a static set of coordinates from which to base the canvas and SVG grids upon.
@@ -49,6 +49,7 @@ function gridCoors (commonVars, side) {
 	}
 }
 
+// Draws the invisible SVG grid for mouse detection.
 function drawGrid (commonVars, side) {
 	var gridContainer = document.getElementById('gridContainer');
 	
@@ -70,6 +71,68 @@ function drawGrid (commonVars, side) {
 			tile.setAttributeNS(null, 'id', blockID);
 			
 			gridContainer.appendChild(tile);
+			
+			i++;
+		}
+	}
+}
+
+// Draws the grids using canvas.
+// Lots of nested loops here. Individual loops for each grid.
+function canvasGrid (commonVars, side, mode) {
+	var i = 0;
+		
+	for (var x = 0; x < commonVars.gridDims.c; x++) {
+		for (var y = 0; y < commonVars.gridDims.r; y++) {
+			if (side == "bottom") {
+				var hexSet = [1, 2, 7, 6];
+				var offset = GridField["x-" + i].coors;
+				
+				if (mode == "standard") {
+					var fill = "#eee";
+					var stroke = "#aaa";
+				}
+				if (mode == "number") {
+					var fill = "rgb(" + (255 - i / 4) + ", " + 0 + ", " + 0 + ")";
+					var stroke = "black";
+				}
+				
+				// hexSet, offset, commonVars, closed, color, stroke
+				canvasDrawSet(hexSet, offset, commonVars,
+					{closed: true, fill: fill, stroke: stroke});
+			}
+			if (side == "left") {
+				var hexSet = [1, 7, 5, 6];
+				var offset = GridField["y-" + i].coors;
+				
+				if (mode == "standard") {
+					var fill = "#ddd";
+					var stroke = "#aaa";
+				}
+				if (mode == "number") {
+					var fill = "rgb(" + 0 + ", " + (255 - i / 4) + ", " + 0 + ")";
+					var stroke = "black";
+				}
+				
+				canvasDrawSet(hexSet, offset, commonVars,
+					{closed: true, fill: fill, stroke: stroke});
+			}
+			if (side == "right") {
+				var hexSet = [6, 7, 4, 5];
+				var offset = GridField["z-" + i].coors;
+				
+				if (mode == "standard") {
+					var fill = "#ccc";
+					var stroke = "#aaa";
+				}
+				if (mode == "number") {
+					var fill = "rgb(" + 0 + ", " + 0 + ", " + (255 - i / 4) + ")";
+					var stroke = "black";
+				}
+				
+				canvasDrawSet(hexSet, offset, commonVars,
+					{closed: true, fill: fill, stroke: stroke});
+			}
 			
 			i++;
 		}

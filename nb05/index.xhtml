@@ -1,12 +1,14 @@
 <?xml version='1.0'?>
 <!--
-//	Copyright 2009 Alex Trujillo
-//	Full source available here under the MIT License: http://code.google.com/p/nanoblok/
-
-//	SUMMARY
-//	index.svg ties all the JavaScript together into the main document.
-//	The Init() function is run when the document is loaded in the SVG root.
-//	Debug menu is skewed into place.
+/*
+ * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
+ * http://code.google.com/p/nanoblok/
+ * Copyright (c) 2009 Alex Trujillo
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ * 
+ * Summary for index.xhtml:
+ * XHTML format with SVG-prefixed namespaces, because SVG with HTML5 Canvas is harder to pull off (and performs poorly).
+ */
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg" xmlns:html="http://www.w3.org/1999/xhtml">
 	<head>
@@ -25,15 +27,29 @@
 	<script type="text/javascript" src="ui.js"></script>
 	<script type="text/javascript" src="json.js"></script>
 	
-	<link rel="stylesheet" type="text/css" href="styles.css"/>
+	<!-- <link rel="stylesheet" type="text/css" href="styles.css"/> -->
 	
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			text-align: center;
+		}
+		
+		#effects, #overlays {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			z-index: -1;
+		}
+	</style>
 </head>
 <body>
 
 <canvas id="effects"></canvas>
 <canvas id="overlays"></canvas>
 
-<svg:svg id="grid" height="500">
+<svg:svg id="grid" width="100%">
 	<svg:g id="gridContainer" fill-opacity="0.0" transform="translate(0, -35)"/>
 
 	<svg:g id="statusContainer">
