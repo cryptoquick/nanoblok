@@ -61,12 +61,8 @@ function Initialize ()
 	}
 }
 
-var loadTimer;
-
 // Redraw grid, redraw UI, redraw canvas...
-function Update (updateMode, updateSettings, commonVars) {
-	loadTimer = window.setInterval("timeBlokLoop(true)", 300);
-	
+function Update (updateMode, updateSettings, commonVars) {	
 	if (updateMode == "resize" || updateMode == "initialize") {
 		gridCoors(commonVars);
 	//	removeUI();
@@ -96,18 +92,6 @@ function Update (updateMode, updateSettings, commonVars) {
 			document.getElementById("standardButton").setAttributeNS(null, "fill-opacity", 0.5);
 		}
 	}
-	
-	// Timer/Loader
-	if (timerRuns > 2) {
-		window.clearTimeout(loadTimer);
-		timeBlokLoop(false);
-	} else {
-		window.clearTimeout(loadTimer);
-		timeBlokLoop(true);
-		timeBlokLoop(false);
-		timeBlokLoop(false);
-	}
-	timerRuns = 0;
 }
 
 // Handles click events from its corresponding event listener.
