@@ -176,3 +176,8 @@ function saveField () {
 	var fieldString = JSON.stringify(Field);
 	document.getElementById("saveFile").value = fieldString;
 }
+
+function loadField () {
+	var fieldString = document.getElementById("saveFile").value;
+	Field = JSON.parse(fieldString);
+}

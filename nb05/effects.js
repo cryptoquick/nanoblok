@@ -134,6 +134,7 @@ function canvasBG (commonVars) {
 	}
 	ctx.closePath();
 	ctx.fill();
+	ctx.save();
 	
 	if (side == "bottom") {
 		canvasGrid(commonVars, "bottom");
@@ -144,8 +145,6 @@ function canvasBG (commonVars) {
 	if (side == "right") {
 		canvasGrid(commonVars, "right");
 	}
-
-	ctx.save();
 }
 
 // Lots of nested loops here. Individual loops for each grid.
@@ -240,6 +239,9 @@ function attachBlock (position, commonVars) {
 //	loggit('Block placed on the grid at ' + voxelCoordinates.x + ', ' + voxelCoordinates.y);
 }
 
+// Paints a block on the board with proper color and occlusion.
+// Takes coors x/y for position, xyz location on the grid, commonVars, and the color object of the block.
+// A color id can be converted into a color object using the colorBlock function.
 function canvasBlock (position, location, commonVars, color) {
 //	var blockTarget = document.getElementById(target.id);
 	// var xPos = blockTarget.getAttribute("c") * commonVars.blockSize.full + commonVars.offset.x;
@@ -322,19 +324,11 @@ function colorBlock (colorID, commonVars) {
 }
 
 // Updates the position indicators
-function positionIndicator (commonVars) {
-	// Benchmark!
-	var init0 = new Date();
+function positionIndicator (commonVars, inout) {
+	var ctx = context('overlays');
 	
-	var bg = document.getElementById('effects');
-	var ctx = context('overlays'); //overlays
-	// ctx.save();
-	
-	// ctx.clearRect(0, 0, commonVars.windowSize.x, commonVars.windowSize.y);
-	// ctx.globalAlpha = 0.7;
-	//alert(bg);
-	ctx.globalCompositeOperation = "copy";
-	ctx.drawImage(bg, 0, 0, bg.width, bg.height);
+	ctx.clearRect(0, 0, commonVars.windowSize.x, commonVars.windowSize.y);
+	ctx.globalAlpha = 0.7;
 	
 	var gr1 = commonVars.blockSize.full;
 	var gr2 = gr1 / 2;
@@ -347,7 +341,7 @@ function positionIndicator (commonVars) {
 		+ (commonVars.gridDims.c - commonVars.layerOffset.z - 1) * commonVars.blockSize.half;
 	var offsX = commonVars.offset.x + commonVars.markerPosition.x * commonVars.blockSize.half;
 	
-	ctx.fillStyle = "rgba(255,0,0,0.7)";
+	ctx.fillStyle = '#f00';
 	ctx.beginPath();
 	
 	ctx.moveTo(offsX, 0 + offsYtop);
@@ -364,7 +358,7 @@ function positionIndicator (commonVars) {
 		+ (commonVars.gridDims.c - commonVars.layerOffset.z - 1) * commonVars.blockSize.half;
 	offsX = commonVars.offset.x + commonVars.gridSize.x / 2 + (commonVars.markerPosition.z * commonVars.blockSize.half);
 	
-	ctx.fillStyle = "rgba(0,0,255,0.7)";
+	ctx.fillStyle = '#00f';
 	ctx.beginPath();
 	
 	ctx.moveTo(offsX, offsYtop - gr4);
@@ -379,7 +373,7 @@ function positionIndicator (commonVars) {
 	offsX = commonVars.offset.x + (commonVars.markerPosition.x * commonVars.blockSize.half) + (commonVars.markerPosition.z * commonVars.blockSize.half);
 	offsYtop = commonVars.edges.top + (commonVars.markerPosition.z * commonVars.blockSize.quarter) + (commonVars.gridSize.y - commonVars.markerPosition.x * commonVars.blockSize.quarter) - 45;
 	
-	ctx.strokeStyle = "rgba(0,255,0,0.7)";
+	ctx.strokeStyle = '#0f0';
 	ctx.beginPath();
 	
 	// Points 1-6, in order.
@@ -393,8 +387,5 @@ function positionIndicator (commonVars) {
 	ctx.closePath();
 	ctx.stroke();
 	
-	// experimental
-	var init1 = new Date();
-	loggit('Effects load speed is ' + (init1 - init0) + ' milliseconds.');
-	// ctx.restore();
+	ctx.save();
 }
