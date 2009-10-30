@@ -4,43 +4,7 @@
 //	SUMMARY	
 //	To come as development progresses.
 
-var SVGDocument = null;
-var SVGRoot = document.rootElement;
-var svgNS = 'http://www.w3.org/2000/svg';
-
-var grid_x = 16;
-var grid_y = 16;
-//var rotation = 1.0;
-
 var initialized = false;
-
-//var gridAngle = 0.0;
-
-// Block ID variable
-var blockTick = 1000;
-
-function testScript() {
-	// Block speed test		
-	var gridEl = null;
-
-	for (var i = 0; i < 256; i++) {
-		gridEl = document.getElementById("bgGrid-" + i);
-		attachBlock(gridEl, 'blue', '123');
-	}
-}
-
-/*
-// For grid rotation, to work on later
-function testScript() {
-//	for (i = 0.0; i <= 1.0; i + 0.1)	{
-		var init0 = new Date();
-		transformGrid(gridAngle);
-		var init1 = new Date();
-		gridAngle += 0.1;
-		loggit('Rotation speed is ' + (init1 - init0) + ' milliseconds.');
-//	}
-}
-*/
 
 window.addEventListener('load', function () {
 	Initialize();
@@ -97,12 +61,14 @@ function computeCommonVars () {
 	// Viewport information from the browser.
 	var windowSize = {x: window.innerWidth, y: window.innerHeight};
 	
-	// Size of blocks / tiles.
+	// Change to a smaller display format if the window is too small. Not yet fully worked out.
 	if (windowSize.x < 725 || windowSize.y < 760)
 		var blockDims = 15; // For smaller screens
 	else {
 		var blockDims = 20; // Regular size
 	}
+	
+	// Size of blocks / tiles.
 	var blockSize = {
 		full: blockDims,
 		half: blockDims / 2,
@@ -110,22 +76,24 @@ function computeCommonVars () {
 		quarter: blockDims / 4
 	}
 	
+	// Throughout the program, the c field is used for various measures. If c is not the same as r-- or vice versa--, problems will occur.
 	var gridDims = {c: 32, r: 32};
 	var gridSize = {
 		x: gridDims.c * blockSize.full,
 		y: gridDims.r * blockSize.quarter
 	};
 	
-	// Center of the window
+	// Center of the window.
 	var center = {x: windowSize.x / 2, y: windowSize.y / 2};
 	
-	// Grid edges
+	// Grid edges.
 	var edges = {
 		left: center.x - gridSize.x / 2,
 		right: center.x + gridSize.x / 2,
 		top: windowSize.y - gridSize.y * 2
 	};
 	
+	// This should technically be how far away from the left and top of the screen that the left-most, top-most corner of grid is located.
 	var offset = {
 		x: (windowSize.x - gridSize.x) / 2,
 		y: windowSize.y - gridSize.y * 2
@@ -146,8 +114,7 @@ function computeCommonVars () {
 		[255, 255, 255, 'transparent', null]
 	];
 	
-	var selectedColor = 0;
-	var selectedTool = "color";
+	// Various fields for selection states.
 	var selected = {
 		color: 0,
 		tool: "color",
@@ -156,12 +123,14 @@ function computeCommonVars () {
 	
 	var layerOffset = {x: 0, y: 0, z: 0};
 	
+	// Updated as the marker is moved about the screen.
 	var markerPosition = {
 		x: 0,
 		y: 0,
 		z: 0
 	};
 	
+	// Put all the variables into one, common object.
 	var commonVars = {
 		blockDims: blockDims,
 		blockSize: blockSize,
@@ -173,8 +142,6 @@ function computeCommonVars () {
 		offset: offset,
 		palette: defaultPalette,
 		selected: selected,
-		selectedColor: selectedColor,
-		selectedTool: selectedTool,
 		layerOffset: layerOffset,
 		markerPosition: markerPosition
 	};
@@ -211,9 +178,6 @@ function Update (updateMode, updateSettings, commonVars) {
 	if (updateMode == "resize" || updateMode == "initialize") {
 		drawUI(commonVars);
 		drawGrid(commonVars, "bottom");
-	//	drawGrid(commonVars, "left");
-	//	drawGrid(commonVars, "right");
-		// drawMarkers(commonVars);
 	}
 
 	// Draw canvas grid...
@@ -224,11 +188,9 @@ function Update (updateMode, updateSettings, commonVars) {
 		
 		// ...and some logic for button outlines / selection.
 		if (updateSettings.gridMode == "standard") {
-		//	document.getElementById("standardButton").setAttributeNS(null, "fill-opacity", 1.0);
-		//	document.getElementById("numberButton").setAttributeNS(null, "fill-opacity", 0.5);
 			
 			// Select color button at update.
-			document.getElementById("color" + commonVars.selectedColor + commonVars.palette[commonVars.selectedColor][3]).setAttributeNS(null, "stroke-opacity", "1.0");
+			document.getElementById("color" + commonVars.selected.color + commonVars.palette[commonVars.selected.color][3]).setAttributeNS(null, "stroke-opacity", "1.0");
 		}
 		else if (updateSettings.gridMode == "number") {
 			document.getElementById("numberButton").setAttributeNS(null, "fill-opacity", 1.0);
@@ -249,34 +211,17 @@ function Update (updateMode, updateSettings, commonVars) {
 	timerRuns = 0;
 }
 
+// Handles click events from its corresponding event listener.
 function Click (evt, commonVars) {
-	// Find out which element we clicked on
 	var target = evt.target;
 	
-//	var axis = {x: 0, y: 0, z: 0};
-	/*
-	if (target.id.substr(0,1) == 'x' || target.id.substr(0,1) == 'y' || target.id.substr(0,1) == 'z') {
-		var position = Field[target.id];
-		position.z++;
-		attachBlock(position);
-	} else if (target.id == 'left') {
-		var targetBlock = Field[target.parentNode.id];
-		targetBlock.position.y = -1;
-		attachBlock(targetBlock.position, targetBlock.axis); // y-
-	} else if (target.id == 'right') {
-		var targetBlock = Field[target.parentNode.id];
-		targetBlock.position.x = 1;
-		attachBlock(targetBlock.position, targetBlock.axis); // x+
-	} else if (target.id == 'top') {
-		var targetBlock = Field[target.parentNode.id];
-		attachBlock(targetBlock.position, targetBlock.axis); // z+
-	}*/
-	
 	// Left-side mode settings buttons.
+	// Refresh button.
 	if (target.id == "refreshButton" || target.id == "refreshText") {
 		Update("refresh", {gridMode: "standard"}, commonVars);
 		loggit("Canvas refreshed.");
 	}
+	// Delete button, its state can be toggled by the user.
 	else if (target.id == "deleteButton" || target.id == "deleteText") {
 		if (commonVars.selected.tool == "color") {
 			commonVars.selected.tool = "delete";
@@ -288,25 +233,31 @@ function Click (evt, commonVars) {
 			document.getElementById("deleteButton").setAttributeNS(null, "stroke-opacity", "0.0");
 			loggit("Deletion tool deselected.");
 		}
-	} else if (target.id == "saveButton" || target.id == "saveText") {
+	}
+	// Save button.
+	else if (target.id == "saveButton" || target.id == "saveText") {
 		saveField();
-	} else if (target.id == "loadButton" || target.id == "loadText") {
+	}
+	// Load button.
+	else if (target.id == "loadButton" || target.id == "loadText") {
 		loadField();
 		drawBlocks(commonVars);
 	}
 	
 	// Color selection.
 	if (target.id.substr(0,5) == "color") {
-		var oldColorIndex = commonVars.selectedColor;
+		var oldColorIndex = commonVars.selected.color;
 		
-		document.getElementById("color" + oldColorIndex + commonVars.palette[oldColorIndex][3])
-		.setAttributeNS(null, "stroke-opacity", "0.0");
+		// Get the color swatch (its name corresponds to its color), then set its black outline to transparent, making it appear deselected.
+		document.getElementById("color" + oldColorIndex + commonVars.palette[oldColorIndex][3]).setAttributeNS(null, "stroke-opacity", "0.0");
 		
-		commonVars.selectedColor = parseInt(target.id.substr(5,1));
+		// Get the color value from its id and set the currently selected color as this. (not the best way to do this...)
+		commonVars.selected.color = parseInt(target.id.substr(5,1));
 		
-		loggit("Selected color is: " + commonVars.palette[commonVars.selectedColor][3] + ".");
-		
+		// 'Select' the clicked-on color swatch.
 		document.getElementById(target.id).setAttributeNS(null, "stroke-opacity", "1.0");
+		
+		loggit("Selected color is: " + commonVars.palette[commonVars.selected.color][3] + ".");
 	}
 	
 	// Block placement (first click, and if only one single click)
@@ -318,32 +269,29 @@ function Click (evt, commonVars) {
 	}
 }
 
+// Calls canvasBlock to place a block on the grid.
 function placeBlock (target, commonVars) {
+	// Get 
 	var location = {
 		x: GridField[target.id].x,
 		y: GridField[target.id].y,
-		z: 0 + commonVars.layerOffset.z
+		z: commonVars.layerOffset.z
 	}
-/*	
-	while (Voxel[location.x][location.y][location.z] !== -1) {
-		if (Voxel[location.x][location.y][location.z] < commonVars.gridDims.c) {
-			location.z++;
-		} else {
-			loggit("Outside bounds.");
-			return 0;
-		}
-	}*/
+
+	// Draw the actual block using coordinates using the location of the grid's tiles as a reference for pixel-placement for all the rest of the blocks (this is the first argument). The target.id should look something like "x-123".
+	// colorBlock is used to turn the color index into a color object (with separate color values for each face as well as its lines)
+	canvasBlock(GridField[target.id].coors, location, commonVars, colorBlock(commonVars.selected.color, commonVars));
 	
-//	if (Voxel[location.x][location.y][location.z] == -1) {
-		canvasBlock(GridField[target.id].coors, location, commonVars, colorBlock(commonVars.selectedColor, commonVars));
-		Voxel[location.x][location.y][location.z] = commonVars.selectedColor;
-		Field.push([location.x, location.y, location.z, commonVars.selectedColor]);
-		loggit("A " + commonVars.palette[commonVars.selectedColor][3] + " block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
-/*	} else {
-		loggit("A block already exists here.");
-	}*/
+	// Now record information about the position of the block internally using both the Voxel array...
+	Voxel[location.x][location.y][location.z] = commonVars.selected.color;
+	// ...and the Field array, which is for serialization.
+	Field.push([location.x, location.y, location.z, commonVars.selected.color]);
+	
+	// Let the user know they've placed a block.
+	loggit("A " + commonVars.palette[commonVars.selected.color][3] + " block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
 }
 
+// WTF is this. >:I
 function deleteBlock (target, commonVars) {
 	var location = {
 		x: GridField[target.id].x,
@@ -356,64 +304,19 @@ function deleteBlock (target, commonVars) {
 	loggit(" The block placed at " + location.x + ", " + location.y + ", " + location.z + " was deleted.")
 }
 
-// var markerX;
-// var markerY;
-// var markerZ;
-
+// Gets hover events from its corresponding event listener, including whether the user hovered in or out of the object.
 function Hover (evt, inout, commonVars) {
 	var target = evt.target;
 	
-	// Hands id of hovered grid tile to let the user know what tile their mouse is over.
-	// if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-') {
-	// 	tileHover(target, inout, commonVars.offset, commonVars.blockSize);
-	// }
-	// Display the color of the hovered object in the event log.
-/*	if (target.id.substr(0,5) == "color") {
-		loggit("Color " + commonVars.palette[target.id.substr(5,1)][3]);
-	}
-	// Same as above, but for the left-side buttons.
-	if (target.id == "refreshButton") {
-		loggit("Refresh.");
-	}
-	if (target.id == "deleteButton") {
-		loggit("Delete.");
-	}*/
-	
-	if ((target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-') && mouseDown && inout == "in") {
+	// Place a block on the x-grid as long as the mouse is down and place it only when moving into the cell, otherwise the block would be placed twice.
+	if ((target.id.substr(0,2) == 'x-') && mouseDown && inout == "in") {
 		placeBlock(target, commonVars);
 	}
 	
-	// Position Indicators
+	// Puts information about the position of the cursor over the grid into the markerPosition field in commonVars, allowing that to be used by the positionIndicator function.
 	if (target.id.substr(0,2) == 'x-') {
 		commonVars.markerPosition.x = target.getAttribute("c");
 		commonVars.markerPosition.z = target.getAttribute("r");
 		positionIndicator(commonVars, inout);
 	}
-	if (target.id.substr(0,2) == 'z-') {
-		commonVars.markerPosition.z = target.getAttribute("r");
-		positionIndicator(commonVars, inout);
-	}
-	
-	/* Marker code
-	else if (target.id.substr(0,2) == 'x-') {
-		if (markerX != null) {
-			markerX.setAttributeNS(null, "fill-opacity", "0.0");
-		}
-		markerX = document.getElementById("markerX" + target.getAttribute("r"));
-		markerX.setAttributeNS(null, "fill-opacity", "0.7");
-	}
-	else if (target.id.substr(0,2) == 'y-') {
-		if (markerY != null) {
-			markerY.setAttributeNS(null, "fill-opacity", "0.0");
-		}
-		markerY = document.getElementById("markerY" + target.getAttribute("r"));
-		markerY.setAttributeNS(null, "fill-opacity", "0.7");
-	}
-	else if (target.id.substr(0,2) == 'z-') {
-		if (markerZ != null) {
-			markerZ.setAttributeNS(null, "fill-opacity", "0.0");
-		}
-		markerZ = document.getElementById("markerZ" + target.getAttribute("r"));
-		markerZ.setAttributeNS(null, "fill-opacity", "0.7");
-	}*/
 }

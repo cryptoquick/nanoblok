@@ -181,3 +181,4 @@ function loadField () {
 	var fieldString = document.getElementById("saveFile").value;
 	Field = JSON.parse(fieldString);
 }
+

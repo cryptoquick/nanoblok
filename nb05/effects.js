@@ -243,23 +243,12 @@ function attachBlock (position, commonVars) {
 // Takes coors x/y for position, xyz location on the grid, commonVars, and the color object of the block.
 // A color id can be converted into a color object using the colorBlock function.
 function canvasBlock (position, location, commonVars, color) {
-//	var blockTarget = document.getElementById(target.id);
-	// var xPos = blockTarget.getAttribute("c") * commonVars.blockSize.full + commonVars.offset.x;
-	// var yPos = blockTarget.getAttribute("r") * commonVars.blockSize.full + commonVars.offset.y;
-	// position = {x: xPos, y: yPos};
-	
 	var adjustedPosition = {x: position.x, y: position.y - commonVars.blockSize.half * (location.z + 1)};
-	
-//	var color = colorBlock(colorID, commonVars);
-	
-//	if (Voxel[location.x - 1][location.y][0] == -1) {
 	
 	// Top side. Always placed.
 	canvasDrawSet([1, 6, 7, 2], adjustedPosition, commonVars, {closed: true, fill: color.top, stroke: color.inset});
-//	}
 	
 	// Left side.
-	
 	if (Voxel[location.x - 1][location.y][commonVars.layerOffset.z] == -1
 			&& Voxel[location.x - 1][location.y + 1][commonVars.layerOffset.z] == -1) {
 		canvasDrawSet([6, 7, 4, 5], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
@@ -276,13 +265,9 @@ function canvasBlock (position, location, commonVars, color) {
 			&& Voxel[location.x][location.y + 1][commonVars.layerOffset.z] == -1) {
 		canvasDrawSet([2, 7, 3], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
 	}
-
-/*	if (Voxel[location.x][location.y + 1][commonVars.layerOffset.z] == -1) {
-		canvasDrawSet([2, 7, 4, 3], adjustedPosition, commonVars, {closed: true, fill: color.right, stroke: color.inset});
-	}*/
-//	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, commonVars, {closed: true, fill: false, stroke: "#aaa"});
 }
 
+// WTF is this. >:I
 function canvasBlockDelete () {
 	var color = {left: "#eee", right: "#eee", top: "#eee", inset: "#aaa"};
 	
@@ -310,6 +295,9 @@ function canvasBlockDelete () {
 	}
 }
 
+// colorBlock is used to turn the color index into a color object (with separate color values for each face as well as its lines).
+// It basically takes this color index and corresponds it to an RGB value held in the color palette in commonVars.
+// Later a better system for handling color must be designed.
 function colorBlock (colorID, commonVars) {
 	var color = commonVars.palette[colorID];
 	var colorR = color[0];
