@@ -3,75 +3,14 @@
  * http://code.google.com/p/nanoblok/
  * Copyright (c) 2009 Alex Trujillo
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ * 
+ * Summary for block.js:
+ * This file holds outdated SVG-based block rendering code. This stores data in the DOM, which uses more resources and is slower.
+ * Soon to be deprecated.
  */
-
-var tick = 100
-
-// Helper functions
-/*function array_search (array, val) {
-	for (var i = 0; i < array.length; i++) {
-		if (array[i][3] == val) { // Modified to look inside the nested arrays to find the colors
-			return i;
-		}
-	}
-	return false;
-}*/
- 
-function array_search_key(array, num) {
-	if (array[num]) return true;
-	return false;
-}
-
-// SVG namespace so that objects can be attached to the document.
-var svgNS = 'http://www.w3.org/2000/svg';
-
-// // Builds an array of points that corresponds to an entire isometric block (six points), including center (7). Arrays for both X and Y coordinates. Offset added to hexagon proportions.	
-// function hexInit (commonVars) {
-// 	var blockSize = commonVars.blockSize;
-// 	
-// //	loggit (commonVars.hexPoints);
-// 	
-// 	var isoX = Array();
-// 	isoX [1] = blockSize.half;
-// 	isoX [2] = blockSize.full;
-// 	isoX [3] = blockSize.full;
-// 	isoX [4] = blockSize.half;
-// 	isoX [5] = 0;
-// 	isoX [6] = 0;
-// 	isoX [7] = blockSize.half;
-// 
-// 	var isoY = Array();
-// 	isoY [1] = 0;
-// 	isoY [2] = blockSize.quarter;
-// 	isoY [3] = blockSize.third;
-// 	isoY [4] = blockSize.full;
-// 	isoY [5] = blockSize.third;
-// 	isoY [6] = blockSize.quarter;
-// 	isoY [7] = blockSize.half;
-// 	
-// 	commonVars.hexPoints = {x: isoX, y: isoY};
-// 	
-// 	return commonVars;
-// }
-// 
-// // Draws hexagonal points in iso perspective, based on hard coordinate and size of block. Depends on an orientation array (see block-grid.png in Nanoblok Extras). Returns static coordinates of where to draw blocks on the screen.
-// function hexiso (offset, commonVars) {
-// 	var isoX = new Array();
-// 	var isoY = new Array();
-// 	
-// //	loggit(commonVars.hexPoints.x);
-// 	
-// 	for (var i = 1; i <= 7; i++) {
-// 		isoX[i] = commonVars.hexPoints.x[i] + offset.x;
-// 		isoY[i] = commonVars.hexPoints.y[i] + offset.y;
-// 	}
-// 	
-// 	return {x: isoX, y: isoY};
-// }
 
 // Draws hexagonal points in iso perspective, based on hard coordinate and size of block. Depends on an orientation array (see block-grid.png in Nanoblok Extras). Returns static coordinates of where to draw blocks on the screen.
 function hexiso (offset, blockSize) {
-	
 	// Builds an array of points that corresponds to an entire isometric block (six points), including center (7). Arrays for both X and Y coordinates. Offset added to hexagon proportions.	
 	
 	var isoX = Array();
@@ -94,7 +33,6 @@ function hexiso (offset, blockSize) {
 	
 	return {x: isoX, y: isoY};
 }
-
 
 function drawSet (hexSet, coorSet, closed) {
 	pathElement = document.createElementNS(svgNS, 'path');
@@ -120,63 +58,6 @@ function drawSet (hexSet, coorSet, closed) {
 	return pathElement;
 }
 
-function transformBlock () {
-	
-}
-
-var direction;
-
-// Find a nearby block and then find its bounding box.
-function voxelBBox (position) {
-	var neighborIDs = neighbors(position);
-	
-	
-	
-	alert(position.x);
-	
-	if (direction % 2) { // odd
-		position[direction]--;
-	} else { // even
-		position[direction]++;
-	}
-	
-//	alert(position[direction]);
-	
-	targetElement = document.getElementById(elementID);
-	bbox = targetElement.getBBox();
-	
-//	alert ('x: ' + bbox.x);
-	
-	if (z == -1) {
-		// For blocks placed on the grid
-		return {x: bbox.x + 2, y: bbox.y - blockSize.half + 1};
-	} else {
-		// For blocks placed above other blocks
-		return {x: bbox.x + 0, y: bbox.y - blockSize.half - 2};
-	}
-}
-
-// Creates the various coordinates necessary to make an isometric block
-// from the coordinates provided by hexiso().
-/* function makeBlock (offset, blockSize) {
-	
-	var coorSet = hexiso(offset, blockSize);
-	
-	var blokTop 	= drawSet([1, 2, 7, 6], coorSet, true);
-	var blokRight 	= drawSet([2, 3, 4, 7], coorSet, true);
-	var blokLeft 	= drawSet([7, 4, 5, 6], coorSet, true);
-	var blokInset1 	= drawSet([6, 7, 2], 	coorSet, false);
-	var blokInset2 	= drawSet([7, 4], 		coorSet, false);
-	var blokOutline = drawSet([1, 2, 3, 4, 5, 6], coorSet, true);
-	
-	return {top: blokTop,
-		right: blokRight,
-		left: blokLeft,
-		inset1: blokInset1,
-		inset2: blokInset2,
-		outline: blokOutline};
-} */
-
 // Creates the various coordinates necessary to make an isometric block
 // from the coordinates provided by hexiso().
 function makeObject (position, commonVars) {
@@ -199,6 +80,7 @@ function makeObject (position, commonVars) {
 
 // From Tango Project colors:
 // http://tango.freedesktop.org/Tango_Icon_Theme_Guidelines
+// This is the old format.
 var palette = new Array();
 palette[0] = [164, 0, 0, 'red', null];
 palette[1] = [211, 127, 4, 'orange', null];
@@ -214,8 +96,8 @@ palette[10] = [0, 0, 0, 'void', null];
 palette[11] = [0, 0, 0, 'random', null];
 
 // Sets the color of the block with above color values
+// This is old, SVG-based block code. Used only for the logo.
 function setColor(obj, colorname) {
-//	var color = array_search(palette, colorname);
 	var color = palette[3]; // kludge
 	var colorR = color[0];
 	var colorG = color[1];
@@ -261,39 +143,4 @@ function makeGroup(obj) {
 	group.appendChild(obj.outline);
 	
 	return group;
-}
-
-// Finds the bounding box of the element that has been clicked (the target), then builds a block to place on top of it.
-function attachBlock(position, blockSize) {
-	blockID = 'block-' + blockTick;
-	blockTick++;
-//	bbox = voxelBBox(position);
-	bbox = targetElement.getBBox();
-	color = 'bla';
-//	offset = voxelBBox(position.x + axis.x, position.x + axis.y, position.z + axis.z - 1);
-	blockBlank = makeObject(bbox, blockSize); //offset.x, offset.y);
-	block = setColor(blockBlank, color);
-	block.setAttributeNS(null, 'id', blockID);
-//	block.setAttributeNS(null, 'block-color', color);
-//	blockOrder(target, block);
-	SVGRoot.appendChild(block);
-	voxelCoordinates = blockRecord(blockID, position);
-//	loggit('Block placed on the grid at ' + voxelCoordinates.x + ', ' + voxelCoordinates.y);
-}
-
-function drawBlocks(commonVars) {
-	for (var i = 0; i < Field.length; i++) {
-		var block = Field[i];
-		
-		var location = {
-			x: block[0],
-			y: block[1],
-			z: block[2]
-		}
-		
-		var gridPosition = block[0] * commonVars.gridDims.c + block[1];
-		var coors = GridField["x-" + gridPosition].coors;
-		
-		canvasBlock(coors, location, commonVars, colorBlock(block[3], commonVars));
-	}
 }

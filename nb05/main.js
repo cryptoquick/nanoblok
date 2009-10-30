@@ -167,9 +167,7 @@ function Update (updateMode, updateSettings, commonVars) {
 	loadTimer = window.setInterval("timeBlokLoop(true)", 300);
 	
 	if (updateMode == "resize" || updateMode == "initialize") {
-		gridCoors(commonVars, "bottom");
-		gridCoors(commonVars, "left");
-		gridCoors(commonVars, "right");
+		gridCoors(commonVars);
 	//	removeUI();
 	//	removeGrid();
 	}
