@@ -281,6 +281,19 @@ function attachBlock(position, blockSize) {
 //	loggit('Block placed on the grid at ' + voxelCoordinates.x + ', ' + voxelCoordinates.y);
 }
 
-function drawBlocks() {
-	
+function drawBlocks(commonVars) {
+	for (var i = 0; i < Field.length; i++) {
+		var block = Field[i];
+		
+		var location = {
+			x: block[0],
+			y: block[1],
+			z: block[2]
+		}
+		
+		var gridPosition = block[0] * commonVars.gridDims.c + block[1];
+		var coors = GridField["x-" + gridPosition].coors;
+		
+		canvasBlock(coors, location, commonVars, colorBlock(block[3], commonVars));
+	}
 }

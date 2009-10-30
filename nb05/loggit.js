@@ -6,7 +6,7 @@
 //	Because the box does not have a scroll bar, I had to write scrolling code.
 //	Not much has changed here since vektornye. Soon to be made into a full-fledged text.js.
 
-var svgNS = 'http://www.w3.org/2000/svg';
+var svgNS = "http://www.w3.org/2000/svg";
 
 function loggit(str) {
 	var log = document.getElementById("debugText");
