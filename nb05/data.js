@@ -174,5 +174,10 @@ Neighbors.prototype = {
 // Field is the term for only the blocks on the board.
 function saveField () {
 	var fieldString = JSON.stringify(Field);
-	document.getElementById("saveFile").innerHTML = fieldString;
+	document.getElementById("saveFile").value = fieldString;
+}
+
+function loadField () {
+	var fieldString = document.getElementById("saveFile").value;
+	Field = JSON.parse(fieldString);
 }

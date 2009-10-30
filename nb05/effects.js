@@ -239,6 +239,9 @@ function attachBlock (position, commonVars) {
 //	loggit('Block placed on the grid at ' + voxelCoordinates.x + ', ' + voxelCoordinates.y);
 }
 
+// Paints a block on the board with proper color and occlusion.
+// Takes coors x/y for position, xyz location on the grid, commonVars, and the color object of the block.
+// A color id can be converted into a color object using the colorBlock function.
 function canvasBlock (position, location, commonVars, color) {
 //	var blockTarget = document.getElementById(target.id);
 	// var xPos = blockTarget.getAttribute("c") * commonVars.blockSize.full + commonVars.offset.x;

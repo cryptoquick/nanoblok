@@ -23,7 +23,7 @@ function array_search_key(array, num) {
 }
 
 // SVG namespace so that objects can be attached to the document.
-var svgNS = 'http://www.w3.org/2000/svg';
+var svgNS = "http://www.w3.org/2000/svg";
 
 // // Builds an array of points that corresponds to an entire isometric block (six points), including center (7). Arrays for both X and Y coordinates. Offset added to hexagon proportions.	
 // function hexInit (commonVars) {
@@ -281,6 +281,19 @@ function attachBlock(position, blockSize) {
 //	loggit('Block placed on the grid at ' + voxelCoordinates.x + ', ' + voxelCoordinates.y);
 }
 
-function drawBlocks() {
-	
+function drawBlocks(commonVars) {
+	for (var i = 0; i < Field.length; i++) {
+		var block = Field[i];
+		
+		var location = {
+			x: block[0],
+			y: block[1],
+			z: block[2]
+		}
+		
+		var gridPosition = block[0] * commonVars.gridDims.c + block[1];
+		var coors = GridField["x-" + gridPosition].coors;
+		
+		canvasBlock(coors, location, commonVars, colorBlock(block[3], commonVars));
+	}
 }

@@ -199,7 +199,8 @@ var loadTimer;
 function Update (updateMode, updateSettings, commonVars) {
 	loadTimer = window.setInterval("timeBlokLoop(true)", 300);
 	
-	if (updateMode == "resize" || updateMode == "initialize") {
+	if (updateMode == "resize" || updateMode == "initialize" || updateMode == "refresh") {
+		computeCommonVars();
 		gridCoors(commonVars, "bottom");
 		gridCoors(commonVars, "left");
 		gridCoors(commonVars, "right");
@@ -208,7 +209,7 @@ function Update (updateMode, updateSettings, commonVars) {
 	}
 	
 	// Draw SVG grid
-	if (updateMode == "resize" || updateMode == "initialize") {
+	if (updateMode == "resize" || updateMode == "initialize" || updateMode == "refresh") {
 		drawUI(commonVars);
 		drawGrid(commonVars, "bottom");
 	//	drawGrid(commonVars, "left");
@@ -217,7 +218,7 @@ function Update (updateMode, updateSettings, commonVars) {
 	}
 
 	// Draw canvas grid...
-	if (updateMode == "resize" || updateMode == "canvas" || updateMode == "initialize") {		
+	if (updateMode == "resize" || updateMode == "canvas" || updateMode == "initialize" || updateMode == "refresh") {		
 		canvasGrid(commonVars, "bottom", updateSettings.gridMode);
 		canvasGrid(commonVars, "left", updateSettings.gridMode);
 		canvasGrid(commonVars, "right", updateSettings.gridMode);
@@ -290,6 +291,9 @@ function Click (evt, commonVars) {
 		}
 	} else if (target.id == "saveButton" || target.id == "saveText") {
 		saveField();
+	} else if (target.id == "loadButton" || target.id == "loadText") {
+		loadField();
+		drawBlocks(commonVars);
 	}
 	
 	// Color selection.
