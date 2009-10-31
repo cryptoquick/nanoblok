@@ -104,6 +104,7 @@ function Click (evt, commonVars) {
 		Update("refresh", {gridMode: "standard"}, commonVars);
 		loggit("Canvas refreshed.");
 	}
+	
 	// Delete button, its state can be toggled by the user.
 	else if (target.id == "deleteButton" || target.id == "deleteText") {
 		if (commonVars.selected.tool == "color") {
@@ -117,14 +118,38 @@ function Click (evt, commonVars) {
 			loggit("Deletion tool deselected.");
 		}
 	}
+	
 	// Save button.
 	else if (target.id == "saveButton" || target.id == "saveText") {
 		saveField();
 	}
+	
 	// Load button.
 	else if (target.id == "loadButton" || target.id == "loadText") {
 		loadField();
 		drawBlocks(commonVars);
+	}
+	
+	// Grid Up button.
+	else if (target.id == "gridUpButton" || target.id == "gridUpText") {
+		if(commonVars.layerOffset.z < (commonVars.gridDims.r - 1)) {
+			commonVars.layerOffset.z++;
+			positionIndicator(commonVars);
+			// Raise the SVG grid.
+			document.getElementById("gridContainer")
+			.setAttributeNS(null, "transform", "translate(0," + (-35 - commonVars.layerOffset.z * commonVars.blockSize.half) + ")");
+		}
+	}
+	
+	// Grid Down button.
+	else if (target.id == "gridDownButton" || target.id == "gridDownText") {
+		if(commonVars.layerOffset.z > 0) {
+			commonVars.layerOffset.z--;
+			positionIndicator(commonVars);
+			// Lower the SVG grid.
+			document.getElementById("gridContainer")
+			.setAttributeNS(null, "transform", "translate(0," + (-35 - commonVars.layerOffset.z * commonVars.blockSize.half) + ")");
+		}
 	}
 	
 	// Color selection.
@@ -162,9 +187,9 @@ function Hover (evt, inout, commonVars) {
 	}
 	
 	// Puts information about the position of the cursor over the grid into the markerPosition field in commonVars, allowing that to be used by the positionIndicator function.
-	if (target.id.substr(0,2) == 'x-') {
+	if (target.id.substr(0,2) == 'x-' && inout == "in") {
 		commonVars.markerPosition.x = target.getAttribute("c");
 		commonVars.markerPosition.z = target.getAttribute("r");
-		positionIndicator(commonVars, inout);
+		positionIndicator(commonVars);
 	}
 }

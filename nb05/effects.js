@@ -20,7 +20,7 @@ function context(element) {
 }
 
 // Updates the position indicators
-function positionIndicator (commonVars, inout) {
+function positionIndicator (commonVars) {
 	var ctx = context('overlays');
 	
 	ctx.clearRect(0, 0, commonVars.windowSize.x, commonVars.windowSize.y);
@@ -67,7 +67,7 @@ function positionIndicator (commonVars, inout) {
 	
 	// Green Cursor
 	offsX = commonVars.offset.x + (commonVars.markerPosition.x * commonVars.blockSize.half) + (commonVars.markerPosition.z * commonVars.blockSize.half);
-	offsYtop = commonVars.edges.top + (commonVars.markerPosition.z * commonVars.blockSize.quarter) + (commonVars.gridSize.y - commonVars.markerPosition.x * commonVars.blockSize.quarter) - 45;
+	offsYtop = commonVars.edges.top - (commonVars.layerOffset.z * commonVars.blockSize.half) + (commonVars.markerPosition.z * commonVars.blockSize.quarter) + (commonVars.gridSize.y - commonVars.markerPosition.x * commonVars.blockSize.quarter) - 45;
 	
 	ctx.strokeStyle = '#0f0';
 	ctx.beginPath();

@@ -35,9 +35,13 @@ function drawUI (commonVars) {
 	var debugBox = document.getElementById("statusContainer");
 	debugBox.setAttributeNS(null, "transform", "translate(" + commonVars.edges.left + ", " + (commonVars.edges.top - commonVars.gridSize.y - 145) + ")");
 	
-	// Position buttons on the left side.
+	// Position buttons on the top.
+	var sideButtonsTop = document.getElementById("sideButtonsTop");
+	sideButtonsTop.setAttributeNS(null, "transform", "translate(" + (commonVars.center.x + 5) + ", " + (commonVars.edges.top - commonVars.gridSize.y * 2 - 120) + ")");
+	
+	// Position arrows on the left side.
 	var sideButtonsLeft = document.getElementById("sideButtonsLeft");
-	sideButtonsLeft.setAttributeNS(null, "transform", "translate(" + (commonVars.center.x + 5) + ", " + (commonVars.edges.top - commonVars.gridSize.y * 2 - 120) + ")");
+	sideButtonsLeft.setAttributeNS(null, "transform", "translate(" + (commonVars.edges.left - 25) + ", " + (commonVars.edges.top - commonVars.gridSize.y - 20) + ")");
 	
 	populatePalette(commonVars);
 }
@@ -45,7 +49,7 @@ function drawUI (commonVars) {
 // Place all the colors on the right side.
 function populatePalette (commonVars) {
 	var sideColorsRight = document.getElementById("sideColorsRight");
-	sideColorsRight.setAttributeNS(null, "transform", "translate(" + (commonVars.edges.right + 40) + ", " + (commonVars.edges.top - commonVars.gridSize.y - 10) + ")");
+	sideColorsRight.setAttributeNS(null, "transform", "translate(" + (commonVars.edges.right + 40) + ", " + (commonVars.edges.top - commonVars.gridSize.y - 9) + ")");
 	
 	for (var i = 0; i < 9; i++) {
 		var colorBlock = document.createElementNS(svgNS, 'rect');

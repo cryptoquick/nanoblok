@@ -173,3 +173,20 @@ function canvasBlockDelete () {
 		canvasDrawSet([2, 7, 3], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
 	}
 }
+
+function drawBlocks(commonVars) {
+	for (var i = 0; i < Field.length; i++) {
+		var block = Field[i];
+		
+		var location = {
+			x: block[0],
+			y: block[1],
+			z: block[2]
+		}
+		
+		var gridPosition = block[0] * commonVars.gridDims.c + block[1];
+		var coors = GridField["x-" + gridPosition].coors;
+		
+		canvasBlock(coors, location, commonVars, colorBlock(block[3], commonVars));
+	}
+}
