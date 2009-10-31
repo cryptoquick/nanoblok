@@ -78,7 +78,8 @@ function computeCommonVars () {
 	// Various fields for selection states.
 	var selected = {
 		color: 0,
-		tool: "color",
+		tool: "color0red",
+		blocks: false,
 		area: {x: 0, y: 0, z: 0, l: 0, w: 0, h: 0}
 	};
 	

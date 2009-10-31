@@ -85,7 +85,7 @@ function Update (updateMode, updateSettings, commonVars) {
 		if (updateSettings.gridMode == "standard") {
 			
 			// Select color button at update.
-			document.getElementById("color" + commonVars.selected.color + commonVars.palette[commonVars.selected.color][3]).setAttributeNS(null, "stroke-opacity", "1.0");
+			document.getElementById("color" + commonVars.selected.color + commonVars.palette[commonVars.selected.color][3] + "Button").setAttributeNS(null, "stroke-opacity", "1.0");
 		}
 		else if (updateSettings.gridMode == "number") {
 			document.getElementById("numberButton").setAttributeNS(null, "fill-opacity", 1.0);
@@ -98,16 +98,28 @@ function Update (updateMode, updateSettings, commonVars) {
 function Click (evt, commonVars) {
 	var target = evt.target;
 	
-	// Left-side mode settings buttons.
+	// Top-side mode/settings buttons.
+	// Save button.
+	if (target.id == "saveButton" || target.id == "saveText") {
+		saveField();
+	}
+	
+	// Load button.
+	else if (target.id == "loadButton" || target.id == "loadText") {
+		loadField();
+		drawBlocks(commonVars);
+	}
+
 	// Refresh button.
-	if (target.id == "refreshButton" || target.id == "refreshText") {
+	else if (target.id == "refreshButton" || target.id == "refreshText") {
 		Update("refresh", {gridMode: "standard"}, commonVars);
 		loggit("Canvas refreshed.");
 	}
 	
 	// Delete button, its state can be toggled by the user.
 	else if (target.id == "deleteButton" || target.id == "deleteText") {
-		if (commonVars.selected.tool == "color") {
+		if (commonVars.selected.tool != "delete") {
+			document.getElementById(commonVars.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
 			commonVars.selected.tool = "delete";
 			document.getElementById("deleteButton").setAttributeNS(null, "stroke-opacity", "1.0");
 			loggit("Deletion tool selected.");
@@ -119,15 +131,24 @@ function Click (evt, commonVars) {
 		}
 	}
 	
-	// Save button.
-	else if (target.id == "saveButton" || target.id == "saveText") {
-		saveField();
+	// Select button.
+	else if (target.id == "selectButton" || target.id == "selectText" || target.id == "selectLogo") {
+		if (commonVars.selected.tool != "select") {
+			document.getElementById(commonVars.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
+			commonVars.selected.tool = "select";
+			document.getElementById("selectButton").setAttributeNS(null, "stroke-opacity", "1.0");
+			loggit("Selection tool selected.");
+		}
+		else if (commonVars.selected.tool == "select") {
+			commonVars.selected.tool = "color";
+			document.getElementById("selectButton").setAttributeNS(null, "stroke-opacity", "0.0");
+			loggit("Selection tool deselected.");
+		}
 	}
-	
-	// Load button.
-	else if (target.id == "loadButton" || target.id == "loadText") {
-		loadField();
-		drawBlocks(commonVars);
+
+	// Fill button.
+	else if (target.id == "fillButton" || target.id == "fillText") {
+
 	}
 	
 	// Grid Up button.
@@ -155,9 +176,10 @@ function Click (evt, commonVars) {
 	// Color selection.
 	if (target.id.substr(0,5) == "color") {
 		var oldColorIndex = commonVars.selected.color;
+		document.getElementById(commonVars.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
 		
 		// Get the color swatch (its name corresponds to its color), then set its black outline to transparent, making it appear deselected.
-		document.getElementById("color" + oldColorIndex + commonVars.palette[oldColorIndex][3]).setAttributeNS(null, "stroke-opacity", "0.0");
+		document.getElementById("color" + oldColorIndex + commonVars.palette[oldColorIndex][3] + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
 		
 		// Get the color value from its id and set the currently selected color as this. (not the best way to do this...)
 		commonVars.selected.color = parseInt(target.id.substr(5,1));
@@ -165,13 +187,18 @@ function Click (evt, commonVars) {
 		// 'Select' the clicked-on color swatch.
 		document.getElementById(target.id).setAttributeNS(null, "stroke-opacity", "1.0");
 		
+		commonVars.selected.tool = "color" + commonVars.selected.color + commonVars.palette[commonVars.selected.color][3];
 		loggit("Selected color is: " + commonVars.palette[commonVars.selected.color][3] + ".");
 	}
 	
 	// Block placement (first click, and if only one single click)
 	if (commonVars.selected.tool == "delete") {
 		deleteBlock(target, commonVars);
-	} else if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-')
+	}
+	else if (commonVars.selected.tool == "select") {
+		selectArea(commonVars, target, true);
+	}
+	else if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-')
 	{
 		placeBlock(target, commonVars);
 	}
