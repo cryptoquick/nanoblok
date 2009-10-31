@@ -83,5 +83,45 @@ function positionIndicator (commonVars) {
 	ctx.closePath();
 	ctx.stroke();
 	
-	ctx.save();
+	// Selection box
+	// Enabled if there's a value in there.
+	if (commonVars.selected.blocks) {
+		offsX = commonVars.offset.x + (commonVars.selected.area.x * commonVars.blockSize.half) + (commonVars.selected.area.y * commonVars.blockSize.half);
+		offsYtop = (commonVars.edges.top + commonVars.gridSize.y - 45) - (commonVars.selected.area.z * commonVars.blockSize.half) + (commonVars.selected.area.x * commonVars.blockSize.quarter) - (commonVars.selected.area.y * commonVars.blockSize.quarter);
+
+		ctx.strokeStyle = "rgba(255,0,127,10)";
+		ctx.beginPath();
+
+		// Points 1-6, in order.
+		ctx.moveTo(offsX + (gr2 * commonVars.selected.area.l), offsYtop);
+		ctx.lineTo(offsX + (gr1 * commonVars.selected.area.l), offsYtop + (gr4 * commonVars.selected.area.w));
+		ctx.lineTo(offsX + (gr1 * commonVars.selected.area.l), offsYtop + (commonVars.selected.area.h * gr2 + (gr4 * commonVars.selected.area.w)));
+		ctx.lineTo(offsX + (gr2 * commonVars.selected.area.l), offsYtop + (commonVars.selected.area.h * gr2 + (gr2 * commonVars.selected.area.w)));
+		ctx.lineTo(offsX, offsYtop + (commonVars.selected.area.h * gr2 + (gr4 * commonVars.selected.area.w * commonVars.selected.area.l)));
+		ctx.lineTo(offsX, offsYtop + (gr4 * commonVars.selected.area.w));
+
+		ctx.closePath();
+		ctx.stroke();
+	}
+	
+	// ctx.save();
+}
+
+function selectArea (commonVars, target, select) {
+	var position = {
+		x: target.getAttributeNS(null, "r"),
+		y: target.getAttributeNS(null, "c"),
+		z: commonVars.layerOffset.z
+	}
+	
+	// Clear selection if select is false
+	if (select === false) {
+		commonVars.selected.area = {x: 0, y: 0, z: 0, l: 0, w: 0, h: 0};
+		commonVars.selected.blocks = false;
+	}
+	
+	commonVars.selected.blocks = true;
+	commonVars.selected.area = {x: position.x, y: position.y, z: position.z, l: 1, w: 5, h: 1};
+	
+	positionIndicator(commonVars);
 }

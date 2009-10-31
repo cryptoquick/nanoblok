@@ -54,7 +54,7 @@ function populatePalette (commonVars) {
 	for (var i = 0; i < 9; i++) {
 		var colorBlock = document.createElementNS(svgNS, 'rect');
 		
-		colorBlock.setAttributeNS(null, "id", "color" + i + commonVars.palette[i][3]);
+		colorBlock.setAttributeNS(null, "id", "color" + i + commonVars.palette[i][3] + "Button");
 		colorBlock.setAttributeNS(null, "x", -35);
 		colorBlock.setAttributeNS(null, "y", 35 * i);
 		colorBlock.setAttributeNS(null, "height", 30);

@@ -91,8 +91,10 @@ function colorBlock (colorID, commonVars) {
 function canvasBlock (position, location, commonVars, color) {
 	var adjustedPosition = {x: position.x, y: position.y - commonVars.blockSize.half * (location.z + 1)};
 	
-	// Top side. Always placed.
-	canvasDrawSet([1, 6, 7, 2], adjustedPosition, commonVars, {closed: true, fill: color.top, stroke: color.inset});
+	// Top side. Always placed, unless there's a block above it.
+	if (Voxel[location.x][location.y][commonVars.layerOffset.z + 1] == -1) {
+		canvasDrawSet([1, 6, 7, 2], adjustedPosition, commonVars, {closed: true, fill: color.top, stroke: color.inset});
+	}
 	
 	// Left side.
 	if (Voxel[location.x - 1][location.y][commonVars.layerOffset.z] == -1
