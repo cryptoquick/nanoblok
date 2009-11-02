@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Chocolux for WebGL</title>
+
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<script id="vertexshader" type="x-shader/x-vertex">
+attribute vec2 position;
+uniform float t;
+varying vec3 s[4];
+
+void main()
+{
+	gl_Position = vec4(position, 0.0, 1.0);
+	s[0] = vec3(0);
+	s[3] = vec3(sin(abs(t * .0001)), cos(abs(t * .0001)), 0);
+	s[1] = s[3].zxy;
+	s[2] = s[3].zzx;
+}
+</script>
+
+<script id="fragmentshader" type="x-shader/x-fragment">
+varying vec3 s[4];
+
+void main()
+{
+	float t, b, c, h = 0.0;
+	vec3 m, n;
+	vec3 p = vec3(.2);
+	vec3 d = normalize(.001 * gl_FragCoord.rgb - p);
+
+	for (int i = 0; i < 4; i++)
+	{
+		t=2.0;
+		for (int i = 0; i < 4; i++)
+		{
+			b = dot(d, n = s[i] - p);
+			c = b * b + .2 - dot(n, n);
+			if (b - c < t)
+			{
+				if (c > 0.0)
+				{
+					m = s[i];
+					t = b - c;
+				}
+			}
+		}
+		p += t * d;
+		d = reflect(d, n = normalize(p - m));
+		h += pow(n.x * n.x, 44.) + n.x * n.x * .2;
+	}
+	gl_FragColor = vec4(h, h * h, h * h * h * h, h);
+}
+</script>
+
+</head>
+
+<body>
+
+<div id="header">
+<a href="http://www.satine.org/">satine.org / research</a> :: charles ying
+</div>
+
+<div id="ad">
+<a href="http://www.faceplantapps.com/">
+	<img src="http://www.satine.org/images/easyplay/easyplay-small.jpg" />
+	<div>
+	My new iPhone app: EasyPlay - easy music gesture controls for your iPhone or iPod touch
+	</div>
+</a>
+
+</div>
+
+<div id="content">
+
+<div id="widecol">
+
+<h1>'Chocolux' GPU raytracer in WebGL</h1>
+
+<div id="effect">
+<canvas id="canvas" width="200" height="150"></canvas>
+<div id="controls">
+<a href="javascript:resize(200,150)">Small</a>
+<a href="javascript:resize(400,300)">Medium</a>
+<a href="javascript:resize(640,480)">Large</a>
+<a href="javascript:resize(1024,768)">XL</a>
+</div>
+<div id="fps"></div>
+</div>
+
+<div id="description">
+<p>
+What you're seeing is a WebGL port of <a href="http://sizecoding.blogspot.com/">Auld's</a> amazing 1K demo, <a href="http://sizecoding.blogspot.com/2008/02/chocolux-1k-intro.html">Chocolux</a> from to WebGL.
+Chocolux is a real-time recursive GPU raytracer using four spheres. There are only 2 triangles on screen; all of the ray tracing happens
+in the fragment shader!
+
+I adapted Auld's code to run in the OpenGL ES 2.0 subset that WebGL supports. Some webby parts are also from <a href="http://wakaba.c3.cx/w/puls.html">Dag &Aring;gren</a>.
+
+</p>
+<p>
+To see this demo, you'll need 1) a PS 3.0 video card and 2) the latest WebKit, Chromium or Firefox nightly with WebGL enabled. My MacBook can sustain about 60 fps in "Large" mode. Firefox nightlies seem to have a bug in resizing the canvas.
+
+If you don't have the right video hardware, here's Auld's video of Chocolux in action.
+
+<div style="float: right; margin: 10px 80px 10px 40px;">
+<object width="320" height="265"><param name="movie" value="http://www.youtube.com/v/au1j1hV9H5U&hl=en&fs=1&"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/au1j1hV9H5U&hl=en&fs=1&" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="320" height="265"></embed></object>
+</div>
+
+</p>
+
+<p>
+Chocolux's ray tracer does a few things for distortion (reuse of a loop variable in an inner loop) to achieve the stylized effect and the small footprint.
+</p>
+
+<p>
+The implications of this are pretty mind blowing. WebGL now allows compiled code to run on the GPU. Imagine what games, image processing, and applications will be possible with compiled shaders and general GPU computing (OpenCL?) now in the browser. And with WebGL gaining widespread adoption, it's going to be here fairly soon.
+</p>
+
+<p>
+For more information about fragment shader GPU raytracing and rendering, check out <a href="http://www.iquilezles.org/www/material/nvscene2008/rwwtt.pdf">Rendering Worlds with Two Triangles</a>.
+</p>
+
+<p>
+If you enjoyed this, please check out my other web experiments and iPhone apps: <a href="http://itunes.com/app/easyplay">EasyPlay</a>, 
+a new simple gesture music controller, and <a href="http://itunes.com/app/irhyme">iRhyme</a>, a natural language processed rhyming dictionary built from song lyrics.
+</p>
+
+<p>
+Last updated: October 18, 2009. 
+</p>
+
+<p>
+<a href="http://www.satine.org/">&laquo; Back to satine.org</a>
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script type="text/javascript" src="pixgl.js"></script>
+<script type="text/javascript">
+
+var vertexshader, fragmentshader, program;
+var texture, vertices, indices;
+
+function reshape(canvas,gl,w,h)
+{
+	gl.viewport(0, 0, w, h);
+}
+
+function init()
+{
+	var canvas = document.getElementById("canvas");
+	var gl = pixgl.getGLContext(canvas);
+
+    try
+    {
+    	vertexshader = pixgl.compileShader(gl, "vertexshader", gl.VERTEX_SHADER);
+    	fragmentshader = pixgl.compileShader(gl, "fragmentshader", gl.FRAGMENT_SHADER);
+    }
+    catch (e)
+    {
+        console.log(e);
+    }
+
+	program = gl.createProgram();
+	if (!program)
+	{
+		return null;
+	}
+
+	gl.attachShader(program, vertexshader);
+	gl.attachShader(program, fragmentshader);
+
+	gl.bindAttribLocation(program,0,"position");
+
+	gl.linkProgram(program);
+
+	if (!gl.getProgrami(program,gl.LINK_STATUS))
+	{
+		console.log("Error in program linking:" + gl.getProgramInfoLog(program));
+		return null;
+	}
+
+	gl.useProgram(program);
+
+	reshape(canvas, gl, canvas.clientWidth, canvas.clientHeight);
+
+	gl.enableVertexAttribArray(0);
+	
+	vertices = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, vertices);
+	gl.bufferData(gl.ARRAY_BUFFER, new CanvasFloatArray([ -1,-1,  -1,1,  1,-1, 1,1, ]), gl.STATIC_DRAW);
+	gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+
+	indices = gl.createBuffer();
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indices);
+	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new CanvasUnsignedShortArray([ 0,1,2,3 ]), gl.STATIC_DRAW);
+
+	return gl;
+}
+
+function draw(gl, t)
+{
+	gl.uniform1f(gl.getUniformLocation(program,"t"), t * 100);
+	gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_SHORT, 0);
+	gl.flush();
+}
+
+function start()
+{
+}
+
+function resize(w, h)
+{
+	var canvas = document.getElementById("canvas");
+	var gl = pixgl.getGLContext(canvas);
+
+	canvas.setAttribute("width", w);
+	canvas.setAttribute("height", h);
+	reshape(canvas, gl, w, h);
+}
+
+function main()
+{
+	var gl = init();
+	if (!gl)
+	{
+		return;
+	}
+
+	var start = new Date().getTime();
+	var times = [start, start, start, start, start, start, start, start, start, start, start, start];
+	var i = 0;
+
+	draw(gl);
+	
+	var fpsElem = document.getElementById("fps");
+	
+	setInterval(function() 
+	{
+		var timestamp = new Date().getTime();
+		draw(gl, (timestamp - start) / 1000 * 30);
+
+		times[i % times.length] = timestamp;
+		var fps = 1000 * (times.length - 1) / (timestamp - times[(i + 1) % times.length]);
+		fpsElem.innerHTML = Math.round(fps) + " fps";
+		i++;
+	}, 10);
+}
+
+window.addEventListener("load", function ()
+{
+	main();
+}, false);
+
+</script>
+
+<script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<script type="text/javascript">
+	try {
+	var pageTracker = _gat._getTracker("UA-69710-1");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+} catch(err) {}</script>
+
+</body>
+</html>
