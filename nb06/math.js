@@ -12,23 +12,30 @@
 function Matrix ()
 {
 	// Result.
-	var c;
+	var matrix;
 	// Benchmark.
 	var init0;
 	var init1;
 	
-	this.multiply = function (a, b)
+	this.setMatrix = function (inputMatrix)
+	{
+		// Validation?
+		matrix = inputMatrix;
+	}
+	
+	this.multiply = function (b)
 	{
 		init0 = new Date();
 		
 		// Find the number of elements in each dimension of the array.
 		// check(a,b,c);
+		var a = matrix;
 		var m = a.length;
 		// if (m < a[0].length) m = a[0].length;
 		var n = b.length;
 		var p = b[0].length;
 		
-		c = new Array(n);
+		var c = new Array(n);
 		for (var q = 0; q < p; q++)
 		{
 			c[q] = new Array(p);
@@ -50,7 +57,14 @@ function Matrix ()
 			}
 		}
 		
+		matrix = c;
+		
 		init1 = new Date();
+	}
+	
+	// Vector must be in the format of [x, y, z, 1]
+	this.translate = function (vector) {
+		this.multiply (vector, matrix);
 	}
 	
 	// Formats and outputs the contents of a 2D array.
@@ -58,19 +72,19 @@ function Matrix ()
 	{
 		var str = "Transformation matrix:<br>";
 		
-		for (var i = 0; i < c.length; i++)
+		for (var i = 0; i < matrix.length; i++)
 		{
 			str += "[";
-			for (var j = 0; j < c[0].length; j++)
+			for (var j = 0; j < matrix[0].length; j++)
 			{
-				str += c[i][j];
-				if (j < c[0].length - 1)
+				str += matrix[i][j];
+				if (j < matrix[0].length - 1)
 				{
 					str += ", ";
 				}
 			}
 			str += "]";
-			if (i < c.length - 1) {
+			if (i < matrix.length - 1) {
 				str += "<br>";
 			}
 		}
@@ -80,7 +94,7 @@ function Matrix ()
 	
 	this.getMatrix = function ()
 	{
-		return c;
+		return matrix;
 	}
 	
 	this.setElement = function (row, column)
@@ -90,7 +104,7 @@ function Matrix ()
 
 	this.setIdentity = function ()
 	{
-		c = [
+		matrix = [
 			[1, 0, 0, 0],
 			[0, 1, 0, 0],
 			[0, 0, 1, 0],
@@ -135,8 +149,66 @@ function Perspective ()
 		matrix.multiply(orthoProj);
 	}
 	
+	// Based on Safari WebGL Demo code.
 	this.lookAt = function (eye, center, up) {
+		// Z vector.
+		var zV = {
+			x: eye.x - center.x,
+			y: eye.y - center.y,
+			z: eye.z - center.z
+		};
 		
+		var magnitude = Math.sqrt(zV.x * zV.x + zV.y * zV.y + zV.z * zV.z);
+		
+		if (magnitude) {
+			zV.x /= magnitude,
+			zV.y /= magnitude,
+			zV.z /= magnitude
+		};
+		
+		// Y vector.
+		var yV = up;
+
+		// X vector = Y cross Z.
+		var xV = {
+			x: yV.y * zV.z - yV.z * zV.y,
+			y:-yV.x * zV.z - yV.z * zV.x,
+			z: yV.x * zV.y - yV.y * zV.x
+		};
+		// xx =  yy * zz - yz * zy;
+		// xy = -yx * zz + yz * zx;
+		// xz =  yx * zy - yy * zx;
+
+		// Recompute Y = Z cross X.
+		var yV = {
+			x: zV.y * xV.z - zV.z * xV.y,
+			y:-zV.x * xV.z + zV.z * xV.x,
+			z: zV.x * xV.y - zV.y * xV.x
+		};
+		// yx = zy * xz - zz * xy;
+		// yy = -zx * xz + zz * xx;
+		// yx = zx * xy - zy * xx;
+
+		// cross product gives area of parallelogram, which is < 1.0 for
+		// non-perpendicular unit-length vectors; so normalize x, y here
+
+		magnitude = Math.sqrt(xV.x * xV.x + xV.y * xV.y + xV.z * xV.z);
+		if (magnitude) {
+			xV.x /= magnitude;
+			xV.y /= magnitude;
+			xV.z /= magnitude;
+		};
+		
+		var lookAtMatrix = [
+			[xV.x, xV.y, xV.z, 0],
+			[yV.x, yV.y, yV.z, 0],
+			[zV.x, zV.y, zV.z, 0],
+			[0, 0, 0, 1]
+		];
+		
+		matrix.translate(-eyex, -eyey, -eyez);
+
+		this.multRight(matrix);
 	}
 	
 	this.debug = function ()

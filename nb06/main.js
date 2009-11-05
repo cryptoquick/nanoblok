@@ -59,8 +59,9 @@ function initializeProgram ()
 	[7, 4, 9, 1],
 	[8, 1, 5, 12]
 		];
-		
-	testMatrix.multiply(tMa, tMb);
+	
+	testMatrix.setMatrix(tMa);
+	testMatrix.multiply(tMb);
 	var tMc = testMatrix.flatten();
 	debug.write(tMc);
 	debug.write(testMatrix.benchmark());
