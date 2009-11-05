@@ -13,6 +13,7 @@ function Matrix ()
 {
 	// Result.
 	var c;
+	// Benchmark.
 	var init0;
 	var init1;
 	
@@ -52,6 +53,7 @@ function Matrix ()
 		init1 = new Date();
 	}
 	
+	// Formats and outputs the contents of a 2D array.
 	this.flatten = function ()
 	{
 		var str = "Transformation matrix:<br>";
@@ -85,6 +87,16 @@ function Matrix ()
 	{
 		
 	}
+
+	this.setIdentity = function ()
+	{
+		c = [
+			[1, 0, 0, 0],
+			[0, 1, 0, 0],
+			[0, 0, 1, 0],
+			[0, 0, 0, 1]
+		]
+	}
 	
 	this.benchmark = function ()
 	{
@@ -92,9 +104,18 @@ function Matrix ()
 	}
 }
 
-function View ()
+function Perspective ()
 {
-	this.ortho = function(left, right, bottom, top, near, far)
+	var matrix;
+	
+	this.setMatrix = function (matrixInput)
+	{
+		// Might want some matrix validation here?
+		matrix = matrixInput;
+	}
+	
+	// For orthographic projection.
+	this.ortho = function (left, right, bottom, top, near, far)
 	{
 		// var tx = (left + right) / (left - right);
 		// var ty = (top + bottom) / (top - bottom);
@@ -104,11 +125,22 @@ function View ()
 		var ty = - (top + bottom) / (top - bottom);
 		var tz = - (far + near) / (far - near);
 
-		return [
+		var orthoProj = [
 			[2 / (right - left), 0, 0, tx],
 			[0, 2 / (top - bottom), 0, ty],
 			[0, 0, -2 / (far - near), tz],
 			[0, 0, 0, 1]
 		];
+		
+		matrix.multiply(orthoProj);
+	}
+	
+	this.lookAt = function (eye, center, up) {
+		
+	}
+	
+	this.debug = function ()
+	{
+		return matrix.flatten;
 	}
 }

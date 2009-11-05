@@ -9,13 +9,13 @@
  * Contains WebGL-specific functionality.
  */
 
-function CanvasContext ()
+function GLContext (canvasID)
 {
+	var canvas = document.getElementById(canvasID);
+	var dimensions = {x: canvas.clientWidth, y: canvas.clientHeight};
 	// Sets the WebGL context of the CC object.
-	this.setContext = function (canvasID)
+	this.setContext = function ()
 	{
-		var canvas = document.getElementById(canvasID);
-		
 		try
 		{
 			this.gl = canvas.getContext("webkit-3d");
@@ -35,6 +35,27 @@ function CanvasContext ()
 		}
 		
 		return true;
+	}
+	
+	this.getGL = function ()
+	{
+		return this.gl;
+	}
+}
+
+function Viewport ()
+{
+	this.setViewport = function (gl)
+	{
+		var viewportMatrix = new Matrix();
+		viewportMatrix.setIdentity();
+		
+		gl.viewport(0, 0, gl.dimensions.x, gl.dimensions.y);
+		gl.viewportMatrix = new Perspective();
+		gl.viewportMatrix.setMatrix(viewportMatrix);
+		// eye, center, up; xyz for each.
+		gl.viewportMatrix.lookat({x: 0, y: 0, z: 100}, {x: 0, y: 0, z: 0}, {x: 0, y: 1, z: 0});
+		gl.viewportMatrix.ortho(0, gl.dimensions.x, gl.dimensions.y, 0, 1, 10000);
 	}
 }
 
