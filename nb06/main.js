@@ -16,11 +16,11 @@ window.addEventListener('load', function () {
 function initializeProgram ()
 {
 	var debug = new TextHandler("stats");
-	var ctx = new CanvasContext();
+	var ctx = new GLContext("mainViewport");
 	
-	var ctxSuccess = ctx.setContext("mainViewport");
+	var glSuccess = ctx.setContext();
 	
-	if (ctxSuccess)
+	if (glSuccess)
 	{
 		debug.write("WebGL loaded successfully.");
 	}
@@ -29,10 +29,12 @@ function initializeProgram ()
 		debug.write("WebGL failed to load.");
 	}
 	
-	var vertShader = new ShaderProgram(ctx.gl);
+	var gl = ctx.getGL();
+	
+	var vertShader = new ShaderProgram(gl);
 	var vertShaderLog = vertShader.makeShader("vertex", vertexShaderCode);
 	
-	var fragShader = new ShaderProgram(ctx.gl);
+	var fragShader = new ShaderProgram(gl);
 	var fragShaderLog = fragShader.makeShader("fragment", fragmentShaderCode);
 	
 	if (vertShaderLog && fragShaderLog)
@@ -64,10 +66,10 @@ function initializeProgram ()
 	debug.write(testMatrix.benchmark());
 	
 	// Needs to be OOPized?
-	ctx.gl.clearColor(1.0, 0.9, 0.0, 1.0);
-	ctx.gl.clearDepth(1.0);
-	ctx.gl.enable(ctx.gl.DEPTH_TEST);
-	ctx.gl.depthFunc(ctx.gl.LEQUAL);
+	gl.clearColor(1.0, 0.9, 0.0, 1.0);
+	gl.clearDepth(1.0);
+	gl.enable(gl.DEPTH_TEST);
+	gl.depthFunc(gl.LEQUAL);
 	
 	// scene = new Scene;
 	// view = new View;
