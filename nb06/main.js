@@ -50,20 +50,17 @@ function initializeProgram ()
 	testMatrix = new Matrix();
 	
 	var tMa = [
-	[7, 3],
-	[2, 5],
-	[6, 8],
-	[9, 11]
+	[7, 3, 7, 5],
+	[2, 5, 9, 11],
+	[6, 8, 8, 1],
+	[9, 11, 5, 12]
 		];
 	var tMb = [
-	[7, 4, 9, 1],
-	[8, 1, 5, 12]
+	[7, 4, 9, 1]
 		];
 	
 	testMatrix.setMatrix(tMa);
 	testMatrix.multiply(tMb);
-	var tMc = testMatrix.flatten();
-	debug.write(tMc);
 	debug.write(testMatrix.benchmark());
 	
 	// Needs to be OOPized?
@@ -71,6 +68,10 @@ function initializeProgram ()
 	gl.clearDepth(1.0);
 	gl.enable(gl.DEPTH_TEST);
 	gl.depthFunc(gl.LEQUAL);
+	
+	var scene = new Scene();
+	scene.setViewport(ctx);
+	scene.render(ctx);
 	
 	// scene = new Scene;
 	// view = new View;

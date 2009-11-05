@@ -17,6 +17,8 @@ function Matrix ()
 	var init0;
 	var init1;
 	
+	var debug = new TextHandler("stats");
+	
 	this.setMatrix = function (inputMatrix)
 	{
 		// Validation?
@@ -59,18 +61,23 @@ function Matrix ()
 		
 		matrix = c;
 		
+		var testMatrix = new Matrix();
+		testMatrix.setMatrix(matrix);
+		
+		debug.write(testMatrix.flatten("Multiplied"));
+		
 		init1 = new Date();
 	}
 	
 	// Vector must be in the format of [x, y, z, 1]
 	this.translate = function (vector) {
-		this.multiply (vector, matrix);
+		this.multiply (vector);
 	}
 	
 	// Formats and outputs the contents of a 2D array.
-	this.flatten = function ()
+	this.flatten = function (tag)
 	{
-		var str = "Transformation matrix:<br>";
+		var str = tag + " matrix:<br>";
 		
 		for (var i = 0; i < matrix.length; i++)
 		{
@@ -122,6 +129,8 @@ function Perspective ()
 {
 	var matrix;
 	
+	var debug = new TextHandler("stats");
+	
 	this.setMatrix = function (matrixInput)
 	{
 		// Might want some matrix validation here?
@@ -146,6 +155,9 @@ function Perspective ()
 			[0, 0, 0, 1]
 		];
 		
+		// var testMatrix
+		
+		// debug.write(orthoProj.flatten("Ortho"));
 		matrix.multiply(orthoProj);
 	}
 	
@@ -199,6 +211,13 @@ function Perspective ()
 			xV.z /= magnitude;
 		};
 		
+		magnitude = Math.sqrt(yV.x * yV.x + yV.y * yV.y + yV.z * yV.z);
+	    if (magnitude) {
+	        yV.x /= magnitude;
+	        yV.y /= magnitude;
+	        yV.z /= magnitude;
+	    }
+		
 		var lookAtMatrix = [
 			[xV.x, xV.y, xV.z, 0],
 			[yV.x, yV.y, yV.z, 0],
@@ -206,13 +225,24 @@ function Perspective ()
 			[0, 0, 0, 1]
 		];
 		
-		matrix.translate(-eyex, -eyey, -eyez);
+		var testMatrix = new Matrix();
+		testMatrix.setMatrix(lookAtMatrix);
+		
+		debug.write(testMatrix.flatten("Look At"));
+		// debug.write(matrix.flatten("Look At "));
+		// testMatrix.translate([[-eye.x], [-eye.y], [-eye.z], [1]]);
+		testMatrix.translate([
+			[1, 0, 0, 0],
+			[0, 1, 0 ,0],
+			[0, 0, 1, 0],
+			[-eye.x, -eye.y, -eye.z, 1]
+			]);
 
-		this.multRight(matrix);
+		// this.multRight(matrix);
 	}
 	
 	this.debug = function ()
 	{
-		return matrix.flatten;
+		return matrix.flatten();
 	}
 }

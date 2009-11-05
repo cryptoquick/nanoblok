@@ -12,7 +12,9 @@
 function GLContext (canvasID)
 {
 	var canvas = document.getElementById(canvasID);
-	var dimensions = {x: canvas.clientWidth, y: canvas.clientHeight};
+	
+	this.dimensions = {x: canvas.clientWidth, y: canvas.clientHeight};
+	
 	// Sets the WebGL context of the CC object.
 	this.setContext = function ()
 	{
@@ -45,23 +47,29 @@ function GLContext (canvasID)
 
 function Viewport ()
 {
-	this.setViewport = function (gl)
-	{
-		var viewportMatrix = new Matrix();
-		viewportMatrix.setIdentity();
-		
-		gl.viewport(0, 0, gl.dimensions.x, gl.dimensions.y);
-		gl.viewportMatrix = new Perspective();
-		gl.viewportMatrix.setMatrix(viewportMatrix);
-		// eye, center, up; xyz for each.
-		gl.viewportMatrix.lookat({x: 0, y: 0, z: 100}, {x: 0, y: 0, z: 0}, {x: 0, y: 1, z: 0});
-		gl.viewportMatrix.ortho(0, gl.dimensions.x, gl.dimensions.y, 0, 1, 10000);
-	}
+
 }
 
 function Scene ()
 {
-	this.render = function () {
+	this.setViewport = function (ctx)
+	{
+		var viewportMatrix = new Matrix();
+		viewportMatrix.setIdentity();
+		
+		var gl = ctx.getGL();
+		
+		gl.viewport(0, 0, ctx.dimensions.x, ctx.dimensions.y);
+		gl.viewportMatrix = new Perspective();
+		gl.viewportMatrix.setMatrix(viewportMatrix);
+		// eye, center, up; xyz for each.
+		gl.viewportMatrix.lookAt({x: 0, y: 0, z: 1}, {x: 0, y: 0, z: 0}, {x: 0, y: 1, z: 0});
+		gl.viewportMatrix.ortho(0, ctx.dimensions.x, ctx.dimensions.y, 0, 1, 10000);
+	}
+	
+	this.render = function (ctx) {
+		var gl = ctx.getGL();
+		
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	}
 }
