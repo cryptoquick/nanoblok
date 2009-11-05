@@ -18,3 +18,32 @@ var fragmentShaderCode = "                                                      
 		gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);                                \
 	}                                                                           \
 ";
+
+function ShaderProgram (gl)
+{
+	var shaderProgram;
+	
+	this.makeShader = function (type, shaderCode)
+	{		
+		if (type == "vertex")
+		{
+			shaderProgram = gl.createShader(gl.VERTEX_SHADER);
+		}
+		else if (type == "fragment")
+		{
+			shaderProgram = gl.createShader(gl.FRAGMENT_SHADER);
+		}
+		
+		gl.shaderSource(shaderProgram, shaderCode);
+		gl.compileShader(shaderProgram);
+		
+		if (!gl.getShaderi(shaderProgram, gl.COMPILE_STATUS))
+		{
+			return gl.getShaderInfoLog(shaderProgram);
+		}
+		else
+		{
+			return true;
+		}
+	}
+}
