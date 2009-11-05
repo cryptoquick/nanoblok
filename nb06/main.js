@@ -1,3 +1,14 @@
+/*
+ * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
+ * Version 0.6 Alpha
+ * http://code.google.com/p/nanoblok/
+ * Copyright (c) 2009 Alex Trujillo
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ * 
+ * Summary for main.js:
+ * Initializes the program and ties together all necessary functions.
+ */
+
 window.addEventListener('load', function () {
 	initializeProgram();
 }, false);

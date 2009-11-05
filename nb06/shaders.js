@@ -1,5 +1,15 @@
-// Bad multi-line implementation. Ideas?
+/*
+ * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
+ * Version 0.6 Alpha
+ * http://code.google.com/p/nanoblok/
+ * Copyright (c) 2009 Alex Trujillo
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ * 
+ * Summary for shaders.js:
+ * Contains shader programs and handlers for those programs.
+ */
 
+// Bad multi-line implementation. Ideas?
 var vertexShaderCode = "                                                        \
 	attribute vec3 aVertexPosition;                                             \
                                                                                 \
