@@ -37,16 +37,19 @@ function initializeProgram ()
 	testMatrix = new Matrix();
 	
 	var tMa = [
-			[3]
+	[7, 3],
+	[2, 5],
+	[6, 8]
 		];
 	var tMb = [
-			[5, 2, 11],
-			[9, 4, 14]
+	[7, 4, 9],
+	[8, 1, 5]
 		];
 		
 	testMatrix.multiply(tMa, tMb);
 	var tMc = testMatrix.flatten();
 	debug.write(tMc);
+	debug.write(testMatrix.benchmark());
 	
 	// Needs to be OOPized?
 	ctx.gl.clearColor(1.0, 1.0, 1.0, 1.0);
@@ -187,28 +190,24 @@ function Matrix ()
 {
 	// Result.
 	var c;
-	var benchmark;
+	var init0;
+	var init1;
 	
 	this.multiply = function (a, b)
 	{
-		// // Create c array		
-		// for (var x = 0; x < b.length; x++) {
-		// 	Voxel[x] = new Array();
-		// 	for (var y = 0; y < b[0].length; y++) {
-		// 		Voxel[x][y] = 0;
-		// 	}
-		// }
-
+		init0 = new Date();
+		
 		// Find the number of elements in each dimension of the array.
 		// check(a,b,c);
 		var m = a.length;
+		// if (m < a[0].length) m = a[0].length;
 		var n = b.length;
 		var p = b[0].length;
 		
 		c = new Array(n);
 		for (var q = 0; q < p; q++)
 		{
-			c[q] = new Array(n);
+			c[q] = new Array(p);
 		}
 		var Bcolj = new Array(n);
 		
@@ -226,11 +225,13 @@ function Matrix ()
 				c[i][j] = s;
 			}
 		}
+		
+		init1 = new Date();
 	}
 	
 	this.flatten = function ()
 	{
-		var str = "";
+		var str = "Transformation matrix:<br>";
 		
 		for (var i = 0; i < c.length; i++)
 		{
@@ -244,7 +245,9 @@ function Matrix ()
 				}
 			}
 			str += "]";
-			str += "<br>";
+			if (i < c.length - 1) {
+				str += "<br>";
+			}
 		}
 		
 		return str;
@@ -253,5 +256,10 @@ function Matrix ()
 	this.getMatrix = function ()
 	{
 		return c;
+	}
+	
+	this.benchmark = function ()
+	{
+		return "Matrix calculated in " + (init1 - init0) + "ms.";
 	}
 }
