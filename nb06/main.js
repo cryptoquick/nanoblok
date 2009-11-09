@@ -1,3 +1,6 @@
+// Contains a great deal of example code from this really helpful site:
+// http://www.sergemeunier.com/blog/
+
 // Default values.
 function Globals ()
 {
@@ -11,8 +14,9 @@ var G;
 o3djs.require("o3djs.util");
 o3djs.require("o3djs.math");
 o3djs.require("o3djs.effect");
-o3djs.require('o3djs.primitives');
+o3djs.require("o3djs.primitives");
 o3djs.require("o3djs.rendergraph");
+o3djs.require("o3djs.fps");
 
 window.onload = initMain;
 window.onunload = uninitMain;

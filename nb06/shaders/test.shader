@@ -1,3 +1,6 @@
+// Contains a great deal of example code from this really helpful site:
+// http://www.sergemeunier.com/blog/
+
 // World View Projection matrix that will transform the input vertices
 // to screen space.
 float4x4 worldViewProjection : WorldViewProjection;
@@ -28,7 +31,7 @@ PixelShaderInput vertexShaderFunction(VertexShaderInput input) {
  * This pixel shader just returns the color red.
  */
 float4 pixelShaderFunction(PixelShaderInput input): COLOR {
-  return float4(1, 0, 0, 1);  // Red.
+  return float4(1, 0.5, 0, 1);  // Red.
 }
 
 // Here we tell our effect file *which* functions are
@@ -37,3 +40,5 @@ float4 pixelShaderFunction(PixelShaderInput input): COLOR {
 // #o3d VertexShaderEntryPoint vertexShaderFunction
 // #o3d PixelShaderEntryPoint pixelShaderFunction
 // #o3d MatrixLoadOrder RowMajor
+
+// Obligatory newline at the end of the file.
