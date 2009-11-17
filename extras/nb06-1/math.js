@@ -70,11 +70,51 @@ function Matrix ()
 	}
 	
 	// Vector must be in the format of [x, y, z, 1]
-	this.translate = function (vector) {
-		this.multiply (vector);
+	this.translate = function (vector)
+	{
+		this.multiply(vector);
 	}
 	
-	// Formats and outputs the contents of a 2D array.
+	this.rotate = function (rads)
+	{
+		if (rads.z !== 0)
+		{
+			var zRot = [
+				[Math.cos(rads.z), Math.sin(rads.z), 0, 0],
+				[-Math.sin(rads.z), Math.cos(rads.z), 0, 0],
+				[0, 0, 1, 0],
+				[0, 0, 0, 1]
+			];
+			
+			this.multiply(zRot);
+		}
+		
+		if (rads.x !== 0)
+		{
+			var xRot = [
+				[1, 0, 0, 0],
+				[0, Math.cos(rads.x), Math.sin(rads.x), 0],
+				[0, -Math.sin(rads.x), Math.cos(rads.x), 0],
+				[0, 0, 0, 1]
+			];
+			
+			this.multiply(xRot);
+		}
+		
+		if (rads.y !== 0)
+		{
+			var yRot = [
+				[Math.cos(rads.y), 0, -Math.sin(rads.y), 0],
+				[0, 1, 0, 0],
+				[Math.sin(rads.y), 0, Math.cos(rads.y), 0],
+				[0, 0, 0, 1]
+			];
+			
+			this.multiply(yRot);
+		}
+	}
+	
+	// Formats and outputs the contents of a 2D array. For debugging.
 	this.flatten = function (tag)
 	{
 		var str = tag + " matrix:<br>";
