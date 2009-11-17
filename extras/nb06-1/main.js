@@ -47,6 +47,7 @@ function initializeProgram ()
 		debug.write(fragShaderLog);
 	}
 	
+/*
 	testMatrix = new Matrix();
 	
 	var tMa = [
@@ -61,7 +62,13 @@ function initializeProgram ()
 	
 	testMatrix.setMatrix(tMa);
 	testMatrix.multiply(tMb);
-	debug.write(testMatrix.benchmark());
+	debug.write(testMatrix.benchmark());*/
+
+	
+	testCube = new Cube();
+	
+	testCube.makeVerts();
+	// debug.write(testCube.printVerts());
 	
 	// Needs to be OOPized?
 	gl.clearColor(1.0, 0.9, 0.0, 1.0);
@@ -70,8 +77,8 @@ function initializeProgram ()
 	gl.depthFunc(gl.LEQUAL);
 	
 	var scene = new Scene();
-	scene.setViewport(ctx);
-	scene.render(ctx);
+//	scene.setViewport(ctx);
+//	scene.render(ctx);
 	
 	// scene = new Scene;
 	// view = new View;
