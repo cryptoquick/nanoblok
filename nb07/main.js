@@ -24,10 +24,10 @@ function Initialize ()
 	
 	var init0 = new Date();
 	
-	var commonVars = computeCommonVars();
+	window.Common = computeCommonVars();
 	
 	// Run core graphics functions in default state.
-	Update("initialize", {gridMode: "standard"}, commonVars);
+	Update("initialize", {gridMode: "standard"});
 	
 	// Post-initialization tasks.
 	var init1 = new Date();
@@ -37,7 +37,7 @@ function Initialize ()
 	
 	/* Event listeners */
 	window.addEventListener('mousedown', function (evt) {
-		Click(evt, commonVars);
+		Click(evt);
 		mouseDown = true;
 	}, false);
 	
@@ -46,11 +46,11 @@ function Initialize ()
 	}, false);
 
 	window.addEventListener('mouseover', function (evt) {
-		Hover(evt, 'in', commonVars);
+		Hover(evt, 'in');
 	}, false);
 
 	window.addEventListener('mouseout', function (evt) {
-		Hover(evt, 'out', commonVars);
+		Hover(evt, 'out');
 	}, false);
 
 	window.onresize = function() {
@@ -62,30 +62,30 @@ function Initialize ()
 }
 
 // Redraw grid, redraw UI, redraw canvas...
-function Update (updateMode, updateSettings, commonVars) {	
+function Update (updateMode, updateSettings) {	
 	if (updateMode == "resize" || updateMode == "initialize") {
-		gridCoors(commonVars);
+		gridCoors();
 	//	removeUI();
 	//	removeGrid();
 	}
 	
 	// Draw SVG grid
 	if (updateMode == "resize" || updateMode == "initialize") {
-		drawUI(commonVars);
-		drawGrid(commonVars, "bottom");
+		drawUI();
+		drawGrid("bottom");
 	}
 
 	// Draw canvas grid...
 	if (updateMode == "resize" || updateMode == "canvas" || updateMode == "initialize") {		
-		canvasGrid(commonVars, "bottom", updateSettings.gridMode);
-		canvasGrid(commonVars, "left", updateSettings.gridMode);
-		canvasGrid(commonVars, "right", updateSettings.gridMode);
+		canvasGrid("bottom", updateSettings.gridMode);
+		// canvasGrid(Common, "left", updateSettings.gridMode);
+		// canvasGrid(Common, "right", updateSettings.gridMode);
 		
 		// ...and some logic for button outlines / selection.
 		if (updateSettings.gridMode == "standard") {
 			
 			// Select color button at update.
-			document.getElementById("color" + commonVars.selected.color + commonVars.palette[commonVars.selected.color][3] + "Button").setAttributeNS(null, "stroke-opacity", "1.0");
+			document.getElementById("color" + Common.selected.color + Common.palette[Common.selected.color][3] + "Button").setAttributeNS(null, "stroke-opacity", "1.0");
 		}
 		else if (updateSettings.gridMode == "number") {
 			document.getElementById("numberButton").setAttributeNS(null, "fill-opacity", 1.0);
@@ -95,7 +95,7 @@ function Update (updateMode, updateSettings, commonVars) {
 }
 
 // Handles click events from its corresponding event listener.
-function Click (evt, commonVars) {
+function Click (evt) {
 	var target = evt.target;
 	
 	// Top-side mode/settings buttons.
@@ -107,25 +107,25 @@ function Click (evt, commonVars) {
 	// Load button.
 	else if (target.id == "loadButton" || target.id == "loadText") {
 		loadField();
-		drawBlocks(commonVars);
+		drawBlocks();
 	}
 
 	// Refresh button.
 	else if (target.id == "refreshButton" || target.id == "refreshText") {
-		Update("refresh", {gridMode: "standard"}, commonVars);
+		Update("refresh", {gridMode: "standard"});
 		loggit("Canvas refreshed.");
 	}
 	
 	// Delete button, its state can be toggled by the user.
 	else if (target.id == "deleteButton" || target.id == "deleteText") {
-		if (commonVars.selected.tool != "delete") {
-			document.getElementById(commonVars.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
-			commonVars.selected.tool = "delete";
+		if (Common.selected.tool != "delete") {
+			document.getElementById(Common.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
+			Common.selected.tool = "delete";
 			document.getElementById("deleteButton").setAttributeNS(null, "stroke-opacity", "1.0");
 			loggit("Deletion tool selected.");
 		}
-		else if (commonVars.selected.tool == "delete") {
-			commonVars.selected.tool = "color";
+		else if (Common.selected.tool == "delete") {
+			Common.selected.tool = "color";
 			document.getElementById("deleteButton").setAttributeNS(null, "stroke-opacity", "0.0");
 			loggit("Deletion tool deselected.");
 		}
@@ -133,14 +133,14 @@ function Click (evt, commonVars) {
 	
 	// Select button.
 	else if (target.id == "selectButton" || target.id == "selectText" || target.id == "selectLogo") {
-		if (commonVars.selected.tool != "select") {
-			document.getElementById(commonVars.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
-			commonVars.selected.tool = "select";
+		if (Common.selected.tool != "select") {
+			document.getElementById(Common.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
+			Common.selected.tool = "select";
 			document.getElementById("selectButton").setAttributeNS(null, "stroke-opacity", "1.0");
 			loggit("Selection tool selected.");
 		}
-		else if (commonVars.selected.tool == "select") {
-			commonVars.selected.tool = "color";
+		else if (Common.selected.tool == "select") {
+			Common.selected.tool = "color";
 			document.getElementById("selectButton").setAttributeNS(null, "stroke-opacity", "0.0");
 			loggit("Selection tool deselected.");
 		}
@@ -148,75 +148,75 @@ function Click (evt, commonVars) {
 
 	// Fill button.
 	else if (target.id == "fillButton" || target.id == "fillText") {
-		fillRandom(commonVars);
+		fillRandom();
 	}
 	
 	// Grid Up button.
 	else if (target.id == "gridUpButton" || target.id == "gridUpText") {
-		if(commonVars.layerOffset.z < (commonVars.gridDims.r - 1)) {
-			commonVars.layerOffset.z++;
-			positionIndicator(commonVars);
+		if(Common.layerOffset.z < (Common.gridDims.r - 1)) {
+			Common.layerOffset.z++;
+			positionIndicator();
 			// Raise the SVG grid.
 			document.getElementById("gridContainer")
-			.setAttributeNS(null, "transform", "translate(0," + (-35 - commonVars.layerOffset.z * commonVars.blockSize.half) + ")");
+			.setAttributeNS(null, "transform", "translate(0," + (-35 - Common.layerOffset.z * Common.blockSize.half) + ")");
 		}
 	}
 	
 	// Grid Down button.
 	else if (target.id == "gridDownButton" || target.id == "gridDownText") {
-		if(commonVars.layerOffset.z > 0) {
-			commonVars.layerOffset.z--;
-			positionIndicator(commonVars);
+		if(Common.layerOffset.z > 0) {
+			Common.layerOffset.z--;
+			positionIndicator();
 			// Lower the SVG grid.
 			document.getElementById("gridContainer")
-			.setAttributeNS(null, "transform", "translate(0," + (-35 - commonVars.layerOffset.z * commonVars.blockSize.half) + ")");
+			.setAttributeNS(null, "transform", "translate(0," + (-35 - Common.layerOffset.z * Common.blockSize.half) + ")");
 		}
 	}
 	
 	// Color selection.
 	if (target.id.substr(0,5) == "color") {
-		var oldColorIndex = commonVars.selected.color;
-		document.getElementById(commonVars.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
+		var oldColorIndex = Common.selected.color;
+		document.getElementById(Common.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
 		
 		// Get the color swatch (its name corresponds to its color), then set its black outline to transparent, making it appear deselected.
-		document.getElementById("color" + oldColorIndex + commonVars.palette[oldColorIndex][3] + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
+		document.getElementById("color" + oldColorIndex + Common.palette[oldColorIndex][3] + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
 		
 		// Get the color value from its id and set the currently selected color as this. (not the best way to do this...)
-		commonVars.selected.color = parseInt(target.id.substr(5,1));
+		Common.selected.color = parseInt(target.id.substr(5,1));
 		
 		// 'Select' the clicked-on color swatch.
 		document.getElementById(target.id).setAttributeNS(null, "stroke-opacity", "1.0");
 		
-		commonVars.selected.tool = "color" + commonVars.selected.color + commonVars.palette[commonVars.selected.color][3];
-		loggit("Selected color is: " + commonVars.palette[commonVars.selected.color][3] + ".");
+		Common.selected.tool = "color" + Common.selected.color + Common.palette[Common.selected.color][3];
+		loggit("Selected color is: " + Common.palette[Common.selected.color][3] + ".");
 	}
 	
 	// Block placement (first click, and if only one single click)
-	if (commonVars.selected.tool == "delete") {
-		deleteBlock(target, commonVars);
+	if (Common.selected.tool == "delete") {
+		deleteBlock(target);
 	}
-	else if (commonVars.selected.tool == "select") {
-		selectArea(commonVars, target, true);
+	else if (Common.selected.tool == "select") {
+		selectArea(target, true);
 	}
 	else if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-')
 	{
-		placeBlock(target, commonVars);
+		placeBlock(target);
 	}
 }
 
 // Gets hover events from its corresponding event listener, including whether the user hovered in or out of the object.
-function Hover (evt, inout, commonVars) {
+function Hover (evt, inout) {
 	var target = evt.target;
 	
 	// Place a block on the x-grid as long as the mouse is down and place it only when moving into the cell, otherwise the block would be placed twice.
 	if ((target.id.substr(0,2) == 'x-') && mouseDown && inout == "in") {
-		placeBlock(target, commonVars);
+		placeBlock(target);
 	}
 	
-	// Puts information about the position of the cursor over the grid into the markerPosition field in commonVars, allowing that to be used by the positionIndicator function.
+	// Puts information about the position of the cursor over the grid into the markerPosition field in Common, allowing that to be used by the positionIndicator function.
 	if (target.id.substr(0,2) == 'x-' && inout == "in") {
-		commonVars.markerPosition.x = target.getAttribute("c");
-		commonVars.markerPosition.z = target.getAttribute("r");
-		positionIndicator(commonVars);
+		Common.markerPosition.x = target.getAttribute("c");
+		Common.markerPosition.z = target.getAttribute("r");
+		positionIndicator();
 	}
 }

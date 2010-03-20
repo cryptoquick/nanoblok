@@ -36,7 +36,7 @@ function hexiso (offset, blockSize) {
 
 // A very useful function to draw a set of coordinates in a hexagonal setup at a certain offset.
 // Very necessary for an isometric setup such as this.
-function canvasDrawSet (hexSet, offset, commonVars, settings) {
+function canvasDrawSet (hexSet, offset, settings) {
 	var ctx = context('effects');
 	ctx.globalAlpha = 1;
 	ctx.strokeStyle = settings.stroke;
@@ -45,7 +45,7 @@ function canvasDrawSet (hexSet, offset, commonVars, settings) {
 	}
 	
 	var hexSpot = hexSet.pop();
-	var coorSet = hexiso(offset, commonVars.blockSize);
+	var coorSet = hexiso(offset, Common.blockSize);
 	var offsY = -35;
 	
 	ctx.beginPath();
@@ -70,10 +70,10 @@ function canvasDrawSet (hexSet, offset, commonVars, settings) {
 }
 
 // colorBlock is used to turn the color index into a color object (with separate color values for each face as well as its lines).
-// It basically takes this color index and corresponds it to an RGB value held in the color palette in commonVars.
+// It basically takes this color index and corresponds it to an RGB value held in the color palette in Common.
 // Later a better system for handling color must be designed.
-function colorBlock (colorID, commonVars) {
-	var color = commonVars.palette[colorID];
+function colorBlock (colorID) {
+	var color = Common.palette[colorID];
 	var colorR = color[0];
 	var colorG = color[1];
 	var colorB = color[2];
@@ -86,66 +86,66 @@ function colorBlock (colorID, commonVars) {
 }
 
 // Paints a block on the board with proper color and occlusion.
-// Takes coors x/y for position, xyz location on the grid, commonVars, and the color object of the block.
+// Takes coors x/y for position, xyz location on the grid, Common, and the color object of the block.
 // A color id can be converted into a color object using the colorBlock function.
-function canvasBlock (position, location, commonVars, color) {
-	var adjustedPosition = {x: position.x, y: position.y - commonVars.blockSize.half * (location.z + 1)};
+function canvasBlock (position, location, color) {
+	var adjustedPosition = {x: position.x, y: position.y - Common.blockSize.half * (location.z + 1)};
 	
 	// Top side. Always placed, unless there's a block above it.
-	if (Voxel[location.x][location.y][commonVars.layerOffset.z + 1] == -1) {
-		canvasDrawSet([1, 6, 7, 2], adjustedPosition, commonVars, {closed: true, fill: color.top, stroke: color.inset});
+	if (Voxel[location.x][location.y][Common.layerOffset.z + 1] == -1) {
+		canvasDrawSet([1, 6, 7, 2], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
 	}
 	
 	// Left side.
-	if (Voxel[location.x - 1][location.y][commonVars.layerOffset.z] == -1
-			&& Voxel[location.x - 1][location.y + 1][commonVars.layerOffset.z] == -1) {
-		canvasDrawSet([6, 7, 4, 5], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
-	} else if (Voxel[location.x - 1][location.y + 1][commonVars.layerOffset.z] != -1
-			&& Voxel[location.x - 1][location.y][commonVars.layerOffset.z] == -1) {
-		canvasDrawSet([6, 7, 5], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
+	if (Voxel[location.x - 1][location.y][Common.layerOffset.z] == -1
+			&& Voxel[location.x - 1][location.y + 1][Common.layerOffset.z] == -1) {
+		canvasDrawSet([6, 7, 4, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
+	} else if (Voxel[location.x - 1][location.y + 1][Common.layerOffset.z] != -1
+			&& Voxel[location.x - 1][location.y][Common.layerOffset.z] == -1) {
+		canvasDrawSet([6, 7, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
 	}
 	
 	// Right side.
-	if (Voxel[location.x][location.y + 1][commonVars.layerOffset.z] == -1
-			&& Voxel[location.x - 1][location.y + 1][commonVars.layerOffset.z] == -1) {
-		canvasDrawSet([2, 7, 4, 3], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
-	} else if (Voxel[location.x - 1][location.y + 1][commonVars.layerOffset.z] != -1
-			&& Voxel[location.x][location.y + 1][commonVars.layerOffset.z] == -1) {
-		canvasDrawSet([2, 7, 3], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
+	if (Voxel[location.x][location.y + 1][Common.layerOffset.z] == -1
+			&& Voxel[location.x - 1][location.y + 1][Common.layerOffset.z] == -1) {
+		canvasDrawSet([2, 7, 4, 3], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
+	} else if (Voxel[location.x - 1][location.y + 1][Common.layerOffset.z] != -1
+			&& Voxel[location.x][location.y + 1][Common.layerOffset.z] == -1) {
+		canvasDrawSet([2, 7, 3], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
 	}
 }
 
 // Calls canvasBlock to place a block on the grid.
-function placeBlock (target, commonVars) {
+function placeBlock (target) {
 	// Get 
 	var location = {
 		x: GridField[target.id].x,
 		y: GridField[target.id].y,
-		z: commonVars.layerOffset.z
+		z: Common.layerOffset.z
 	}
 
 	// Draw the actual block using coordinates using the location of the grid's tiles as a reference for pixel-placement for all the rest of the blocks (this is the first argument). The target.id should look something like "x-123".
 	// colorBlock is used to turn the color index into a color object (with separate color values for each face as well as its lines)
-	canvasBlock(GridField[target.id].coors, location, commonVars, colorBlock(commonVars.selected.color, commonVars));
+	canvasBlock(GridField[target.id].coors, location, colorBlock(Common.selected.color));
 	
 	// Now record information about the position of the block internally using both the Voxel array...
-	Voxel[location.x][location.y][location.z] = commonVars.selected.color;
+	Voxel[location.x][location.y][location.z] = Common.selected.color;
 	// ...and the Field array, which is for serialization.
-	Field.push([location.x, location.y, location.z, commonVars.selected.color]);
+	Field.push([location.x, location.y, location.z, Common.selected.color]);
 	
 	// Let the user know they've placed a block.
-	loggit("A " + commonVars.palette[commonVars.selected.color][3] + " block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
+	loggit("A " + Common.palette[Common.selected.color][3] + " block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
 }
 
 // WTF is this. >:I
-function deleteBlock (target, commonVars) {
+function deleteBlock (target) {
 	var location = {
 		x: GridField[target.id].x,
 		y: GridField[target.id].y,
-		z: 0 + commonVars.layerOffset.z
+		z: 0 + Common.layerOffset.z
 	}
 	
-	canvasBlockDelete(GridField[target.id].coors, location, commonVars);
+	canvasBlockDelete(GridField[target.id].coors, location);
 	Voxel[location.x][location.y][location.z] = -1;
 	loggit(" The block placed at " + location.x + ", " + location.y + ", " + location.z + " was deleted.")
 }
@@ -155,28 +155,28 @@ function canvasBlockDelete () {
 	var color = {left: "#eee", right: "#eee", top: "#eee", inset: "#aaa"};
 	
 	// Top side. Always placed.
-	canvasDrawSet([1, 6, 7, 2], adjustedPosition, commonVars, {closed: true, fill: color.top, stroke: color.inset});
+	canvasDrawSet([1, 6, 7, 2], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
 
 	// Left side.
-	if (Voxel[location.x - 1][location.y][commonVars.layerOffset.z] == -1
-			&& Voxel[location.x - 1][location.y + 1][commonVars.layerOffset.z] == -1) {
-		canvasDrawSet([6, 7, 4, 5], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
-	} else if (Voxel[location.x - 1][location.y + 1][commonVars.layerOffset.z] != -1
-			&& Voxel[location.x - 1][location.y][commonVars.layerOffset.z] == -1) {
-		canvasDrawSet([6, 7, 5], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
+	if (Voxel[location.x - 1][location.y][Common.layerOffset.z] == -1
+			&& Voxel[location.x - 1][location.y + 1][Common.layerOffset.z] == -1) {
+		canvasDrawSet([6, 7, 4, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
+	} else if (Voxel[location.x - 1][location.y + 1][Common.layerOffset.z] != -1
+			&& Voxel[location.x - 1][location.y][Common.layerOffset.z] == -1) {
+		canvasDrawSet([6, 7, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
 	}
 
 	// Right side.
-	if (Voxel[location.x][location.y + 1][commonVars.layerOffset.z] == -1
-			&& Voxel[location.x - 1][location.y + 1][commonVars.layerOffset.z] == -1) {
-		canvasDrawSet([2, 7, 4, 3], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
-	} else if (Voxel[location.x - 1][location.y + 1][commonVars.layerOffset.z] != -1
-			&& Voxel[location.x][location.y + 1][commonVars.layerOffset.z] == -1) {
-		canvasDrawSet([2, 7, 3], adjustedPosition, commonVars, {closed: true, fill: color.left, stroke: color.inset});
+	if (Voxel[location.x][location.y + 1][Common.layerOffset.z] == -1
+			&& Voxel[location.x - 1][location.y + 1][Common.layerOffset.z] == -1) {
+		canvasDrawSet([2, 7, 4, 3], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
+	} else if (Voxel[location.x - 1][location.y + 1][Common.layerOffset.z] != -1
+			&& Voxel[location.x][location.y + 1][Common.layerOffset.z] == -1) {
+		canvasDrawSet([2, 7, 3], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
 	}
 }
 
-function drawBlocks(commonVars) {
+function drawBlocks() {
 	for (var i = 0; i < Field.length; i++) {
 		var block = Field[i];
 		
@@ -186,14 +186,14 @@ function drawBlocks(commonVars) {
 			z: block[2]
 		}
 		
-		var gridPosition = block[0] * commonVars.gridDims.c + block[1];
+		var gridPosition = block[0] * Common.gridDims.c + block[1];
 		var coors = GridField["x-" + gridPosition].coors;
 		
-		canvasBlock(coors, location, commonVars, colorBlock(block[3], commonVars));
+		canvasBlock(coors, location, colorBlock(block[3]));
 	}
 }
 
-function fillRandom (commonVars) {
+function fillRandom () {
 	for (var i = 0; i < Field.length; i++) {
 		var block = Field[i];
 		
@@ -203,9 +203,9 @@ function fillRandom (commonVars) {
 			z: block[2]
 		}
 		
-		var gridPosition = block[0] * commonVars.gridDims.c + block[1];
+		var gridPosition = block[0] * Common.gridDims.c + block[1];
 		var coors = GridField["x-" + gridPosition].coors;
 		
-		canvasBlock(coors, location, commonVars, colorBlock(block[3], commonVars));
+		canvasBlock(coors, location, colorBlock(block[3]));
 	}
 }
