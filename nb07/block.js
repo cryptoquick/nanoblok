@@ -108,10 +108,10 @@ function canvasBlock (position, location, color) {
 	// Right side.
 	if (Voxel[location.x][location.y + 1][Common.layerOffset.z] == -1
 			&& Voxel[location.x - 1][location.y + 1][Common.layerOffset.z] == -1) {
-		canvasDrawSet([2, 7, 4, 3], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
+		canvasDrawSet([2, 7, 4, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
 	} else if (Voxel[location.x - 1][location.y + 1][Common.layerOffset.z] != -1
 			&& Voxel[location.x][location.y + 1][Common.layerOffset.z] == -1) {
-		canvasDrawSet([2, 7, 3], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
+		canvasDrawSet([2, 7, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
 	}
 }
 

@@ -49,6 +49,11 @@ function gridCoors (side) {
 	}
 }
 
+// Will be an option if the SVG mouse events don't work as well.
+function gridScreen () {
+	
+}
+
 // Versatile function for drawing tiles. Perhaps a bit too versatile.
 function drawSet (hexSet, coorSet, closed) {
 	pathElement = document.createElementNS(svgNS, 'path');
