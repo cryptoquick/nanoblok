@@ -74,3 +74,11 @@ function getDefaultColor (paletteNum) {
 		+ (Common.palette[paletteNum][2] + 40) + ")";
 	return rgbOutput;
 }
+
+/*
+function shrinkUI () {
+	for () {
+		
+	}
+}
+*/

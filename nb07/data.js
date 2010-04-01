@@ -17,7 +17,7 @@ var GridField = new Object();
 // Voxels are volumetric pixels, 3D coordinates. This keeps track of those in order to speed up spatial determinations, such as if a block is close by to another block.
 var Voxel = new Array();
 
-
+var History = new Object();
 
 // Many common variables used throughout the program.
 function computeCommonVars () {
@@ -80,6 +80,7 @@ function computeCommonVars () {
 	// Various fields for selection states.
 	var selected = {
 		color: 0,
+		lastColor: 0,
 		tool: "color0red",
 		blocks: false,
 		area: {x: 0, y: 0, z: 0, l: 0, w: 0, h: 0}
@@ -122,6 +123,17 @@ function computeCommonVars () {
 	}
 	
 	return commonVars;
+}
+
+function initHistory () {
+	History = {
+		lastAction: new Array(),
+		selectedColor: new Array()
+	};
+}
+
+function history (id, value) {
+	History[id].push(value);
 }
 
 // Serialization.
