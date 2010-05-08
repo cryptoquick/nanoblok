@@ -1,4 +1,4 @@
-package nanoblok;
+// package nanoblok;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

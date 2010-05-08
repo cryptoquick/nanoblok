@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package nanoblok;
+// package nanoblok;
 
 import java.awt.Color;
 import java.awt.Dimension;
