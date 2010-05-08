@@ -1,4 +1,4 @@
-package nanoblok;
+// package nanoblok;
 
 /**
  * This class is essential for rendering orthogonal isometric 'cubes' (in reality, hexagons).

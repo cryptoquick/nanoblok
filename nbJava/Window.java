@@ -1,5 +1,3 @@
-package nanoblok;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -7,9 +5,9 @@ import java.awt.*;
  *
  * @author alex
  */
-public class MainWindow extends JFrame {
+public class Window extends JFrame {
 	
-	public MainWindow()
+	public Window()
 	{
 		// Window title.
 		super("nanoblok j0.1-dev");

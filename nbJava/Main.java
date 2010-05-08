@@ -1,4 +1,4 @@
-package nanoblok;
+// package nanoblok;
 
 // import java.awt.event.*;
 
@@ -14,6 +14,6 @@ public class Main {
     public static void main(String[] args) {
         // TODO code application logic here
 	//	MainWindow editorWindow = new MainWindow();
-		new MainWindow();
+		new Window();
     }
 }

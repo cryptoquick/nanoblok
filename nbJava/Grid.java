@@ -3,7 +3,7 @@
  * @author alex
  */
 
-package nanoblok;
+// package nanoblok;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
