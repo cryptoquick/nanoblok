@@ -1,13 +1,3 @@
-/*
- * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
- * http://code.google.com/p/nanoblok/
- * Copyright (c) 2009 Alex Trujillo
- * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
- * 
- * Summary for main.js:
- * Has event listeners and corresponding handlers for Initialization, Update (to refresh all parts of the screen), Click, and Hover. 
- */
-
 var ns = 'http://www.w3.org/TR/SVG';
 var windowSize = new Object();
 
@@ -25,38 +15,46 @@ function Initialize () {
 	inputElement = document.getElementById('input');
 	
 	bottomGrid = document.getElementById('bottomGrid');
+	leftGrid = document.getElementById('leftGrid');
+	rightGrid = document.getElementById('rightGrid');
 	
-	var gridSize = 16;
-	var tileSize = 16;
+	// windowSize = {x: window.innerWidth, y: window.innerHeight};
+	windowSize = {x: document.documentElement.clientWidth + 10, y: document.documentElement.clientHeight - 4};
+
+	var tileSize = 32;
+	var gridSize = Math.ceil((windowSize.x / tileSize) * 2);
 	
 	// For testing.
 	document.getElementById('grids').focus();
 	document.getElementById('tiles').value = tileSize;
 	document.getElementById('grids').value = gridSize;
 	
-	// windowSize = {x: window.innerWidth, y: window.innerHeight};
-	windowSize = {x: document.documentElement.clientWidth, y: document.documentElement.clientHeight - 4};
-	
 	displayElement.width = windowSize.x;
 	displayElement.height = windowSize.y;
 	inputElement.setAttribute('width', windowSize.x);
 	inputElement.setAttribute('height', windowSize.y);
 	
-	bottomGrid.width = windowSize.x;
-	bottomGrid.height = windowSize.y;
+	bottomGrid.width = windowSize.x * 2;
+	bottomGrid.height = windowSize.y * 4;
+	leftGrid.width = windowSize.x * 2;
+	leftGrid.height = windowSize.y * 4;
+	rightGrid.width = windowSize.x * 2;
+	rightGrid.height = windowSize.y * 4;
 
-	drawGrid(bottomGrid, gridSize, tileSize, 'left');
-	displayCanvas(bottomGrid, gridSize, tileSize);
+	// drawGrid(bottomGrid, gridSize, tileSize, 'bottom');
+	// displayCanvas(bottomGrid, gridSize, tileSize);
+	drawGrid(leftGrid, gridSize, tileSize, 'left');
+	displayCanvas(leftGrid, gridSize, tileSize);
 }
 
 // Returns a canvas context based on its element id.
 function context(element) {
 	var canvas;
 	// Get the canvas element if a string is passed.
-	if (element.constructor.name == "String") {
+	if (element.constructor.name == 'String') {
 		canvas = document.getElementById(element);
 	}
-	else if (element.constructor.name == "HTMLCanvasElement") {
+	else if (element.constructor.name == 'HTMLCanvasElement') {
 		canvas = element;
 	}
 	// Get its 2D context
@@ -85,9 +83,17 @@ function drawGrid (element, gridSize, tileSize, orientation) {
 		stroke: '#4C78D9'
 	};
 	
-	ctx.translate(gridSize * tileSize / Math.sqrt(2), 0);
-	ctx.scale(1, 0.5);
-	ctx.rotate((45 * Math.PI) / 180);
+	if (orientation == 'bottom') {
+		ctx.translate(gridSize * tileSize / Math.sqrt(2), 0);
+		ctx.scale(1, 0.5);
+		ctx.rotate((45 * Math.PI) / 180);
+	}
+	else if (orientation == 'left') {
+		// ctx.transform(1,0,((-45 * Math.PI) / 180),1, 0, 0);
+		ctx.translate(gridSize * tileSize / Math.sqrt(2), 0);
+		ctx.scale(0.5, 1);
+		ctx.rotate((45 * Math.PI) / 180);
+	}
 	// ctx.translate(-((gridSize * tileSize) / 4 / Math.sqrt(2)), -(gridSize * tileSize));
 	
 	for (var x = 0; x < gridSize; x++) {
@@ -106,8 +112,8 @@ function buttonPressed (event) {
 		var tileSize = parseInt(document.getElementById('tiles').value);
 		var gridSize = parseInt(document.getElementById('grids').value);
 			
-		drawGrid(bottomGrid, gridSize, tileSize, 'left');
-		displayCanvas(bottomGrid, gridSize, tileSize);
+		drawGrid(leftGrid, gridSize, tileSize, 'left');
+		displayCanvas(leftGrid, gridSize, tileSize);
 	}
 }
 
@@ -123,5 +129,5 @@ function displayCanvas (element, gridSize, tileSize) {
 	displayElement.width = displayElement.width;
 	display.clearRect(-10, -10, windowSize.x, windowSize.y);
 	
-	display.drawImage(element, offset.x, offset.y)
+	display.drawImage(element, offset.x, offset.y);
 }

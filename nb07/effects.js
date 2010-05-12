@@ -69,25 +69,37 @@ function positionIndicator () {
 	offsX = Common.offset.x + (Common.markerPosition.x * Common.blockSize.half) + (Common.markerPosition.z * Common.blockSize.half);
 	offsYtop = Common.edges.top - (Common.layerOffset.z * Common.blockSize.half) + (Common.markerPosition.z * Common.blockSize.quarter) + (Common.gridSize.y - Common.markerPosition.x * Common.blockSize.quarter) - 45;
 	
-	ctx.strokeStyle = '#0f0';
+	ctx.fillStyle = '#0f0';
 	ctx.beginPath();
 	
 	// Points 1-6, in order.
-	ctx.moveTo(offsX + gr2, offsYtop);
-	ctx.lineTo(offsX + gr1, offsYtop + gr4);
+	// ctx.moveTo(offsX + gr2, offsYtop);
+	// ctx.lineTo(offsX + gr1, offsYtop + gr4);
+	// ctx.lineTo(offsX + gr1, offsYtop + gr4 + gr2);
+	// ctx.lineTo(offsX + gr2, offsYtop + gr1);
+	// ctx.lineTo(offsX, offsYtop + gr4 + gr2);
+	ctx.lineTo(offsX + gr2, offsYtop + gr2);
 	ctx.lineTo(offsX + gr1, offsYtop + gr4 + gr2);
 	ctx.lineTo(offsX + gr2, offsYtop + gr1);
 	ctx.lineTo(offsX, offsYtop + gr4 + gr2);
-	ctx.lineTo(offsX, offsYtop + gr4);
+	// ctx.lineTo(offsX, offsYtop + gr4);
 	
 	ctx.closePath();
-	ctx.stroke();
+	// ctx.stroke();
+	ctx.fill();
 	
 	// Selection box
 	// Enabled if there's a value in there.
 	if (Common.selected.blocks) {
 		offsX = Common.offset.x + (Common.selected.area.x * Common.blockSize.half) + (Common.selected.area.y * Common.blockSize.half);
-		offsYtop = (Common.edges.top + Common.gridSize.y - 45) - (Common.selected.area.z * Common.blockSize.half) + (Common.selected.area.x * Common.blockSize.quarter) - (Common.selected.area.y * Common.blockSize.quarter);
+		offsYtop = 
+			   (Common.edges.top + Common.gridSize.y - 45)
+			 - (Common.selected.area.z * Common.blockSize.half)
+			 + (Common.selected.area.x * Common.blockSize.quarter)
+			 - (Common.selected.area.y * Common.blockSize.quarter)
+			 - (Common.selected.area.h * Common.blockSize.half)
+			 + (Common.blockSize.half);
+		// loggit(offsYtop);
 
 		ctx.strokeStyle = "rgba(255,0,127,10)";
 		ctx.beginPath();
@@ -97,7 +109,7 @@ function positionIndicator () {
 		ctx.lineTo(offsX + (gr1 * Common.selected.area.l), offsYtop + (gr4 * Common.selected.area.w));
 		ctx.lineTo(offsX + (gr1 * Common.selected.area.l), offsYtop + (Common.selected.area.h * gr2 + (gr4 * Common.selected.area.w)));
 		ctx.lineTo(offsX + (gr2 * Common.selected.area.l), offsYtop + (Common.selected.area.h * gr2 + (gr2 * Common.selected.area.w)));
-		ctx.lineTo(offsX, offsYtop + (Common.selected.area.h * gr2 + (gr4 * Common.selected.area.w * Common.selected.area.l)));
+		ctx.lineTo(offsX, offsYtop + (Common.selected.area.h * gr2 + (gr4 * Common.selected.area.l)));
 		ctx.lineTo(offsX, offsYtop + (gr4 * Common.selected.area.w));
 
 		ctx.closePath();
@@ -108,20 +120,44 @@ function positionIndicator () {
 }
 
 function selectArea (target, select) {
+	// var row = target.getAttributeNS(null, "r");
+	
 	var position = {
 		x: target.getAttributeNS(null, "r"),
 		y: target.getAttributeNS(null, "c"),
 		z: Common.layerOffset.z
 	}
 	
+	var area = {
+		l: 0,
+		w: 0,
+		h: 0
+	}
+	
+	if (Common.selected.secondSelection.x == -1 && Common.selected.initialSelection.x != -1) {
+		Common.selected.secondSelection = position;
+		var length = Math.abs(position.x - Common.selected.initialSelection.x) + 1;
+		var width = Math.abs(position.y - Common.selected.initialSelection.y) + 1;
+		var height = 1;
+		area = {l: length, w: width, h: height};
+		loggit(length + ", " + width);
+	}
+	
+	if (Common.selected.initialSelection.x == -1 && position.x != -1) {
+		loggit("bla");
+		Common.selected.initialSelection = position;
+		area = {l: 1, w: 1, h: 1};
+	}
+	
 	// Clear selection if select is false
 	if (select === false) {
-		Common.selected.area = {x: 0, y: 0, z: 0, l: 0, w: 0, h: 0};
-		Common.selected.blocks = false;
+		// Common.selected.area = {x: 0, y: 0, z: 0, l: 0, w: 0, h: 0};
+		// Common.selected.blocks = false;
+		// Clear initial and second selections
 	}
 	
 	Common.selected.blocks = true;
-	Common.selected.area = {x: position.x, y: position.y, z: position.z, l: 3, w: 3, h: 1};
+	Common.selected.area = {x: position.x, y: position.y, z: position.z, l: area.l, w: area.w, h: area.h};
 	
 	positionIndicator();
 }
