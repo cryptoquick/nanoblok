@@ -83,7 +83,9 @@ function computeCommonVars () {
 		lastColor: 0,
 		tool: "color0red",
 		blocks: false,
-		area: {x: 0, y: 0, z: 0, l: 0, w: 0, h: 0}
+		area: {x: 0, y: 0, z: 0, l: 0, w: 0, h: 0},
+		initialSelection: {x: -1, y: -1, z: -1},
+		secondSelection: {x: -1, y: -1, z: -1}
 	};
 	
 	var layerOffset = {x: 0, y: 0, z: 0};

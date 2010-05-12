@@ -1,15 +1,5 @@
 <?xml version='1.0'?>
-<!--
-/*
- * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
- * http://code.google.com/p/nanoblok/
- * Copyright (c) 2009 Alex Trujillo
- * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
- * 
- * Summary for index.xhtml:
- * XHTML format with SVG-prefixed namespaces, because SVG with HTML5 Canvas is harder to pull off (and performs poorly).
- */
--->
+
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg" xmlns:html="http://www.w3.org/1999/xhtml">
 	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -44,7 +34,7 @@
 			top: 0px;
 			left: 0px;
 			z-index: -2;
-			visibility: hidden;
+			display: none;
 		}
 	</style>
 </head>
@@ -60,6 +50,8 @@
 	
 	<div id="hiddenCanvases">
 		<canvas id="bottomGrid"></canvas>
+		<canvas id="leftGrid"></canvas>
+		<canvas id="rightGrid"></canvas>
 	</div>
 	
 	<svg:svg id="input" xmlns="http://www.w3.org/TR/svg">
