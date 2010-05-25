@@ -7,6 +7,12 @@
 
 	<title>Nanoblok r0.8 Dev</title>
 	
+	<script type="text/javascript" src="MooTools/Core/Core.js"></script>
+	<script type="text/javascript" src="MooTools/Class/Class.js"></script>
+	<script type="text/javascript" src="ART/ART.js"></script>
+	<script type="text/javascript" src="ART/ART.SVG.js"></script>
+	<script type="text/javascript" src="ART/ART.Base.js"></script>
+	<script type="text/javascript" src="ART/Color.js"></script>
 	<script type="text/javascript" src="main.js"></script>
 	
 	<style>
@@ -39,23 +45,8 @@
 	</style>
 </head>
 <body>
-	<div id="settings">
-		Sizes<br/>
-		<input id="grids" type="text" size="1" value="0" onkeypress="buttonPressed(evt);"></input> grids<br/>
-		<input id="tiles" type="text" size="1" value="0" onkeypress="buttonPressed(evt);"></input> tiles<br/>
-		<input id="submit" type="button" size="100" value="Submit" onclick="buttonPressed(evt);"></input>
-	</div>
-		
-	<canvas id="display"></canvas>
-	
-	<div id="hiddenCanvases">
-		<canvas id="bottomGrid"></canvas>
-		<canvas id="leftGrid"></canvas>
-		<canvas id="rightGrid"></canvas>
-	</div>
-	
-	<svg:svg id="input" xmlns="http://www.w3.org/TR/svg">
-		<!-- <svg:rect x="0" y="0" width="100%" height="100%" fill="red" fill-opacity="0.5"/> -->
+	<svg:svg id="svgDoc" xmlns="http://www.w3.org/TR/svg">
+		<svg:g id="grid"></svg:g>
 	</svg:svg>
 </body>
 </html>

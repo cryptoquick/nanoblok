@@ -5,129 +5,132 @@ window.addEventListener('load', function () {
 	Initialize();
 }, false);
 
-var displayElement;
-var inputElement;
-var bottomGrid;
-
-/* Main Functions */
-function Initialize () {
-	displayElement = document.getElementById('display');
-	inputElement = document.getElementById('input');
-	
-	bottomGrid = document.getElementById('bottomGrid');
-	leftGrid = document.getElementById('leftGrid');
-	rightGrid = document.getElementById('rightGrid');
-	
-	// windowSize = {x: window.innerWidth, y: window.innerHeight};
-	windowSize = {x: document.documentElement.clientWidth + 10, y: document.documentElement.clientHeight - 4};
-
-	var tileSize = 32;
-	var gridSize = Math.ceil((windowSize.x / tileSize) * 2);
-	
-	// For testing.
-	document.getElementById('grids').focus();
-	document.getElementById('tiles').value = tileSize;
-	document.getElementById('grids').value = gridSize;
-	
-	displayElement.width = windowSize.x;
-	displayElement.height = windowSize.y;
-	inputElement.setAttribute('width', windowSize.x);
-	inputElement.setAttribute('height', windowSize.y);
-	
-	bottomGrid.width = windowSize.x * 2;
-	bottomGrid.height = windowSize.y * 4;
-	leftGrid.width = windowSize.x * 2;
-	leftGrid.height = windowSize.y * 4;
-	rightGrid.width = windowSize.x * 2;
-	rightGrid.height = windowSize.y * 4;
-
-	// drawGrid(bottomGrid, gridSize, tileSize, 'bottom');
-	// displayCanvas(bottomGrid, gridSize, tileSize);
-	drawGrid(leftGrid, gridSize, tileSize, 'left');
-	displayCanvas(leftGrid, gridSize, tileSize);
+// Single function so console.logs can be easily disabled for production.
+function debug (str) {
+	console.log(str);
 }
 
-// Returns a canvas context based on its element id.
-function context(element) {
-	var canvas;
-	// Get the canvas element if a string is passed.
-	if (element.constructor.name == 'String') {
-		canvas = document.getElementById(element);
+var Window = new Class({
+	resizeID: null,
+	grid: null,
+	
+	addEvents: function (grid) {
+		this.grid = grid;
+		window.addEvent('resize', this.resize());
+	},
+	
+	resize: function () {
+		// window.clearTimeout(this.resizeID);
+		// this.resizeID = window.setTimeout(
+			this.grid.resize()
+		// , 25);
 	}
-	else if (element.constructor.name == 'HTMLCanvasElement') {
-		canvas = element;
-	}
-	// Get its 2D context
-	if (canvas.getContext) {
-		var context = canvas.getContext('2d');
-	}
-	return context;
-}
+});
 
-// Can be put into a getCanvas method
-function drawGrid (element, gridSize, tileSize, orientation) {
-	ctx = context(element);
+var Grid = new Class({
+	initialize: function () {
+		
+	},
 	
-	// Reset canvas.
-	element.width = element.width;
-	ctx.clearRect(-10, -10, element.width, element.height);
-	
-	// ctx.fillStyle = "blue";
-	// ctx.fillRect(0,0, element.width, element.height);
-	
-	// Colors
-	var color = {
-		top: '#5B87E9',
-		left: '#3461C1',
-		right: '#4874D5',
-		stroke: '#4C78D9'
-	};
-	
-	if (orientation == 'bottom') {
-		ctx.translate(gridSize * tileSize / Math.sqrt(2), 0);
-		ctx.scale(1, 0.5);
-		ctx.rotate((45 * Math.PI) / 180);
+	resize: function () {
+		console.log('Window has been resized.');
 	}
-	else if (orientation == 'left') {
-		// ctx.transform(1,0,((-45 * Math.PI) / 180),1, 0, 0);
-		ctx.translate(gridSize * tileSize / Math.sqrt(2), 0);
-		ctx.scale(0.5, 1);
-		ctx.rotate((45 * Math.PI) / 180);
-	}
-	// ctx.translate(-((gridSize * tileSize) / 4 / Math.sqrt(2)), -(gridSize * tileSize));
+});
+
+var Data = new Class({
+	size: null,
+	hex: null,
 	
-	for (var x = 0; x < gridSize; x++) {
-		for (var y = 0; y < gridSize; y++) {
-			ctx.fillStyle = color.left;
-			ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
-			ctx.strokeStyle = color.stroke;
-			ctx.lineWidth = '5px';
-			ctx.strokeRect(x * tileSize, y * tileSize, tileSize, tileSize);
+	initialize: function () {
+		this.setSize();
+		this.setHex();
+	},
+	
+	setSize: function () {
+		var dimension = 32;
+		
+		this.size = {
+			full: dimension,
+			half: dimension / 2,
+			third: dimension / 2 + dimension / 4,
+			quarter: dimension / 4
 		}
+	},
+	
+	setHex: function () {
+		this.hex = [
+			{x: this.size.half, y: 0},
+			{x: this.size.full, y: this.size.quarter},
+			{x: this.size.full, y: this.size.third},
+			{x: this.size.half, y: this.size.full},
+			{x: 0, y: this.size.third},
+			{x: 0, y: this.size.quarter},
+			{x: this.size.half, y: this.size.half}
+		]
 	}
-}
+});
 
-function buttonPressed (event) {
-	if ((event.type == 'keypress' && event.keyCode == 13) || (event.type == 'click' && !(event.id == 'tiles' || event.id == 'grids'))) {
-		var tileSize = parseInt(document.getElementById('tiles').value);
-		var gridSize = parseInt(document.getElementById('grids').value);
-			
-		drawGrid(leftGrid, gridSize, tileSize, 'left');
-		displayCanvas(leftGrid, gridSize, tileSize);
+var Blok = new Class({
+	element: null,
+	sides: {top: null, left: null, right: null},
+	offset: {x: 0, y: 0},
+	color: 'red',
+	
+	initialize: function () {
+		this.sides.top = new Element('path', {
+			'id': 'top',
+			'd': this.makePath('top')
+		});
+		this.sides.left = new Element('path', {
+			'id': 'left',
+			'd': this.makePath('left')
+		});
+		this.sides.right = new Element('path', {
+			'id': 'right',
+			'd': this.makePath('right')
+		});
+		
+		this.element = new Element('g');
+		this.element.inject(this.sides.top);
+		this.element.inject(this.sides.left);
+		this.element.inject(this.sides.right);
+	},
+	
+	makePath: function (side) {
+		var points = null;
+		
+		if (side == 'top') {
+			points = {a: 0, b: 5, c: 6, d: 1};
+		}
+		if (side == 'left') {
+			points = {a: 5, b: 6, c: 3, d: 4};
+		}
+		if (side == 'right') {
+			points = {a: 1, b: 6, c: 3, d: 2};
+		}
+		
+		var str = 'M' + 
+		(data.hex[points.a].x + this.offset.x) + ' ' + (data.hex[points.a].y + this.offset.y) + 'L' +
+		(data.hex[points.b].x + this.offset.x) + ' ' + (data.hex[points.b].y + this.offset.y) + 'L' +
+		(data.hex[points.c].x + this.offset.x) + ' ' + (data.hex[points.c].y + this.offset.y) + 'L' +
+		(data.hex[points.d].x + this.offset.x) + ' ' + (data.hex[points.d].y + this.offset.y) + 'z'
+		
+		return str;
+	},
+	
+	updateSides: function () {
+		
 	}
-}
+});
 
-function displayCanvas (element, gridSize, tileSize) {
-	var offset = {
-		x: windowSize.x / 2 - (gridSize * tileSize / Math.sqrt(2)),
-		y: windowSize.y / 2 - (gridSize * tileSize * Math.sqrt(2)) / 4
-	};
+var data = null;
+
+function Initialize() {
+	data = new Data;
+	// editorWindow = new Window;
+	// grid = new Grid;
+	blok = new Blok;
+	$('grid').inject(blok.element, 'top');
 	
-	display = context(displayElement);
-	
-	// Reset canvas.
-	displayElement.width = displayElement.width;
-	display.clearRect(-10, -10, windowSize.x, windowSize.y);
-	
-	display.drawImage(element, offset.x, offset.y);
+	// editorWindow.addEvents(grid);
 }
