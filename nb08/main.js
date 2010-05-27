@@ -10,130 +10,84 @@ function debug (str) {
 	console.log(str);
 }
 
-var Window = Class.extend({
-	size: null,
-	resizeID: null,
-	grid: null,
-	
-	init: function () {
-		// size = window.getSize();
-	},
-	
-	addEvents: function (grid) {
+var Window = function () {
+	this.size = null;
+	this.resizeID = null;
+	this.grid = null;
+
+	this.addEvents = function (grid) {
 		this.grid = grid;
 		// window.addEvent('resize', this.resize());
-	},
+	}
 	
-	resize: function () {
+	this.resize = function () {
 		// window.clearTimeout(this.resizeID);
 		// this.resizeID = window.setTimeout(
 			this.grid.resize()
 		// , 25);
 	}
-});
+}
 
-var El = Class.extend({
-	el: null,
-	svgNS: "http://www.w3.org/2000/svg",
+var El = function (type) {
+	var svgNS = "http://www.w3.org/2000/svg";
+	this.el = document.createElementNS(svgNS, type);
 	
-	init: function (type) {
-		// var bla = document.getElementById('main');
-		this.el = document.createElementNS(this.svgNS, type);
-		// bla.appendChild(this.el);
-	},
-	
-	set: function (name, attr) {
+	this.set = function (name, attr) {
 		this.el.setAttributeNS(null, name, attr);
-//		return this.el;
-	},
+	}
 	
-	get: function (el, name) {
+	this.get = function (el, name) {
 		var attr = this.el.getAttributeNS(null, name);
 		return attr;
-	},
-	
-	add: function (targEl) {
-		targEl.el.appendChild(this.el);
-	},
-	
-	remove: function (targEl) {
-		targEl.el.removeChild(this.el);
-	},
-	
-	setEl: function (docId) {
-		this.el = document.getElementById(docId);
 	}
-});
-
-var Grid = Class.extend({
-	initialize: function () {
-		
-	},
 	
-	resize: function () {
+	this.add = function (targ) {
+		this.el.appendChild(targ.el);
+	}
+	
+	this.remove = function (targ) {
+		this.el.removeChild(targ.el);
+	}
+	
+	this.setEl = function (docId) {
+		this.el = document.getElementById(docId);
+		console.log(this.el);
+	}
+}
+
+var Grid = function () {
+	this.initialize = function () {
+		
+	}
+	
+	this.resize = function () {
 		console.log('Window has been resized.');
 	}
-});
+}
 
-var Data = Class.extend({
-	size: null,
-	hex: null,
+var Data = function () {
+	var dimension = 32;
 	
-	init: function () {
-		this.setSize();
-		this.setHex();
-	},
+	this.size = {
+		full: dimension,
+		half: dimension / 2,
+		third: dimension / 2 + dimension / 4,
+		quarter: dimension / 4
+	};
 	
-	setSize: function () {
-		var dimension = 32;
-		
-		this.size = {
-			full: dimension,
-			half: dimension / 2,
-			third: dimension / 2 + dimension / 4,
-			quarter: dimension / 4
-		}
-	},
-	
-	setHex: function () {
-		this.hex = [
-			{x: this.size.half, y: 0},
-			{x: this.size.full, y: this.size.quarter},
-			{x: this.size.full, y: this.size.third},
-			{x: this.size.half, y: this.size.full},
-			{x: 0, y: this.size.third},
-			{x: 0, y: this.size.quarter},
-			{x: this.size.half, y: this.size.half}
-		]
-	}
-});
+	this.hex = [
+		{x: this.size.half, y: 0},
+		{x: this.size.full, y: this.size.quarter},
+		{x: this.size.full, y: this.size.third},
+		{x: this.size.half, y: this.size.full},
+		{x: 0, y: this.size.third},
+		{x: 0, y: this.size.quarter},
+		{x: this.size.half, y: this.size.half}
+	];
+}
 
-var Blok = Class.extend({
-	element: null,
-	sides: {top: null, left: null, right: null},
-	offset: {x: 0, y: 0},
-	color: 'red',
-	
-	init: function () {
-		this.sides.top = new El('path');
-		this.sides.left = new El('path');
-		this.sides.right = new El('path');
-		
-		this.sides.top.set('id', 'top');
-		this.sides.left.set('id', 'left');
-		this.sides.right.set('id', 'right');
-		
-		this.sides.top.set('d', this.makePath('top'));
-		this.sides.left.set('d', this.makePath('left'));
-		this.sides.right.set('d', this.makePath('right'));
-		
-		this.element = new El('g');
-		this.element.add(this.sides.top);
-		this.element.add(this.sides.left);
-		this.element.add(this.sides.right);
-	},
-	
-	makePath: function (side) {
+var Blok = function () {	
+	this.makePath = function (side) {
 		var points = null;
 		
 		if (side == 'top') {
@@ -153,30 +107,43 @@ var Blok = Class.extend({
 		(data.hex[points.d].x + this.offset.x) + ' ' + (data.hex[points.d].y + this.offset.y) + 'z'
 		
 		return str;
-	},
+	}
 	
-	updateSides: function () {
+	this.sides = {top: null, left: null, right: null},
+	this.offset = {x: 0, y: 0},
+	this.color = 'red',
+
+	this.sides.top = new El('path');
+	this.sides.left = new El('path');
+	this.sides.right = new El('path');
+	
+	this.sides.top.set('id', 'top');
+	this.sides.left.set('id', 'left');
+	this.sides.right.set('id', 'right');
+	
+	this.sides.top.set('d', this.makePath('top'));
+	this.sides.left.set('d', this.makePath('left'));
+	this.sides.right.set('d', this.makePath('right'));
+	
+	this.element = new El('g');
+	this.element.add(this.sides.top);
+	this.element.add(this.sides.left);
+	this.element.add(this.sides.right);
+	
+	this.updateSides = function () {
 		
 	}
-});
+}
 
 var data = null;
 var doc = null;
 
 function Initialize() {
-	// var bla = new El('g');
-	// bla.set('id', 'bla');
-	// document.getElementById('main').appendChild(bla.el);
-	
-	
 	data = new Data();
-	editorWindow = new Window;
+	editorWindow = new Window();
 	// grid = new Grid;
 	var blok = new Blok();
-		
 	var main = new El('g');
 	main.setEl('main');
 	main.add(blok.element);
-	
-	// editorWindow.addEvents(grid);
 }
