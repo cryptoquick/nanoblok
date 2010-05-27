@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>Nanoblok r0.8 Dev</title>
+
+	<script type="text/javascript" xlink:href="class.js"></script>
+	<script type="text/javascript" xlink:href="main.js"></script>
+	
+	<g id="main"></g>
+</svg>

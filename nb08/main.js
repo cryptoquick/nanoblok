@@ -10,13 +10,18 @@ function debug (str) {
 	console.log(str);
 }
 
-var Window = new Class({
+var Window = Class.extend({
+	size: null,
 	resizeID: null,
 	grid: null,
 	
+	init: function () {
+		// size = window.getSize();
+	},
+	
 	addEvents: function (grid) {
 		this.grid = grid;
-		window.addEvent('resize', this.resize());
+		// window.addEvent('resize', this.resize());
 	},
 	
 	resize: function () {
@@ -27,7 +32,40 @@ var Window = new Class({
 	}
 });
 
-var Grid = new Class({
+var El = Class.extend({
+	el: null,
+	svgNS: "http://www.w3.org/2000/svg",
+	
+	init: function (type) {
+		// var bla = document.getElementById('main');
+		this.el = document.createElementNS(this.svgNS, type);
+		// bla.appendChild(this.el);
+	},
+	
+	set: function (name, attr) {
+		this.el.setAttributeNS(null, name, attr);
+//		return this.el;
+	},
+	
+	get: function (el, name) {
+		var attr = this.el.getAttributeNS(null, name);
+		return attr;
+	},
+	
+	add: function (targEl) {
+		targEl.el.appendChild(this.el);
+	},
+	
+	remove: function (targEl) {
+		targEl.el.removeChild(this.el);
+	},
+	
+	setEl: function (docId) {
+		this.el = document.getElementById(docId);
+	}
+});
+
+var Grid = Class.extend({
 	initialize: function () {
 		
 	},
@@ -37,11 +75,11 @@ var Grid = new Class({
 	}
 });
 
-var Data = new Class({
+var Data = Class.extend({
 	size: null,
 	hex: null,
 	
-	initialize: function () {
+	init: function () {
 		this.setSize();
 		this.setHex();
 	},
@@ -70,30 +108,29 @@ var Data = new Class({
 	}
 });
 
-var Blok = new Class({
+var Blok = Class.extend({
 	element: null,
 	sides: {top: null, left: null, right: null},
 	offset: {x: 0, y: 0},
 	color: 'red',
 	
-	initialize: function () {
-		this.sides.top = new Element('path', {
-			'id': 'top',
-			'd': this.makePath('top')
-		});
-		this.sides.left = new Element('path', {
-			'id': 'left',
-			'd': this.makePath('left')
-		});
-		this.sides.right = new Element('path', {
-			'id': 'right',
-			'd': this.makePath('right')
-		});
+	init: function () {
+		this.sides.top = new El('path');
+		this.sides.left = new El('path');
+		this.sides.right = new El('path');
 		
-		this.element = new Element('g');
-		this.element.inject(this.sides.top);
-		this.element.inject(this.sides.left);
-		this.element.inject(this.sides.right);
+		this.sides.top.set('id', 'top');
+		this.sides.left.set('id', 'left');
+		this.sides.right.set('id', 'right');
+		
+		this.sides.top.set('d', this.makePath('top'));
+		this.sides.left.set('d', this.makePath('left'));
+		this.sides.right.set('d', this.makePath('right'));
+		
+		this.element = new El('g');
+		this.element.add(this.sides.top);
+		this.element.add(this.sides.left);
+		this.element.add(this.sides.right);
 	},
 	
 	makePath: function (side) {
@@ -124,13 +161,22 @@ var Blok = new Class({
 });
 
 var data = null;
+var doc = null;
 
 function Initialize() {
-	data = new Data;
-	// editorWindow = new Window;
+	// var bla = new El('g');
+	// bla.set('id', 'bla');
+	// document.getElementById('main').appendChild(bla.el);
+	
+	
+	data = new Data();
+	editorWindow = new Window;
 	// grid = new Grid;
-	blok = new Blok;
-	$('grid').inject(blok.element, 'top');
+	var blok = new Blok();
+		
+	var main = new El('g');
+	main.setEl('main');
+	main.add(blok.element);
 	
 	// editorWindow.addEvents(grid);
 }
