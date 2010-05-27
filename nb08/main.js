@@ -50,17 +50,6 @@ var El = function (type) {
 	
 	this.setEl = function (docId) {
 		this.el = document.getElementById(docId);
-		console.log(this.el);
-	}
-}
-
-var Grid = function () {
-	this.initialize = function () {
-		
-	}
-	
-	this.resize = function () {
-		
 	}
 }
 
@@ -96,11 +85,10 @@ var Data = function () {
 		black:	[55,  48,  51],
 		white:	[238, 238, 236]
 	};
-}
-
-number = 0;
-
-var Blok = function () {	
+	
+	this.paths = {top: null, left: null, right: null};
+	this.sides = ['top', 'left', 'right'];
+	
 	this.makePath = function (side) {
 		var points = null;
 		
@@ -115,21 +103,29 @@ var Blok = function () {
 		}
 		
 		var str = 'M' + 
-		(data.hex[points.a].x + this.offset.x) + ' ' + (data.hex[points.a].y + this.offset.y) + 'L' +
-		(data.hex[points.b].x + this.offset.x) + ' ' + (data.hex[points.b].y + this.offset.y) + 'L' +
-		(data.hex[points.c].x + this.offset.x) + ' ' + (data.hex[points.c].y + this.offset.y) + 'L' +
-		(data.hex[points.d].x + this.offset.x) + ' ' + (data.hex[points.d].y + this.offset.y) + 'z'
+		this.hex[points.a].x + ' ' + this.hex[points.a].y + 'L' +
+		this.hex[points.b].x + ' ' + this.hex[points.b].y + 'L' +
+		this.hex[points.c].x + ' ' + this.hex[points.c].y + 'L' +
+		this.hex[points.d].x + ' ' + this.hex[points.d].y + 'z'
 		
 		return str;
 	}
 	
-	var sides = ['top', 'left', 'right'];
+	for (var i = 0; i < 3; i++) {
+		this.paths[this.sides[i]] = this.makePath(this.sides[i]);
+	}
+}
+
+var blokCount = 0;
+
+var Blok = function (pos) {
 	this.sides = {top: null, left: null, right: null};
-	this.offset = {x: 0, y: 0};
+	this.visible = {top: null, left: null, right: null};
+	this.pos = pos; // {x: 0, y: 0}
 	this.color = "red";
 	this.element = new El('g');
-	this.element.set('id', 'block' + number);
-	number++;
+	this.element.set('id', 'block' + blokCount);
+	blokCount++;
 	
 	this.makeColor = function (it) {
 		var col = data.defaultPalette[this.color];
@@ -138,15 +134,61 @@ var Blok = function () {
 	}
 	
 	for (var i = 0; i < 3; i++) {
-		var el = this.sides[sides[i]]
-		el = new El('path');
-		el.set('id', sides[i]);
-		el.set('fill', this.makeColor(i));
-		el.set('d', this.makePath(sides[i]));
-		this.element.add(el);
+		this.sides[data.sides[i]] = new El('path');
+		this.sides[data.sides[i]].set('id', data.sides[i]);
+		this.sides[data.sides[i]].set('fill', this.makeColor(i));
+		this.sides[data.sides[i]].set('d', data.paths[data.sides[i]]);
+		this.element.add(this.sides[data.sides[i]]);
+		this.visible[data.sides[i]] = true;
 	}
 	
-	this.updateSides = function () {
+	this.updateSides = function (sidesVisible) {
+		if (sidesVisible[data.sides[i]]) {
+			if(!this.visible[data.sides[i]]) {
+				this.element.add(this.sides[data.sides[i]]);
+			}
+		}
+		else {
+			this.element.remove(this.sides[data.sides[i]]);
+		}
+	}
+	
+	this.updatePos = function (newPos) {
+		this.element.set('transform', 'translate(' + newPos.x + ',' + newPos.y + ')');
+		this.pos = newPos;
+	}
+	
+	this.updatePos(this.pos);
+}
+
+var tileCount = 0;
+
+var Tile = function (pos) {
+	
+	this.position = pos;
+	this.element = new El('path');
+	this.element.set('id', 'tile' + tileCount);
+	this.element.set('d', data.paths.top);
+	tileCount++;
+	
+	this.updatePosition = function (newPos) {
+		
+	}
+}
+
+var Grid = function (size) {
+	this.grid = new El('g');
+	this.grid.set('stroke', '#777');
+	this.grid.set('fill', '#ddd');
+	
+	for (var y = 0; y < size.y; y++) {
+		for (var x = 0; x < size.x; x++) {
+			var tile = new Tile({x: data.size * x, y: data.size * y});
+			this.grid.add(tile.element);
+		}
+	}
+	
+	this.resize = function () {
 		
 	}
 }
@@ -155,11 +197,22 @@ var data = null;
 var doc = null;
 
 function Initialize() {
+	time0 = new Date();
+	
 	data = new Data();
 	editorWindow = new Window();
-	// grid = new Grid;
-	var blok = new Blok();
+	
+	gridEl = new Grid({x: 32, y: 32});
+	var grid = new El('g');
+	grid.setEl('grid');
+	grid.add(gridEl.grid);
+
 	var main = new El('g');
 	main.setEl('main');
+	
+	var blok = new Blok({x: 200, y: 200});
 	main.add(blok.element);
+	
+	time1 = new Date();
+	debug('Program started in ' + (time1 - time0) + 'ms.');
 }
