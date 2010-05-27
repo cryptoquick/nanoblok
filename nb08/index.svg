@@ -4,7 +4,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<title>Nanoblok r0.8 Dev</title>
 
-	<script type="text/javascript" xlink:href="class.js"></script>
 	<script type="text/javascript" xlink:href="main.js"></script>
 	
 	<g id="main"></g>
