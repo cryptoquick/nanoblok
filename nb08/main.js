@@ -1,13 +1,12 @@
-var ns = 'http://www.w3.org/TR/SVG';
-var windowSize = new Object();
+//var windowSize = new Object();
 
 window.addEventListener('load', function () {
 	Initialize();
 }, false);
 
 // Single function so console.logs can be easily disabled for production.
-function debug (str) {
-	console.log(str);
+function debug (dbg) {
+	console.log(dbg);
 }
 
 var Window = function () {
@@ -29,8 +28,8 @@ var Window = function () {
 }
 
 var El = function (type) {
-	var svgNS = "http://www.w3.org/2000/svg";
-	this.el = document.createElementNS(svgNS, type);
+	var ns = 'http://www.w3.org/2000/svg';
+	this.el = document.createElementNS(ns, type);
 	
 	this.set = function (name, attr) {
 		this.el.setAttributeNS(null, name, attr);
@@ -61,7 +60,7 @@ var Grid = function () {
 	}
 	
 	this.resize = function () {
-		console.log('Window has been resized.');
+		
 	}
 }
 
@@ -84,7 +83,22 @@ var Data = function () {
 		{x: 0, y: this.size.quarter},
 		{x: this.size.half, y: this.size.half}
 	];
+	
+	this.defaultPalette = {
+		red:	[164, 0,   0],
+		orange:	[211, 127, 4],
+		yellow:	[213, 184, 8],
+		green:	[42,  197, 18],
+		blue:	[43,  84,  200],
+		purple:	[147, 29,  199],
+		pink:	[190, 67,  180],
+		white:	[201, 202, 188],
+		black:	[55,  48,  51],
+		white:	[238, 238, 236]
+	};
 }
+
+number = 0;
 
 var Blok = function () {	
 	this.makePath = function (side) {
@@ -109,26 +123,28 @@ var Blok = function () {
 		return str;
 	}
 	
-	this.sides = {top: null, left: null, right: null},
-	this.offset = {x: 0, y: 0},
-	this.color = 'red',
-
-	this.sides.top = new El('path');
-	this.sides.left = new El('path');
-	this.sides.right = new El('path');
-	
-	this.sides.top.set('id', 'top');
-	this.sides.left.set('id', 'left');
-	this.sides.right.set('id', 'right');
-	
-	this.sides.top.set('d', this.makePath('top'));
-	this.sides.left.set('d', this.makePath('left'));
-	this.sides.right.set('d', this.makePath('right'));
-	
+	var sides = ['top', 'left', 'right'];
+	this.sides = {top: null, left: null, right: null};
+	this.offset = {x: 0, y: 0};
+	this.color = "red";
 	this.element = new El('g');
-	this.element.add(this.sides.top);
-	this.element.add(this.sides.left);
-	this.element.add(this.sides.right);
+	this.element.set('id', 'block' + number);
+	number++;
+	
+	this.makeColor = function (it) {
+		var col = data.defaultPalette[this.color];
+		var rgb = 'rgb(' + (col[0] + 20 * it) + ', ' + (col[1] + 20 * it) + ', ' + (col[2] + 20 * it) + ')';
+		return rgb;
+	}
+	
+	for (var i = 0; i < 3; i++) {
+		var el = this.sides[sides[i]]
+		el = new El('path');
+		el.set('id', sides[i]);
+		el.set('fill', this.makeColor(i));
+		el.set('d', this.makePath(sides[i]));
+		this.element.add(el);
+	}
 	
 	this.updateSides = function () {
 		
