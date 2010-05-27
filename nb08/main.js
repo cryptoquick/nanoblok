@@ -114,6 +114,10 @@ var Data = function () {
 	for (var i = 0; i < 3; i++) {
 		this.paths[this.sides[i]] = this.makePath(this.sides[i]);
 	}
+	
+	this.grid = {c: 32, r: 32};
+	this.grid.x = this.grid.c * this.size.full;
+	this.grid.y = this.grid.r * this.size.half;
 }
 
 var blokCount = 0;
@@ -164,16 +168,18 @@ var Blok = function (pos) {
 var tileCount = 0;
 
 var Tile = function (pos) {
-	
-	this.position = pos;
+	this.pos = pos;
 	this.element = new El('path');
 	this.element.set('id', 'tile' + tileCount);
 	this.element.set('d', data.paths.top);
 	tileCount++;
 	
-	this.updatePosition = function (newPos) {
-		
+	this.updatePos = function (newPos) {
+		this.element.set('transform', 'translate(' + newPos.x + ',' + newPos.y + ')');
+		this.pos = newPos;
 	}
+	
+	this.updatePos(this.pos);
 }
 
 var Grid = function (size) {
@@ -183,7 +189,10 @@ var Grid = function (size) {
 	
 	for (var y = 0; y < size.y; y++) {
 		for (var x = 0; x < size.x; x++) {
-			var tile = new Tile({x: data.size * x, y: data.size * y});
+			var tile = new Tile({
+				x: x * data.size.half + y * data.size.half,
+				y: ((y * data.size.quarter) + (data.grid.y / 2 - x * data.size.quarter))
+			});
 			this.grid.add(tile.element);
 		}
 	}
