@@ -180,6 +180,21 @@ var Tile = function (pos) {
 	}
 	
 	this.updatePos(this.pos);
+	
+	// Add event using a fancy closure.
+	this.element.el.onclick = function (parent){
+		return function () {
+			makeBlok(parent);
+		}
+	}(this.element);
+}
+
+function makeBlok(parent) {
+	debug('bla');
+	var pos = parent.el.getCTM();
+	var bla = new Blok({x: pos.e, y: pos.f});
+	document.getElementById('main').appendChild(bla.element.el);
+//	bla.element.el.appendChild(document.getElementById('main'));
 }
 
 var Grid = function (size) {
