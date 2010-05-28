@@ -8,4 +8,6 @@
 	
 	<g id="grid"></g>
 	<g id="main"></g>
+	<g id="input"></g>
+
 </svg>
