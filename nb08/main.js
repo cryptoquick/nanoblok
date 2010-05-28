@@ -8,7 +8,7 @@ window.addEventListener('load', function () {
 function debug (dbg) {
 	console.log(dbg);
 }
-
+/*
 var Window = function () {
 	this.size = null;
 	this.resizeID = null;
@@ -26,7 +26,7 @@ var Window = function () {
 		// , 25);
 	}
 }
-
+*/
 var El = function (type) {
 	var ns = 'http://www.w3.org/2000/svg';
 	this.el = document.createElementNS(ns, type);
@@ -87,11 +87,12 @@ var Data = function () {
 	};
 	
 	this.paths = {top: null, left: null, right: null};
-	this.sides = ['top', 'left', 'right'];
+	this.sides = ['top', 'left', 'right', 'bottom'];
 	
 	this.makePath = function (side) {
 		var points = null;
 		
+		// Points from extras/block-grid.png, but decremented by one.
 		if (side == 'top') {
 			points = {a: 0, b: 5, c: 6, d: 1};
 		}
@@ -100,6 +101,9 @@ var Data = function () {
 		}
 		if (side == 'right') {
 			points = {a: 1, b: 6, c: 3, d: 2};
+		}
+		if (side == 'bottom') {
+			points = {a: 6, b: 2, c: 3, d: 4};
 		}
 		
 		var str = 'M' + 
@@ -111,13 +115,46 @@ var Data = function () {
 		return str;
 	}
 	
-	for (var i = 0; i < 3; i++) {
+	for (var i = 0; i < 4; i++) {
 		this.paths[this.sides[i]] = this.makePath(this.sides[i]);
 	}
 	
-	this.grid = {c: 32, r: 32};
-	this.grid.x = this.grid.c * this.size.full;
-	this.grid.y = this.grid.r * this.size.half;
+	this.cube = {x: 32, y: 32, z: 32};
+	
+	this.grid = {};
+	this.grid.x = this.cube.x * this.size.full;
+	this.grid.y = this.cube.y * this.size.half;
+	
+	this.coors = {x: 0, y: 0, z: 0};
+}
+
+var Voxel = function () {
+	this.cube = new Array();
+	this.grid = new Array();
+	
+	this.makeCube = function () {
+		for (var z = 0; z < data.cube.z; z++) {
+			this.cube[z] = new Array();
+			for (var y = 0; y < data.cube.y; y++) {
+				this.cube[z][y] = new Array();
+				for (var x = 0; x < data.cube.x; x++) {
+					this.cube[z][y][z] = null;
+				}
+			}
+		}
+	}
+	
+	this.makeGrid = function () {
+		for (var y = 0; y < data.cube.y; y++) {
+			this.grid[y] = new Array();
+			for (var x = 0; x < data.cube.x; x++) {
+				this.grid[y][x] = null;
+			}
+		}
+	}
+	
+	this.makeCube();
+	this.makeGrid();
 }
 
 var blokCount = 0;
@@ -167,48 +204,67 @@ var Blok = function (pos) {
 
 var tileCount = 0;
 
-var Tile = function (pos) {
-	this.pos = pos;
+var Tile = function (pos, coors, grid) {
+	this.pos = null;
+	this.coors = null;
 	this.element = new El('path');
 	this.element.set('id', 'tile' + tileCount);
-	this.element.set('d', data.paths.top);
+	this.element.set('d', data.paths.bottom);
 	tileCount++;
 	
-	this.updatePos = function (newPos) {
+	this.updatePos = function (newPos, newCoors) {
 		this.element.set('transform', 'translate(' + newPos.x + ',' + newPos.y + ')');
 		this.pos = newPos;
+		this.coors = newCoors;
 	}
 	
-	this.updatePos(this.pos);
+	this.updatePos(pos, coors);
 	
-	// Add event using a fancy closure.
-	this.element.el.onclick = function (parent){
-		return function () {
-			makeBlok(parent);
-		}
-	}(this.element);
+	if (!grid) {
+		// Add events using fancy closures.
+		this.element.el.onclick = function (parent, coors){
+			return function () {
+				makeBlok(parent, coors);
+			}
+		}(this.element, this.coors);
+		this.element.el.onhover = function (parent, coors){
+			return function () {
+				cursor(parent, coors);
+			}
+		}(this.element, this.coors);
+	}
 }
 
-function makeBlok(parent) {
-	debug('bla');
+function makeBlok(parent, coors) {
 	var pos = parent.el.getCTM();
-	var bla = new Blok({x: pos.e, y: pos.f});
-	document.getElementById('main').appendChild(bla.element.el);
-//	bla.element.el.appendChild(document.getElementById('main'));
+	var blok = new Blok({x: pos.e, y: pos.f});
+	document.getElementById('main').appendChild(blok.element.el);
+	voxel.cube[data.coors.z][coors.y][coors.x] = blok;
 }
 
-var Grid = function (size) {
+function cursor(parent, coors) {
+	debug(coors);
+}
+
+var Grid = function (style, grid) {
 	this.grid = new El('g');
-	this.grid.set('stroke', '#777');
-	this.grid.set('fill', '#ddd');
+	this.grid.set('stroke', style.stroke);
+	this.grid.set('fill', style.fill);
+	this.grid.set('fill-opacity', style.opacity);
 	
-	for (var y = 0; y < size.y; y++) {
-		for (var x = 0; x < size.x; x++) {
+	for (var y = 0; y < data.cube.y; y++) {
+		for (var x = 0; x < data.cube.x; x++) {
 			var tile = new Tile({
-				x: x * data.size.half + y * data.size.half,
-				y: ((y * data.size.quarter) + (data.grid.y / 2 - x * data.size.quarter))
-			});
+					x: x * data.size.half + y * data.size.half,
+					y: ((y * data.size.quarter) + (data.grid.y / 2 - x * data.size.quarter))
+				},
+				{x: x, y: y},
+				grid
+			);
 			this.grid.add(tile.element);
+			if (grid) {
+				voxel.grid[y][x] = tile;
+			}
 		}
 	}
 	
@@ -219,23 +275,27 @@ var Grid = function (size) {
 
 var data = null;
 var doc = null;
+var voxel = null;
 
 function Initialize() {
 	time0 = new Date();
 	
 	data = new Data();
-	editorWindow = new Window();
+	voxel = new Voxel();
+//	editorWindow = new Window();
 	
-	gridEl = new Grid({x: 32, y: 32});
+	inputEl = new Grid({stroke: 'none', fill: '#fff', opacity: '0.0'}, false);
+	var input = new El('g');
+	input.setEl('input');
+	input.add(inputEl.grid);
+	
+	gridEl = new Grid({stroke: '#777', fill: '#ddd', opacity: '1.0'}, true);
 	var grid = new El('g');
 	grid.setEl('grid');
 	grid.add(gridEl.grid);
 
 	var main = new El('g');
 	main.setEl('main');
-	
-	var blok = new Blok({x: 200, y: 200});
-	main.add(blok.element);
 	
 	time1 = new Date();
 	debug('Program started in ' + (time1 - time0) + 'ms.');
