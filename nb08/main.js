@@ -159,9 +159,9 @@ var Voxel = function () {
 
 var blokCount = 0;
 
-var Blok = function (pos) {
+var Blok = function (pos, visible) {
 	this.sides = {top: null, left: null, right: null};
-	this.visible = {top: null, left: null, right: null};
+	this.visible = visible; // same format as sides
 	this.pos = pos; // {x: 0, y: 0}
 	this.color = "red";
 	this.element = new El('g');
@@ -179,10 +179,13 @@ var Blok = function (pos) {
 		this.sides[data.sides[i]].set('id', data.sides[i]);
 		this.sides[data.sides[i]].set('fill', this.makeColor(i));
 		this.sides[data.sides[i]].set('d', data.paths[data.sides[i]]);
-		this.element.add(this.sides[data.sides[i]]);
-		this.visible[data.sides[i]] = true;
+		
+		// Display sides only if they're visible, while still keeping side data in the object.
+		// if (this.visible[data.sides[i]]) {
+			this.element.add(this.sides[data.sides[i]]);
+		// }
 	}
-	
+	/*
 	this.updateSides = function (sidesVisible) {
 		if (sidesVisible[data.sides[i]]) {
 			if(!this.visible[data.sides[i]]) {
@@ -192,7 +195,7 @@ var Blok = function (pos) {
 		else {
 			this.element.remove(this.sides[data.sides[i]]);
 		}
-	}
+	} */
 	
 	this.updatePos = function (newPos) {
 		this.element.set('transform', 'translate(' + newPos.x + ',' + newPos.y + ')');
@@ -203,6 +206,15 @@ var Blok = function (pos) {
 }
 
 var tileCount = 0;
+var mouseDown = false;
+
+window.addEventListener('mousedown', function (evt) {
+	mouseDown = true;
+}, false);
+
+window.addEventListener('mouseup', function (evt) {
+	mouseDown = false;
+}, false);
 
 var Tile = function (pos, coors, grid) {
 	this.pos = null;
@@ -222,28 +234,50 @@ var Tile = function (pos, coors, grid) {
 	
 	if (!grid) {
 		// Add events using fancy closures.
-		this.element.el.onclick = function (parent, coors){
+		this.element.el.onmousedown = function (parent, coors){
 			return function () {
 				makeBlok(parent, coors);
 			}
 		}(this.element, this.coors);
-		this.element.el.onhover = function (parent, coors){
+		this.element.el.onmouseover = function (parent, coors){
 			return function () {
-				cursor(parent, coors);
+				hover(parent, coors);
 			}
 		}(this.element, this.coors);
 	}
 }
 
 function makeBlok(parent, coors) {
-	var pos = parent.el.getCTM();
-	var blok = new Blok({x: pos.e, y: pos.f});
-	document.getElementById('main').appendChild(blok.element.el);
-	voxel.cube[data.coors.z][coors.y][coors.x] = blok;
+	if (voxel.cube[data.coors.z][coors.y][coors.x] == null) {
+		// Side Display Logic
+		var sides = {top: true, left: true, right: true};
+		
+		var pos = parent.el.getCTM();
+		var blok = new Blok({x: pos.e, y: pos.f}, sides);
+		
+		// y+1
+		if (voxel.cube[data.coors.z][coors.y + 1][coors.x] != null) {
+			// sides.right = false;
+			document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y + 1][coors.x].element.el);
+		}
+		// x-1
+		else if (voxel.cube[data.coors.z][coors.y][coors.x - 1] != null) {
+			// sides.left = false;
+			document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y][coors.x - 1].element.el);
+		}
+		else {
+			document.getElementById('main').appendChild(blok.element.el);
+		}
+		
+		voxel.cube[data.coors.z][coors.y][coors.x] = blok;
+		debug('Blok placed at ' + coors.x + ', ' + coors.y + ', ' + data.coors.z);
+	}
 }
 
-function cursor(parent, coors) {
-	debug(coors);
+function hover(parent, coors) {
+	if (mouseDown) {
+		makeBlok(parent, coors);
+	}
 }
 
 var Grid = function (style, grid) {
