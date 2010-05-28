@@ -245,6 +245,14 @@ var Tile = function (pos, coors, grid) {
 			}
 		}(this.element, this.coors);
 	}
+
+	this.highlightOn = function () {
+		this.element.set('fill', '#ff0');
+	}
+	
+	this.highlightOff = function () {
+		this.element.set('fill', '');
+	}
 }
 
 function makeBlok(parent, coors) {
@@ -265,6 +273,9 @@ function makeBlok(parent, coors) {
 			// sides.left = false;
 			document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y][coors.x - 1].element.el);
 		}
+		else if (voxel.cube[data.coors.z][coors.y + 1][coors.x - 1]) {
+			document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y + 1][coors.x - 1].element.el);
+		}
 		else {
 			document.getElementById('main').appendChild(blok.element.el);
 		}
@@ -274,10 +285,17 @@ function makeBlok(parent, coors) {
 	}
 }
 
+var lastHighlight = {x: 0, y: 0};
+
 function hover(parent, coors) {
 	if (mouseDown) {
 		makeBlok(parent, coors);
 	}
+	
+	voxel.grid[lastHighlight.y][lastHighlight.x].highlightOff();
+	voxel.grid[coors.y][coors.x].highlightOn();
+	lastHighlight = coors;
+	
 }
 
 var Grid = function (style, grid) {
