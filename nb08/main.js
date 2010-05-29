@@ -135,7 +135,7 @@ var Voxel = function () {
 	this.makeCube = function () {
 		for (var z = 0; z < data.cube.z; z++) {
 			this.cube[z] = new Array();
-			for (var y = 0; y < data.cube.y; y++) {
+			for (var y = 0; y < data.cube.y + 1; y++) {
 				this.cube[z][y] = new Array();
 				for (var x = 0; x < data.cube.x; x++) {
 					this.cube[z][y][z] = null;
@@ -155,54 +155,6 @@ var Voxel = function () {
 	
 	this.makeCube();
 	this.makeGrid();
-}
-
-var blokCount = 0;
-
-var Blok = function (pos, visible) {
-	this.sides = {top: null, left: null, right: null};
-	this.visible = visible; // same format as sides
-	this.pos = pos; // {x: 0, y: 0}
-	this.color = "red";
-	this.element = new El('g');
-	this.element.set('id', 'block' + blokCount);
-	blokCount++;
-	
-	this.makeColor = function (it) {
-		var col = data.defaultPalette[this.color];
-		var rgb = 'rgb(' + (col[0] + 20 * it) + ', ' + (col[1] + 20 * it) + ', ' + (col[2] + 20 * it) + ')';
-		return rgb;
-	}
-	
-	for (var i = 0; i < 3; i++) {
-		this.sides[data.sides[i]] = new El('path');
-		this.sides[data.sides[i]].set('id', data.sides[i]);
-		this.sides[data.sides[i]].set('fill', this.makeColor(i));
-		this.sides[data.sides[i]].set('d', data.paths[data.sides[i]]);
-		
-		// Display sides only if they're visible, while still keeping side data in the object.
-		// if (this.visible[data.sides[i]]) {
-			this.element.add(this.sides[data.sides[i]]);
-		// }
-	}
-	/*
-	this.updateSides = function (sidesVisible) {
-		if (sidesVisible[data.sides[i]]) {
-			if(!this.visible[data.sides[i]]) {
-				this.element.add(this.sides[data.sides[i]]);
-			}
-		}
-		else {
-			this.element.remove(this.sides[data.sides[i]]);
-		}
-	} */
-	
-	this.updatePos = function (newPos) {
-		this.element.set('transform', 'translate(' + newPos.x + ',' + newPos.y + ')');
-		this.pos = newPos;
-	}
-	
-	this.updatePos(this.pos);
 }
 
 var tileCount = 0;
@@ -255,36 +207,6 @@ var Tile = function (pos, coors, grid) {
 	}
 }
 
-function makeBlok(parent, coors) {
-	if (voxel.cube[data.coors.z][coors.y][coors.x] == null) {
-		// Side Display Logic
-		var sides = {top: true, left: true, right: true};
-		
-		var pos = parent.el.getCTM();
-		var blok = new Blok({x: pos.e, y: pos.f}, sides);
-		
-		// y+1
-		if (voxel.cube[data.coors.z][coors.y + 1][coors.x] != null) {
-			// sides.right = false;
-			document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y + 1][coors.x].element.el);
-		}
-		// x-1
-		else if (voxel.cube[data.coors.z][coors.y][coors.x - 1] != null) {
-			// sides.left = false;
-			document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y][coors.x - 1].element.el);
-		}
-		else if (voxel.cube[data.coors.z][coors.y + 1][coors.x - 1]) {
-			document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y + 1][coors.x - 1].element.el);
-		}
-		else {
-			document.getElementById('main').appendChild(blok.element.el);
-		}
-		
-		voxel.cube[data.coors.z][coors.y][coors.x] = blok;
-		debug('Blok placed at ' + coors.x + ', ' + coors.y + ', ' + data.coors.z);
-	}
-}
-
 var lastHighlight = {x: 0, y: 0};
 
 function hover(parent, coors) {
@@ -322,6 +244,98 @@ var Grid = function (style, grid) {
 	
 	this.resize = function () {
 		
+	}
+}
+
+var blokCount = 0;
+
+var Blok = function (pos, visible) {
+	this.sides = {top: null, left: null, right: null};
+	this.visible = visible; // same format as sides
+	this.pos = pos; // {x: 0, y: 0}
+	this.color = "red";
+	this.element = new El('g');
+	this.element.set('id', 'block' + blokCount);
+	this.count = blokCount;
+	blokCount++;
+	
+	this.makeColor = function (it) {
+		var col = data.defaultPalette[this.color];
+		var rgb = 'rgb(' + (col[0] + 20 * it) + ', ' + (col[1] + 20 * it) + ', ' + (col[2] + 20 * it) + ')';
+		return rgb;
+	}
+	
+	for (var i = 0; i < 3; i++) {
+		this.sides[data.sides[i]] = new El('path');
+		this.sides[data.sides[i]].set('id', data.sides[i]);
+		this.sides[data.sides[i]].set('fill', this.makeColor(i));
+		this.sides[data.sides[i]].set('d', data.paths[data.sides[i]]);
+		
+		// Display sides only if they're visible, while still keeping side data in the object.
+		// if (this.visible[data.sides[i]]) {
+			this.element.add(this.sides[data.sides[i]]);
+		// }
+	}
+	/*
+	this.updateSides = function (sidesVisible) {
+		if (sidesVisible[data.sides[i]]) {
+			if(!this.visible[data.sides[i]]) {
+				this.element.add(this.sides[data.sides[i]]);
+			}
+		}
+		else {
+			this.element.remove(this.sides[data.sides[i]]);
+		}
+	} */
+	
+	this.updatePos = function (newPos) {
+		this.element.set('transform', 'translate(' + newPos.x + ',' + newPos.y + ')');
+		this.pos = newPos;
+	}
+	
+	this.updatePos(this.pos);
+}
+
+function makeBlok(parent, coors) {
+	if (voxel.cube[data.coors.z][coors.y][coors.x] == null) {
+		// Side Display Logic
+		var sides = {top: true, left: true, right: true};
+		
+		var pos = parent.el.getCTM();
+		var blok = new Blok({x: pos.e, y: pos.f}, sides);
+		
+		
+		if (voxel.cube[data.coors.z][coors.y + 1][coors.x] != null && voxel.cube[data.coors.z][coors.y][coors.x - 1] != null) {
+			// if (voxel.cube[data.coors.z][coors.y + 1][coors.x] != null) {
+			// 	document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y + 1][coors.x].element.el);
+			// 	debug('y');
+			// }
+			if (voxel.cube[data.coors.z][coors.y][coors.x - 1] != null) {				
+				// document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y + 1][coors.x].element.el);
+				document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y + 1][coors.x].element.el);
+				document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y][coors.x - 1].element.el);
+				
+				debug('Blok ' + blokCount + ' placed at ' + coors.x + ', ' + coors.y + ', ' + data.coors.z + ' behind blocks ' + voxel.cube[data.coors.z][coors.y + 1][coors.x].count + ' and ' + voxel.cube[data.coors.z][coors.y][coors.x - 1].count);
+			}
+		}
+		// y+1
+		else if (voxel.cube[data.coors.z][coors.y + 1][coors.x] != null) {
+			// sides.right = false;
+			document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y + 1][coors.x].element.el);
+			debug('Blok ' + blokCount + ' placed at ' + coors.x + ', ' + coors.y + ', ' + data.coors.z + ' behind block ' + voxel.cube[data.coors.z][coors.y + 1][coors.x].count);
+		}
+		// x-1
+		else if (voxel.cube[data.coors.z][coors.y][coors.x - 1] != null) {
+			// sides.left = false;
+			document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y][coors.x - 1].element.el);
+			debug('Blok ' + blokCount + ' placed at ' + coors.x + ', ' + coors.y + ', ' + data.coors.z + ' behind block ' + voxel.cube[data.coors.z][coors.y][coors.x - 1].count);
+		}
+		else {
+			document.getElementById('main').appendChild(blok.element.el);
+			debug('Blok ' + blokCount + ' placed at ' + coors.x + ', ' + coors.y + ', ' + data.coors.z);
+		}
+		
+		voxel.cube[data.coors.z][coors.y][coors.x] = blok;
 	}
 }
 
