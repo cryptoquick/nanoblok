@@ -304,38 +304,73 @@ function makeBlok(parent, coors) {
 		var pos = parent.el.getCTM();
 		var blok = new Blok({x: pos.e, y: pos.f}, sides);
 		
+		var Y = 1;
+		var X = 1;
+		var Yran = false;
+		var Xran = false;
 		
-		if (voxel.cube[data.coors.z][coors.y + 1][coors.x] != null && voxel.cube[data.coors.z][coors.y][coors.x - 1] != null) {
-			// if (voxel.cube[data.coors.z][coors.y + 1][coors.x] != null) {
-			// 	document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y + 1][coors.x].element.el);
-			// 	debug('y');
-			// }
-			if (voxel.cube[data.coors.z][coors.y][coors.x - 1] != null) {				
-				// document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y + 1][coors.x].element.el);
-				document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y + 1][coors.x].element.el);
-				document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y][coors.x - 1].element.el);
-				
-				debug('Blok ' + blokCount + ' placed at ' + coors.x + ', ' + coors.y + ', ' + data.coors.z + ' behind blocks ' + voxel.cube[data.coors.z][coors.y + 1][coors.x].count + ' and ' + voxel.cube[data.coors.z][coors.y][coors.x - 1].count);
+		while (voxel.cube[data.coors.z][coors.y + Y][coors.x] != null) {
+			if (Yran) {
+				document.getElementById('main').insertBefore(voxel.cube[data.coors.z][coors.y + (Y - 1)][coors.x].element.el, voxel.cube[data.coors.z][coors.y + Y][coors.x].element.el);
 			}
+			else {
+				document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y + Y][coors.x].element.el);
+			}
+			
+			debug('Y:' + Y);
+			Y++;
+			Yran = true;
 		}
-		// y+1
-		else if (voxel.cube[data.coors.z][coors.y + 1][coors.x] != null) {
-			// sides.right = false;
-			document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y + 1][coors.x].element.el);
-			debug('Blok ' + blokCount + ' placed at ' + coors.x + ', ' + coors.y + ', ' + data.coors.z + ' behind block ' + voxel.cube[data.coors.z][coors.y + 1][coors.x].count);
+		
+		while (voxel.cube[data.coors.z][coors.y][coors.x - X] != null) {
+		//	document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y][coors.x - X].element.el);
+			if (Xran) {
+				document.getElementById('main').insertBefore(voxel.cube[data.coors.z][coors.y][coors.x - (X - 1)].element.el, voxel.cube[data.coors.z][coors.y][coors.x - X].element.el);
+			}
+			else {
+				document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y][coors.x - X].element.el);
+			}
+		
+			debug('X:' + X);
+			X++;
+			Xran = true;
 		}
-		// x-1
-		else if (voxel.cube[data.coors.z][coors.y][coors.x - 1] != null) {
-			// sides.left = false;
-			document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y][coors.x - 1].element.el);
-			debug('Blok ' + blokCount + ' placed at ' + coors.x + ', ' + coors.y + ', ' + data.coors.z + ' behind block ' + voxel.cube[data.coors.z][coors.y][coors.x - 1].count);
-		}
-		else {
+		
+		if (!Yran && !Xran)  {
 			document.getElementById('main').appendChild(blok.element.el);
 			debug('Blok ' + blokCount + ' placed at ' + coors.x + ', ' + coors.y + ', ' + data.coors.z);
 		}
 		
 		voxel.cube[data.coors.z][coors.y][coors.x] = blok;
+		
+		// if (voxel.cube[data.coors.z][coors.y + 1][coors.x] != null && voxel.cube[data.coors.z][coors.y][coors.x - 1] != null) {
+		// 	// if (voxel.cube[data.coors.z][coors.y + 1][coors.x] != null) {
+		// 	// 	document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y + 1][coors.x].element.el);
+		// 	// 	debug('y');
+		// 	// }
+		// 	if (voxel.cube[data.coors.z][coors.y][coors.x - 1] != null) {				
+		// 		// document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y + 1][coors.x].element.el);
+		// 		document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y + 1][coors.x].element.el);
+		// 		document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y][coors.x - 1].element.el);
+		// 		
+		// 		debug('Blok ' + blokCount + ' placed at ' + coors.x + ', ' + coors.y + ', ' + data.coors.z + ' behind blocks ' + voxel.cube[data.coors.z][coors.y + 1][coors.x].count + ' and ' + voxel.cube[data.coors.z][coors.y][coors.x - 1].count);
+		// 	}
+		// }
+		// // y+1
+		// else if (voxel.cube[data.coors.z][coors.y + 1][coors.x] != null) {
+		// 	// sides.right = false;
+		// 	document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y + 1][coors.x].element.el);
+		// 	debug('Blok ' + blokCount + ' placed at ' + coors.x + ', ' + coors.y + ', ' + data.coors.z + ' behind block ' + voxel.cube[data.coors.z][coors.y + 1][coors.x].count);
+		// }
+		// // x-1
+		// else if (voxel.cube[data.coors.z][coors.y][coors.x - 1] != null) {
+		// 	// sides.left = false;
+		// 	document.getElementById('main').insertBefore(blok.element.el, voxel.cube[data.coors.z][coors.y][coors.x - 1].element.el);
+		// 	debug('Blok ' + blokCount + ' placed at ' + coors.x + ', ' + coors.y + ', ' + data.coors.z + ' behind block ' + voxel.cube[data.coors.z][coors.y][coors.x - 1].count);
+		// }
+
+		
+		// voxel.cube[data.coors.z][coors.y][coors.x] = blok;
 	}
 }
 
