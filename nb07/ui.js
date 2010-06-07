@@ -9,6 +9,13 @@
  * Contains some flawed animation code that needs to be deprecated.
  */
 
+var canvases = [
+	'grids',
+	'blocks',
+	'overlays',
+	'display'
+];
+
 function drawUI () {
 	// Nanoblok logo text	
 	var logoText = document.getElementById('logoText');
@@ -21,15 +28,12 @@ function drawUI () {
 	var gridElement = document.getElementById('grid');
 	gridElement.setAttributeNS(null, "height", $C.windowSize.y - 5);
 	
-	// Set effects canvas dimensions.
-	var effectsElement = document.getElementById("effects");
-	effectsElement.setAttributeNS(null, "height", $C.windowSize.y - 5);
-	effectsElement.setAttributeNS(null, "width", $C.windowSize.x);
-	
-	// Same for overlays canvas.
-	var overlaysElement = document.getElementById("overlays");
-	overlaysElement.setAttributeNS(null, "height", $C.windowSize.y - 5);
-	overlaysElement.setAttributeNS(null, "width", $C.windowSize.x);
+	// Set effects dimensions of all canvases.
+	for (var i = 0; i < canvases.length; i++) {
+		var effectsElement = document.getElementById(canvases[i]);
+		effectsElement.setAttributeNS(null, "height", $C.windowSize.y - 5);
+		effectsElement.setAttributeNS(null, "width", $C.windowSize.x);
+	}
 	
 	// Position debug / status.
 	var debugBox = document.getElementById("statusContainer");

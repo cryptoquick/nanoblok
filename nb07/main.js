@@ -101,4 +101,6 @@ function Update (updateMode, updateSettings) {
 			document.getElementById("standardButton").setAttributeNS(null, "fill-opacity", 0.5);
 		}
 	}
+
+	$C.posInd.drawAll();
 }
