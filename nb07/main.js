@@ -24,7 +24,7 @@ function Initialize ()
 	
 	var init0 = new Date();
 	
-	window.Common = computeCommonVars();
+	window.$C = new Common();
 	initHistory();
 	
 	// Run core graphics functions in default state.
@@ -94,7 +94,7 @@ function Update (updateMode, updateSettings) {
 		if (updateSettings.gridMode == "standard") {
 			
 			// Select color button at update.
-			document.getElementById("color" + Common.selected.color + Common.palette[Common.selected.color][3] + "Button").setAttributeNS(null, "stroke-opacity", "1.0");
+			document.getElementById("color" + $C.selected.color + $C.palette[$C.selected.color][3] + "Button").setAttributeNS(null, "stroke-opacity", "1.0");
 		}
 		else if (updateSettings.gridMode == "number") {
 			document.getElementById("numberButton").setAttributeNS(null, "fill-opacity", 1.0);

@@ -20,14 +20,14 @@ function toolSelect (tool) {
 	
 	// Delete button, its state can be toggled by the user.
 	else if (tool == "delete") {
-		if (Common.selected.tool != "delete") {
-			document.getElementById(Common.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
-			Common.selected.tool = "delete";
+		if ($C.selected.tool != "delete") {
+			document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
+			$C.selected.tool = "delete";
 			document.getElementById("deleteButton").setAttributeNS(null, "stroke-opacity", "1.0");
 			loggit("Deletion tool selected.");
 		}
-		else if (Common.selected.tool == "delete") {
-			Common.selected.tool = "color";
+		else if ($C.selected.tool == "delete") {
+			$C.selected.tool = "color";
 			document.getElementById("deleteButton").setAttributeNS(null, "stroke-opacity", "0.0");
 			loggit("Deletion tool deselected.");
 		}
@@ -35,14 +35,14 @@ function toolSelect (tool) {
 	
 	// Select button.
 	else if (tool == "select") {
-		if (Common.selected.tool != "select") {
-			document.getElementById(Common.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
-			Common.selected.tool = "select";
+		if ($C.selected.tool != "select") {
+			document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
+			$C.selected.tool = "select";
 			document.getElementById("selectButton").setAttributeNS(null, "stroke-opacity", "1.0");
 			loggit("Selection tool selected.");
 		}
-		else if (Common.selected.tool == "select") {
-			Common.selected.tool = "color";
+		else if ($C.selected.tool == "select") {
+			$C.selected.tool = "color";
 			document.getElementById("selectButton").setAttributeNS(null, "stroke-opacity", "0.0");
 			loggit("Selection tool deselected.");
 		}
@@ -55,32 +55,32 @@ function toolSelect (tool) {
 	
 	// Grid Up button.
 	else if (tool == "gridup") {
-		if(Common.layerOffset.z < (Common.gridDims.r - 1)) {
-			Common.layerOffset.z++;
+		if($C.layerOffset.z < ($C.gridDims.r - 1)) {
+			$C.layerOffset.z++;
 			positionIndicator();
 			// Raise the SVG grid.
-			document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(0," + (-35 - Common.layerOffset.z * Common.blockSize.half) + ")");
+			document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(0," + (-35 - $C.layerOffset.z * $C.blockSize.half) + ")");
 		}
 	}
 	
 	// Grid Down button.
 	else if (tool == "griddown") {
-		if(Common.layerOffset.z > 0) {
-			Common.layerOffset.z--;
+		if($C.layerOffset.z > 0) {
+			$C.layerOffset.z--;
 			positionIndicator();
 			// Lower the SVG grid.
-			document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(0," + (-35 - Common.layerOffset.z * Common.blockSize.half) + ")");
+			document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(0," + (-35 - $C.layerOffset.z * $C.blockSize.half) + ")");
 		}
 	}
 	
 	// Color selection.
 	if (tool == "color") {
-		document.getElementById(Common.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
+		document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
 		
 		// Get the color swatch (its name corresponds to its color), then set its black outline to transparent, making it appear deselected.
-		document.getElementById("color" + Common.selected.lastColor + Common.palette[Common.selected.lastColor][3] + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
+		document.getElementById("color" + $C.selected.lastColor + $C.palette[$C.selected.lastColor][3] + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
 		
-		Common.selected.tool = "color" + Common.selected.color + Common.palette[Common.selected.color][3];
-		loggit("Selected color is: " + Common.palette[Common.selected.color][3] + ".");
+		$C.selected.tool = "color" + $C.selected.color + $C.palette[$C.selected.color][3];
+		loggit("Selected color is: " + $C.palette[$C.selected.color][3] + ".");
 	}
 }

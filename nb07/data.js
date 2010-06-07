@@ -20,51 +20,53 @@ var Voxel = new Array();
 var History = new Object();
 
 // Many common variables used throughout the program.
-function computeCommonVars () {
+var Common = function () {
 	// Viewport information from the browser.
-	var windowSize = {x: window.innerWidth, y: window.innerHeight};
+	this.windowSize = {x: window.innerWidth, y: window.innerHeight};
+	
+	this.blockDims = null;
 	
 	// Change to a smaller display format if the window is too small. Not yet fully worked out.
-	if (windowSize.x < 725 || windowSize.y < 760)
-		var blockDims = 15; // For smaller screens
+	if (this.windowSize.x < 725 || this.windowSize.y < 760)
+		this.blockDims = 15; // For smaller screens
 	else {
-		var blockDims = 20; // Regular size
+		this.blockDims = 20; // Regular size
 	}
 	
 	// Size of blocks / tiles.
-	var blockSize = {
-		full: blockDims,
-		half: blockDims / 2,
-		third: blockDims / 2 + blockDims / 4,
-		quarter: blockDims / 4
-	}
+	this.blockSize = {
+		full: this.blockDims,
+		half: this.blockDims / 2,
+		third: this.blockDims / 2 + this.blockDims / 4,
+		quarter: this.blockDims / 4
+	};
 	
 	// Throughout the program, the c field is used for various measures. If c is not the same as r-- or vice versa--, problems will occur.
-	var gridDims = {c: 32, r: 32};
-	var gridSize = {
-		x: gridDims.c * blockSize.full,
-		y: gridDims.r * blockSize.quarter
+	this.gridDims = {c: 32, r: 32};
+	this.gridSize = {
+		x: this.gridDims.c * this.blockSize.full,
+		y: this.gridDims.r * this.blockSize.quarter
 	};
 	
 	// Center of the window.
-	var center = {x: windowSize.x / 2, y: windowSize.y / 2};
+	this.center = {x: this.windowSize.x / 2, y: this.windowSize.y / 2};
 	
 	// Grid edges.
-	var edges = {
-		left: center.x - gridSize.x / 2,
-		right: center.x + gridSize.x / 2,
-		top: windowSize.y - gridSize.y * 2
+	this.edges = {
+		left: this.center.x - this.gridSize.x / 2,
+		right: this.center.x + this.gridSize.x / 2,
+		top: this.windowSize.y - this.gridSize.y * 2
 	};
 	
 	// This should technically be how far away from the left and top of the screen that the left-most, top-most corner of grid is located.
-	var offset = {
-		x: (windowSize.x - gridSize.x) / 2,
-		y: windowSize.y - gridSize.y * 2
+	this.offset = {
+		x: (this.windowSize.x - this.gridSize.x) / 2,
+		y: this.windowSize.y - this.gridSize.y * 2
 	};
 	
 	// From Tango Project colors:
 	// http://tango.freedesktop.org/Tango_Icon_Theme_Guidelines
-	var defaultPalette = [
+	this.palette = [
 		[164, 0, 0, 'red', null],
 		[211, 127, 4, 'orange', null],
 		[213, 184, 8, 'yellow', null],
@@ -78,7 +80,7 @@ function computeCommonVars () {
 	];
 	
 	// Various fields for selection states.
-	var selected = {
+	this.selected = {
 		color: 0,
 		lastColor: 0,
 		tool: "color0red",
@@ -88,17 +90,17 @@ function computeCommonVars () {
 		secondSelection: {x: -1, y: -1, z: -1}
 	};
 	
-	var layerOffset = {x: 0, y: 0, z: 0};
+	this.layerOffset = {x: 0, y: 0, z: 0};
 	
 	// Updated as the marker is moved about the screen.
-	var markerPosition = {
+	this.markerPosition = {
 		x: 0,
 		y: 0,
 		z: 0
 	};
 	
 	// Put all the variables into one, common object.
-	var commonVars = {
+/*	this.commonVars = {
 		blockDims: blockDims,
 		blockSize: blockSize,
 		gridDims: gridDims,
@@ -111,20 +113,18 @@ function computeCommonVars () {
 		selected: selected,
 		layerOffset: layerOffset,
 		markerPosition: markerPosition
-	};
+	}; */
 	
 	// Initialize the voxel array.
-	for (var x = -1; x < gridDims.r + 1; x++) {
+	for (var x = -1; x < this.gridDims.r + 1; x++) {
 		Voxel[x] = new Array();
-		for (var y = -1; y < gridDims.r + 1; y++) {
+		for (var y = -1; y < this.gridDims.r + 1; y++) {
 		Voxel[x][y] = new Array();
-			for (var z = -1; z < gridDims.c +1; z++) {
+			for (var z = -1; z < this.gridDims.c +1; z++) {
 				Voxel[x][y][z] = -1;
 			}
 		}
 	}
-	
-	return commonVars;
 }
 
 function initHistory () {
