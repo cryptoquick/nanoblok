@@ -1,7 +1,7 @@
 /*
  * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
  * http://code.google.com/p/nanoblok/
- * Copyright (c) 2009 Alex Trujillo
+ * Copyright (c) 2009-2010 Alex Trujillo
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  * 
  * Summary for main.js:
@@ -36,38 +36,7 @@ function Initialize ()
 	loggit('Program initialized in ' + (init1 - init0) + ' ms.');
 	initialized = true;
 	
-	/* Event listeners */
-	window.addEventListener('mousedown', function (evt) {
-		Click(evt);
-		mouseDown = true;
-	}, false);
-	
-	window.addEventListener('mouseup', function (evt) {
-		mouseDown = false;
-	}, false);
-
-	window.addEventListener('mouseover', function (evt) {
-		Hover(evt, 'in');
-	}, false);
-
-	window.addEventListener('mouseout', function (evt) {
-		Hover(evt, 'out');
-	}, false);
-	
-	window.addEventListener('keydown', function (evt) {
-		Key(evt);
-	}, false);
-	
-	// window.addEventListener('mousemove', function (evt) {
-	// 	Mouse(evt);
-	// }, false);
-
-	window.onresize = function() {
-		if(initialized) {
-			loggit('Resolution change detected, click refresh button.');
-		}
-		displayResized = true;
-	}
+	InitEvents();
 }
 
 // Redraw grid, redraw UI, redraw canvas...

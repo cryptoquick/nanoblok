@@ -1,11 +1,12 @@
 /*
  * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
  * http://code.google.com/p/nanoblok/
- * Copyright (c) 2009 Alex Trujillo
+ * Copyright (c) 2009-2010 Alex Trujillo
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  * 
  * Summary for data.js:
- * Handles data structures within the client, as well as requests to the server. Also computes common variables used throughout the program.
+ * Handles data structures within the client, as well as requests to the server.
+ * Also computes common variables used throughout the program, called by the $C variable attached to the window in main.js.
  */
 
 // Field is short for Playfield, and each element contains 4 values; X, Y, Z, and color. This is strictly for serialization, and is in the order by which the user placed the blocks.

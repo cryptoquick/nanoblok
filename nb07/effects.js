@@ -1,11 +1,12 @@
 /*
  * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
  * http://code.google.com/p/nanoblok/
- * Copyright (c) 2009 Alex Trujillo
+ * Copyright (c) 2009-2010 Alex Trujillo
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  * 
  * Summary for effects.js:
  * This file is for all the canvas-based effects that don't have a home in any of the other files yet.
+ * Right now it's mostly for the overlays cursors.
  */
 
 // Returns a canvas context based on its element id.
