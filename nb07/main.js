@@ -33,7 +33,7 @@ function Initialize ()
 	// Post-initialization tasks.
 	var init1 = new Date();
 	
-	loggit('Program initialized in ' + (init1 - init0) + ' milliseconds.');
+	loggit('Program initialized in ' + (init1 - init0) + ' ms.');
 	initialized = true;
 	
 	/* Event listeners */

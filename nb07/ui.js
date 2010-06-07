@@ -48,6 +48,11 @@ function drawUI () {
 	sideButtonsLeft.setAttributeNS(null, "transform", "translate(" + ($C.edges.left - 25) + ", " + ($C.edges.top - $C.gridSize.y - 20) + ")");
 	
 	populatePalette();
+	
+	// If it's a small display, the size of the debug box should be smaller.
+	if ($C.smallDisplay) {
+		document.getElementById('debugBox').setAttributeNS(null, "width", 234);
+	}
 }
 
 // Place all the colors on the right side.

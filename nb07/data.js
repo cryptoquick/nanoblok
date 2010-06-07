@@ -7,7 +7,7 @@
  * Summary for data.js:
  * Handles data structures within the client, as well as requests to the server. Also computes common variables used throughout the program.
  */
-	
+
 // Field is short for Playfield, and each element contains 4 values; X, Y, Z, and color. This is strictly for serialization, and is in the order by which the user placed the blocks.
 var Field = new Array();
 
@@ -25,10 +25,13 @@ var Common = function () {
 	this.windowSize = {x: window.innerWidth, y: window.innerHeight};
 	
 	this.blockDims = null;
+	this.smallDisplay = false;
 	
 	// Change to a smaller display format if the window is too small. Not yet fully worked out.
-	if (this.windowSize.x < 725 || this.windowSize.y < 760)
+	if (this.windowSize.x < 725 || this.windowSize.y < 760) {
 		this.blockDims = 15; // For smaller screens
+		this.smallDisplay = true;
+	}
 	else {
 		this.blockDims = 20; // Regular size
 	}

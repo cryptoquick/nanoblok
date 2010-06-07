@@ -11,28 +11,23 @@
 
 var svgNS = "http://www.w3.org/2000/svg";
 
-function loggit(str) {
+function loggit (str) {
 	var log = document.getElementById("debugText");
 	
 	var childCount = log.getElementsByTagName('tspan').length;
 
-	var numLines = 1;
-
-	if (navigator.userAgent.indexOf('Firefox') != -1)
-	{
-		numLines = 1;
-	}
-
-	if(childCount >= numLines){
+	var numLines = 5;
+	
+	if (childCount >= numLines){
 		log.removeChild(log.firstChild);
-		log.getElementsByTagName('tspan')[0].setAttributeNS(null, 'dy', 5);
 	}
 	
 	var textElement = document.createElementNS(svgNS, 'tspan');
-	textElement.setAttributeNS(null, 'x', '20');
-	textElement.setAttributeNS(null, 'dy', '18');
+	textElement.setAttributeNS(null, 'x', '7');
+	textElement.setAttributeNS(null, 'dy', '15');
 
 	textElement.textContent = str;
 	
 	log.appendChild(textElement);
+	log.getElementsByTagName('tspan')[0].setAttributeNS(null, 'dy', 2);
 }

@@ -48,7 +48,9 @@ function canvasDrawSet (hexSet, offset, settings) {
 	var ctx = context(canvas);
 	
 	ctx.globalAlpha = 1;
-	ctx.strokeStyle = settings.stroke;
+	if (settings.stroke !== false) {
+		ctx.strokeStyle = settings.stroke;
+	}
 	if (settings.fill !== false) {
 		ctx.fillStyle = settings.fill;
 	}
@@ -72,7 +74,9 @@ function canvasDrawSet (hexSet, offset, settings) {
 		ctx.closePath();
 	}
 	
-	ctx.stroke();
+	if (settings.stroke !== false) {
+		ctx.stroke();
+	}
 	if (settings.fill !== false) {
 		ctx.fill();
 	}
@@ -89,7 +93,7 @@ function colorBlock (colorID) {
 	var colorLeft = "rgb(" + colorR + ", " + colorG + ", " + colorB + ")";
 	var colorRight = "rgb(" + (colorR + 20) + ", " + (colorG + 20) + ", " + (colorB + 20) + ")";
 	var colorTop = "rgb(" + (colorR + 40) + ", " + (colorG + 40) + ", " + (colorB + 40) + ")";
-	var colorLines = "rgb(" + (colorR + 50) + ", " + (colorG + 50) + ", " + (colorB + 50) + ")";
+	var colorLines = "rgb(" + (colorR -20) + ", " + (colorG - 20) + ", " + (colorB - 20) + ")";
 	
 	return {left: colorLeft, right: colorRight, top: colorTop, inset: colorLines};
 }
