@@ -129,7 +129,7 @@ function canvasGrid (side, mode) {
 				
 				// hexSet, offset, $C, closed, color, stroke
 				canvasDrawSet(hexSet, offset,
-					{closed: true, fill: fill, stroke: stroke});
+					{closed: true, fill: fill, stroke: stroke, grid: true});
 			}
 			if (side == "left") {
 				var hexSet = [1, 7, 5, 6];
@@ -145,7 +145,7 @@ function canvasGrid (side, mode) {
 				}
 				
 				canvasDrawSet(hexSet, offset,
-					{closed: true, fill: fill, stroke: stroke});
+					{closed: true, fill: fill, stroke: stroke, grid: true});
 			}
 			if (side == "right") {
 				var hexSet = [6, 7, 4, 5];
@@ -161,7 +161,7 @@ function canvasGrid (side, mode) {
 				}
 				
 				canvasDrawSet(hexSet, offset,
-					{closed: true, fill: fill, stroke: stroke});
+					{closed: true, fill: fill, stroke: stroke, grid: true});
 			}
 			
 			i++;

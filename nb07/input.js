@@ -82,7 +82,7 @@ function Hover (evt, inout) {
 	if (target.id.substr(0,2) == 'x-' && inout == "in") {
 		$C.markerPosition.x = target.getAttribute("c");
 		$C.markerPosition.z = target.getAttribute("r");
-		positionIndicator();
+		$C.posInd.redraw();
 	}
 }
 

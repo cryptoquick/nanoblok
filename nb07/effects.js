@@ -20,101 +20,131 @@ function context(element) {
 }
 
 // Updates the position indicators
-function positionIndicator () {
-	var ctx = context('overlays');
+var PositionIndicator = function () {
+	this.ctx = context('overlays');
+	this.grids = document.getElementById('grids');
+	this.blocks = document.getElementById('blocks');
+	this.display = document.getElementById('display');
+	this.overlays = document.getElementById('overlays');
+	this.displayCtx = context('display');
 	
-	ctx.clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
-	ctx.globalAlpha = 0.7;
+	this.redraw = function () {
+		this.ctx.clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
+		this.ctx.globalAlpha = 0.7;
 	
-	var gr1 = $C.blockSize.full;
-	var gr2 = gr1 / 2;
-	var gr4 = gr1 / 4;
+		var gr1 = $C.blockSize.full;
+		var gr2 = gr1 / 2;
+		var gr4 = gr1 / 4;
 	
-	// Red Marker
-	var offsY = $C.offset.y - 30;
-	var offsYtop = ($C.edges.top - $C.gridSize.y - 30)
-		- ($C.markerPosition.x * $C.blockSize.quarter)
-		+ ($C.gridDims.c - $C.layerOffset.z - 1) * $C.blockSize.half;
-	var offsX = $C.offset.x + $C.markerPosition.x * $C.blockSize.half;
+		// Red Marker
+		var offsY = $C.offset.y - 30;
+		var offsYtop = ($C.edges.top - $C.gridSize.y - 30)
+			- ($C.markerPosition.x * $C.blockSize.quarter)
+			+ ($C.gridDims.c - $C.layerOffset.z - 1) * $C.blockSize.half;
+		var offsX = $C.offset.x + $C.markerPosition.x * $C.blockSize.half;
 	
-	ctx.fillStyle = '#f00';
-	ctx.beginPath();
+		this.ctx.fillStyle = '#f00';
+		this.ctx.beginPath();
+
+		this.ctx.moveTo(offsX, 0 + offsYtop);
+		this.ctx.lineTo(gr2 + offsX, offsYtop - gr4);
+		this.ctx.lineTo(gr2 + offsX, gr4 + offsYtop);
+		this.ctx.lineTo(0 + offsX, gr2 + offsYtop);
+
+		this.ctx.closePath();
+		this.ctx.fill();
 	
-	ctx.moveTo(offsX, 0 + offsYtop);
-	ctx.lineTo(gr2 + offsX, offsYtop - gr4);
-	ctx.lineTo(gr2 + offsX, gr4 + offsYtop);
-	ctx.lineTo(0 + offsX, gr2 + offsYtop);
+		// Blue Marker
+		offsYtop = ($C.edges.top - $C.gridSize.y - 185)
+			+ ($C.markerPosition.z * $C.blockSize.quarter)
+			+ ($C.gridDims.c - $C.layerOffset.z - 1) * $C.blockSize.half;
+		offsX = $C.offset.x + $C.gridSize.x / 2 + ($C.markerPosition.z * $C.blockSize.half);
 	
-	ctx.closePath();
-	ctx.fill();
+		this.ctx.fillStyle = '#00f';
+		this.ctx.beginPath();
 	
-	// Blue Marker
-	offsYtop = ($C.edges.top - $C.gridSize.y - 185)
-		+ ($C.markerPosition.z * $C.blockSize.quarter)
-		+ ($C.gridDims.c - $C.layerOffset.z - 1) * $C.blockSize.half;
-	offsX = $C.offset.x + $C.gridSize.x / 2 + ($C.markerPosition.z * $C.blockSize.half);
+		this.ctx.moveTo(offsX, offsYtop - gr4);
+		this.ctx.lineTo(gr2 + offsX, offsYtop);
+		this.ctx.lineTo(gr2 + offsX, gr2 + offsYtop);
+		this.ctx.lineTo(0 + offsX, gr4 + offsYtop);
 	
-	ctx.fillStyle = '#00f';
-	ctx.beginPath();
+		this.ctx.closePath();
+		this.ctx.fill();
 	
-	ctx.moveTo(offsX, offsYtop - gr4);
-	ctx.lineTo(gr2 + offsX, offsYtop);
-	ctx.lineTo(gr2 + offsX, gr2 + offsYtop);
-	ctx.lineTo(0 + offsX, gr4 + offsYtop);
+		// Green Cursor
+		offsX = $C.offset.x + ($C.markerPosition.x * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.half);
+		offsYtop = $C.edges.top - ($C.layerOffset.z * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.quarter) + ($C.gridSize.y - $C.markerPosition.x * $C.blockSize.quarter) - 45;
 	
-	ctx.closePath();
-	ctx.fill();
+		this.ctx.fillStyle = '#0f0';
+		this.ctx.beginPath();
 	
-	// Green Cursor
-	offsX = $C.offset.x + ($C.markerPosition.x * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.half);
-	offsYtop = $C.edges.top - ($C.layerOffset.z * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.quarter) + ($C.gridSize.y - $C.markerPosition.x * $C.blockSize.quarter) - 45;
+		// Points 1-6, in order.
+		// ctx.moveTo(offsX + gr2, offsYtop);
+		// ctx.lineTo(offsX + gr1, offsYtop + gr4);
+		// ctx.lineTo(offsX + gr1, offsYtop + gr4 + gr2);
+		// ctx.lineTo(offsX + gr2, offsYtop + gr1);
+		// ctx.lineTo(offsX, offsYtop + gr4 + gr2);
+		this.ctx.lineTo(offsX + gr2, offsYtop + gr2);
+		this.ctx.lineTo(offsX + gr1, offsYtop + gr4 + gr2);
+		this.ctx.lineTo(offsX + gr2, offsYtop + gr1);
+		this.ctx.lineTo(offsX, offsYtop + gr4 + gr2);
+		// ctx.lineTo(offsX, offsYtop + gr4);
 	
-	ctx.fillStyle = '#0f0';
-	ctx.beginPath();
+		this.ctx.closePath();
+		this.ctx.fill();
 	
-	// Points 1-6, in order.
-	// ctx.moveTo(offsX + gr2, offsYtop);
-	// ctx.lineTo(offsX + gr1, offsYtop + gr4);
-	// ctx.lineTo(offsX + gr1, offsYtop + gr4 + gr2);
-	// ctx.lineTo(offsX + gr2, offsYtop + gr1);
-	// ctx.lineTo(offsX, offsYtop + gr4 + gr2);
-	ctx.lineTo(offsX + gr2, offsYtop + gr2);
-	ctx.lineTo(offsX + gr1, offsYtop + gr4 + gr2);
-	ctx.lineTo(offsX + gr2, offsYtop + gr1);
-	ctx.lineTo(offsX, offsYtop + gr4 + gr2);
-	// ctx.lineTo(offsX, offsYtop + gr4);
+		// Green Outline
+		this.ctx.beginPath();
+		this.ctx.moveTo(offsX + gr2, offsYtop);
+		this.ctx.lineTo(offsX + gr1, offsYtop + gr4);
+		this.ctx.lineTo(offsX + gr1, offsYtop + gr4 + gr2);
+		this.ctx.lineTo(offsX + gr2, offsYtop + gr1);
+		this.ctx.lineTo(offsX, offsYtop + gr4 + gr2);
+		this.ctx.lineTo(offsX, offsYtop + gr4);
+		this.ctx.closePath();
 	
-	ctx.closePath();
-	// ctx.stroke();
-	ctx.fill();
+		this.ctx.strokeStyle = '#0f0';
+		this.ctx.stroke();
+		
+		// Clear display and draw all.
+		this.drawAll();
+	}
+	
+	this.drawAll = function () {
+		this.displayCtx.clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
+		this.displayCtx.globalCompositeOperation = "source-over";
+		this.displayCtx.drawImage(this.grids, 0, 0);
+		this.displayCtx.drawImage(this.blocks, 0, 0);
+		this.displayCtx.drawImage(this.overlays, 0, 0);
+	}
 	
 	// Selection box
 	// Enabled if there's a value in there.
-	if ($C.selected.blocks) {
-		offsX = $C.offset.x + ($C.selected.area.x * $C.blockSize.half) + ($C.selected.area.y * $C.blockSize.half);
-		offsYtop = 
-			   ($C.edges.top + $C.gridSize.y - 45)
-			 - ($C.selected.area.z * $C.blockSize.half)
-			 + ($C.selected.area.x * $C.blockSize.quarter)
-			 - ($C.selected.area.y * $C.blockSize.quarter)
-			 - ($C.selected.area.h * $C.blockSize.half)
-			 + ($C.blockSize.half);
-		// loggit(offsYtop);
-
-		ctx.strokeStyle = "rgba(255,0,127,10)";
-		ctx.beginPath();
-
-		// Points 1-6, in order.
-		ctx.moveTo(offsX + (gr2 * $C.selected.area.l), offsYtop);
-		ctx.lineTo(offsX + (gr1 * $C.selected.area.l), offsYtop + (gr4 * $C.selected.area.w));
-		ctx.lineTo(offsX + (gr1 * $C.selected.area.l), offsYtop + ($C.selected.area.h * gr2 + (gr4 * $C.selected.area.w)));
-		ctx.lineTo(offsX + (gr2 * $C.selected.area.l), offsYtop + ($C.selected.area.h * gr2 + (gr2 * $C.selected.area.w)));
-		ctx.lineTo(offsX, offsYtop + ($C.selected.area.h * gr2 + (gr4 * $C.selected.area.l)));
-		ctx.lineTo(offsX, offsYtop + (gr4 * $C.selected.area.w));
-
-		ctx.closePath();
-		ctx.stroke();
-	}
+	// if ($C.selected.blocks) {
+	// 	offsX = $C.offset.x + ($C.selected.area.x * $C.blockSize.half) + ($C.selected.area.y * $C.blockSize.half);
+	// 	offsYtop = 
+	// 		   ($C.edges.top + $C.gridSize.y - 45)
+	// 		 - ($C.selected.area.z * $C.blockSize.half)
+	// 		 + ($C.selected.area.x * $C.blockSize.quarter)
+	// 		 - ($C.selected.area.y * $C.blockSize.quarter)
+	// 		 - ($C.selected.area.h * $C.blockSize.half)
+	// 		 + ($C.blockSize.half);
+	// 	// loggit(offsYtop);
+	// 
+	// 	ctx.strokeStyle = "rgba(255,0,127,10)";
+	// 	ctx.beginPath();
+	// 
+	// 	// Points 1-6, in order.
+	// 	ctx.moveTo(offsX + (gr2 * $C.selected.area.l), offsYtop);
+	// 	ctx.lineTo(offsX + (gr1 * $C.selected.area.l), offsYtop + (gr4 * $C.selected.area.w));
+	// 	ctx.lineTo(offsX + (gr1 * $C.selected.area.l), offsYtop + ($C.selected.area.h * gr2 + (gr4 * $C.selected.area.w)));
+	// 	ctx.lineTo(offsX + (gr2 * $C.selected.area.l), offsYtop + ($C.selected.area.h * gr2 + (gr2 * $C.selected.area.w)));
+	// 	ctx.lineTo(offsX, offsYtop + ($C.selected.area.h * gr2 + (gr4 * $C.selected.area.l)));
+	// 	ctx.lineTo(offsX, offsYtop + (gr4 * $C.selected.area.w));
+	// 
+	// 	ctx.closePath();
+	// 	ctx.stroke();
+	// }
 	
 	// ctx.save();
 }

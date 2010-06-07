@@ -36,7 +36,17 @@ function hexiso (offset, blockSize) {
 // A very useful function to draw a set of coordinates in a hexagonal setup at a certain offset.
 // Very necessary for an isometric setup such as this.
 function canvasDrawSet (hexSet, offset, settings) {
-	var ctx = context('effects');
+	var canvas = null;
+	
+	if (settings.grid) {
+		canvas = 'grids';
+	}
+	else {
+		canvas = 'blocks';
+	}
+	
+	var ctx = context(canvas);
+	
 	ctx.globalAlpha = 1;
 	ctx.strokeStyle = settings.stroke;
 	if (settings.fill !== false) {
@@ -134,10 +144,11 @@ function placeBlock (target) {
 	
 	// Let the user know they've placed a block.
 	loggit("A " + $C.palette[$C.selected.color][3] + " block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
+	
+	$C.posInd.drawAll();
 }
-
 // WTF is this. >:I
-function deleteBlock (target) {
+/*function deleteBlock (target) {
 	var location = {
 		x: GridField[target.id].x,
 		y: GridField[target.id].y,
@@ -173,7 +184,7 @@ function canvasBlockDelete () {
 			&& Voxel[location.x][location.y + 1][$C.layerOffset.z] == -1) {
 		canvasDrawSet([2, 7, 3], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
 	}
-}
+}*/
 
 function drawBlocks() {
 	for (var i = 0; i < Field.length; i++) {

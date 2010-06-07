@@ -125,6 +125,9 @@ var Common = function () {
 			}
 		}
 	}
+
+	// Position Indicator (which also contains the handy drawAll function)
+	this.posInd = new PositionIndicator();
 }
 
 function initHistory () {

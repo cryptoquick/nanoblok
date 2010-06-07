@@ -17,7 +17,6 @@
 
 	<title>Nanoblok r0.7 Alpha</title>
 
-	<script type="text/javascript" src="main.js"></script>
 	<script type="text/javascript" src="data.js"></script>
 	<script type="text/javascript" src="loggit.js"></script>
 	<script type="text/javascript" src="grid.js"></script>
@@ -26,6 +25,7 @@
 	<script type="text/javascript" src="ui.js"></script>
 	<script type="text/javascript" src="input.js"></script>
 	<script type="text/javascript" src="tools.js"></script>
+	<script type="text/javascript" src="main.js"></script>
 <!-- <script type="text/javascript" src="json.js"></script> // Use Native JSON! -->
 	
 	<style>
@@ -34,18 +34,25 @@
 			padding: 0;
 			text-align: center;
 		}
-		#effects, #overlays {
+		#grids, #blocks, #overlays, #display {
+			display: none;
 			position: absolute;
 			top: 0px;
 			left: 0px;
+			z-index: -2;
+		}
+		#display {
+			display: block;
 			z-index: -1;
 		}
 	</style>
 </head>
 <body>
-	
-<canvas id="effects"></canvas>
+
+<canvas id="grids"></canvas>
+<canvas id="blocks"></canvas>
 <canvas id="overlays"></canvas>
+<canvas id="display"></canvas>
 
 <svg:svg id="grid" width="100%">
 	<svg:g id="gridContainer" fill-opacity="0.0" transform="translate(0, -35)"/>
@@ -83,11 +90,11 @@
 		<svg:text id="refreshText" x="48" y="25" font-family="Verdana" font-size="18" fill="white" transform="skewY(26.565)">R↺</svg:text>
 		<svg:rect id="deleteButton" x="45" y="45" width="35" height="35" fill="orange" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
 		<svg:text id="deleteText" x="48" y="69" font-family="Verdana" font-size="16" fill="white" transform="skewY(26.565)">X⌫</svg:text>
-		<svg:rect id="selectButton" x="90" y="0" width="35" height="35" fill="orange" fill-opacity="0.5" rx="3" transform="skewY(26.565)" c="-1" r="-1"/>
+		<!-- <svg:rect id="selectButton" x="90" y="0" width="35" height="35" fill="orange" fill-opacity="0.5" rx="3" transform="skewY(26.565)" c="-1" r="-1"/>
 		<svg:text id="selectText" x="94" y="25" font-family="Verdana" font-size="16" fill="white" transform="skewY(26.565)" c="-1" r="-1">S</svg:text>
 		<svg:rect id="selectLogo" x="107" y="12" height="13" width="13" fill="none" stroke-opacity="1.0" stroke-width="1.5" stroke="white" stroke-dasharray="3,2" transform="skewY(26.565)" c="-1" r="-1"/>
 		<svg:rect id="fillButton" x="90" y="45" width="35" height="35" fill="orange" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
-		<svg:text id="fillText" x="94" y="69" font-family="Verdana" font-size="16" fill="white" transform="skewY(26.565)">F▨</svg:text>
+		<svg:text id="fillText" x="94" y="69" font-family="Verdana" font-size="16" fill="white" transform="skewY(26.565)">F▨</svg:text> -->
 	</svg:g>
 	
 	<svg:g id="sideButtonsLeft">
