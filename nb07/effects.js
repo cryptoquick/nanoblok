@@ -23,19 +23,19 @@ function context(element) {
 function positionIndicator () {
 	var ctx = context('overlays');
 	
-	ctx.clearRect(0, 0, Common.windowSize.x, Common.windowSize.y);
+	ctx.clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
 	ctx.globalAlpha = 0.7;
 	
-	var gr1 = Common.blockSize.full;
+	var gr1 = $C.blockSize.full;
 	var gr2 = gr1 / 2;
 	var gr4 = gr1 / 4;
 	
 	// Red Marker
-	var offsY = Common.offset.y - 30;
-	var offsYtop = (Common.edges.top - Common.gridSize.y - 30)
-		- (Common.markerPosition.x * Common.blockSize.quarter)
-		+ (Common.gridDims.c - Common.layerOffset.z - 1) * Common.blockSize.half;
-	var offsX = Common.offset.x + Common.markerPosition.x * Common.blockSize.half;
+	var offsY = $C.offset.y - 30;
+	var offsYtop = ($C.edges.top - $C.gridSize.y - 30)
+		- ($C.markerPosition.x * $C.blockSize.quarter)
+		+ ($C.gridDims.c - $C.layerOffset.z - 1) * $C.blockSize.half;
+	var offsX = $C.offset.x + $C.markerPosition.x * $C.blockSize.half;
 	
 	ctx.fillStyle = '#f00';
 	ctx.beginPath();
@@ -49,10 +49,10 @@ function positionIndicator () {
 	ctx.fill();
 	
 	// Blue Marker
-	offsYtop = (Common.edges.top - Common.gridSize.y - 185)
-		+ (Common.markerPosition.z * Common.blockSize.quarter)
-		+ (Common.gridDims.c - Common.layerOffset.z - 1) * Common.blockSize.half;
-	offsX = Common.offset.x + Common.gridSize.x / 2 + (Common.markerPosition.z * Common.blockSize.half);
+	offsYtop = ($C.edges.top - $C.gridSize.y - 185)
+		+ ($C.markerPosition.z * $C.blockSize.quarter)
+		+ ($C.gridDims.c - $C.layerOffset.z - 1) * $C.blockSize.half;
+	offsX = $C.offset.x + $C.gridSize.x / 2 + ($C.markerPosition.z * $C.blockSize.half);
 	
 	ctx.fillStyle = '#00f';
 	ctx.beginPath();
@@ -66,8 +66,8 @@ function positionIndicator () {
 	ctx.fill();
 	
 	// Green Cursor
-	offsX = Common.offset.x + (Common.markerPosition.x * Common.blockSize.half) + (Common.markerPosition.z * Common.blockSize.half);
-	offsYtop = Common.edges.top - (Common.layerOffset.z * Common.blockSize.half) + (Common.markerPosition.z * Common.blockSize.quarter) + (Common.gridSize.y - Common.markerPosition.x * Common.blockSize.quarter) - 45;
+	offsX = $C.offset.x + ($C.markerPosition.x * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.half);
+	offsYtop = $C.edges.top - ($C.layerOffset.z * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.quarter) + ($C.gridSize.y - $C.markerPosition.x * $C.blockSize.quarter) - 45;
 	
 	ctx.fillStyle = '#0f0';
 	ctx.beginPath();
@@ -90,27 +90,27 @@ function positionIndicator () {
 	
 	// Selection box
 	// Enabled if there's a value in there.
-	if (Common.selected.blocks) {
-		offsX = Common.offset.x + (Common.selected.area.x * Common.blockSize.half) + (Common.selected.area.y * Common.blockSize.half);
+	if ($C.selected.blocks) {
+		offsX = $C.offset.x + ($C.selected.area.x * $C.blockSize.half) + ($C.selected.area.y * $C.blockSize.half);
 		offsYtop = 
-			   (Common.edges.top + Common.gridSize.y - 45)
-			 - (Common.selected.area.z * Common.blockSize.half)
-			 + (Common.selected.area.x * Common.blockSize.quarter)
-			 - (Common.selected.area.y * Common.blockSize.quarter)
-			 - (Common.selected.area.h * Common.blockSize.half)
-			 + (Common.blockSize.half);
+			   ($C.edges.top + $C.gridSize.y - 45)
+			 - ($C.selected.area.z * $C.blockSize.half)
+			 + ($C.selected.area.x * $C.blockSize.quarter)
+			 - ($C.selected.area.y * $C.blockSize.quarter)
+			 - ($C.selected.area.h * $C.blockSize.half)
+			 + ($C.blockSize.half);
 		// loggit(offsYtop);
 
 		ctx.strokeStyle = "rgba(255,0,127,10)";
 		ctx.beginPath();
 
 		// Points 1-6, in order.
-		ctx.moveTo(offsX + (gr2 * Common.selected.area.l), offsYtop);
-		ctx.lineTo(offsX + (gr1 * Common.selected.area.l), offsYtop + (gr4 * Common.selected.area.w));
-		ctx.lineTo(offsX + (gr1 * Common.selected.area.l), offsYtop + (Common.selected.area.h * gr2 + (gr4 * Common.selected.area.w)));
-		ctx.lineTo(offsX + (gr2 * Common.selected.area.l), offsYtop + (Common.selected.area.h * gr2 + (gr2 * Common.selected.area.w)));
-		ctx.lineTo(offsX, offsYtop + (Common.selected.area.h * gr2 + (gr4 * Common.selected.area.l)));
-		ctx.lineTo(offsX, offsYtop + (gr4 * Common.selected.area.w));
+		ctx.moveTo(offsX + (gr2 * $C.selected.area.l), offsYtop);
+		ctx.lineTo(offsX + (gr1 * $C.selected.area.l), offsYtop + (gr4 * $C.selected.area.w));
+		ctx.lineTo(offsX + (gr1 * $C.selected.area.l), offsYtop + ($C.selected.area.h * gr2 + (gr4 * $C.selected.area.w)));
+		ctx.lineTo(offsX + (gr2 * $C.selected.area.l), offsYtop + ($C.selected.area.h * gr2 + (gr2 * $C.selected.area.w)));
+		ctx.lineTo(offsX, offsYtop + ($C.selected.area.h * gr2 + (gr4 * $C.selected.area.l)));
+		ctx.lineTo(offsX, offsYtop + (gr4 * $C.selected.area.w));
 
 		ctx.closePath();
 		ctx.stroke();
@@ -125,7 +125,7 @@ function selectArea (target, select) {
 	var position = {
 		x: target.getAttributeNS(null, "r"),
 		y: target.getAttributeNS(null, "c"),
-		z: Common.layerOffset.z
+		z: $C.layerOffset.z
 	}
 	
 	var area = {
@@ -134,30 +134,30 @@ function selectArea (target, select) {
 		h: 0
 	}
 	
-	if (Common.selected.secondSelection.x == -1 && Common.selected.initialSelection.x != -1) {
-		Common.selected.secondSelection = position;
-		var length = Math.abs(position.x - Common.selected.initialSelection.x) + 1;
-		var width = Math.abs(position.y - Common.selected.initialSelection.y) + 1;
+	if ($C.selected.secondSelection.x == -1 && $C.selected.initialSelection.x != -1) {
+		$C.selected.secondSelection = position;
+		var length = Math.abs(position.x - $C.selected.initialSelection.x) + 1;
+		var width = Math.abs(position.y - $C.selected.initialSelection.y) + 1;
 		var height = 1;
 		area = {l: length, w: width, h: height};
 		loggit(length + ", " + width);
 	}
 	
-	if (Common.selected.initialSelection.x == -1 && position.x != -1) {
+	if ($C.selected.initialSelection.x == -1 && position.x != -1) {
 		loggit("bla");
-		Common.selected.initialSelection = position;
+		$C.selected.initialSelection = position;
 		area = {l: 1, w: 1, h: 1};
 	}
 	
 	// Clear selection if select is false
 	if (select === false) {
-		// Common.selected.area = {x: 0, y: 0, z: 0, l: 0, w: 0, h: 0};
-		// Common.selected.blocks = false;
+		// $C.selected.area = {x: 0, y: 0, z: 0, l: 0, w: 0, h: 0};
+		// $C.selected.blocks = false;
 		// Clear initial and second selections
 	}
 	
-	Common.selected.blocks = true;
-	Common.selected.area = {x: position.x, y: position.y, z: position.z, l: area.l, w: area.w, h: area.h};
+	$C.selected.blocks = true;
+	$C.selected.area = {x: position.x, y: position.y, z: position.z, l: area.l, w: area.w, h: area.h};
 	
 	positionIndicator();
 }

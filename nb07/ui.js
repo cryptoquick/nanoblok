@@ -12,36 +12,36 @@
 function drawUI () {
 	// Nanoblok logo text	
 	var logoText = document.getElementById('logoText');
-	logoText.setAttributeNS(null, "transform", "skewY(-26.565) scale(" + Common.blockDims / 20 + ")");
-/*	logoText.setAttributeNS(null, "x", 49 / 20 * Common.blockDims);
-	logoText.setAttributeNS(null, "y", 90 / 20 * Common.blockDims);
-	logoText.setAttributeNS(null, "font-size", 16 * (Common.blockDims / 20));*/
+	logoText.setAttributeNS(null, "transform", "skewY(-26.565) scale(" + $C.blockDims / 20 + ")");
+/*	logoText.setAttributeNS(null, "x", 49 / 20 * $C.blockDims);
+	logoText.setAttributeNS(null, "y", 90 / 20 * $C.blockDims);
+	logoText.setAttributeNS(null, "font-size", 16 * ($C.blockDims / 20));*/
 		
 	// Set viewport height.
 	var gridElement = document.getElementById('grid');
-	gridElement.setAttributeNS(null, "height", Common.windowSize.y - 5);
+	gridElement.setAttributeNS(null, "height", $C.windowSize.y - 5);
 	
 	// Set effects canvas dimensions.
 	var effectsElement = document.getElementById("effects");
-	effectsElement.setAttributeNS(null, "height", Common.windowSize.y - 5);
-	effectsElement.setAttributeNS(null, "width", Common.windowSize.x);
+	effectsElement.setAttributeNS(null, "height", $C.windowSize.y - 5);
+	effectsElement.setAttributeNS(null, "width", $C.windowSize.x);
 	
 	// Same for overlays canvas.
 	var overlaysElement = document.getElementById("overlays");
-	overlaysElement.setAttributeNS(null, "height", Common.windowSize.y - 5);
-	overlaysElement.setAttributeNS(null, "width", Common.windowSize.x);
+	overlaysElement.setAttributeNS(null, "height", $C.windowSize.y - 5);
+	overlaysElement.setAttributeNS(null, "width", $C.windowSize.x);
 	
 	// Position debug / status.
 	var debugBox = document.getElementById("statusContainer");
-	debugBox.setAttributeNS(null, "transform", "translate(" + Common.edges.left + ", " + (Common.edges.top - Common.gridSize.y - 145) + ")");
+	debugBox.setAttributeNS(null, "transform", "translate(" + $C.edges.left + ", " + ($C.edges.top - $C.gridSize.y - 145) + ")");
 	
 	// Position buttons on the top.
 	var sideButtonsTop = document.getElementById("sideButtonsTop");
-	sideButtonsTop.setAttributeNS(null, "transform", "translate(" + (Common.center.x + 5) + ", " + (Common.edges.top - Common.gridSize.y * 2 - 120) + ")");
+	sideButtonsTop.setAttributeNS(null, "transform", "translate(" + ($C.center.x + 5) + ", " + ($C.edges.top - $C.gridSize.y * 2 - 120) + ")");
 	
 	// Position arrows on the left side.
 	var sideButtonsLeft = document.getElementById("sideButtonsLeft");
-	sideButtonsLeft.setAttributeNS(null, "transform", "translate(" + (Common.edges.left - 25) + ", " + (Common.edges.top - Common.gridSize.y - 20) + ")");
+	sideButtonsLeft.setAttributeNS(null, "transform", "translate(" + ($C.edges.left - 25) + ", " + ($C.edges.top - $C.gridSize.y - 20) + ")");
 	
 	populatePalette();
 }
@@ -49,12 +49,12 @@ function drawUI () {
 // Place all the colors on the right side.
 function populatePalette () {
 	var sideColorsRight = document.getElementById("sideColorsRight");
-	sideColorsRight.setAttributeNS(null, "transform", "translate(" + (Common.edges.right + 40) + ", " + (Common.edges.top - Common.gridSize.y - 9) + ")");
+	sideColorsRight.setAttributeNS(null, "transform", "translate(" + ($C.edges.right + 40) + ", " + ($C.edges.top - $C.gridSize.y - 9) + ")");
 	
 	for (var i = 0; i < 9; i++) {
 		var colorBlock = document.createElementNS(svgNS, 'rect');
 		
-		colorBlock.setAttributeNS(null, "id", "color" + i + Common.palette[i][3] + "Button");
+		colorBlock.setAttributeNS(null, "id", "color" + i + $C.palette[i][3] + "Button");
 		colorBlock.setAttributeNS(null, "x", -35);
 		colorBlock.setAttributeNS(null, "y", 35 * i);
 		colorBlock.setAttributeNS(null, "height", 30);
@@ -69,9 +69,9 @@ function populatePalette () {
 
 function getDefaultColor (paletteNum) {
 	rgbOutput = "rgb("
-		+ (Common.palette[paletteNum][0] + 40) + ", "
-	 	+ (Common.palette[paletteNum][1] + 40) + ", "
-		+ (Common.palette[paletteNum][2] + 40) + ")";
+		+ ($C.palette[paletteNum][0] + 40) + ", "
+	 	+ ($C.palette[paletteNum][1] + 40) + ", "
+		+ ($C.palette[paletteNum][2] + 40) + ")";
 	return rgbOutput;
 }
 

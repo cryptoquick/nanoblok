@@ -13,15 +13,15 @@ function gridCoors (side) {
 	var i = 0;
 
 	// Grid loop builds an absolute position tile, then places it at a specific x/y position on the grid.
-	for (var x = 0; x < Common.gridDims.c; x++) {
-		for (var y = 0; y < Common.gridDims.r; y++) {
+	for (var x = 0; x < $C.gridDims.c; x++) {
+		for (var y = 0; y < $C.gridDims.r; y++) {
 			var tileCoors;
 
 			// Bottom side.
 			var hexSide = [1, 2, 7, 6];
 			tileCoors = {
-				x: (x * Common.blockSize.half) + (y * Common.blockSize.half) + Common.offset.x,
-				y: ((y * Common.blockSize.quarter) + (Common.gridSize.y - x * Common.blockSize.quarter)) + Common.offset.y
+				x: (x * $C.blockSize.half) + (y * $C.blockSize.half) + $C.offset.x,
+				y: ((y * $C.blockSize.quarter) + ($C.gridSize.y - x * $C.blockSize.quarter)) + $C.offset.y
 			};
 			
 			GridField['x-' + i] = {x: x, y: y, z: -1, coors: tileCoors};
@@ -29,8 +29,8 @@ function gridCoors (side) {
 			// Left side.
 			var hexSide = [1, 7, 5, 6];
 			tileCoors = {
-				x: (x * Common.blockSize.half)  + Common.offset.x,
-				y: ((y * Common.blockSize.half) + (-Common.gridSize.y - x * Common.blockSize.quarter)) + Common.offset.y
+				x: (x * $C.blockSize.half)  + $C.offset.x,
+				y: ((y * $C.blockSize.half) + (-$C.gridSize.y - x * $C.blockSize.quarter)) + $C.offset.y
 			};
 			
 			GridField['y-' + i] = {x: x, y: y, z: -1, coors: tileCoors};
@@ -38,8 +38,8 @@ function gridCoors (side) {
 			// Right side.
 			var hexSide = [6, 7, 4, 5];
 			tileCoors = {
-				x: (x * Common.blockSize.half) + Common.gridSize.x / 2 + Common.offset.x,
-				y: ((y * Common.blockSize.half) + (-Common.gridSize.y * 2 + x * Common.blockSize.quarter)) + Common.offset.y
+				x: (x * $C.blockSize.half) + $C.gridSize.x / 2 + $C.offset.x,
+				y: ((y * $C.blockSize.half) + (-$C.gridSize.y * 2 + x * $C.blockSize.quarter)) + $C.offset.y
 			};
 
 			GridField['z-' + i] = {x: x, y: y, z: -1, coors: tileCoors};
@@ -85,12 +85,12 @@ function drawGrid (side) {
 	
 	var i = 0;
 	
-	for (var x = 0; x < Common.gridDims.c; x++) {
-		for (var y = 0; y < Common.gridDims.r; y++) {
+	for (var x = 0; x < $C.gridDims.c; x++) {
+		for (var y = 0; y < $C.gridDims.r; y++) {
 			var tileCoors = GridField['x-' + i];
 			var hexSide = [1, 2, 7, 6];
 			
-			var set = hexiso(tileCoors.coors, Common.blockSize);
+			var set = hexiso(tileCoors.coors, $C.blockSize);
 			var tile = drawSet(hexSide, set, true);
 			
 			// Column, Row
@@ -112,8 +112,8 @@ function drawGrid (side) {
 function canvasGrid (side, mode) {
 	var i = 0;
 		
-	for (var x = 0; x < Common.gridDims.c; x++) {
-		for (var y = 0; y < Common.gridDims.r; y++) {
+	for (var x = 0; x < $C.gridDims.c; x++) {
+		for (var y = 0; y < $C.gridDims.r; y++) {
 			if (side == "bottom") {
 				var hexSet = [1, 2, 7, 6];
 				var offset = GridField["x-" + i].coors;
@@ -127,7 +127,7 @@ function canvasGrid (side, mode) {
 					var stroke = "black";
 				}
 				
-				// hexSet, offset, Common, closed, color, stroke
+				// hexSet, offset, $C, closed, color, stroke
 				canvasDrawSet(hexSet, offset,
 					{closed: true, fill: fill, stroke: stroke});
 			}

@@ -46,10 +46,10 @@ function Click (evt) {
 	// Color selection.
 	if (target.id.substr(0,5) == "color") {
 		// The last color is used to deselect the last color.
-		Common.selected.lastColor = Common.selected.color;
+		$C.selected.lastColor = $C.selected.color;
 		
 		// Get the color value from its id and set the currently selected color as this. (not the best way to do this...)
-		Common.selected.color = parseInt(target.id.substr(5,1));
+		$C.selected.color = parseInt(target.id.substr(5,1));
 		toolSelect("color");
 		
 		// 'Select' the clicked-on color swatch.
@@ -57,10 +57,10 @@ function Click (evt) {
 	}
 	
 	// Block placement (first click, and if only one single click)
-	if (Common.selected.tool == "delete") {
+	if ($C.selected.tool == "delete") {
 		deleteBlock(target);
 	}
-	else if (Common.selected.tool == "select") {
+	else if ($C.selected.tool == "select") {
 		selectArea(target, true);
 	}
 	else if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-')
@@ -78,10 +78,10 @@ function Hover (evt, inout) {
 		placeBlock(target);
 	}
 	
-	// Puts information about the position of the cursor over the grid into the markerPosition field in Common, allowing that to be used by the positionIndicator function.
+	// Puts information about the position of the cursor over the grid into the markerPosition field in $C, allowing that to be used by the positionIndicator function.
 	if (target.id.substr(0,2) == 'x-' && inout == "in") {
-		Common.markerPosition.x = target.getAttribute("c");
-		Common.markerPosition.z = target.getAttribute("r");
+		$C.markerPosition.x = target.getAttribute("c");
+		$C.markerPosition.z = target.getAttribute("r");
 		positionIndicator();
 	}
 }
@@ -89,7 +89,7 @@ function Hover (evt, inout) {
 function Key (evt) {
 	if (evt.type == "keydown") {
 		if (evt.keyCode == 68) {
-			Common.selected.tool = "delete";
+			$C.selected.tool = "delete";
 		}
 	}
 }
@@ -103,10 +103,10 @@ function Mouse (evt) {
 		placeBlock(target);
 	}
 	
-	// Puts information about the position of the cursor over the grid into the markerPosition field in Common, allowing that to be used by the positionIndicator function.
+	// Puts information about the position of the cursor over the grid into the markerPosition field in $C, allowing that to be used by the positionIndicator function.
 	if (target.id.substr(0,2) == 'x-' && inout == "in") {
-		Common.markerPosition.x = target.getAttribute("c");
-		Common.markerPosition.z = target.getAttribute("r");
+		$C.markerPosition.x = target.getAttribute("c");
+		$C.markerPosition.z = target.getAttribute("r");
 		positionIndicator();
 	}*/
 }
