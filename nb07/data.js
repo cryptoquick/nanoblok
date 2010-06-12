@@ -132,6 +132,9 @@ var Common = function () {
 
 	// Position Indicator (which also contains the handy drawAll function)
 	this.posInd = new PositionIndicator();
+	
+	// If the program is using the MouseMove event rather than an SVG grid, this will be enabled.
+	this.mouseMove = true;
 }
 
 function initHistory () {

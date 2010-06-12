@@ -13,7 +13,8 @@ var canvases = [
 	'grids',
 	'blocks',
 	'overlays',
-	'display'
+	'display',
+	'debug'
 ];
 
 function drawUI () {

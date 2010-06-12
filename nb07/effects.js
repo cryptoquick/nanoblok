@@ -27,6 +27,7 @@ var PositionIndicator = function () {
 	this.blocks = document.getElementById('blocks');
 	this.display = document.getElementById('display');
 	this.overlays = document.getElementById('overlays');
+	this.debug = document.getElementById('debug');
 	this.displayCtx = context('display');
 	
 	this.redraw = function () {
@@ -117,6 +118,7 @@ var PositionIndicator = function () {
 		this.displayCtx.drawImage(this.grids, 0, 0);
 		this.displayCtx.drawImage(this.blocks, 0, 0);
 		this.displayCtx.drawImage(this.overlays, 0, 0);
+		this.displayCtx.drawImage(this.debug, 0, 0);
 	}
 	
 	// Selection box
