@@ -1,0 +1,14 @@
+application: nanoblok
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: .(.*\.(svg|js|png|ico))
+  static_files: \1
+  upload: .(.*\.(svg|js|png|ico))
+
+- url: /
+  static_files: index.svg
+  mime_type: image/svg+xml
+  upload: .(.*\.(svg))
