@@ -58,19 +58,20 @@ function MousePos (evt) {
 	var y = -1;
 	var offsetY = -30;
 	
-	if (mouse.x > $C.offset.x && mouse.x < ($C.offset.x + $C.gridSize.x)) {
-		x = Math.floor((mouse.x - $C.offset.x) / $C.blockSize.full);
+	if ((mouse.x > $C.offset.x && mouse.x < ($C.offset.x + $C.gridSize.x)) && (mouse.y > ($C.offset.y + offsetY) && mouse.y < ($C.offset.y + $C.gridSize.y * 2 + offsetY))) {
+		sqX = Math.floor((mouse.x - $C.offset.x) / $C.blockSize.full);
+		sqY = Math.floor((mouse.y - offsetY - $C.offset.y) / $C.blockSize.half);
 	}
 	else {
 		x = -1;
 	}
-	if (mouse.y > ($C.offset.y + offsetY) && mouse.y < ($C.offset.y + $C.gridSize.y * 2 + offsetY)) {
-		y = Math.floor((mouse.y - offsetY - $C.offset.y) / $C.blockSize.half);
-	}
-	else {
-		y = -1;
-	}
-	
+	// if (mouse.y > ($C.offset.y + offsetY) && mouse.y < ($C.offset.y + $C.gridSize.y * 2 + offsetY)) {
+	// 	y = Math.floor((mouse.y - offsetY - $C.offset.y) / $C.blockSize.half);
+	// }
+	// else {
+	// 	y = -1;
+	// }
+	// 
 	this.ctx = context('debug');
 	this.ctx.clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
 	this.ctx.fillText(x + ", " + y, mouse.x, mouse.y);
