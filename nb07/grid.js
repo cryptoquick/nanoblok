@@ -85,12 +85,28 @@ function drawGrid (side) {
 	
 	var i = 0;
 	
+	var square = [0,0,0,0]
+	
 	for (var x = 0; x < $C.gridDims.c; x++) {
 		for (var y = 0; y < $C.gridDims.r; y++) {
 			var tileCoors = GridField['x-' + i];
 			var hexSide = [1, 2, 7, 6];
 			
 			var set = hexiso(tileCoors.coors, $C.blockSize);
+			
+			if (x == 31 && y == 0) {
+				square[0] = {x: set.x[1], y: set.y[1]};
+			}
+			else if (x == 0 && y == 0) {
+				square[1] = {x: set.x[6], y: set.y[6]};
+			}
+			else if (x == 0 && y == 31) {
+				square[2] = {x: set.x[7], y: set.y[7]};
+			}
+			else if (x == 31 && y == 31) {
+				square[3] = {x: set.x[2], y: set.y[2]};
+			}
+			
 			var tile = drawSet(hexSide, set, true);
 			
 			// Column, Row
@@ -105,6 +121,26 @@ function drawGrid (side) {
 			i++;
 		}
 	}
+	
+	var path = new String();
+	
+	for (var corner = 0; corner < 4; corner++) {
+		if (corner == 0) {
+			path += 'M ' + square[corner].x + ' ' + square[corner].y;
+		}
+		else if (corner == 3) {
+			path += ' ' + square[corner].x + ' ' + square[corner].y + ' Z';
+		}
+		else {
+			path += ' L ' + square[corner].x + ' ' + square[corner].y;
+		}
+	}
+
+	pathElement = document.createElementNS(svgNS, 'path');
+	pathElement.setAttributeNS(null, 'd', path);
+	pathElement.setAttributeNS(null, 'stroke', 'red');
+	x0 = document.getElementById('x-0');
+	gridContainer.insertBefore(pathElement, x0);
 }
 
 // Draws the grids using canvas.
