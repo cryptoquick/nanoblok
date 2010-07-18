@@ -139,6 +139,7 @@ function drawGrid (side) {
 	pathElement = document.createElementNS(svgNS, 'path');
 	pathElement.setAttributeNS(null, 'd', path);
 	pathElement.setAttributeNS(null, 'stroke', 'red');
+	pathElement.setAttributeNS(null, 'stroke-opacity', '0.3');
 	x0 = document.getElementById('x-0');
 	gridContainer.insertBefore(pathElement, x0);
 }
