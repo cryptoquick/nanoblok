@@ -31,7 +31,7 @@ var PositionIndicator = function () {
 	
 	this.redraw = function () {
 		this.ctx.clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
-		this.ctx.globalAlpha = 0.7;
+		this.ctx.globalAlpha = 0.6;
 	
 		var gr1 = $C.blockSize.full;
 		var gr2 = gr1 / 2;

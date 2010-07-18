@@ -101,10 +101,10 @@ function colorBlock (colorID) {
 function colorBlockNew (color) {
 	var blockColors = {};
 	
-	blockColors.left = "rgb(" + color.r + ", " + color.g + ", " + color.b + ")";
-	blockColors.right = "rgb(" + (color.r + 20) + ", " + (color.g + 20) + ", " + (color.b + 20) + ")";
-	blockColors.top = "rgb(" + (color.r + 40) + ", " + (color.g + 40) + ", " + (color.b + 40) + ")";
-	blockColors.inset = "rgb(" + (color.r - 20) + ", " + (color.g - 20) + ", " + (color.b - 20) + ")";
+	blockColors.left = "rgb(" + (color.r - 20) + ", " + (color.g - 20) + ", " + (color.b - 20) + ")";
+	blockColors.right = "rgb(" + (color.r - 10) + ", " + (color.g - 10) + ", " + (color.b - 10) + ")";
+	blockColors.top = "rgb(" + (color.r) + ", " + (color.g) + ", " + (color.b) + ")";
+	blockColors.inset = "rgb(" + (color.r - 30) + ", " + (color.g - 30) + ", " + (color.b - 30) + ")";
 
 	return blockColors;
 	// return {left: colorLeft, right: colorRight, top: colorTop, inset: colorLines};
