@@ -37,9 +37,11 @@ var PositionIndicator = function () {
 		var gr2 = gr1 / 2;
 		var gr4 = gr1 / 4;
 	
-		// Red Marker
-		var offsY = $C.offset.y - 30;
-		var offsYtop = ($C.edges.top - $C.gridSize.y - 30)
+		// Red Marker, and first of three color-coded small display offsets.
+		var redOffs = 30;
+		if ($C.smallDisplay) {redOffs = 31}
+		var offsY = $C.offset.y - redOffs;
+		var offsYtop = ($C.edges.top - $C.gridSize.y - redOffs)
 			- ($C.markerPosition.x * $C.blockSize.quarter)
 			+ ($C.gridDims.c - $C.layerOffset.z - 1) * $C.blockSize.half;
 		var offsX = $C.offset.x + $C.markerPosition.x * $C.blockSize.half;
@@ -56,7 +58,9 @@ var PositionIndicator = function () {
 		this.ctx.fill();
 	
 		// Blue Marker
-		offsYtop = ($C.edges.top - $C.gridSize.y - 185)
+		var blueOffs = 185;
+		if ($C.smallDisplay) {blueOffs = 148}
+		offsYtop = ($C.edges.top - $C.gridSize.y - blueOffs)
 			+ ($C.markerPosition.z * $C.blockSize.quarter)
 			+ ($C.gridDims.c - $C.layerOffset.z - 1) * $C.blockSize.half;
 		offsX = $C.offset.x + $C.gridSize.x / 2 + ($C.markerPosition.z * $C.blockSize.half);
@@ -73,8 +77,10 @@ var PositionIndicator = function () {
 		this.ctx.fill();
 	
 		// Green Cursor
+		var greenOffs = 45;
+		if ($C.smallDisplay) {greenOffs = 43}
 		offsX = $C.offset.x + ($C.markerPosition.x * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.half);
-		offsYtop = $C.edges.top - ($C.layerOffset.z * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.quarter) + ($C.gridSize.y - $C.markerPosition.x * $C.blockSize.quarter) - 45;
+		offsYtop = $C.edges.top - ($C.layerOffset.z * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.quarter) + ($C.gridSize.y - $C.markerPosition.x * $C.blockSize.quarter) - greenOffs;
 	
 		this.ctx.fillStyle = '#0f0';
 		this.ctx.beginPath();
@@ -107,6 +113,20 @@ var PositionIndicator = function () {
 		this.ctx.strokeStyle = '#0f0';
 		this.ctx.stroke();
 		
+		// Red level outline. ($C.blockDims * 1.75)
+		var levelOffs = 35 + $C.blockDims * $C.layerOffset.z * 0.5;
+		
+		this.ctx.beginPath();
+		this.ctx.moveTo($C.gridCorners[0].x, $C.gridCorners[0].y - levelOffs);
+		this.ctx.lineTo($C.gridCorners[1].x, $C.gridCorners[1].y - levelOffs);
+		this.ctx.lineTo($C.gridCorners[2].x, $C.gridCorners[2].y - levelOffs);
+		this.ctx.lineTo($C.gridCorners[3].x, $C.gridCorners[3].y - levelOffs);
+		this.ctx.closePath();
+		
+		this.ctx.globalAlpha = 1.0;
+		this.ctx.strokeStyle = '#f90';
+		this.ctx.stroke();
+		
 		// Clear display and draw all.
 		this.drawAll();
 	}
@@ -115,8 +135,8 @@ var PositionIndicator = function () {
 		this.displayCtx.clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
 		this.displayCtx.globalCompositeOperation = "source-over";
 		this.displayCtx.drawImage(this.grids, 0, 0);
-		this.displayCtx.drawImage(this.blocks, 0, 0);
 		this.displayCtx.drawImage(this.overlays, 0, 0);
+		this.displayCtx.drawImage(this.blocks, 0, 0);
 	}
 	
 	// Selection box
