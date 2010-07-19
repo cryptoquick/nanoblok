@@ -31,6 +31,7 @@ var Common = function () {
 	// Change to a smaller display format if the window is too small. Not yet fully worked out.
 	if (this.windowSize.x < 725 || this.windowSize.y < 760) {
 		this.blockDims = 15; // For smaller screens
+		loggit("Small display detected, adjusting.");
 		this.smallDisplay = true;
 	}
 	else {

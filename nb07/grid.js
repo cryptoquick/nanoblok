@@ -122,6 +122,9 @@ function drawGrid (side) {
 		}
 	}
 	
+	$C.gridCorners = square;
+	
+	/*
 	var path = new String();
 	
 	for (var corner = 0; corner < 4; corner++) {
@@ -141,7 +144,7 @@ function drawGrid (side) {
 	pathElement.setAttributeNS(null, 'stroke', 'red');
 	pathElement.setAttributeNS(null, 'stroke-opacity', '0.3');
 	x0 = document.getElementById('x-0');
-	gridContainer.insertBefore(pathElement, x0);
+	gridContainer.insertBefore(pathElement, x0); */
 }
 
 // Draws the grids using canvas.
