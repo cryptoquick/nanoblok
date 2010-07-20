@@ -39,6 +39,10 @@ function InitEvents () {
 		Key(evt);
 	}, false);
 	
+	window.addEventListener('keyup', function (evt) {
+		Key(evt);
+	}, false);
+	
 	// window.addEventListener('mousemove', function (evt) {
 	// 	Mouse(evt);
 	// }, false);
@@ -96,6 +100,23 @@ function MousePos (evt) {
 function Click (evt) {
 	var target = evt.target;
 	
+	var inputs = [
+		"save",
+		"load",
+		"refresh",
+		"remove",
+		"swatch",
+		"fill",
+		"gridUp",
+		"dridDown",
+	];
+	
+	for (var i = 0; i < inputs.length; i++) {
+		if (target.id == inputs[i] + "Button" || target.id == inputs[i] + "Text") {
+			eval("$C.tools." + inputs[i] + "()");
+		}
+	}
+	/*
 	// Top-side mode/settings buttons.
 	// Save button.
 	if (target.id == "saveButton" || target.id == "saveText") {
@@ -114,7 +135,7 @@ function Click (evt) {
 	
 	// Delete button, its state can be toggled by the user.
 	else if (target.id == "deleteButton" || target.id == "deleteText") {
-		toolSelect("save");
+		toolSelect("delete");
 	}
 	
 	// Select button.
@@ -139,7 +160,7 @@ function Click (evt) {
 	else if (target.id == "swatchButton" || target.id == "swatchText") {
 		toolSelect("swatch");
 	}
-	
+	*/
 	// Color selection.
 	if (target.id.substr(0,5) == "color") {
 		// The last color is used to deselect the last color.
@@ -191,7 +212,13 @@ function Hover (evt, inout) {
 
 function Key (evt) {
 	if (evt.type == "keydown") {
-		if (evt.keyCode == 68) {
+		if (evt.keyCode == 18) {
+			$C.selected.tool = "delete";
+		}
+	}
+	
+	if (evt.type == "keyup") {
+		if (evt.keyCode == 18) {
 			$C.selected.tool = "delete";
 		}
 	}

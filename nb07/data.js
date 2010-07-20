@@ -135,7 +135,9 @@ var Common = function () {
 	this.posInd = new PositionIndicator();
 	
 	// If the program is using the MouseMove event rather than an SVG grid, this will be enabled.
-	this.mouseMove = true;
+	this.mouseMove = false;
+	
+	this.tools = new Tools();
 }
 
 function initHistory () {
