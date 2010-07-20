@@ -55,47 +55,6 @@ function InitEvents () {
 	}
 }
 
-function MousePos (evt) {
-	var mouse = {x: evt.clientX, y: evt.clientY};
-	
-	var x = -1;
-	var y = -1;
-	var offsetY = -30;
-	
-	if ((mouse.x > $C.offset.x && mouse.x < ($C.offset.x + $C.gridSize.x)) && (mouse.y > ($C.offset.y + offsetY) && mouse.y < ($C.offset.y + $C.gridSize.y * 2 + offsetY))) {
-		sqX = Math.floor((mouse.x - $C.offset.x) / $C.blockSize.full);
-		sqY = Math.floor((mouse.y - offsetY - $C.offset.y) / $C.blockSize.half);
-	}
-	else {
-		x = -1;
-	}
-	// if (mouse.y > ($C.offset.y + offsetY) && mouse.y < ($C.offset.y + $C.gridSize.y * 2 + offsetY)) {
-	// 	y = Math.floor((mouse.y - offsetY - $C.offset.y) / $C.blockSize.half);
-	// }
-	// else {
-	// 	y = -1;
-	// }
-	// 
-	this.ctx = context('debug');
-	this.ctx.clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
-	this.ctx.fillText(x + ", " + y, mouse.x, mouse.y);
-	$C.posInd.drawAll();
-	
-	var selectedElement = null;
-	
-	if (x != -1 && y != -1) {
-		selectedElement = document.getElementById("x-" + (x * $C.gridDims.c + y));
-		loggit("x-" + (x * $C.gridDims.c + y));
-		Hover(selectedElement, "in");
-	}
-	else {
-		selectedElement = null;
-	}
-	
-	// x: (x * $C.blockSize.half) + (y * $C.blockSize.half) + $C.offset.x,
-	// y: ((y * $C.blockSize.quarter) + ($C.gridSize.y - x * $C.blockSize.quarter)) + $C.offset.y
-}
-
 // Handles click events from its corresponding event listener.
 function Click (evt) {
 	var target = evt.target;
@@ -168,16 +127,23 @@ function Hover (evt, inout) {
 
 function Key (evt) {
 	if (evt.type == "keydown") {
-		if (evt.keyCode == 18) {
-			$C.selected.tool = "delete";
+		if (evt.keyCode == 68) {
+			if ($C.selected.tool == "delete") {
+				$C.tools.remove.deselect();
+			}
+			else {
+				$C.tools.remove.select();
+			}
+		//	$C.selected.tool = "delete";
 		}
 	}
 	
-	if (evt.type == "keyup") {
-		if (evt.keyCode == 18) {
-			$C.selected.tool = "delete";
+/*	if (evt.type == "keyup") {
+		if (evt.keyCode == 68) {
+			
+		//	$C.selected.tool = "delete";
 		}
-	}
+	} */
 }
 
 function Mouse (evt) {
@@ -196,3 +162,45 @@ function Mouse (evt) {
 		positionIndicator();
 	}*/
 }
+
+/*
+function MousePos (evt) {
+	var mouse = {x: evt.clientX, y: evt.clientY};
+	
+	var x = -1;
+	var y = -1;
+	var offsetY = -30;
+	
+	if ((mouse.x > $C.offset.x && mouse.x < ($C.offset.x + $C.gridSize.x)) && (mouse.y > ($C.offset.y + offsetY) && mouse.y < ($C.offset.y + $C.gridSize.y * 2 + offsetY))) {
+		sqX = Math.floor((mouse.x - $C.offset.x) / $C.blockSize.full);
+		sqY = Math.floor((mouse.y - offsetY - $C.offset.y) / $C.blockSize.half);
+	}
+	else {
+		x = -1;
+	}
+	// if (mouse.y > ($C.offset.y + offsetY) && mouse.y < ($C.offset.y + $C.gridSize.y * 2 + offsetY)) {
+	// 	y = Math.floor((mouse.y - offsetY - $C.offset.y) / $C.blockSize.half);
+	// }
+	// else {
+	// 	y = -1;
+	// }
+	// 
+	this.ctx = context('debug');
+	this.ctx.clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
+	this.ctx.fillText(x + ", " + y, mouse.x, mouse.y);
+	$C.posInd.drawAll();
+	
+	var selectedElement = null;
+	
+	if (x != -1 && y != -1) {
+		selectedElement = document.getElementById("x-" + (x * $C.gridDims.c + y));
+		loggit("x-" + (x * $C.gridDims.c + y));
+		Hover(selectedElement, "in");
+	}
+	else {
+		selectedElement = null;
+	}
+	
+	// x: (x * $C.blockSize.half) + (y * $C.blockSize.half) + $C.offset.x,
+	// y: ((y * $C.blockSize.quarter) + ($C.gridSize.y - x * $C.blockSize.quarter)) + $C.offset.y
+}*/

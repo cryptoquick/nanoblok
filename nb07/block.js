@@ -163,44 +163,48 @@ function placeBlock (target) {
 	
 	$C.posInd.drawAll();
 }
-// WTF is this. >:I
-/*function deleteBlock (target) {
+
+function deleteBlock (target) {
 	var location = {
 		x: GridField[target.id].x,
 		y: GridField[target.id].y,
-		z: 0 + $C.layerOffset.z
+		z: 0 + $C.layerOffset.z // forgot why I put a zero here.
 	}
 	
 	canvasBlockDelete(GridField[target.id].coors, location);
 	Voxel[location.x][location.y][location.z] = -1;
-	loggit(" The block placed at " + location.x + ", " + location.y + ", " + location.z + " was deleted.")
+	loggit("The block placed at " + location.x + ", " + location.y + ", " + location.z + " was deleted.")
 }
 
-// WTF is this. >:I
-function canvasBlockDelete () {
-	var color = {left: "#eee", right: "#eee", top: "#eee", inset: "#aaa"};
-	
-	// Top side. Always placed.
-	canvasDrawSet([1, 6, 7, 2], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
 
+function canvasBlockDelete () {
+/*	var color = {left: "#eee", right: "#eee", top: "#eee", inset: "#aaa"};
+	
+	var adjustedPosition = {x: position.x, y: position.y - $C.blockSize.half * (location.z + 1)};
+	
+	// Top side. Always placed, unless there's a block above it.
+	if (Voxel[location.x][location.y][location.z + 1] == -1) {
+		canvasDrawSet([1, 6, 7, 2], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
+	}
+	
 	// Left side.
-	if (Voxel[location.x - 1][location.y][$C.layerOffset.z] == -1
-			&& Voxel[location.x - 1][location.y + 1][$C.layerOffset.z] == -1) {
+	if (Voxel[location.x - 1][location.y][location.z] == -1
+			&& Voxel[location.x - 1][location.y + 1][location.z] == -1) {
 		canvasDrawSet([6, 7, 4, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
-	} else if (Voxel[location.x - 1][location.y + 1][$C.layerOffset.z] != -1
-			&& Voxel[location.x - 1][location.y][$C.layerOffset.z] == -1) {
+	} else if (Voxel[location.x - 1][location.y + 1][location.z] != -1
+			&& Voxel[location.x - 1][location.y][location.z] == -1) {
 		canvasDrawSet([6, 7, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
 	}
-
+	
 	// Right side.
-	if (Voxel[location.x][location.y + 1][$C.layerOffset.z] == -1
-			&& Voxel[location.x - 1][location.y + 1][$C.layerOffset.z] == -1) {
-		canvasDrawSet([2, 7, 4, 3], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
-	} else if (Voxel[location.x - 1][location.y + 1][$C.layerOffset.z] != -1
-			&& Voxel[location.x][location.y + 1][$C.layerOffset.z] == -1) {
-		canvasDrawSet([2, 7, 3], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
-	}
-}*/
+	if (Voxel[location.x][location.y + 1][location.z] == -1
+			&& Voxel[location.x - 1][location.y + 1][location.z] == -1) {
+		canvasDrawSet([2, 7, 4, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
+	} else if (Voxel[location.x - 1][location.y + 1][location.z] != -1
+			&& Voxel[location.x][location.y + 1][location.z] == -1) {
+		canvasDrawSet([2, 7, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
+	}*/
+}
 
 function drawBlocks() {
 	for (var i = 0; i < Field.length; i++) {
