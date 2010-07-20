@@ -19,7 +19,8 @@ function toolSelect (tool) {
 	// Load button.
 	else if (tool == "load") {
 		loadField();
-		drawBlocks("Blocks loaded.");
+		drawBlocks();
+		loggit("Blocks loaded.");
 	}
 
 	// Refresh button.
