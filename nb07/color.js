@@ -12,16 +12,16 @@ var time1 = new Object();
 var time0 = new Object();
 
 function fillColorSwatch () {
-	time0 = new Date();
-	
 	var color = "";
 	
-//	for (var h = 0; h < 32; h++) {
-	
-
-//	}
-	
-	t = setInterval(buildColorSwatch, 1);
+	if ($C.animating == false) {
+		time0 = new Date();
+		$C.animating = true;
+		t = setInterval(buildColorSwatch, 1);
+	}
+	else {
+		loggit("Animation already being run!");
+	}
 }
 
 var h = 0;
@@ -31,6 +31,7 @@ function buildColorSwatch () {
 		clearInterval(t);
 		time1 = new Date();
 		loggit("Color cube drawn in " + (time1 - time0) + " ms.");
+		$C.animating = false;
 	}
 	
 	var location = {
@@ -58,7 +59,6 @@ function buildColorSwatch () {
 			
 			canvasBlock(coors, location, blockColor);
 		}
-		
 	}
 	
 	$C.posInd.redraw();

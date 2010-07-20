@@ -136,6 +136,9 @@ function Key (evt) {
 			}
 		//	$C.selected.tool = "delete";
 		}
+		if (evt.keyCode == 66) {
+			fillSquare();
+		}
 	}
 	
 /*	if (evt.type == "keyup") {
