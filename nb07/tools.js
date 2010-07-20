@@ -28,20 +28,20 @@ var Tools = function () {
 		Update("refresh", {gridMode: "standard"});
 		loggit("Canvas refreshed.");
 	}
-	
+		
 	// Delete button, its state can be toggled by the user.
-	this.remove = function () {
-		this.select = function () {
-			document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
-			$C.selected.tool = "delete";
-			document.getElementById("deleteButton").setAttributeNS(null, "stroke-opacity", "1.0");
-			loggit("Deletion tool selected.");
-		}
-		this.deselect = function () {
-			$C.selected.tool = "color";
-			document.getElementById("deleteButton").setAttributeNS(null, "stroke-opacity", "0.0");
-			loggit("Deletion tool deselected.");
-		}
+	this.remove = new Object();
+	this.remove.select = function () {
+		document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
+		$C.selected.tool = "delete";
+		document.getElementById("removeButton").setAttributeNS(null, "stroke-opacity", "1.0");
+		loggit("Deletion tool selected.");
+	}
+	this.remove.deselect = function () {
+		$C.selected.tool = "color" + $C.selected.color + $C.palette[$C.selected.color][3];
+		document.getElementById("removeButton").setAttributeNS(null, "stroke-opacity", "0.0");
+		document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "1.0");
+		loggit("Deletion tool deselected.");
 	}
 	
 	this.grid = function () {
@@ -50,7 +50,8 @@ var Tools = function () {
 				$C.layerOffset.z++;
 				$C.posInd.redraw();
 				// Raise the SVG grid.
-				document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(0," + (-35 - $C.layerOffset.z * $C.blockSize.half) + ")");
+				document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(0,"
+					+ (-35 - $C.layerOffset.z * $C.blockSize.half) + ")");
 			}
 		}
 		this.down = function () {
@@ -58,17 +59,18 @@ var Tools = function () {
 				$C.layerOffset.z--;
 				$C.posInd.redraw();
 				// Lower the SVG grid.
-				document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(0," + (-35 - $C.layerOffset.z * $C.blockSize.half) + ")");
+				document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(0,"
+					+ (-35 - $C.layerOffset.z * $C.blockSize.half) + ")");
 			}
 		}
 	}
 	
 	this.color = function () {
 		document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
-		
-		// Get the color swatch (its name corresponds to its color), then set its black outline to transparent, making it appear deselected.
-		document.getElementById("color" + $C.selected.lastColor + $C.palette[$C.selected.lastColor][3] + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
-		
+		// Get the color swatch (its name corresponds to its color), then set its black outline to transparent,
+		// making it appear deselected.
+		document.getElementById("color" + $C.selected.lastColor + $C.palette[$C.selected.lastColor][3] + "Button")
+			.setAttributeNS(null, "stroke-opacity", "0.0");
 		$C.selected.tool = "color" + $C.selected.color + $C.palette[$C.selected.color][3];
 		loggit("Selected color is: " + $C.palette[$C.selected.color][3] + ".");
 	}
@@ -77,60 +79,3 @@ var Tools = function () {
 		fillColorSwatch();
 	}
 }
-/*
-function toolSelect (tool) {
-
-	
-	
-
-
-	else if (tool == "delete") {
-		if ($C.selected.tool != "delete") {
-
-		}
-		else if ($C.selected.tool == "delete") {
-
-		}
-	}
-	
-	// Grid Up button.
-	else if (tool == "gridup") {
-
-	}
-	
-	// Grid Down button.
-	else if (tool == "griddown") {
-
-	}
-	
-	// Select button.
-	else if (tool == "select") {
-		if ($C.selected.tool != "select") {
-			document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
-			$C.selected.tool = "select";
-			document.getElementById("selectButton").setAttributeNS(null, "stroke-opacity", "1.0");
-			loggit("Selection tool selected.");
-		}
-		else if ($C.selected.tool == "select") {
-			$C.selected.tool = "color";
-			document.getElementById("selectButton").setAttributeNS(null, "stroke-opacity", "0.0");
-			loggit("Selection tool deselected.");
-		}
-	}
-
-	// Fill button.
-	else if (tool == "fill") {
-		fillRandom();
-	}
-	
-
-	
-	// Color selection.
-	if (tool == "color") {
-
-	}
-	
-	if (tool == "swatch") {
-		
-	}
-}*/
