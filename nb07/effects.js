@@ -27,6 +27,7 @@ var PositionIndicator = function () {
 	this.blocks = document.getElementById('blocks');
 	this.display = document.getElementById('display');
 	this.overlays = document.getElementById('overlays');
+	this.colors = document.getElementById('colors');
 	this.displayCtx = context('display');
 	
 	this.redraw = function () {
@@ -34,8 +35,8 @@ var PositionIndicator = function () {
 		this.ctx.globalAlpha = 0.6;
 	
 		var gr1 = $C.blockSize.full;
-		var gr2 = gr1 / 2;
-		var gr4 = gr1 / 4;
+		var gr2 = $C.blockSize.half;
+		var gr4 = $C.blockSize.quarter;
 	
 		// Red Marker, and first of three color-coded small display offsets.
 		var redOffs = 30;
@@ -134,9 +135,20 @@ var PositionIndicator = function () {
 	this.drawAll = function () {
 		this.displayCtx.clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
 		this.displayCtx.globalCompositeOperation = "source-over";
-		this.displayCtx.drawImage(this.grids, 0, 0);
+		
+		if ($C.swatchActive) {
+			this.displayCtx.drawImage(this.colors, 0, 0);
+		}
+		else {
+			this.displayCtx.drawImage(this.grids, 0, 0);
+			this.displayCtx.drawImage(this.blocks, 0, 0);
+		}
+		
 		this.displayCtx.drawImage(this.overlays, 0, 0);
-		this.displayCtx.drawImage(this.blocks, 0, 0);
+	}
+	
+	this.clear = function () {
+		this.ctx.clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
 	}
 	
 	// Selection box

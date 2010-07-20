@@ -74,6 +74,18 @@ var Tools = function () {
 	}
 	
 	this.swatch = function () {
-		fillColorSwatch();
+		if ($C.swatchActive) {
+			$C.selected.tool = "color" + $C.selected.color + $C.palette[$C.selected.color][3];
+			document.getElementById("swatchButton").setAttributeNS(null, "stroke-opacity", "0.0");
+			document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "1.0");
+			closeColorSwatch();
+			loggit("Color Cube closed.");
+		}
+		else {
+			document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
+			$C.selected.tool = "swatch";
+			document.getElementById("swatchButton").setAttributeNS(null, "stroke-opacity", "1.0");
+			fillColorSwatch();
+		}
 	}
 }
