@@ -118,8 +118,8 @@ function Click (evt) {
 	}
 	
 	// Select button.
-	else if (target.id == "selectButton" || target.id == "selectText" || target.id == "selectLogo") {
-		toolSelect("select");
+	else if (target.id == "colorButton" || target.id == "colorText") {
+		toolSelect("colorSwatch");
 	}
 
 	// Fill button.
@@ -135,6 +135,9 @@ function Click (evt) {
 	// Grid Down button.
 	else if (target.id == "gridDownButton" || target.id == "gridDownText") {
 		toolSelect("griddown");
+	}
+	else if (target.id == "swatchButton" || target.id == "swatchText") {
+		toolSelect("swatch");
 	}
 	
 	// Color selection.

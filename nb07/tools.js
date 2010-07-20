@@ -19,7 +19,8 @@ function toolSelect (tool) {
 	// Load button.
 	else if (tool == "load") {
 		loadField();
-		drawBlocks("Blocks loaded.");
+		drawBlocks();
+		loggit("Blocks loaded.");
 	}
 
 	// Refresh button.
@@ -67,7 +68,7 @@ function toolSelect (tool) {
 	else if (tool == "gridup") {
 		if($C.layerOffset.z < ($C.gridDims.r - 1)) {
 			$C.layerOffset.z++;
-			positionIndicator();
+			$C.posInd.redraw();
 			// Raise the SVG grid.
 			document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(0," + (-35 - $C.layerOffset.z * $C.blockSize.half) + ")");
 		}
@@ -77,7 +78,7 @@ function toolSelect (tool) {
 	else if (tool == "griddown") {
 		if($C.layerOffset.z > 0) {
 			$C.layerOffset.z--;
-			positionIndicator();
+			$C.posInd.redraw();
 			// Lower the SVG grid.
 			document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(0," + (-35 - $C.layerOffset.z * $C.blockSize.half) + ")");
 		}
@@ -92,5 +93,9 @@ function toolSelect (tool) {
 		
 		$C.selected.tool = "color" + $C.selected.color + $C.palette[$C.selected.color][3];
 		loggit("Selected color is: " + $C.palette[$C.selected.color][3] + ".");
+	}
+	
+	if (tool == "swatch") {
+		fillColorSwatch();
 	}
 }
