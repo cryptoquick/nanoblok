@@ -67,7 +67,7 @@ function Click (evt) {
 		"swatch",
 		"fill",
 		"gridUp",
-		"dridDown",
+		"gridDown",
 	];
 	
 	for (var i = 0; i < inputs.length; i++) {
@@ -127,6 +127,7 @@ function Hover (evt, inout) {
 
 function Key (evt) {
 	if (evt.type == "keydown") {
+		// DKEY for delete.
 		if (evt.keyCode == 68) {
 			if ($C.selected.tool == "delete") {
 				$C.tools.remove.deselect();
@@ -136,8 +137,16 @@ function Key (evt) {
 			}
 		//	$C.selected.tool = "delete";
 		}
+		// BKEY for debug script.
 		if (evt.keyCode == 66) {
 			fillSquare();
+		}
+		// UP and DOWN arrows for 
+		if (evt.keyCode == 38) {
+			$C.tools.gridUp();
+		}
+		if (evt.keyCode == 40) {
+			$C.tools.gridDown();
 		}
 	}
 	

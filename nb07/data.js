@@ -141,6 +141,12 @@ var Common = function () {
 	
 	// This is to make sure to not run another animation if an animation is already being run.
 	this.animating = false;
+	
+	// Swatch only needs to be initialized once.
+	this.swatchInit = false;
+	
+	// Used to tell if swatch is being displayed.
+	this.swatchActive = false;
 }
 
 function initHistory () {

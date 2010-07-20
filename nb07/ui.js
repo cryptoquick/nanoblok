@@ -14,7 +14,8 @@ var canvases = [
 	'blocks',
 	'overlays',
 	'display',
-	'debug'
+	'debug',
+	'colors'
 ];
 
 function drawUI () {

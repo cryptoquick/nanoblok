@@ -41,6 +41,9 @@ function canvasDrawSet (hexSet, offset, settings) {
 	if (settings.grid) {
 		canvas = 'grids';
 	}
+	else if ($C.swatchActive) {
+		canvas = 'colors';
+	}
 	else {
 		canvas = 'blocks';
 	}
@@ -116,26 +119,33 @@ function colorBlockNew (color) {
 function canvasBlock (position, location, color) {
 	var adjustedPosition = {x: position.x, y: position.y - $C.blockSize.half * (location.z + 1)};
 	
+	if ($C.swatchActive) {
+		Arr = SwatchGhost;
+	}
+	else {
+		Arr = Voxel;
+	}
+	
 	// Top side. Always placed, unless there's a block above it.
-	if (Voxel[location.x][location.y][location.z + 1] == -1) {
+	if (Arr[location.x][location.y][location.z + 1] == -1) {
 		canvasDrawSet([1, 6, 7, 2], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
 	}
 	
 	// Left side.
-	if (Voxel[location.x - 1][location.y][location.z] == -1
-			&& Voxel[location.x - 1][location.y + 1][location.z] == -1) {
+	if (Arr[location.x - 1][location.y][location.z] == -1
+			&& Arr[location.x - 1][location.y + 1][location.z] == -1) {
 		canvasDrawSet([6, 7, 4, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
-	} else if (Voxel[location.x - 1][location.y + 1][location.z] != -1
-			&& Voxel[location.x - 1][location.y][location.z] == -1) {
+	} else if (Arr[location.x - 1][location.y + 1][location.z] != -1
+			&& Arr[location.x - 1][location.y][location.z] == -1) {
 		canvasDrawSet([6, 7, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
 	}
 	
 	// Right side.
-	if (Voxel[location.x][location.y + 1][location.z] == -1
-			&& Voxel[location.x - 1][location.y + 1][location.z] == -1) {
+	if (Arr[location.x][location.y + 1][location.z] == -1
+			&& Arr[location.x - 1][location.y + 1][location.z] == -1) {
 		canvasDrawSet([2, 7, 4, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
-	} else if (Voxel[location.x - 1][location.y + 1][location.z] != -1
-			&& Voxel[location.x][location.y + 1][location.z] == -1) {
+	} else if (Arr[location.x - 1][location.y + 1][location.z] != -1
+			&& Arr[location.x][location.y + 1][location.z] == -1) {
 		canvasDrawSet([2, 7, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
 	}
 }
