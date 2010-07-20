@@ -116,51 +116,7 @@ function Click (evt) {
 			eval("$C.tools." + inputs[i] + "()");
 		}
 	}
-	/*
-	// Top-side mode/settings buttons.
-	// Save button.
-	if (target.id == "saveButton" || target.id == "saveText") {
-		toolSelect("save");
-	}
 	
-	// Load button.
-	else if (target.id == "loadButton" || target.id == "loadText") {
-		toolSelect("load");
-	}
-
-	// Refresh button.
-	else if (target.id == "refreshButton" || target.id == "refreshText") {
-		toolSelect("refresh");
-	}
-	
-	// Delete button, its state can be toggled by the user.
-	else if (target.id == "deleteButton" || target.id == "deleteText") {
-		toolSelect("delete");
-	}
-	
-	// Select button.
-	else if (target.id == "colorButton" || target.id == "colorText") {
-		toolSelect("colorSwatch");
-	}
-
-	// Fill button.
-	else if (target.id == "fillButton" || target.id == "fillText") {
-		toolSelect("fill");
-	}
-	
-	// Grid Up button.
-	else if (target.id == "gridUpButton" || target.id == "gridUpText") {
-		toolSelect("gridup");
-	}
-	
-	// Grid Down button.
-	else if (target.id == "gridDownButton" || target.id == "gridDownText") {
-		toolSelect("griddown");
-	}
-	else if (target.id == "swatchButton" || target.id == "swatchText") {
-		toolSelect("swatch");
-	}
-	*/
 	// Color selection.
 	if (target.id.substr(0,5) == "color") {
 		// The last color is used to deselect the last color.
@@ -168,7 +124,7 @@ function Click (evt) {
 		
 		// Get the color value from its id and set the currently selected color as this. (not the best way to do this...)
 		$C.selected.color = parseInt(target.id.substr(5,1));
-		toolSelect("color");
+		$C.tools.color();
 		
 		// 'Select' the clicked-on color swatch.
 		document.getElementById(target.id).setAttributeNS(null, "stroke-opacity", "1.0");
