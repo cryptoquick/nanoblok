@@ -1,0 +1,210 @@
+/*
+ * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
+ * http://code.google.com/p/nanoblok/
+ * Copyright (c) 2009-2010 Alex Trujillo
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ * 
+ * Summary for grid.js:
+ * Contains grid-related functions; one for the math to setup the points used by the grids, then an SVG-based grid plotter, and then a canvas-based grid plotter.
+ */
+
+// The gridCoors function creates a static set of coordinates from which to base the canvas and SVG grids upon.
+function gridCoors (side) {	
+	var i = 0;
+
+	// Grid loop builds an absolute position tile, then places it at a specific x/y position on the grid.
+	for (var x = 0; x < $C.gridDims.c; x++) {
+		for (var y = 0; y < $C.gridDims.r; y++) {
+			var tileCoors;
+
+			// Bottom side.
+			var hexSide = [1, 2, 7, 6];
+			tileCoors = {
+				x: (x * $C.blockSize.half) + (y * $C.blockSize.half) + $C.offset.x,
+				y: ((y * $C.blockSize.quarter) + ($C.gridSize.y - x * $C.blockSize.quarter)) + $C.offset.y
+			};
+			
+			GridField['x-' + i] = {x: x, y: y, z: -1, coors: tileCoors};
+			
+			// Left side.
+			var hexSide = [1, 7, 5, 6];
+			tileCoors = {
+				x: (x * $C.blockSize.half)  + $C.offset.x,
+				y: ((y * $C.blockSize.half) + (-$C.gridSize.y - x * $C.blockSize.quarter)) + $C.offset.y
+			};
+			
+			GridField['y-' + i] = {x: x, y: y, z: -1, coors: tileCoors};
+
+			// Right side.
+			var hexSide = [6, 7, 4, 5];
+			tileCoors = {
+				x: (x * $C.blockSize.half) + $C.gridSize.x / 2 + $C.offset.x,
+				y: ((y * $C.blockSize.half) + (-$C.gridSize.y * 2 + x * $C.blockSize.quarter)) + $C.offset.y
+			};
+
+			GridField['z-' + i] = {x: x, y: y, z: -1, coors: tileCoors};
+
+			i++;
+		}
+	}
+}
+
+// Will be an option if the SVG mouse events don't work as well.
+function gridScreen () {
+	
+}
+
+// Versatile function for drawing tiles. Perhaps a bit too versatile.
+function drawSet (hexSet, coorSet, closed) {
+	pathElement = document.createElementNS(svgNS, 'path');
+	
+	var hexSpot = hexSet.pop();
+	var path = '';
+	path += 'M ' + coorSet.x[hexSpot] + ' ' + coorSet.y[hexSpot];
+	
+	var i = 0;
+
+	while (i < hexSet.length || i == 7) {
+		hexSpot = hexSet.pop();
+		path += ' L ' + coorSet.x[hexSpot] + ' ' + coorSet.y[hexSpot];
+		i = i++;
+	}
+	
+	if (closed) {
+		path += ' Z';
+	}
+	
+	pathElement.setAttributeNS(null, 'd', path);
+	
+	return pathElement;
+}
+
+// Draws the invisible SVG grid for mouse detection.
+function drawGrid (side) {
+	var gridContainer = document.getElementById('gridContainer');
+	
+	var i = 0;
+	
+	var square = [0,0,0,0]
+	
+	for (var x = 0; x < $C.gridDims.c; x++) {
+		for (var y = 0; y < $C.gridDims.r; y++) {
+			var tileCoors = GridField['x-' + i];
+			var hexSide = [1, 2, 7, 6];
+			
+			var set = hexiso(tileCoors.coors, $C.blockSize);
+			
+			if (x == 31 && y == 0) {
+				square[0] = {x: set.x[1], y: set.y[1]};
+			}
+			else if (x == 0 && y == 0) {
+				square[1] = {x: set.x[6], y: set.y[6]};
+			}
+			else if (x == 0 && y == 31) {
+				square[2] = {x: set.x[7], y: set.y[7]};
+			}
+			else if (x == 31 && y == 31) {
+				square[3] = {x: set.x[2], y: set.y[2]};
+			}
+			
+			var tile = drawSet(hexSide, set, true);
+			
+			// Column, Row
+			tile.setAttributeNS(null, 'c', x);
+			tile.setAttributeNS(null, 'r', y);
+			
+			var blockID = 'x-' + i;
+			tile.setAttributeNS(null, 'id', blockID);
+			
+			gridContainer.appendChild(tile);
+			
+			i++;
+		}
+	}
+	
+	$C.gridCorners = square;
+	
+	/*
+	var path = new String();
+	
+	for (var corner = 0; corner < 4; corner++) {
+		if (corner == 0) {
+			path += 'M ' + square[corner].x + ' ' + square[corner].y;
+		}
+		else if (corner == 3) {
+			path += ' ' + square[corner].x + ' ' + square[corner].y + ' Z';
+		}
+		else {
+			path += ' L ' + square[corner].x + ' ' + square[corner].y;
+		}
+	}
+
+	pathElement = document.createElementNS(svgNS, 'path');
+	pathElement.setAttributeNS(null, 'd', path);
+	pathElement.setAttributeNS(null, 'stroke', 'red');
+	pathElement.setAttributeNS(null, 'stroke-opacity', '0.3');
+	x0 = document.getElementById('x-0');
+	gridContainer.insertBefore(pathElement, x0); */
+}
+
+// Draws the grids using canvas.
+// Lots of nested loops here. Individual loops for each grid.
+function canvasGrid (side, mode) {
+	var i = 0;
+		
+	for (var x = 0; x < $C.gridDims.c; x++) {
+		for (var y = 0; y < $C.gridDims.r; y++) {
+			if (side == "bottom") {
+				var hexSet = [1, 2, 7, 6];
+				var offset = GridField["x-" + i].coors;
+				
+				if (mode == "standard") {
+					var fill = "#eee";
+					var stroke = "#aaa";
+				}
+				if (mode == "number") {
+					var fill = "rgb(" + (255 - i / 4) + ", " + 0 + ", " + 0 + ")";
+					var stroke = "black";
+				}
+				
+				// hexSet, offset, $C, closed, color, stroke
+				canvasDrawSet(hexSet, offset,
+					{closed: true, fill: fill, stroke: stroke, grid: true});
+			}
+			if (side == "left") {
+				var hexSet = [1, 7, 5, 6];
+				var offset = GridField["y-" + i].coors;
+				
+				if (mode == "standard") {
+					var fill = "#ddd";
+					var stroke = "#aaa";
+				}
+				if (mode == "number") {
+					var fill = "rgb(" + 0 + ", " + (255 - i / 4) + ", " + 0 + ")";
+					var stroke = "black";
+				}
+				
+				canvasDrawSet(hexSet, offset,
+					{closed: true, fill: fill, stroke: stroke, grid: true});
+			}
+			if (side == "right") {
+				var hexSet = [6, 7, 4, 5];
+				var offset = GridField["z-" + i].coors;
+				
+				if (mode == "standard") {
+					var fill = "#ccc";
+					var stroke = "#aaa";
+				}
+				if (mode == "number") {
+					var fill = "rgb(" + 0 + ", " + 0 + ", " + (255 - i / 4) + ")";
+					var stroke = "black";
+				}
+				
+				canvasDrawSet(hexSet, offset,
+					{closed: true, fill: fill, stroke: stroke, grid: true});
+			}
+			
+			i++;
+		}
+	}
+}

@@ -1,0 +1,160 @@
+/*
+ * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
+ * http://code.google.com/p/nanoblok/
+ * Copyright (c) 2009-2010 Alex Trujillo
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ * 
+ * Summary for input.js:
+ * Event handlers and the functions they run.
+ */
+
+function InitEvents () {
+	/* Event listeners */
+	window.addEventListener('mousedown', function (evt) {
+		Click(evt);
+		mouseDown = true;
+	}, false);
+	
+	window.addEventListener('mouseup', function (evt) {
+		mouseDown = false;
+	}, false);
+
+	window.addEventListener('mouseover', function (evt) {
+		Hover(evt, 'in');
+	}, false);
+
+	window.addEventListener('mouseout', function (evt) {
+		Hover(evt, 'out');
+	}, false);
+	
+	window.addEventListener('keydown', function (evt) {
+		Key(evt);
+	}, false);
+	
+	// window.addEventListener('mousemove', function (evt) {
+	// 	Mouse(evt);
+	// }, false);
+
+	window.onresize = function() {
+		if(initialized) {
+			loggit('Resolution change detected, click refresh button.');
+		}
+		displayResized = true;
+	}
+}
+
+// Handles click events from its corresponding event listener.
+function Click (evt) {
+	var target = evt.target;
+	
+	// Top-side mode/settings buttons.
+	// Save button.
+	if (target.id == "saveButton" || target.id == "saveText") {
+		toolSelect("save");
+	}
+	
+	// Load button.
+	else if (target.id == "loadButton" || target.id == "loadText") {
+		toolSelect("load");
+	}
+
+	// Refresh button.
+	else if (target.id == "refreshButton" || target.id == "refreshText") {
+		toolSelect("refresh");
+	}
+	
+	// Delete button, its state can be toggled by the user.
+	else if (target.id == "deleteButton" || target.id == "deleteText") {
+		toolSelect("save");
+	}
+	
+	// Select button.
+	else if (target.id == "colorButton" || target.id == "colorText") {
+		toolSelect("colorSwatch");
+	}
+
+	// Fill button.
+	else if (target.id == "fillButton" || target.id == "fillText") {
+		toolSelect("fill");
+	}
+	
+	// Grid Up button.
+	else if (target.id == "gridUpButton" || target.id == "gridUpText") {
+		toolSelect("gridup");
+	}
+	
+	// Grid Down button.
+	else if (target.id == "gridDownButton" || target.id == "gridDownText") {
+		toolSelect("griddown");
+	}
+	else if (target.id == "swatchButton" || target.id == "swatchText") {
+		toolSelect("swatch");
+	}
+	
+	// Color selection.
+	if (target.id.substr(0,5) == "color") {
+		// The last color is used to deselect the last color.
+		$C.selected.lastColor = $C.selected.color;
+		
+		// Get the color value from its id and set the currently selected color as this. (not the best way to do this...)
+		$C.selected.color = parseInt(target.id.substr(5,1));
+		toolSelect("color");
+		
+		// 'Select' the clicked-on color swatch.
+		document.getElementById(target.id).setAttributeNS(null, "stroke-opacity", "1.0");
+	}
+	
+	// Block placement (first click, and if only one single click)
+	if ($C.selected.tool == "delete") {
+		deleteBlock(target);
+	}
+	else if ($C.selected.tool == "select") {
+		selectArea(target, true);
+	}
+	else if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-')
+	{
+		placeBlock(target);
+	}
+}
+
+// Gets hover events from its corresponding event listener, including whether the user hovered in or out of the object.
+function Hover (evt, inout) {
+	var target = evt.target;
+	
+	// Place a block on the x-grid as long as the mouse is down and place it only when moving into the cell, otherwise the block would be placed twice.
+	if ((target.id.substr(0,2) == 'x-') && mouseDown && inout == "in") {
+		placeBlock(target);
+	}
+	
+	// Puts information about the position of the cursor over the grid into the markerPosition field in $C, allowing that to be used by the positionIndicator function.
+	if (target.id.substr(0,2) == 'x-' && inout == "in") {
+		$C.markerPosition.x = target.getAttribute("c");
+		$C.markerPosition.z = target.getAttribute("r");
+		$C.posInd.redraw();
+	}
+}
+
+function Key (evt) {
+	if (evt.type == "keydown") {
+		if (evt.keyCode == 68) {
+			$C.selected.tool = "delete";
+		}
+	}
+}
+
+function Mouse (evt) {
+	// loggit(evt.layerX + ", " + evt.layerY);
+	
+	/*
+	// Place a block on the x-grid as long as the mouse is down and place it only when moving into the cell, otherwise the block would be placed twice.
+	if ((target.id.substr(0,2) == 'x-') && mouseDown && inout == "in") {
+		placeBlock(target);
+	}
+	
+	// Puts information about the position of the cursor over the grid into the markerPosition field in $C, allowing that to be used by the positionIndicator function.
+	if (target.id.substr(0,2) == 'x-' && inout == "in") {
+		$C.markerPosition.x = target.getAttribute("c");
+		$C.markerPosition.z = target.getAttribute("r");
+		positionIndicator();
+	}*/
+}
