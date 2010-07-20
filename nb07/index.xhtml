@@ -47,6 +47,8 @@
 			display: block;
 			z-index: -1;
 		}
+		::selection { background: transparent; }
+		::-moz-selection { background: transparent; }
 	</style>
 </head>
 <body>
@@ -73,10 +75,6 @@
 		<svg:path d="M 5 10 L 5 20 L 15 25 L 15 15 Z" fill="rgb(42, 197, 18)" id="left" fill-opacity="1"/>
 		<svg:path d="M 15 15 L 15 25 L 25 20 L 25 10 Z" fill="rgb(62, 217, 38)" id="right" fill-opacity="1"/>
 		<svg:path d="M 5 10 L 15 15 L 25 10 L 15 5 Z" fill="rgb(82, 237, 58)" id="top" fill-opacity="1"/>
-		<svg:g stroke="#444" fill="none" stroke-width=".75" stroke-opacity="0.8">
-			<svg:path d="M 25 10 L 15 15 L 5 10"/>
-			<svg:path d="M 15 25 L 15 15"/>
-		</svg:g>
 		<svg:path d="M 5 10 L 5 20 L 15 25 L 25 20 L 25 10 L 15 5 Z" stroke="#444" fill="none"/>
 	</svg:g>
 	
