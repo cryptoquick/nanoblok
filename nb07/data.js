@@ -125,7 +125,7 @@ var Common = function () {
 		Voxel[x] = new Array();
 		for (var y = -1; y < this.gridDims.r + 1; y++) {
 		Voxel[x][y] = new Array();
-			for (var z = -1; z < this.gridDims.c +1; z++) {
+			for (var z = -1; z < this.gridDims.c + 1; z++) {
 				Voxel[x][y][z] = -1;
 			}
 		}
@@ -138,6 +138,9 @@ var Common = function () {
 	this.mouseMove = false;
 	
 	this.tools = new Tools();
+	
+	// This is to make sure to not run another animation if an animation is already being run.
+	this.animating = false;
 }
 
 function initHistory () {

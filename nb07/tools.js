@@ -44,24 +44,22 @@ var Tools = function () {
 		loggit("Deletion tool deselected.");
 	}
 	
-	this.grid = function () {
-		this.up = function () {
-			if($C.layerOffset.z < ($C.gridDims.r - 1)) {
-				$C.layerOffset.z++;
-				$C.posInd.redraw();
-				// Raise the SVG grid.
-				document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(0,"
-					+ (-35 - $C.layerOffset.z * $C.blockSize.half) + ")");
-			}
+	this.gridUp = function () {
+		if($C.layerOffset.z < ($C.gridDims.r - 1)) {
+			$C.layerOffset.z++;
+			$C.posInd.redraw();
+			// Raise the SVG grid.
+			document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(0,"
+				+ (-35 - $C.layerOffset.z * $C.blockSize.half) + ")");
 		}
-		this.down = function () {
-			if($C.layerOffset.z > 0) {
-				$C.layerOffset.z--;
-				$C.posInd.redraw();
-				// Lower the SVG grid.
-				document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(0,"
-					+ (-35 - $C.layerOffset.z * $C.blockSize.half) + ")");
-			}
+	}
+	this.gridDown = function () {
+		if($C.layerOffset.z > 0) {
+			$C.layerOffset.z--;
+			$C.posInd.redraw();
+			// Lower the SVG grid.
+			document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(0,"
+				+ (-35 - $C.layerOffset.z * $C.blockSize.half) + ")");
 		}
 	}
 	
