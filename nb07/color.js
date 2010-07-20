@@ -17,8 +17,8 @@ function fillColorSwatch () {
 	$C.swatchActive = true;
 	
 	// Initialize the color swatch array if it hasn't been done already.
-	loggit("Initializing Color Array");
 	if ($C.swatchInit == false) {
+		loggit("Initializing Color Array");
 		for (var x = -1; x < $C.gridDims.r + 1; x++) {
 			Swatch[x] = new Array();
 			for (var y = -1; y < $C.gridDims.r + 1; y++) {
@@ -35,35 +35,42 @@ function fillColorSwatch () {
 			}
 		}
 		$C.swatchInit = true;
-	}
 	
-	// Facilitates drawing of the array using canvasBlock occlusion.
-	for (var x = -1; x < $C.gridDims.r + 1; x++) {
-		SwatchGhost[x] = new Array();
-		for (var y = -1; y < $C.gridDims.r + 1; y++) {
-		SwatchGhost[x][y] = new Array();
-			for (var z = -1; z < $C.gridDims.c + 1; z++) {
-				SwatchGhost[x][y][z] = -1;
+	
+		// Facilitates drawing of the array using canvasBlock occlusion.
+		for (var x = -1; x < $C.gridDims.r + 1; x++) {
+			SwatchGhost[x] = new Array();
+			for (var y = -1; y < $C.gridDims.r + 1; y++) {
+			SwatchGhost[x][y] = new Array();
+				for (var z = -1; z < $C.gridDims.c + 1; z++) {
+					SwatchGhost[x][y][z] = -1;
+				}
 			}
 		}
-	}
 	
-	loggit("Drawing Color Cube");
-	// Run the swatch function in such a way that the browser can render once each level is drawn.
-	if ($C.animating == false) {
-		time0 = new Date();
-		$C.animating = true;
-		t = setInterval(buildColorSwatch, 1);
+		loggit("Drawing Color Cube");
+		// Run the swatch function in such a way that the browser can render once each level is drawn.
+		if ($C.animating == false) {
+			time0 = new Date();
+			$C.animating = true;
+			t = setInterval(buildColorSwatch, 1);
+		}
+		else {
+			loggit("Animation already being run!");
+		}
 	}
 	else {
-		loggit("Animation already being run!");
+		loggit("Displaying Color Array");
+		$C.swatchActive = true;
+		$C.layerOffset.z = 30;
+		$C.tools.gridUp();
 	}
 }
 
 var h = 0;
 
 function buildColorSwatch () {
-	if (h >= 31) {
+	if (h >= 32) {
 		clearInterval(t);
 		time1 = new Date();
 		loggit("Color Cube drawn in " + (time1 - time0) + " ms.");
@@ -71,6 +78,7 @@ function buildColorSwatch () {
 		// SwatchGhost = new Array();
 		$C.layerOffset.z = 30;
 		$C.tools.gridUp();
+		h = 0;
 	}
 	
 	var location = {
