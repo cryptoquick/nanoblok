@@ -31,6 +31,8 @@ var PositionIndicator = function () {
 	this.displayCtx = context('display');
 	
 	this.redraw = function () {
+		var offset = {x: 0, y: $C.windowSize.y};
+		
 		this.ctx.clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
 		this.ctx.globalAlpha = 0.6;
 	
@@ -39,13 +41,13 @@ var PositionIndicator = function () {
 		var gr4 = $C.blockSize.quarter;
 	
 		// Red Marker, and first of three color-coded small display offsets.
-		var redOffs = 30;
+		var redOffs = -1;
 		if ($C.smallDisplay) {redOffs = 31}
-		var offsY = $C.offset.y - redOffs;
-		var offsYtop = ($C.edges.top - $C.gridSize.y - redOffs)
+		// var offsY = offset.y - redOffs;
+		var offsYtop = ($C.gridSize.y - redOffs)
 			- ($C.markerPosition.x * $C.blockSize.quarter)
 			+ ($C.gridDims.c - $C.layerOffset.z - 1) * $C.blockSize.half;
-		var offsX = $C.offset.x + $C.markerPosition.x * $C.blockSize.half;
+		var offsX = offset.x + $C.markerPosition.x * $C.blockSize.half;
 	
 		this.ctx.fillStyle = '#f00';
 		this.ctx.beginPath();
@@ -59,12 +61,12 @@ var PositionIndicator = function () {
 		this.ctx.fill();
 	
 		// Blue Marker
-		var blueOffs = 185;
+		var blueOffs = 6;
 		if ($C.smallDisplay) {blueOffs = 148}
-		offsYtop = ($C.edges.top - $C.gridSize.y - blueOffs)
+		offsYtop = (blueOffs)
 			+ ($C.markerPosition.z * $C.blockSize.quarter)
 			+ ($C.gridDims.c - $C.layerOffset.z - 1) * $C.blockSize.half;
-		offsX = $C.offset.x + $C.gridSize.x / 2 + ($C.markerPosition.z * $C.blockSize.half);
+		offsX = offset.x + $C.gridSize.x / 2 + ($C.markerPosition.z * $C.blockSize.half);
 	
 		this.ctx.fillStyle = '#00f';
 		this.ctx.beginPath();
@@ -77,11 +79,13 @@ var PositionIndicator = function () {
 		this.ctx.closePath();
 		this.ctx.fill();
 	
+		// ($C.layerOffset.z * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.quarter) + ($C.gridSize.y - $C.markerPosition.x * $C.blockSize.quarter) - greenOffs
+	
 		// Green Cursor
-		var greenOffs = 45;
+		var greenOffs = -306; // Couldn't figure out how to pare this down like the others, but this figure works.
 		if ($C.smallDisplay) {greenOffs = 43}
-		offsX = $C.offset.x + ($C.markerPosition.x * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.half);
-		offsYtop = $C.edges.top - ($C.layerOffset.z * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.quarter) + ($C.gridSize.y - $C.markerPosition.x * $C.blockSize.quarter) - greenOffs;
+		offsX = 1 + ($C.markerPosition.x * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.half);
+		offsYtop = ($C.layerOffset.z * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.quarter) + ($C.gridSize.y - $C.markerPosition.x * $C.blockSize.quarter) - greenOffs;
 	
 		this.ctx.fillStyle = '#0f0';
 		this.ctx.beginPath();

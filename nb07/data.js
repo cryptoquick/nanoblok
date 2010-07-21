@@ -53,11 +53,6 @@ var Common = function () {
 		y: this.gridDims.r * this.blockSize.quarter
 	};
 	
-	this.canvasSize = {
-		w: this.gridSize.x,
-		h: this.gridSize.y * 4
-	};
-	
 	// Center of the window.
 	this.center = {x: this.windowSize.x / 2, y: this.windowSize.y / 2};
 	
@@ -70,8 +65,8 @@ var Common = function () {
 	
 	// This should technically be how far away from the left and top of the screen that the left-most, top-most corner of grid is located.
 	this.offset = {
-		x: (this.windowSize.x - this.gridSize.x) / 2,
-		y: this.windowSize.y - this.gridSize.y * 2
+		x: 1,
+		y: this.gridSize.y * 2 + 31
 	};
 	
 	// From Tango Project colors:
