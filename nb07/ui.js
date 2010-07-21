@@ -48,6 +48,13 @@ function drawUI () {
 	// Position arrows on the left side.
 	var sideButtonsLeft = document.getElementById("sideButtonsLeft");
 	sideButtonsLeft.setAttributeNS(null, "transform", "translate(" + ($C.edges.left - 25) + ", " + ($C.edges.top - $C.gridSize.y - 20) + ")");
+
+	// Position axis labels.
+	var yAxis = document.getElementById("yAxis");
+	yAxis.setAttributeNS(null, "transform", "translate(" + ($C.edges.left + $C.gridSize.x / 4) + ", " + ($C.edges.top + $C.gridSize.y * 1.5) + "),skewY(26.565),skewX(-45)");
+	
+	var xAxis = document.getElementById("xAxis");
+	xAxis.setAttributeNS(null, "transform", "translate(" + ($C.edges.left + $C.gridSize.x / 2 + $C.gridSize.x / 4) + ", " + ($C.edges.top + $C.gridSize.y * 1.5) + "),skewY(-26.565),skewX(45)");
 	
 	populatePalette();
 	

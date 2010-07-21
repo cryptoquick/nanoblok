@@ -16,7 +16,7 @@ function fillSquare () {
 		time0 = new Date();
 		$C.animating = true;
 		t = setInterval((function() {
-			if (i >= 1023) {
+			if (i >= 255) {
 				clearInterval(t);
 				time1 = new Date();
 				loggit("Square drawn in " + (time1 - time0) + " ms.");
@@ -36,7 +36,7 @@ function fillSquare () {
 			canvasBlock(coors, location, blockColor);
 		
 			l++;
-			if (l >= 32) {
+			if (l >= 16) {
 				w++;
 				l = 0;
 				$C.posInd.redraw();
