@@ -199,31 +199,41 @@ function removeBlock (target) {
 function canvasBlockRemove (position, location) {
 	var adjustedPosition = {x: position.x, y: position.y - $C.blockSize.half * (location.z + 1)};
 	
-	var defaultColor = {left: "#eee", right: "#eee", top: "#eee", inset: "#aaa"};
-	var color = defaultColor;
+	var color = {left: "#eee", right: "#eee", top: "#eee", inset: "#aaa"};
+	
+	// Top side.
 	
 	// Left side.
-	if (Voxel[location.x - 1][location.y][location.z] == -1
-			&& Voxel[location.x - 1][location.y + 1][location.z] == -1) {
-		canvasDrawSet([6, 7, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
-	} else if (Voxel[location.x - 1][location.y + 1][location.z] != -1
-			&& Voxel[location.x - 1][location.y][location.z] == -1) {
-		canvasDrawSet([6, 7, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
-	}
 	
 	// Right side.
-	if (Voxel[location.x][location.y + 1][location.z] == -1
-			&& Voxel[location.x - 1][location.y + 1][location.z] == -1) {
-		canvasDrawSet([2, 7, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
-	} else if (Voxel[location.x - 1][location.y + 1][location.z] != -1
-			&& Voxel[location.x][location.y + 1][location.z] == -1) {
-		canvasDrawSet([2, 7, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
-	}
 	
 	// Bottom side. Same color as the top of the block below it, or, if on the bottom, default colors.
-	if (Voxel[location.x][location.y][location.z + 1] == -1) {
-		canvasDrawSet([7, 3, 4, 5], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
+	// Don't draw if there are blocks in front.
+	// if (Voxel[location.x + 1][location.y][location.z] && Voxel[location.x][location.y - 1][location.z]) {
+		if (Voxel[location.x - 1][location.y][location.z] != -1 && Voxel[location.x][location.y + 1][location.z] == -1) {
+			canvasDrawSet([7, 3, 4], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
+		}
+		else if (Voxel[location.x][location.y][location.z + 1] == -1) {
+			canvasDrawSet([7, 3, 4, 5], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
+		}
+	// }
+	
+	// Corrective Top side. (uses color from the block behind or underneath)
+	
+	// Corrective Left.
+	
+	// Corrective Right side.
+	if (Voxel[location.x + 1][location.y][location.z] != -1 && Voxel[location.x][location.y + 1][location.z] != -1) {
+		var color = colorBlock(Voxel[location.x + 1][location.y][location.z]);
+		canvasDrawSet([1, 2, 7], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
 	}
+	else if (Voxel[location.x + 1][location.y][location.z] != -1) {
+		var color = colorBlock(Voxel[location.x + 1][location.y][location.z]);
+		canvasDrawSet([1, 2, 3, 7], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
+	}
+	
+	// Corrective Bottom side.
+	
 }
 
 function drawBlocks() {
