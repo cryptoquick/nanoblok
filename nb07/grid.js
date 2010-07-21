@@ -122,8 +122,8 @@ function drawGrid (side) {
 			tile.setAttributeNS(null, 'id', blockID);
 			
 			// Debug
-			// tile.setAttributeNS(null, 'stroke', 'red');
-			// tile.setAttributeNS(null, 'stroke-opacity', '0.3');
+			tile.setAttributeNS(null, 'stroke', 'red');
+			tile.setAttributeNS(null, 'stroke-opacity', '0.3');
 			
 			gridContainer.appendChild(tile);
 			
