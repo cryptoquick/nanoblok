@@ -49,8 +49,11 @@ var Tools = function () {
 			$C.layerOffset.z++;
 			$C.posInd.redraw();
 			// Raise the SVG grid.
+			var gridOffset = -389;
+			if ($C.smallDisplay) {gridOffset = -309};
 			document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(-1,"
-				+ (-389 - $C.layerOffset.z * $C.blockSize.half) + ")");
+				+ (gridOffset - $C.layerOffset.z * $C.blockSize.half) + ")");
+			loggit("Up to " + $C.layerOffset.z);
 		}
 	}
 	this.gridDown = function () {
@@ -58,8 +61,11 @@ var Tools = function () {
 			$C.layerOffset.z--;
 			$C.posInd.redraw();
 			// Lower the SVG grid.
+			var gridOffset = -389;
+			if ($C.smallDisplay) {gridOffset = -309};
 			document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(-1,"
-				+ (-389 - $C.layerOffset.z * $C.blockSize.half) + ")");
+				+ (gridOffset - $C.layerOffset.z * $C.blockSize.half) + ")");
+			loggit("Down to " + $C.layerOffset.z);
 		}
 	}
 	

@@ -42,7 +42,7 @@ var PositionIndicator = function () {
 	
 		// Red Marker, and first of three color-coded small display offsets.
 		var redOffs = -1;
-		if ($C.smallDisplay) {redOffs = 31}
+		if ($C.smallDisplay) {redOffs = 0}
 		// var offsY = offset.y - redOffs;
 		var offsYtop = ($C.gridSize.y - redOffs)
 			- ($C.markerPosition.x * $C.blockSize.quarter)
@@ -62,7 +62,7 @@ var PositionIndicator = function () {
 	
 		// Blue Marker
 		var blueOffs = 6;
-		if ($C.smallDisplay) {blueOffs = 148}
+		if ($C.smallDisplay) {blueOffs = 4}
 		offsYtop = (blueOffs)
 			+ ($C.markerPosition.z * $C.blockSize.quarter)
 			+ ($C.gridDims.c - $C.layerOffset.z - 1) * $C.blockSize.half;
@@ -83,9 +83,9 @@ var PositionIndicator = function () {
 	
 		// Green Cursor
 		var greenOffs = -306; // Couldn't figure out how to pare this down like the others, but this figure works.
-		if ($C.smallDisplay) {greenOffs = 43}
-		offsX = 1 + ($C.markerPosition.x * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.half);
-		offsYtop = ($C.layerOffset.z * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.quarter) + ($C.gridSize.y - $C.markerPosition.x * $C.blockSize.quarter) - greenOffs;
+		if ($C.smallDisplay) {greenOffs = -229}
+		offsX = ($C.markerPosition.x * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.half);
+		offsYtop = -($C.layerOffset.z * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.quarter) + ($C.gridSize.y - $C.markerPosition.x * $C.blockSize.quarter) - greenOffs;
 	
 		this.ctx.fillStyle = '#0f0';
 		this.ctx.beginPath();
@@ -118,14 +118,13 @@ var PositionIndicator = function () {
 		this.ctx.strokeStyle = '#0f0';
 		this.ctx.stroke();
 		
-		// Red level outline. ($C.blockDims * 1.75)
-		var levelOffs = 35 + $C.blockDims * $C.layerOffset.z * 0.5;
-		
+		// Orange level outline.
+		var levelOffs = 35 + $C.blockDims * $C.layerOffset.z * 0.5 + $C.edges.top;
 		this.ctx.beginPath();
-		this.ctx.moveTo($C.gridCorners[0].x, $C.gridCorners[0].y - levelOffs);
-		this.ctx.lineTo($C.gridCorners[1].x, $C.gridCorners[1].y - levelOffs);
-		this.ctx.lineTo($C.gridCorners[2].x, $C.gridCorners[2].y - levelOffs);
-		this.ctx.lineTo($C.gridCorners[3].x, $C.gridCorners[3].y - levelOffs);
+		this.ctx.moveTo($C.gridCorners[0].x - $C.edges.left, $C.gridCorners[0].y - levelOffs);
+		this.ctx.lineTo($C.gridCorners[1].x - $C.edges.left, $C.gridCorners[1].y - levelOffs);
+		this.ctx.lineTo($C.gridCorners[2].x - $C.edges.left, $C.gridCorners[2].y - levelOffs);
+		this.ctx.lineTo($C.gridCorners[3].x - $C.edges.left, $C.gridCorners[3].y - levelOffs);
 		this.ctx.closePath();
 		
 		this.ctx.globalAlpha = 1.0;
