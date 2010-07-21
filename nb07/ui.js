@@ -54,7 +54,7 @@ function drawUI () {
 	yAxis.setAttributeNS(null, "transform", "translate(" + ($C.edges.left + $C.gridSize.x / 4) + ", " + ($C.edges.top + $C.gridSize.y * 1.5) + "),skewY(26.565),skewX(-45)");
 	
 	var xAxis = document.getElementById("xAxis");
-	xAxis.setAttributeNS(null, "transform", "translate(" + ($C.edges.left + $C.gridSize.x / 2 + $C.gridSize.x / 4) + ", " + ($C.edges.top + $C.gridSize.y * 1.5) + "),skewY(-26.565),skewX(45)");
+	xAxis.setAttributeNS(null, "transform", "translate(" + ($C.edges.left + $C.gridSize.x / 2 + $C.gridSize.x / 4 - 20) + ", " + ($C.edges.top + $C.gridSize.y * 1.5 + 10) + "),skewY(-26.565),skewX(45)");
 	
 	populatePalette();
 	

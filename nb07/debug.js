@@ -16,7 +16,7 @@ function fillSquare () {
 		time0 = new Date();
 		$C.animating = true;
 		t = setInterval((function() {
-			if (i >= 255) {
+			if (i >= 1023) {
 				clearInterval(t);
 				time1 = new Date();
 				loggit("Square drawn in " + (time1 - time0) + " ms.");
@@ -32,11 +32,12 @@ function fillSquare () {
 			var coors = GridField["x-" + gridPosition].coors;
 
 			Voxel[location.x][location.y][location.z] = $C.selected.color;
+			Field.push([location.x, location.y, location.z, $C.selected.color]);
 
 			canvasBlock(coors, location, blockColor);
 		
 			l++;
-			if (l >= 16) {
+			if (l >= 32) {
 				w++;
 				l = 0;
 				$C.posInd.redraw();

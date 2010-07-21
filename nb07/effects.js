@@ -147,8 +147,8 @@ var PositionIndicator = function () {
 		this.displayCtx.drawImage(this.overlays, 0, 0);
 	}
 	
-	this.clear = function () {
-		this.ctx.clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
+	this.clearBlocks = function () {
+		context('blocks').clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
 	}
 	
 	// Selection box
