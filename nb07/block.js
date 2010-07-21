@@ -182,21 +182,29 @@ function placeBlock (target) {
 }
 
 function removeBlock (target) {
+	var time0 = new Date();
+	
 	var location = {
 		x: GridField[target.id].x,
 		y: GridField[target.id].y,
 		z: 0 + $C.layerOffset.z // forgot why I put a zero here.
 	}
 	
-	Voxel[location.x][location.y][location.z] = -1;
-	popField(location.x, location.y, location.z);
+	if (Voxel[location.x][location.y][location.z] != -1) {
+		Voxel[location.x][location.y][location.z] = -1;
+		popField(location.x, location.y, location.z);
 	
-	$C.posInd.clearBlocks();
-	drawAllBlocks();
-	// canvasBlockRemove(GridField[target.id].coors, location);
-	$C.posInd.redraw();
+		$C.posInd.clearBlocks();
+		drawAllBlocks();
+		// canvasBlockRemove(GridField[target.id].coors, location);
+		$C.posInd.redraw();
 	
-	loggit("The block placed at " + location.x + ", " + location.y + ", " + location.z + " was removed.");
+		var time1 = new Date();
+		loggit("The block placed at " + location.x + ", " + location.y + ", " + location.z + " was removed in " + (time1 - time0) + " ms.");
+	}
+	else {
+		loggit("Nothing to remove.");
+	}
 }
 
 function drawAllBlocks () {

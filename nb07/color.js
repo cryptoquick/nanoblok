@@ -70,6 +70,9 @@ function fillColorSwatch () {
 var h = 0;
 
 function buildColorSwatch () {
+	var gridPosition = 0;
+	var coors = new Object();
+	
 	if (h >= 32) {
 		clearInterval(t);
 		time1 = new Date();
@@ -95,8 +98,8 @@ function buildColorSwatch () {
 			
 				location = {x: l, y: w, z: h};
 			
-				var gridPosition = l * $C.gridDims.c + w;
-				var coors = GridField["x-" + gridPosition].coors;
+				gridPosition = l * $C.gridDims.c + w;
+				coors = GridField["x-" + gridPosition].coors;
 			
 				SwatchGhost[location.x][location.y][location.z] = 1;
 			
