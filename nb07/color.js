@@ -17,7 +17,7 @@ function fillColorSwatch () {
 	$C.swatchActive = true;
 	
 	// Initialize the color swatch array if it hasn't been done already.
-	if ($C.swatchInit == false) {
+	if ($C.swatchInit == false || $C.swatchComplete == false) {
 		loggit("Initializing Color Array");
 		for (var x = -1; x < $C.gridDims.r + 1; x++) {
 			Swatch[x] = new Array();
@@ -75,6 +75,7 @@ function buildColorSwatch () {
 		time1 = new Date();
 		loggit("Color Cube drawn in " + (time1 - time0) + " ms.");
 		$C.animating = false;
+		$C.swatchComplete = true;
 		// SwatchGhost = new Array();
 		$C.layerOffset.z = 30;
 		$C.tools.gridUp();
@@ -87,27 +88,30 @@ function buildColorSwatch () {
 		z: 0
 	}
 	
-	for (var w = 0; w < 32; w++) {
-		for (var l = 0; l < 32; l++) {
-			blockColor = colorBlockNew(Swatch[h][l][w]);
+	if ($C.animating || $C.swatchComplete == false) {
+		for (var w = 0; w < 32; w++) {
+			for (var l = 0; l < 32; l++) {
+				blockColor = colorBlockNew(Swatch[h][l][w]);
 			
-			location = {x: l, y: w, z: h};
+				location = {x: l, y: w, z: h};
 			
-			var gridPosition = l * $C.gridDims.c + w;
-			var coors = GridField["x-" + gridPosition].coors;
+				var gridPosition = l * $C.gridDims.c + w;
+				var coors = GridField["x-" + gridPosition].coors;
 			
-			SwatchGhost[location.x][location.y][location.z] = 1;
+				SwatchGhost[location.x][location.y][location.z] = 1;
 			
-			canvasBlock(coors, location, blockColor);
+				canvasBlock(coors, location, blockColor);
+			}
 		}
-	}
 	
-	$C.posInd.redraw();
-	h++;
+		$C.posInd.redraw();
+		h++;
+	}
 }
 
 function closeColorSwatch () {
 	$C.swatchActive = false;
+	$C.animating = false;
 	$C.layerOffset.z = 1;
 	$C.tools.gridDown();
 	SwatchGhost = new Array();

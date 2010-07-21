@@ -181,22 +181,22 @@ function placeBlock (target) {
 	}
 }
 
-function deleteBlock (target) {
+function removeBlock (target) {
 	var location = {
 		x: GridField[target.id].x,
 		y: GridField[target.id].y,
 		z: 0 + $C.layerOffset.z // forgot why I put a zero here.
 	}
 	
-	canvasBlockDelete(GridField[target.id].coors, location);
+	canvasBlockRemove(GridField[target.id].coors, location);
 	$C.posInd.redraw();
 	
 	Voxel[location.x][location.y][location.z] = -1;
-	loggit("The block placed at " + location.x + ", " + location.y + ", " + location.z + " was deleted.")
+	loggit("The block placed at " + location.x + ", " + location.y + ", " + location.z + " was removed.")
 }
 
 
-function canvasBlockDelete (position, location) {
+function canvasBlockRemove (position, location) {
 	var adjustedPosition = {x: position.x, y: position.y - $C.blockSize.half * (location.z + 1)};
 	
 	var defaultColor = {left: "#eee", right: "#eee", top: "#eee", inset: "#aaa"};

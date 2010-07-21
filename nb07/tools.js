@@ -29,11 +29,11 @@ var Tools = function () {
 		loggit("Canvas refreshed.");
 	}
 		
-	// Delete button, its state can be toggled by the user.
+	// Remove button, its state can be toggled by the user.
 	this.remove = new Object();
 	this.remove.select = function () {
 		document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
-		$C.selected.tool = "delete";
+		$C.selected.tool = "remove";
 		document.getElementById("removeButton").setAttributeNS(null, "stroke-opacity", "1.0");
 		loggit("Deletion tool selected.");
 	}

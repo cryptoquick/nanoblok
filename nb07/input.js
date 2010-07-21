@@ -63,7 +63,6 @@ function Click (evt) {
 		"save",
 		"load",
 		"refresh",
-		"remove",
 		"swatch",
 		"fill",
 		"gridUp",
@@ -89,9 +88,19 @@ function Click (evt) {
 		document.getElementById(target.id).setAttributeNS(null, "stroke-opacity", "1.0");
 	}
 	
+	// For the delete button.
+	if (target.id.substr(0,6) == "remove" && $C.selected.tool == "remove")
+	{
+		$C.tools.remove.deselect();
+	}
+	else if (target.id.substr(0,6) == "remove") {
+		$C.tools.remove.select();
+	}
+	
+	
 	// Block placement (first click, and if only one single click)
-	if ($C.selected.tool == "delete") {
-		deleteBlock(target);
+	if ($C.selected.tool == "remove" && target.id.substr(0,2) == 'x-') {
+		removeBlock(target);
 	}
 	else if ($C.selected.tool == "select") {
 		selectArea(target, true);
@@ -129,7 +138,7 @@ function Key (evt) {
 	if (evt.type == "keydown") {
 		// DKEY for delete.
 		if (evt.keyCode == 68) {
-			if ($C.selected.tool == "delete") {
+			if ($C.selected.tool == "remove") {
 				$C.tools.remove.deselect();
 			}
 			else {
