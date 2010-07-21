@@ -188,84 +188,134 @@ function removeBlock (target) {
 		z: 0 + $C.layerOffset.z // forgot why I put a zero here.
 	}
 	
-	canvasBlockRemove(GridField[target.id].coors, location);
+	Voxel[location.x][location.y][location.z] = -1;
+	popField(location.x, location.y, location.z);
+	
+	$C.posInd.clearBlocks();
+	drawAllBlocks();
+	// canvasBlockRemove(GridField[target.id].coors, location);
 	$C.posInd.redraw();
 	
-	Voxel[location.x][location.y][location.z] = -1;
-	loggit("The block placed at " + location.x + ", " + location.y + ", " + location.z + " was removed.")
+	loggit("The block placed at " + location.x + ", " + location.y + ", " + location.z + " was removed.");
 }
 
+function drawAllBlocks () {
+	var location = {
+		x: 0,
+		y: 0,
+		z: 0
+	}
+	
+	var gridPosition = 0;
+	var coors = new Object();
+	
+	for (var i = 0; i < Field.length; i++) {
+		location = {x: Field[i][0], y: Field[i][1], z: Field[i][2]};
+		gridPosition = location.x * $C.gridDims.c + location.y;
+		coors = GridField["x-" + gridPosition].coors;
+		color = colorBlock(Field[i][3]);
+		canvasBlock(coors, location, color);
+	}
+	
+/*	for (var x = 0; x < $C.gridDims.r; x++) {
+		Voxel[x] = new Array();
+		for (var y = 0; y < $C.gridDims.r; y++) {
+		Voxel[x][y] = new Array();
+			for (var z = 0; z < 32; z++) {
+				if (Voxel[x][y][z] != -1) {
+					location = {x: x, y: y, z: z};
+				
+					gridPosition = x * $C.gridDims.c + y;
 
+					coors = GridField["x-" + gridPosition].coors;
+					
+					console.log(Voxel[x][y][z]);
+					
+					color = colorBlock(Voxel[x][y][z]);
+				
+					canvasBlock(coors, location, color);
+				}
+			}
+		}
+	}*/
+}
+
+function popField(x, y, z) {
+	for (var i = 0; i < Field.length; i++) {
+		// console.log(i);
+		if (Field[i][0] == x && Field[i][1] == y && Field[i][2] == z) {
+			Field.splice(i, 1);
+			break;
+		}
+	}
+}
+
+/*
 function canvasBlockRemove (position, location) {
 	var adjustedPosition = {x: position.x, y: position.y - $C.blockSize.half * (location.z + 1)};
 	
 	var color = {left: "#eee", right: "#eee", top: "#eee", inset: "#aaa"};
 	
-	// Top side.
+	// Don't remove if in the "middle of nowhere".
+	if (Voxel[location.x][location.y][location.z] != -1 && Voxel[location.x][location.y][location.z] != -1 && Voxel[location.x][location.y][location.z] != -1) {
+		// Top side.
+		if (Voxel[location.x][location.y + 1][location.z] != -1 && Voxel[location.x - 1][location.y][location.z] != -1) {
+			canvasDrawSet([1, 2, 7, 6], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
+		}
+		else if (Voxel[location.x][location.y + 1][location.z] != -1 && Voxel[location.x - 1][location.y][location.z] != -1) {
+			canvasDrawSet([1, 2, 7, 6], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
+		}
 	
-	// Left side.
+		// Left side.
+		if (Voxel[location.x][location.y - 1][location.z] == -1 && Voxel[location.x + 1][location.y - 1][location.z] == -1) {
+			canvasDrawSet([6, 7, 5], adjustedPosition, {closed: false, fill: color.top, stroke: color.inset});
+		}
+		else if (Voxel[location.x][location.y - 1][location.z] == -1) {
+			canvasDrawSet([1, 7, 5, 6], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
+		}
 	
-	// Right side.
+		// Right side.
+		if (Voxel[location.x + 1][location.y][location.z] == -1 && Voxel[location.x][location.y + 1][location.z] == -1) {
+			canvasDrawSet([1, 2, 7], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
+		}
+		else if (Voxel[location.x + 1][location.y][location.z] == -1) {
+			canvasDrawSet([1, 2, 3, 7], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
+		}
 	
-	// Bottom side. Same color as the top of the block below it, or, if on the bottom, default colors.
-	// Don't draw if there are blocks in front.
-	// if (Voxel[location.x + 1][location.y][location.z] && Voxel[location.x][location.y - 1][location.z]) {
+		// Bottom side. Same color as the top of the block below it, or, if on the bottom, default colors.
+		// Don't draw if there are blocks in front.
 		if (Voxel[location.x - 1][location.y][location.z] != -1 && Voxel[location.x][location.y + 1][location.z] == -1) {
 			canvasDrawSet([7, 3, 4], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
 		}
-		else if (Voxel[location.x][location.y][location.z + 1] == -1) {
+		else if (Voxel[location.x][location.y + 1][location.z] == -1 && Voxel[location.x - 1][location.y][location.z] == -1) {
 			canvasDrawSet([7, 3, 4, 5], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
 		}
-	// }
+		// }
 	
-	// Corrective Top side. (uses color from the block behind or underneath)
+		// Corrective Top side. (uses color from the block behind or underneath)
 	
-	// Corrective Left.
+		// Corrective Left.
+		if (Voxel[location.x][location.y - 1][location.z] != -1) {
+			var color = colorBlock(Voxel[location.x][location.y - 1][location.z]);
+			canvasDrawSet([1, 7, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
+		}
 	
-	// Corrective Right side.
-	if (Voxel[location.x + 1][location.y][location.z] != -1 && Voxel[location.x][location.y + 1][location.z] != -1) {
-		var color = colorBlock(Voxel[location.x + 1][location.y][location.z]);
-		canvasDrawSet([1, 2, 7], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
-	}
-	else if (Voxel[location.x + 1][location.y][location.z] != -1) {
-		var color = colorBlock(Voxel[location.x + 1][location.y][location.z]);
-		canvasDrawSet([1, 2, 3, 7], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
-	}
-	
-	// Corrective Bottom side.
-	
-}
-
-function drawBlocks() {
-	for (var i = 0; i < Field.length; i++) {
-		var block = Field[i];
-		
-		var location = {
-			x: block[0],
-			y: block[1],
-			z: block[2]
+		// Corrective Right side.
+		if (Voxel[location.x + 1][location.y][location.z] != -1 && Voxel[location.x][location.y + 1][location.z] != -1) {
+			var color = colorBlock(Voxel[location.x + 1][location.y][location.z]);
+			canvasDrawSet([1, 2, 7], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
 		}
 		
-		var gridPosition = block[0] * $C.gridDims.c + block[1];
-		var coors = GridField["x-" + gridPosition].coors;
-		
-		canvasBlock(coors, location, colorBlock(block[3]));
-	}
-}
-
-function fillRandom () {
-	for (var i = 0; i < Field.length; i++) {
-		var block = Field[i];
-		
-		var location = {
-			x: block[0],
-			y: block[1],
-			z: block[2]
+		else if (Voxel[location.x + 1][location.y][location.z] != -1) {
+			var color = colorBlock(Voxel[location.x + 1][location.y][location.z]);
+			canvasDrawSet([1, 2, 3, 7], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
 		}
+	
+		// Corrective Bottom side.
 		
-		var gridPosition = block[0] * $C.gridDims.c + block[1];
-		var coors = GridField["x-" + gridPosition].coors;
-		
-		canvasBlock(coors, location, colorBlock(block[3]));
+		loggit("The block placed at " + location.x + ", " + location.y + ", " + location.z + " was removed.")
 	}
-}
+	else {
+		loggit("Nothing removed.");
+	}
+}*/

@@ -122,8 +122,11 @@ function Hover (evt, inout) {
 		target = evt.target;
 	}
 	// Place a block on the x-grid as long as the mouse is down and place it only when moving into the cell, otherwise the block would be placed twice.
-	if ((target.id.substr(0,2) == 'x-') && mouseDown && inout == "in") {
+	if ((target.id.substr(0,2) == 'x-') && mouseDown && inout == "in" && $C.selected.tool.substr(0,5) == "color") {
 		placeBlock(target);
+	}
+	else if ((target.id.substr(0,2) == 'x-') && mouseDown && inout == "in" && $C.selected.tool == "remove") {
+		removeBlock(target);
 	}
 	
 	// Puts information about the position of the cursor over the grid into the markerPosition field in $C, allowing that to be used by the positionIndicator function.
