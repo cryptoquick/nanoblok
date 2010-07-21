@@ -147,6 +147,9 @@ var Common = function () {
 	
 	// Used to tell if swatch is being displayed.
 	this.swatchActive = false;
+	
+	// If swatch is fully drawn, this is true.
+	this.swatchComplete = false;
 }
 
 function initHistory () {
