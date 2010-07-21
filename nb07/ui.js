@@ -21,7 +21,7 @@ var canvases = [
 function drawUI () {
 	// Nanoblok logo text	
 	var logoText = document.getElementById('logoText');
-	logoText.setAttributeNS(null, "transform", "skewY(-26.565) scale(" + $C.blockDims / 20 + ")");
+	logoText.setAttributeNS(null, "transform", "skewY(-26.565)");
 /*	logoText.setAttributeNS(null, "x", 49 / 20 * $C.blockDims);
 	logoText.setAttributeNS(null, "y", 90 / 20 * $C.blockDims);
 	logoText.setAttributeNS(null, "font-size", 16 * ($C.blockDims / 20));*/
