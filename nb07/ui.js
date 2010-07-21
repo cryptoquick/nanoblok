@@ -30,7 +30,7 @@ function drawUI () {
 	var gridElement = document.getElementById('grid');
 	gridElement.setAttributeNS(null, "height", $C.windowSize.y - 5);
 	
-	// Set effects dimensions of all canvases.
+	// Set positions and dimensions of all canvases.
 	for (var i = 0; i < canvases.length; i++) {
 		var effectsElement = document.getElementById(canvases[i]);
 		effectsElement.setAttributeNS(null, "height", $C.gridSize.y * 4 + 2);
@@ -38,6 +38,12 @@ function drawUI () {
 		effectsElement.style.posTop = $C.edges.top - $C.gridSize.y * 2 - 34;
 		effectsElement.style.posLeft = $C.edges.left;
 	}
+	
+	// Position SVG grid.
+	var gridOffset = -389;
+	if ($C.smallDisplay) {gridOffset = -309};
+	var gridContainer = document.getElementById('gridContainer');
+	gridContainer.setAttributeNS(null, "transform", "translate(-1, " + gridOffset + ")");
 	
 	// Position debug / status.
 	var debugBox = document.getElementById("statusContainer");
