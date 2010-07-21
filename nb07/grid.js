@@ -92,7 +92,12 @@ function drawGrid (side) {
 			var tileCoors = GridField['x-' + i];
 			var hexSide = [1, 2, 7, 6];
 			
-			var set = hexiso(tileCoors.coors, $C.blockSize);
+			var adjCoors = {
+				x: tileCoors.coors.x + ($C.windowSize.x - $C.gridSize.x) / 2,
+				y: tileCoors.coors.y + $C.windowSize.y - $C.gridSize.y * 2
+			};
+			
+			var set = hexiso(adjCoors, $C.blockSize);
 			
 			if (x == 31 && y == 0) {
 				square[0] = {x: set.x[1], y: set.y[1]};
@@ -115,6 +120,10 @@ function drawGrid (side) {
 			
 			var blockID = 'x-' + i;
 			tile.setAttributeNS(null, 'id', blockID);
+			
+			// Debug
+			// tile.setAttributeNS(null, 'stroke', 'red');
+			// tile.setAttributeNS(null, 'stroke-opacity', '0.3');
 			
 			gridContainer.appendChild(tile);
 			

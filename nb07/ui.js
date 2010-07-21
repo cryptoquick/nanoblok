@@ -33,8 +33,10 @@ function drawUI () {
 	// Set effects dimensions of all canvases.
 	for (var i = 0; i < canvases.length; i++) {
 		var effectsElement = document.getElementById(canvases[i]);
-		effectsElement.setAttributeNS(null, "height", $C.windowSize.y - 5);
-		effectsElement.setAttributeNS(null, "width", $C.windowSize.x);
+		effectsElement.setAttributeNS(null, "height", $C.gridSize.y * 4 + 2);
+		effectsElement.setAttributeNS(null, "width", $C.gridSize.x);
+		effectsElement.style.posTop = $C.edges.top - $C.gridSize.y * 2 - 34;
+		effectsElement.style.posLeft = $C.edges.left;
 	}
 	
 	// Position debug / status.
@@ -92,11 +94,3 @@ function getDefaultColor (paletteNum) {
 		+ ($C.palette[paletteNum][2] + 40) + ")";
 	return rgbOutput;
 }
-
-/*
-function shrinkUI () {
-	for () {
-		
-	}
-}
-*/
