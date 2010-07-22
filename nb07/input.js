@@ -69,9 +69,50 @@ function Click (evt) {
 		"gridDown",
 	];
 	
+	var toolNames = [
+		"Load",
+		"Save",
+		"Fill",
+		"Select",
+		"Colors",
+		"Delete",
+	]
+	
+	var toolMethods = [
+		"load",
+		"save",
+		"fill",
+		"select",
+		"swatch",
+		"remove"
+	]
+	
+	// References toolNames in ui.js.
+	for (var i = 0; i < toolNames.length; i++) {
+		if (target.id == "toolButton" + i || target.id == "toolText" + i) {
+			eval("$C.tools." + toolMethods[i] + "()");
+		}
+	}
+	
 	for (var i = 0; i < inputs.length; i++) {
 		if (target.id == inputs[i] + "Button" || target.id == inputs[i] + "Text") {
-			eval("$C.tools." + inputs[i] + "()");
+			console.log(i);
+			if (i == 6) {
+				// For the delete button.
+				if ($C.selected.tool == "remove")
+				{
+					console.log(i);
+					$C.tools.remove.deselect();
+				}
+				else {
+					console.log(i);
+					$C.tools.remove.select();
+				}
+			}
+			else {
+				console.log(i);
+				eval("$C.tools." + inputs[i] + "()");
+			}
 		}
 	}
 	
@@ -87,16 +128,6 @@ function Click (evt) {
 		// 'Select' the clicked-on color swatch.
 		document.getElementById(target.id).setAttributeNS(null, "stroke-opacity", "1.0");
 	}
-	
-	// For the delete button.
-	if (target.id.substr(0,6) == "remove" && $C.selected.tool == "remove")
-	{
-		$C.tools.remove.deselect();
-	}
-	else if (target.id.substr(0,6) == "remove") {
-		$C.tools.remove.select();
-	}
-	
 	
 	// Block placement (first click, and if only one single click)
 	if ($C.selected.tool == "remove" && target.id.substr(0,2) == 'x-') {

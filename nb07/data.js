@@ -108,22 +108,6 @@ var Common = function () {
 		z: 0
 	};
 	
-	// Put all the variables into one, common object.
-/*	this.commonVars = {
-		blockDims: blockDims,
-		blockSize: blockSize,
-		gridDims: gridDims,
-		gridSize: gridSize,
-		windowSize: windowSize,
-		center: center,
-		edges: edges,
-		offset: offset,
-		palette: defaultPalette,
-		selected: selected,
-		layerOffset: layerOffset,
-		markerPosition: markerPosition
-	}; */
-	
 	// Initialize the voxel array.
 	for (var x = -1; x < this.gridDims.r + 1; x++) {
 		Voxel[x] = new Array();
