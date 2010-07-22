@@ -18,13 +18,33 @@ var canvases = [
 	'colors'
 ];
 
+function moveElement (name, operation) {
+	var element = document.getElementById(name);
+	
+	var str = "";
+	
+	if (operation.move) {
+		str += "translate(" + operation.move.x + "," + operation.move.y + ")";
+		if (operation.skewX || operation.skewY) {
+			str += ",";
+		}
+	}
+	if (operation.skewX) {
+		str += "skewX(" + operation.skewX + ")";
+		if (operation.skewY) {
+			str += ",";
+		}
+	}
+	if (operation.skewY) {
+		str += "skewY(" + operation.skewY + ")";
+	}
+	
+	element.setAttributeNS(null, "transform", str);
+}
+
 function drawUI () {
-	// Nanoblok logo text	
-	var logoText = document.getElementById('logoText');
-	logoText.setAttributeNS(null, "transform", "skewY(-26.565)");
-/*	logoText.setAttributeNS(null, "x", 49 / 20 * $C.blockDims);
-	logoText.setAttributeNS(null, "y", 90 / 20 * $C.blockDims);
-	logoText.setAttributeNS(null, "font-size", 16 * ($C.blockDims / 20));*/
+	// Nanoblok logo text
+	moveElement('logoText', {skewY: -$C.isoAngle});
 		
 	// Set viewport height.
 	var gridElement = document.getElementById('grid');
@@ -42,16 +62,14 @@ function drawUI () {
 	// Position SVG grid.
 	var gridOffset = -389;
 	if ($C.smallDisplay) {gridOffset = -309};
-	var gridContainer = document.getElementById('gridContainer');
-	gridContainer.setAttributeNS(null, "transform", "translate(-1, " + gridOffset + ")");
+	moveElement('gridContainer', {move: {x: -1, y: gridOffset}});
 	
 	// Position debug / status.
-	var debugBox = document.getElementById("statusContainer");
-	debugBox.setAttributeNS(null, "transform", "translate(" + $C.edges.left + ", " + ($C.edges.top - $C.gridSize.y - 145) + ")");
+	moveElement('statusContainer', {move: {x: $C.edges.left, y: ($C.edges.top - $C.gridSize.y - 145)}});
 	
 	// Position buttons on the top.
 	var sideButtonsTop = document.getElementById("sideButtonsTop");
-	sideButtonsTop.setAttributeNS(null, "transform", "translate(" + ($C.center.x + 5) + ", " + ($C.edges.top - $C.gridSize.y * 2 - 120) + ")");
+	sideButtonsTop.setAttributeNS(null, "transform", "translate(" + ($C.center.x + 5) + ", " + ($C.edges.top - $C.gridSize.y * 2 - 121) + ")");
 	
 	// Position arrows on the left side.
 	var sideButtonsLeft = document.getElementById("sideButtonsLeft");
@@ -64,7 +82,34 @@ function drawUI () {
 	var xAxis = document.getElementById("xAxis");
 	xAxis.setAttributeNS(null, "transform", "translate(" + ($C.edges.left + $C.gridSize.x / 2 + $C.gridSize.x / 4 - 20) + ", " + ($C.edges.top + $C.gridSize.y * 1.5 + 10) + "),skewY(-26.565),skewX(45)");
 	
+	// Draw color palette.
 	populatePalette();
+	
+	// Draw toolbar.
+	for (var i = 0; i < 8; i++) {
+		// Create a rect.
+		var toolButton = document.createElementNS(svgNS, 'rect');
+		
+		var x = 0;
+		var y = 0;
+		
+		if(i % 2) {x = 22 * i - 22} else {x = 22 * i};
+		if(i % 2) {y = 0} else {y = 44};
+		
+		// Give it all its attributes.
+		toolButton.setAttributeNS(null, "id", "toolButton" + i);
+		toolButton.setAttributeNS(null, "x", x);
+		toolButton.setAttributeNS(null, "y", y);
+		toolButton.setAttributeNS(null, "height", 39);
+		toolButton.setAttributeNS(null, "width", 39);
+		toolButton.setAttributeNS(null, "rx", 3);
+		toolButton.setAttributeNS(null, "transform", "skewY(26.565)");
+		
+		// This was defined earlier.
+		sideButtonsTop.appendChild(toolButton);
+	}
+	
+	moveElement('renderDisplay', {move: {x: $C.edges.right - 96, y: $C.edges.fullTop}});
 	
 	// If it's a small display, the size of the debug box should be smaller.
 	if ($C.smallDisplay) {
@@ -77,6 +122,7 @@ function populatePalette () {
 	var sideColorsRight = document.getElementById("sideColorsRight");
 	sideColorsRight.setAttributeNS(null, "transform", "translate(" + ($C.edges.right + 40) + ", " + ($C.edges.top - $C.gridSize.y - 9) + ")");
 	
+	// This is very similar to what was done for the toolbar.
 	for (var i = 0; i < 9; i++) {
 		var colorBlock = document.createElementNS(svgNS, 'rect');
 		
