@@ -12,6 +12,7 @@ var time1 = new Object();
 var time0 = new Object();
 var Swatch = new Array();
 var SwatchGhost = new Array();
+var SwatchField = new Array();
 
 function fillColorSwatch () {
 	$C.swatchActive = true;
@@ -31,6 +32,7 @@ function fillColorSwatch () {
 							};
 							
 					Swatch[x][y][z] = color;
+					SwatchField.push([x, y, z, color]);
 				}
 			}
 		}

@@ -60,13 +60,8 @@ function Click (evt) {
 	var target = evt.target;
 	
 	var inputs = [
-		"save",
-		"load",
-		"refresh",
-		"swatch",
-		"fill",
 		"gridUp",
-		"gridDown",
+		"gridDown"
 	];
 	
 	var toolNames = [
@@ -96,19 +91,7 @@ function Click (evt) {
 	
 	for (var i = 0; i < inputs.length; i++) {
 		if (target.id == inputs[i] + "Button" || target.id == inputs[i] + "Text") {
-			if (i == 6) {
-				// For the delete button.
-				if ($C.selected.tool == "remove")
-				{
-					$C.tools.remove.deselect();
-				}
-				else {
-					$C.tools.remove.select();
-				}
-			}
-			else {
-				eval("$C.tools." + inputs[i] + "()");
-			}
+			eval("$C.tools." + inputs[i] + "()");
 		}
 	}
 	
@@ -195,70 +178,4 @@ function Key (evt) {
 			$C.tools.rotRight();
 		}
 	}
-	
-/*	if (evt.type == "keyup") {
-		if (evt.keyCode == 68) {
-			
-		//	$C.selected.tool = "delete";
-		}
-	} */
 }
-
-function Mouse (evt) {
-	// loggit(evt.layerX + ", " + evt.layerY);
-	
-	/*
-	// Place a block on the x-grid as long as the mouse is down and place it only when moving into the cell, otherwise the block would be placed twice.
-	if ((target.id.substr(0,2) == 'x-') && mouseDown && inout == "in") {
-		placeBlock(target);
-	}
-	
-	// Puts information about the position of the cursor over the grid into the markerPosition field in $C, allowing that to be used by the positionIndicator function.
-	if (target.id.substr(0,2) == 'x-' && inout == "in") {
-		$C.markerPosition.x = target.getAttribute("c");
-		$C.markerPosition.z = target.getAttribute("r");
-		positionIndicator();
-	}*/
-}
-
-/*
-function MousePos (evt) {
-	var mouse = {x: evt.clientX, y: evt.clientY};
-	
-	var x = -1;
-	var y = -1;
-	var offsetY = -30;
-	
-	if ((mouse.x > $C.offset.x && mouse.x < ($C.offset.x + $C.gridSize.x)) && (mouse.y > ($C.offset.y + offsetY) && mouse.y < ($C.offset.y + $C.gridSize.y * 2 + offsetY))) {
-		sqX = Math.floor((mouse.x - $C.offset.x) / $C.blockSize.full);
-		sqY = Math.floor((mouse.y - offsetY - $C.offset.y) / $C.blockSize.half);
-	}
-	else {
-		x = -1;
-	}
-	// if (mouse.y > ($C.offset.y + offsetY) && mouse.y < ($C.offset.y + $C.gridSize.y * 2 + offsetY)) {
-	// 	y = Math.floor((mouse.y - offsetY - $C.offset.y) / $C.blockSize.half);
-	// }
-	// else {
-	// 	y = -1;
-	// }
-	// 
-	this.ctx = context('debug');
-	this.ctx.clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
-	this.ctx.fillText(x + ", " + y, mouse.x, mouse.y);
-	$C.posInd.drawAll();
-	
-	var selectedElement = null;
-	
-	if (x != -1 && y != -1) {
-		selectedElement = document.getElementById("x-" + (x * $C.gridDims.c + y));
-		loggit("x-" + (x * $C.gridDims.c + y));
-		Hover(selectedElement, "in");
-	}
-	else {
-		selectedElement = null;
-	}
-	
-	// x: (x * $C.blockSize.half) + (y * $C.blockSize.half) + $C.offset.x,
-	// y: ((y * $C.blockSize.quarter) + ($C.gridSize.y - x * $C.blockSize.quarter)) + $C.offset.y
-}*/
