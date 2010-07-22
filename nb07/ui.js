@@ -29,16 +29,16 @@ function moveElement (name, operation) {
 			str += ",";
 		}
 	}
-	if (operation.skewX) {
-		str += "skewX(" + operation.skewX + ")";
-		if (operation.skewY) {
+	if (operation.skewY) {
+		str += "skewY(" + operation.skewY + ")";
+		if (operation.skewX) {
 			str += ",";
 		}
 	}
-	if (operation.skewY) {
-		str += "skewY(" + operation.skewY + ")";
+	if (operation.skewX) {
+		str += "skewX(" + operation.skewX + ")";
 	}
-	
+
 	element.setAttributeNS(null, "transform", str);
 }
 
@@ -68,20 +68,15 @@ function drawUI () {
 	moveElement('statusContainer', {move: {x: $C.edges.left, y: ($C.edges.top - $C.gridSize.y - 145)}});
 	
 	// Position buttons on the top.
-	var sideButtonsTop = document.getElementById("sideButtonsTop");
-	sideButtonsTop.setAttributeNS(null, "transform", "translate(" + ($C.center.x + 5) + ", " + ($C.edges.top - $C.gridSize.y * 2 - 121) + ")");
+	moveElement('sideButtonsTop', {move: {x: $C.center.x + 5, y: $C.edges.top - $C.gridSize.y * 2 - 121}});
 	
 	// Position arrows on the left side.
-	var sideButtonsLeft = document.getElementById("sideButtonsLeft");
-	sideButtonsLeft.setAttributeNS(null, "transform", "translate(" + ($C.edges.left - 25) + ", " + ($C.edges.top - $C.gridSize.y - 20) + ")");
+	moveElement('sideButtonsLeft', {move: {x: $C.edges.left - 25, y: $C.edges.top - $C.gridSize.y - 20}});
 
 	// Position axis labels.
-	var yAxis = document.getElementById("yAxis");
-	yAxis.setAttributeNS(null, "transform", "translate(" + ($C.edges.left + $C.gridSize.x / 4) + ", " + ($C.edges.top + $C.gridSize.y * 1.5) + "),skewY(26.565),skewX(-45)");
-	
-	var xAxis = document.getElementById("xAxis");
-	xAxis.setAttributeNS(null, "transform", "translate(" + ($C.edges.left + $C.gridSize.x / 2 + $C.gridSize.x / 4 - 20) + ", " + ($C.edges.top + $C.gridSize.y * 1.5 + 10) + "),skewY(-26.565),skewX(45)");
-	
+	moveElement('yAxis', {move: {x: $C.edges.left + $C.gridSize.x / 4, y: $C.edges.top + $C.gridSize.y * 1.5},  skewY: 26.565, skewX: -45});
+	moveElement('xAxis', {move: {x: $C.edges.left + $C.gridSize.x / 2 + $C.gridSize.x / 4 - 20, y: $C.edges.top + $C.gridSize.y * 1.5 + 10}, skewY: -26.565, skewX: 45});
+
 	// Draw color palette.
 	populatePalette();
 	
@@ -105,7 +100,7 @@ function drawUI () {
 		toolButton.setAttributeNS(null, "rx", 3);
 		toolButton.setAttributeNS(null, "transform", "skewY(26.565)");
 		
-		// This was defined earlier.
+		var sideButtonsTop = document.getElementById("sideButtonsTop");
 		sideButtonsTop.appendChild(toolButton);
 	}
 	
