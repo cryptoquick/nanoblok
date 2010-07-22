@@ -28,6 +28,9 @@ var Common = function () {
 	this.blockDims = null;
 	this.smallDisplay = false;
 	
+	// atan(0.5) in degrees, meant to represent 2:1 pixels.
+	this.isoAngle = 26.565;
+	
 	// Change to a smaller display format if the window is too small. Not yet fully worked out.
 	if (this.windowSize.x < 725 || this.windowSize.y < 760) {
 		this.blockDims = 15; // For smaller screens
@@ -60,7 +63,8 @@ var Common = function () {
 	this.edges = {
 		left: this.center.x - this.gridSize.x / 2,
 		right: this.center.x + this.gridSize.x / 2,
-		top: this.windowSize.y - this.gridSize.y * 2
+		top: this.windowSize.y - this.gridSize.y * 2,
+		fullTop: this.windowSize.y - this.gridSize.y * 4
 	};
 	
 	// This should technically be how far away from the left and top of the screen that the left-most, top-most corner of grid is located.

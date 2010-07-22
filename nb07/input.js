@@ -153,12 +153,19 @@ function Key (evt) {
 		if (evt.keyCode == 66) {
 			fillSquare();
 		}
-		// UP and DOWN arrows for 
+		// UP and DOWN arrows for changing Z level.
 		if (evt.keyCode == 38) {
 			$C.tools.gridUp();
 		}
 		if (evt.keyCode == 40) {
 			$C.tools.gridDown();
+		}
+		// LEFT and RIGHT arrows for rotation.
+		if (evt.keyCode == 37) {
+			$C.tools.rotLeft();
+		}
+		if (evt.keyCode == 39) {
+			$C.tools.rotRight();
 		}
 	}
 	

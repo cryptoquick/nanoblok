@@ -200,7 +200,7 @@ function removeBlock (target) {
 		$C.posInd.redraw();
 	
 		var time1 = new Date();
-		loggit("The block placed at " + location.x + ", " + location.y + ", " + location.z + " was removed in " + (time1 - time0) + " ms.");
+		loggit("The block at " + location.x + ", " + location.y + ", " + location.z + " was removed in " + (time1 - time0) + " ms.");
 	}
 	else {
 		loggit("Nothing to remove.");
