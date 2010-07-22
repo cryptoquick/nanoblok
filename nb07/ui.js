@@ -55,8 +55,8 @@ function drawUI () {
 		var effectsElement = document.getElementById(canvases[i]);
 		effectsElement.setAttributeNS(null, "height", $C.gridSize.y * 4 + 2);
 		effectsElement.setAttributeNS(null, "width", $C.gridSize.x);
-		effectsElement.style.posTop = $C.edges.top - $C.gridSize.y * 2 - 34;
-		effectsElement.style.posLeft = $C.edges.left;
+		effectsElement.style.top = $C.edges.top - $C.gridSize.y * 2 - 34 + "px";
+		effectsElement.style.left = $C.edges.left + "px";
 	}
 	
 	// Position SVG grid.
