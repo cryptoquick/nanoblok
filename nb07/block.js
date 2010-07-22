@@ -224,28 +224,6 @@ function drawAllBlocks () {
 		color = colorBlock(Field[i][3]);
 		canvasBlock(coors, location, color);
 	}
-	
-/*	for (var x = 0; x < $C.gridDims.r; x++) {
-		Voxel[x] = new Array();
-		for (var y = 0; y < $C.gridDims.r; y++) {
-		Voxel[x][y] = new Array();
-			for (var z = 0; z < 32; z++) {
-				if (Voxel[x][y][z] != -1) {
-					location = {x: x, y: y, z: z};
-				
-					gridPosition = x * $C.gridDims.c + y;
-
-					coors = GridField["x-" + gridPosition].coors;
-					
-					console.log(Voxel[x][y][z]);
-					
-					color = colorBlock(Voxel[x][y][z]);
-				
-					canvasBlock(coors, location, color);
-				}
-			}
-		}
-	}*/
 }
 
 function popField(x, y, z) {
@@ -257,73 +235,3 @@ function popField(x, y, z) {
 		}
 	}
 }
-
-/*
-function canvasBlockRemove (position, location) {
-	var adjustedPosition = {x: position.x, y: position.y - $C.blockSize.half * (location.z + 1)};
-	
-	var color = {left: "#eee", right: "#eee", top: "#eee", inset: "#aaa"};
-	
-	// Don't remove if in the "middle of nowhere".
-	if (Voxel[location.x][location.y][location.z] != -1 && Voxel[location.x][location.y][location.z] != -1 && Voxel[location.x][location.y][location.z] != -1) {
-		// Top side.
-		if (Voxel[location.x][location.y + 1][location.z] != -1 && Voxel[location.x - 1][location.y][location.z] != -1) {
-			canvasDrawSet([1, 2, 7, 6], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
-		}
-		else if (Voxel[location.x][location.y + 1][location.z] != -1 && Voxel[location.x - 1][location.y][location.z] != -1) {
-			canvasDrawSet([1, 2, 7, 6], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
-		}
-	
-		// Left side.
-		if (Voxel[location.x][location.y - 1][location.z] == -1 && Voxel[location.x + 1][location.y - 1][location.z] == -1) {
-			canvasDrawSet([6, 7, 5], adjustedPosition, {closed: false, fill: color.top, stroke: color.inset});
-		}
-		else if (Voxel[location.x][location.y - 1][location.z] == -1) {
-			canvasDrawSet([1, 7, 5, 6], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
-		}
-	
-		// Right side.
-		if (Voxel[location.x + 1][location.y][location.z] == -1 && Voxel[location.x][location.y + 1][location.z] == -1) {
-			canvasDrawSet([1, 2, 7], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
-		}
-		else if (Voxel[location.x + 1][location.y][location.z] == -1) {
-			canvasDrawSet([1, 2, 3, 7], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
-		}
-	
-		// Bottom side. Same color as the top of the block below it, or, if on the bottom, default colors.
-		// Don't draw if there are blocks in front.
-		if (Voxel[location.x - 1][location.y][location.z] != -1 && Voxel[location.x][location.y + 1][location.z] == -1) {
-			canvasDrawSet([7, 3, 4], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
-		}
-		else if (Voxel[location.x][location.y + 1][location.z] == -1 && Voxel[location.x - 1][location.y][location.z] == -1) {
-			canvasDrawSet([7, 3, 4, 5], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
-		}
-		// }
-	
-		// Corrective Top side. (uses color from the block behind or underneath)
-	
-		// Corrective Left.
-		if (Voxel[location.x][location.y - 1][location.z] != -1) {
-			var color = colorBlock(Voxel[location.x][location.y - 1][location.z]);
-			canvasDrawSet([1, 7, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
-		}
-	
-		// Corrective Right side.
-		if (Voxel[location.x + 1][location.y][location.z] != -1 && Voxel[location.x][location.y + 1][location.z] != -1) {
-			var color = colorBlock(Voxel[location.x + 1][location.y][location.z]);
-			canvasDrawSet([1, 2, 7], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
-		}
-		
-		else if (Voxel[location.x + 1][location.y][location.z] != -1) {
-			var color = colorBlock(Voxel[location.x + 1][location.y][location.z]);
-			canvasDrawSet([1, 2, 3, 7], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
-		}
-	
-		// Corrective Bottom side.
-		
-		loggit("The block placed at " + location.x + ", " + location.y + ", " + location.z + " was removed.")
-	}
-	else {
-		loggit("Nothing removed.");
-	}
-}*/

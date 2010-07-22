@@ -30,14 +30,22 @@ var Tools = function () {
 	}
 		
 	// Remove button, its state can be toggled by the user.
-	this.remove = new Object();
-	this.remove.select = function () {
+	this.remove = function () {
+		if ($C.selected.tool == "remove")
+		{
+			$C.tools.deselectRm();
+		}
+		else {
+			$C.tools.selectRm();
+		}
+	}
+	this.selectRm = function () {
 		document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
 		$C.selected.tool = "remove";
 		document.getElementById("toolButton5").setAttributeNS(null, "stroke-opacity", "1.0");
 		loggit("Deletion tool selected.");
 	}
-	this.remove.deselect = function () {
+	this.deselectRm = function () {
 		$C.selected.tool = "color" + $C.selected.color + $C.palette[$C.selected.color][3];
 		document.getElementById("toolButton5").setAttributeNS(null, "stroke-opacity", "0.0");
 		document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "1.0");
@@ -114,33 +122,50 @@ function rotate (direction) {
 	var y = 0;
 	var z = 0;
 	
+	if ($C.swatchActive) {
+		Vox = SwatchGhost;
+		Fld = SwatchField;
+	}
+	else {
+		Vox = Voxel;
+		Fld = Field;
+	}
+	
 	for (var i = 0; i < Field.length; i++) {
 		//$C.gridDims.r - 1 - 
 		// x = Math.abs(Field[i][0] - $C.gridDims.r);
 		if (rotation == 0 || rotation == 2) {
-			x = $C.gridDims.c - 1 - Field[i][0];
+			x = $C.gridDims.c - 1 - Fld[i][0];
 		}
 		else {
-			x = Field[i][0];
+			x = Fld[i][0];
 		}
 		// y = Math.abs(Field[i][1] - $C.gridDims.r);
 		if (rotation == 1 || rotation == 3) {
-			y = $C.gridDims.r - 1 - Field[i][1];
+			y = $C.gridDims.r - 1 - Fld[i][1];
 		}
 		else {
-			y = Field[i][1];
+			y = Fld[i][1];
 		}
 		
-		z = Field[i][2];
+		z = Fld[i][2];
 
-		var color = Field[i][3];
+		var color = Fld[i][3];
 
-		Field[i] = [x, y, z, color];
-		Voxel[x][y][z] = Field[i][3];
+		Fld[i] = [x, y, z, color];
+		Vox[x][y][z] = Fld[i][3];
 	}
 	
-	$C.posInd.clearBlocks();
-	drawAllBlocks();
+	if ($C.swatchActive) {
+		// $C.posInd.clearSwatch();
+		for (h = 0; h < 32; h++) {
+			buildColorSwatch();
+		}
+	}
+	else {
+		$C.posInd.clearBlocks();
+		drawAllBlocks();
+	}
 	$C.posInd.redraw();
 	
 	// true for left, false for right.

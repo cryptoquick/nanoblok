@@ -154,6 +154,10 @@ var PositionIndicator = function () {
 		context('blocks').clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
 	}
 	
+	this.clearSwatch = function () {
+		context('colors').clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
+	}
+	
 	// Selection box
 	// Enabled if there's a value in there.
 	// if ($C.selected.blocks) {
