@@ -18,6 +18,15 @@ var canvases = [
 	'colors'
 ];
 
+var toolNames = [
+	"Load",
+	"Save",
+	"Fill",
+	"Select",
+	"Colors",
+	"Delete",
+]
+
 function moveElement (name, operation) {
 	var element = document.getElementById(name);
 	
@@ -80,28 +89,37 @@ function drawUI () {
 	// Draw color palette.
 	populatePalette();
 	
-	// Draw toolbar.
-	for (var i = 0; i < 8; i++) {
-		// Create a rect.
-		var toolButton = document.createElementNS(svgNS, 'rect');
-		
+	// Draw toolbar. Won't work with numbers greater than 10.
+	for (var i = 0; i < 6; i++) {
 		var x = 0;
 		var y = 0;
 		
-		if(i % 2) {x = 22 * i - 22} else {x = 22 * i};
-		if(i % 2) {y = 0} else {y = 44};
+		if(i % 2) {x = 30 * i - 30} else {x = 30 * i};
+		if(i % 2) {y = 0} else {y = 38};
 		
-		// Give it all its attributes.
+		// Create a rect and give it all its attributes.
+		var toolButton = document.createElementNS(svgNS, 'rect');
 		toolButton.setAttributeNS(null, "id", "toolButton" + i);
 		toolButton.setAttributeNS(null, "x", x);
 		toolButton.setAttributeNS(null, "y", y);
-		toolButton.setAttributeNS(null, "height", 39);
-		toolButton.setAttributeNS(null, "width", 39);
+		toolButton.setAttributeNS(null, "height", 30);
+		toolButton.setAttributeNS(null, "width", 52);
 		toolButton.setAttributeNS(null, "rx", 3);
 		toolButton.setAttributeNS(null, "transform", "skewY(26.565)");
 		
+		var toolText = document.createElementNS(svgNS, 'text');
+		toolText.setAttributeNS(null, "id", "toolText" + i);
+		toolText.setAttributeNS(null, "x", x + 4);
+		toolText.setAttributeNS(null, "y", y + 24);
+		toolText.setAttributeNS(null, "fill", "white");
+		toolText.setAttributeNS(null, "fill-opacity", "1");
+		toolText.setAttributeNS(null, "stroke", "none");
+		toolText.setAttributeNS(null, "transform", "skewY(26.565)");
+		toolText.textContent = toolNames[i];
+		
 		var sideButtonsTop = document.getElementById("sideButtonsTop");
 		sideButtonsTop.appendChild(toolButton);
+		sideButtonsTop.appendChild(toolText);
 	}
 	
 	moveElement('renderDisplay', {move: {x: $C.edges.right - 96, y: $C.edges.fullTop}});

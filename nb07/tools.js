@@ -34,12 +34,12 @@ var Tools = function () {
 	this.remove.select = function () {
 		document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
 		$C.selected.tool = "remove";
-		document.getElementById("removeButton").setAttributeNS(null, "stroke-opacity", "1.0");
+		document.getElementById("toolButton5").setAttributeNS(null, "stroke-opacity", "1.0");
 		loggit("Deletion tool selected.");
 	}
 	this.remove.deselect = function () {
 		$C.selected.tool = "color" + $C.selected.color + $C.palette[$C.selected.color][3];
-		document.getElementById("removeButton").setAttributeNS(null, "stroke-opacity", "0.0");
+		document.getElementById("toolButton5").setAttributeNS(null, "stroke-opacity", "0.0");
 		document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "1.0");
 		loggit("Deletion tool deselected.");
 	}
@@ -82,7 +82,7 @@ var Tools = function () {
 	this.swatch = function () {
 		if ($C.swatchActive) {
 			$C.selected.tool = "color" + $C.selected.color + $C.palette[$C.selected.color][3];
-			document.getElementById("swatchButton").setAttributeNS(null, "stroke-opacity", "0.0");
+			document.getElementById("toolButton4").setAttributeNS(null, "stroke-opacity", "0.0");
 			document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "1.0");
 			closeColorSwatch();
 			loggit("Color Cube closed.");
@@ -90,7 +90,7 @@ var Tools = function () {
 		else {
 			document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
 			$C.selected.tool = "swatch";
-			document.getElementById("swatchButton").setAttributeNS(null, "stroke-opacity", "1.0");
+			document.getElementById("toolButton4").setAttributeNS(null, "stroke-opacity", "1.0");
 			fillColorSwatch();
 		}
 	}
