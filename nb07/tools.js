@@ -96,27 +96,70 @@ var Tools = function () {
 	}
 	
 	this.rotLeft = function () {
-		var location = new Object();
-		initVoxels();
-		
-		for (var i = 0; i < Field.length; i++) {
-			location = {	x: $C.gridDims.c - Field[i][0]
-						,	y: Field[i][1]
-						,	z: Field[i][2]
-						};
-
-			var color = Field[i][3];
-
-			Field[i] = [location.x, location.y, location.z, color];
-			Voxel[location.x][location.y][location.z] = Field[i][3];
-		}
-		
-		$C.posInd.clearBlocks();
-		drawAllBlocks();
-		$C.posInd.redraw();
+		rotate(1);
 	}
 	
 	this.rotRight = function () {
+		rotate(0);
+	}
+}
+
+var rotation = 0;
+
+function rotate (direction) {
+	var location = new Object();
+	initVoxels();
+	
+	var x = 0;
+	var y = 0;
+	var z = 0;
+	
+	for (var i = 0; i < Field.length; i++) {
+		//$C.gridDims.r - 1 - 
+		// x = Math.abs(Field[i][0] - $C.gridDims.r);
+		if (rotation == 0 || rotation == 2) {
+			x = $C.gridDims.c - 1 - Field[i][0];
+		}
+		else {
+			x = Field[i][0];
+		}
+		// y = Math.abs(Field[i][1] - $C.gridDims.r);
+		if (rotation == 1 || rotation == 3) {
+			y = $C.gridDims.r - 1 - Field[i][1];
+		}
+		else {
+			y = Field[i][1];
+		}
 		
+		z = Field[i][2];
+
+		var color = Field[i][3];
+
+		Field[i] = [x, y, z, color];
+		Voxel[x][y][z] = Field[i][3];
+	}
+	
+	$C.posInd.clearBlocks();
+	drawAllBlocks();
+	$C.posInd.redraw();
+	
+	// true for left, false for right.
+	if (direction) {	
+		if (rotation < 3) {
+			rotation++;
+		}
+		else {
+			rotation = 0;
+		}
+		loggit("Rotated left to " + rotation * 90 + " degrees.");
+	}
+	else {
+		if (rotation > 0) {
+			rotation--;
+		}
+		else {
+			rotation = 3;
+		}
+		loggit("Rotated right to " + rotation * 90 + " degrees.");
 	}
 }
