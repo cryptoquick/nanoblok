@@ -107,17 +107,6 @@ var Common = function () {
 		y: 0,
 		z: 0
 	};
-	
-	// Initialize the voxel array.
-	for (var x = -1; x < this.gridDims.r + 1; x++) {
-		Voxel[x] = new Array();
-		for (var y = -1; y < this.gridDims.r + 1; y++) {
-		Voxel[x][y] = new Array();
-			for (var z = -1; z < this.gridDims.c + 1; z++) {
-				Voxel[x][y][z] = -1;
-			}
-		}
-	}
 
 	// Position Indicator (which also contains the handy drawAll function)
 	this.posInd = new PositionIndicator();
@@ -140,15 +129,21 @@ var Common = function () {
 	this.swatchComplete = false;
 }
 
-function initHistory () {
-	History = {
-		lastAction: new Array(),
-		selectedColor: new Array()
-	};
-}
-
-function history (id, value) {
-	History[id].push(value);
+function initVoxels () {
+	// Initialize the voxel array.
+	for (var x = -1; x < $C.gridDims.r + 1; x++) {
+		if (Voxel[x] == undefined) {
+			Voxel[x] = new Array();
+		}
+		for (var y = -1; y < $C.gridDims.r + 1; y++) {
+			if (Voxel[x][y] == undefined) {
+				Voxel[x][y] = new Array();
+			}
+			for (var z = -1; z < $C.gridDims.c + 1; z++) {
+				Voxel[x][y][z] = -1;
+			}
+		}
+	}
 }
 
 // Serialization.

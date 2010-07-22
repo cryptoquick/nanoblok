@@ -94,4 +94,29 @@ var Tools = function () {
 			fillColorSwatch();
 		}
 	}
+	
+	this.rotLeft = function () {
+		var location = new Object();
+		initVoxels();
+		
+		for (var i = 0; i < Field.length; i++) {
+			location = {	x: $C.gridDims.c - Field[i][0]
+						,	y: Field[i][1]
+						,	z: Field[i][2]
+						};
+
+			var color = Field[i][3];
+
+			Field[i] = [location.x, location.y, location.z, color];
+			Voxel[location.x][location.y][location.z] = Field[i][3];
+		}
+		
+		$C.posInd.clearBlocks();
+		drawAllBlocks();
+		$C.posInd.redraw();
+	}
+	
+	this.rotRight = function () {
+		
+	}
 }

@@ -96,21 +96,17 @@ function Click (evt) {
 	
 	for (var i = 0; i < inputs.length; i++) {
 		if (target.id == inputs[i] + "Button" || target.id == inputs[i] + "Text") {
-			console.log(i);
 			if (i == 6) {
 				// For the delete button.
 				if ($C.selected.tool == "remove")
 				{
-					console.log(i);
 					$C.tools.remove.deselect();
 				}
 				else {
-					console.log(i);
 					$C.tools.remove.select();
 				}
 			}
 			else {
-				console.log(i);
 				eval("$C.tools." + inputs[i] + "()");
 			}
 		}

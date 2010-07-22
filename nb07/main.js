@@ -24,8 +24,11 @@ function Initialize ()
 	
 	var init0 = new Date();
 	
+	// Attach our common variables to the window for easy access.
 	window.$C = new Common();
-	initHistory();
+	
+	// Initialize the voxel array.
+	initVoxels();
 	
 	// Run core graphics functions in default state.
 	Update("initialize", {gridMode: "standard"});
