@@ -114,6 +114,25 @@ function buildColorSwatch () {
 	}
 }
 
+function drawAllSwatch () {
+	var location = {
+		x: 0,
+		y: 0,
+		z: 0
+	}
+	
+	var gridPosition = 0;
+	var coors = new Object();
+	
+	for (var i = 0; i < SwatchField.length; i++) {
+		location = {x: SwatchField[i][0], y: SwatchField[i][1], z: SwatchField[i][2]};
+		gridPosition = location.x * $C.gridDims.c + location.y;
+		coors = GridField["x-" + gridPosition].coors;
+		color = colorBlockNew(SwatchField[i][3]);
+		canvasBlock(coors, location, color);
+	}
+}
+
 function closeColorSwatch () {
 	$C.swatchActive = false;
 	$C.animating = false;

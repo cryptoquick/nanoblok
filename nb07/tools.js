@@ -122,45 +122,71 @@ function rotate (direction) {
 	var y = 0;
 	var z = 0;
 	
+	var Fx = 0;
+	var Fy = 0;
+	
 	if ($C.swatchActive) {
-		Vox = SwatchGhost;
 		Fld = SwatchField;
 	}
 	else {
-		Vox = Voxel;
 		Fld = Field;
 	}
 	
-	for (var i = 0; i < Field.length; i++) {
+	var ang = (90 * Math.PI) / 180;
+	
+	if (!direction) {
+		ang = (-90 * Math.PI) / 180;
+	}
+
+	// All this does is flip creatively. :I
+	for (var i = 0; i < Fld.length; i++) {
 		//$C.gridDims.r - 1 - 
 		// x = Math.abs(Field[i][0] - $C.gridDims.r);
-		if (rotation == 0 || rotation == 2) {
-			x = $C.gridDims.c - 1 - Fld[i][0];
-		}
-		else {
-			x = Fld[i][0];
-		}
-		// y = Math.abs(Field[i][1] - $C.gridDims.r);
-		if (rotation == 1 || rotation == 3) {
-			y = $C.gridDims.r - 1 - Fld[i][1];
-		}
-		else {
-			y = Fld[i][1];
+		// if (rotation == 0 || rotation == 2) {
+		// 	x = $C.gridDims.c - 1 - Fld[i][0];
+		// }
+		// else {
+		// 	x = Fld[i][0];
+		// }
+		// // y = Math.abs(Field[i][1] - $C.gridDims.r);
+		// if (rotation == 1 || rotation == 3) {
+		// 	y = $C.gridDims.r - 1 - Fld[i][1];
+		// }
+		// else {
+		// 	y = Fld[i][1];
+		// }
+		
+		Fx = Fld[i][0];
+		Fy = Fld[i][1];
+		z = Fld[i][2];
+		
+		console.log(Fx + ", " + Fy);
+		
+		x = Math.round(Fx * Math.cos(ang) - Fy * Math.sin(ang));
+		y = Math.round(Fx * Math.sin(ang) + Fy * Math.cos(ang));
+		
+		
+		if (x < 1) {
+			x = ($C.gridDims.c - 1) + (x);
+			
 		}
 		
-		z = Fld[i][2];
-
+		if (y < 1) {
+			y = ($C.gridDims.r - 1) + (y);
+		}
+		
+		console.log(x + ", " + y);
+		console.log(" ");
+		
 		var color = Fld[i][3];
 
-		Fld[i] = [x, y, z, color];
-		Vox[x][y][z] = Fld[i][3];
+		Field[i] = [x, y, z, color];
+		Voxel[x][y][z] = Fld[i][3];
 	}
 	
 	if ($C.swatchActive) {
-		// $C.posInd.clearSwatch();
-		for (h = 0; h < 32; h++) {
-			buildColorSwatch();
-		}
+		$C.posInd.clearSwatch();
+		drawAllSwatch();
 	}
 	else {
 		$C.posInd.clearBlocks();
