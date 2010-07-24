@@ -150,12 +150,12 @@ function Hover (evt, inout) {
 function Key (evt) {
 	if (evt.type == "keydown") {
 		// XKEY for delete.
-		if (evt.keyCode == 88) {
+		if (evt.keyCode == 68) {
 			if ($C.selected.tool == "remove") {
-				$C.tools.remove.deselect();
+				$C.tools.deselectRm();
 			}
 			else {
-				$C.tools.remove.select();
+				$C.tools.selectRm();
 			}
 		//	$C.selected.tool = "delete";
 		}
