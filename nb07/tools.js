@@ -116,7 +116,13 @@ var rotation = 0;
 
 function rotate (direction) {
 	var location = new Object();
-	initVoxels();
+	
+	if ($C.swatchActive) {
+		initVoxels(Swatch);
+	}
+	else {
+		initVoxels(Voxel);
+	}
 	
 	var x = 0;
 	var y = 0;
@@ -160,38 +166,41 @@ function rotate (direction) {
 		Fy = Fld[i][1];
 		z = Fld[i][2];
 		
-		console.log(Fx + ", " + Fy);
+		// console.log(Fx + ", " + Fy);
 		
 		x = Math.round(Fx * Math.cos(ang) - Fy * Math.sin(ang));
 		y = Math.round(Fx * Math.sin(ang) + Fy * Math.cos(ang));
 		
+		// console.log(x + ", " + y);
 		
-		if (x < 1) {
-			x = ($C.gridDims.c - 1) + (x);
-			
+		if (x < 0) {
+			x = ($C.gridDims.c - 1) + x;
 		}
 		
-		if (y < 1) {
-			y = ($C.gridDims.r - 1) + (y);
+		if (y < 0) {
+			y = ($C.gridDims.r - 1) + y;
 		}
 		
-		console.log(x + ", " + y);
-		console.log(" ");
+		// console.log(x + ", " + y);
+		// console.log(" ");
 		
 		var color = Fld[i][3];
 
-		Field[i] = [x, y, z, color];
+		Fld[i] = [x, y, z, color];
 		Voxel[x][y][z] = Fld[i][3];
 	}
 	
 	if ($C.swatchActive) {
+		SwatchField = Fld;
 		$C.posInd.clearSwatch();
 		drawAllSwatch();
 	}
 	else {
+		Field = Fld;
 		$C.posInd.clearBlocks();
 		drawAllBlocks();
 	}
+	
 	$C.posInd.redraw();
 	
 	// true for left, false for right.

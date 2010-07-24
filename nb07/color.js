@@ -25,14 +25,21 @@ function fillColorSwatch () {
 			for (var y = -1; y < $C.gridDims.r + 1; y++) {
 			Swatch[x][y] = new Array();
 				for (var z = -1; z < $C.gridDims.c + 1; z++) {
-					color = {
-								r: (z + 1) * 8,
-								g: 256 - (y + 1) * 8,
-								b: (x + 1) * 8
-							};
+					if (x > -1 && x < $C.gridDims.c &&
+						y > -1 && y < $C.gridDims.c &&
+						z > -1 && z < $C.gridDims.c) {
+						color = {
+							r: (z + 1) * 8,
+							g: 256 - (y + 1) * 8,
+							b: (x + 1) * 8
+						};
 							
-					Swatch[x][y][z] = color;
-					SwatchField.push([x, y, z, color]);
+						Swatch[x][y][z] = color;
+						SwatchField.push([x, y, z, color]);
+					}
+					else {
+						Swatch[x][y][z] = -1;
+					}
 				}
 			}
 		}
@@ -123,6 +130,8 @@ function drawAllSwatch () {
 	
 	var gridPosition = 0;
 	var coors = new Object();
+	
+	console.log(SwatchField[32767]);
 	
 	for (var i = 0; i < SwatchField.length; i++) {
 		location = {x: SwatchField[i][0], y: SwatchField[i][1], z: SwatchField[i][2]};
