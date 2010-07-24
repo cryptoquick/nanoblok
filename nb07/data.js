@@ -129,18 +129,18 @@ var Common = function () {
 	this.swatchComplete = false;
 }
 
-function initVoxels () {
+function initVoxels (voxArr) {
 	// Initialize the voxel array.
 	for (var x = -1; x < $C.gridDims.r + 1; x++) {
-		if (Voxel[x] == undefined) {
-			Voxel[x] = new Array();
+		if (voxArr[x] == undefined) {
+			voxArr[x] = new Array();
 		}
 		for (var y = -1; y < $C.gridDims.r + 1; y++) {
-			if (Voxel[x][y] == undefined) {
-				Voxel[x][y] = new Array();
+			if (voxArr[x][y] == undefined) {
+				voxArr[x][y] = new Array();
 			}
 			for (var z = -1; z < $C.gridDims.c + 1; z++) {
-				Voxel[x][y][z] = -1;
+				voxArr[x][y][z] = -1;
 			}
 		}
 	}

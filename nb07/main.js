@@ -28,7 +28,7 @@ function Initialize ()
 	window.$C = new Common();
 	
 	// Initialize the voxel array.
-	initVoxels();
+	initVoxels(Voxel);
 	
 	// Run core graphics functions in default state.
 	Update("initialize", {gridMode: "standard"});
