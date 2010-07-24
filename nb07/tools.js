@@ -162,23 +162,52 @@ function rotate (direction) {
 		// 	y = Fld[i][1];
 		// }
 		
+		// Field coordinates.
 		Fx = Fld[i][0];
 		Fy = Fld[i][1];
 		z = Fld[i][2];
 		
+		// // Rotation coordinates.
+		// var Rx = 1;
+		// var Ry = 1;
+		// 
+		// // New rotation coordinates.
+		// nRx = Math.round(Rx * Math.cos(ang) - Ry * Math.sin(ang));
+		// nRy = Math.round(Rx * Math.sin(ang) + Ry * Math.cos(ang));
+		// 
 		// console.log(Fx + ", " + Fy);
+		// 
+		Fx++;
+		Fy++;
+		// 
+		// if (Fx < 0) {
+		// 	Fx = ($C.gridDims.c - 2) + Fx;
+		// }
+		// 
+		// if (Fy < 0) {
+		// 	Fy = ($C.gridDims.r - 2) + Fy;
+		// }
 		
 		x = Math.round(Fx * Math.cos(ang) - Fy * Math.sin(ang));
 		y = Math.round(Fx * Math.sin(ang) + Fy * Math.cos(ang));
 		
 		// console.log(x + ", " + y);
 		
+		// console.log("nR: " + nRx + ", " + nRy);
+		
 		if (x < 0) {
-			x = ($C.gridDims.c - 1) + x;
+			x = ($C.gridDims.c) + x;
 		}
 		
 		if (y < 0) {
-			y = ($C.gridDims.r - 1) + y;
+			y = ($C.gridDims.r) + y;
+		}
+		
+		if (direction) {
+			y--;
+		}
+		else {
+			x--;
 		}
 		
 		// console.log(x + ", " + y);
