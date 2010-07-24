@@ -117,6 +117,7 @@ var rotation = 0;
 function rotate (direction) {
 	var location = new Object();
 	
+	// This function works on both the grid and the color cube.
 	if ($C.swatchActive) {
 		initVoxels(Swatch);
 	}
@@ -144,57 +145,23 @@ function rotate (direction) {
 		ang = (-90 * Math.PI) / 180;
 	}
 
-	// All this does is flip creatively. :I
+	// This is where the magic happens.
 	for (var i = 0; i < Fld.length; i++) {
-		//$C.gridDims.r - 1 - 
-		// x = Math.abs(Field[i][0] - $C.gridDims.r);
-		// if (rotation == 0 || rotation == 2) {
-		// 	x = $C.gridDims.c - 1 - Fld[i][0];
-		// }
-		// else {
-		// 	x = Fld[i][0];
-		// }
-		// // y = Math.abs(Field[i][1] - $C.gridDims.r);
-		// if (rotation == 1 || rotation == 3) {
-		// 	y = $C.gridDims.r - 1 - Fld[i][1];
-		// }
-		// else {
-		// 	y = Fld[i][1];
-		// }
 		
 		// Field coordinates.
 		Fx = Fld[i][0];
 		Fy = Fld[i][1];
 		z = Fld[i][2];
 		
-		// // Rotation coordinates.
-		// var Rx = 1;
-		// var Ry = 1;
-		// 
-		// // New rotation coordinates.
-		// nRx = Math.round(Rx * Math.cos(ang) - Ry * Math.sin(ang));
-		// nRy = Math.round(Rx * Math.sin(ang) + Ry * Math.cos(ang));
-		// 
-		// console.log(Fx + ", " + Fy);
-		// 
+		// Translate coordinates over one in order to compensate for the zero origin issue.
 		Fx++;
 		Fy++;
-		// 
-		// if (Fx < 0) {
-		// 	Fx = ($C.gridDims.c - 2) + Fx;
-		// }
-		// 
-		// if (Fy < 0) {
-		// 	Fy = ($C.gridDims.r - 2) + Fy;
-		// }
 		
+		// A lovely matrix transformation.
 		x = Math.round(Fx * Math.cos(ang) - Fy * Math.sin(ang));
 		y = Math.round(Fx * Math.sin(ang) + Fy * Math.cos(ang));
 		
-		// console.log(x + ", " + y);
-		
-		// console.log("nR: " + nRx + ", " + nRy);
-		
+		// To keep blocks from going off-grid, put them on the other side.
 		if (x < 0) {
 			x = ($C.gridDims.c) + x;
 		}
@@ -203,6 +170,7 @@ function rotate (direction) {
 			y = ($C.gridDims.r) + y;
 		}
 		
+		// More compensation for zero origin issue.
 		if (direction) {
 			y--;
 		}
@@ -210,15 +178,15 @@ function rotate (direction) {
 			x--;
 		}
 		
-		// console.log(x + ", " + y);
-		// console.log(" ");
-		
+		// Assign color. Works with both old and new color systems.
 		var color = Fld[i][3];
 
+		// Add to respective field, but voxel doesn't need to be added to color cube.
 		Fld[i] = [x, y, z, color];
 		Voxel[x][y][z] = Fld[i][3];
 	}
 	
+	// Tell which field to put back into (cube or grid), and their associated functions.
 	if ($C.swatchActive) {
 		SwatchField = Fld;
 		$C.posInd.clearSwatch();
@@ -232,7 +200,7 @@ function rotate (direction) {
 	
 	$C.posInd.redraw();
 	
-	// true for left, false for right.
+	// True for left, False for right.
 	if (direction) {	
 		if (rotation < 3) {
 			rotation++;
