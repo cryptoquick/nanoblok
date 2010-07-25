@@ -61,7 +61,9 @@ function Click (evt) {
 	
 	var inputs = [
 		"gridUp",
-		"gridDown"
+		"gridDown",
+		"rotLeft",
+		"rotRight"
 	];
 	
 	var toolNames = [
@@ -70,7 +72,7 @@ function Click (evt) {
 		"Fill",
 		"Select",
 		"Colors",
-		"Delete",
+		"Delete"
 	]
 	
 	var toolMethods = [

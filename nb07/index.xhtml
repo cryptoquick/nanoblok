@@ -31,7 +31,6 @@
 	<script type="text/javascript" src="color.js"></script>
 	<script type="text/javascript" src="main.js"></script>
 	<script type="text/javascript" src="debug.js"></script>
-<!-- <script type="text/javascript" src="json.js"></script> // Use Native JSON! -->
 	
 	<style>
 		body {
@@ -50,6 +49,10 @@
 		}
 		::selection { background: transparent; }
 		::-moz-selection { background: transparent; }
+		#infoz {
+			display: none;
+			width: 100%;
+		}
 	</style>
 </head>
 <body>
@@ -83,30 +86,10 @@
 		transform="skewY(-26.565)">nb</svg:text>
 		
 	<svg:g id="sideButtonsTop" stroke="black" stroke-width="3" stroke-opacity="0.0" fill="orange" fill-opacity="0.5"  font-family="Verdana" font-size="14">
-		<!-- <svg:rect id="sideButton00" x="0" y="0" width="35" height="35" transform="skewY(26.565)" rx="3"/>
-		<svg:rect id="sideButton01" x="0" y="40" width="35" height="35" transform="skewY(26.565)" rx="3"/>
-		<svg:rect id="sideButton02" x="40" y="0" width="35" height="35" transform="skewY(26.565)" rx="3"/>
-		<svg:rect id="sideButton03" x="40" y="40" width="35" height="35" transform="skewY(26.565)" rx="3"/>
-		<svg:rect id="sideButton04" x="80" y="0" width="35" height="35" transform="skewY(26.565)" rx="3"/>
-		<svg:rect id="sideButton05" x="80" y="40" width="35" height="35" transform="skewY(26.565)" rx="3"/>
-		<svg:rect id="sideButton06" x="120" y="0" width="35" height="35" transform="skewY(26.565)" rx="3"/>
-		<svg:rect id="sideButton07" x="120" y="40" width="35" height="35" transform="skewY(26.565)" rx="3"/> -->
-	
-	<!--	<svg:rect id="saveButton" x="0" y="0" width="35" height="35" fill="orange" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
-		<svg:text id="saveText" x="8" y="25" font-family="Verdana" font-size="18" fill="white" stroke="none" transform="skewY(26.565)">U &#8593;</svg:text>
-		<svg:rect id="loadButton" x="0" y="45" width="35" height="35" fill="orange" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
-		<svg:text id="loadText" x="9" y="69" font-family="Verdana" font-size="16" fill="white" stroke="none" transform="skewY(26.565)">L &#8595;</svg:text>
-		<svg:rect id="refreshButton" x="45" y="0" width="35" height="35" fill="orange" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
-		<svg:text id="refreshText" x="48" y="25" font-family="Verdana" font-size="18" fill="white" stroke="none" transform="skewY(26.565)">R↺</svg:text>
-		<svg:rect id="removeButton" x="45" y="45" width="35" height="35" fill="orange" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
-		<svg:text id="removeText" x="48" y="69" font-family="Verdana" font-size="16" fill="white" stroke="none" transform="skewY(26.565)">X⌫</svg:text>
-		<svg:rect id="swatchButton" x="90" y="0" width="35" height="35" fill="orange" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
-		<svg:text id="swatchText" x="92" y="23" font-family="Verdana" font-size="12" fill="white" stroke="none" transform="skewY(26.565)">Color</svg:text>-->
-		<!-- <svg:rect id="selectButton" x="90" y="0" width="35" height="35" fill="orange" fill-opacity="0.5" rx="3" transform="skewY(26.565)" c="-1" r="-1"/>
-		<svg:text id="selectText" x="94" y="25" font-family="Verdana" font-size="16" fill="white" transform="skewY(26.565)" c="-1" r="-1">S</svg:text>
-		<svg:rect id="selectLogo" x="107" y="12" height="13" width="13" fill="none" stroke-opacity="1.0" stroke-width="1.5" stroke="white" stroke-dasharray="3,2" transform="skewY(26.565)" c="-1" r="-1"/>
-		<svg:rect id="fillButton" x="90" y="45" width="35" height="35" fill="orange" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
-		<svg:text id="fillText" x="94" y="69" font-family="Verdana" font-size="16" fill="white" transform="skewY(26.565)">F▨</svg:text> -->
+		<svg:rect id="rotLeftButton" x="180" y="1" width="30" height="30" fill="#aaa" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
+		<svg:text id="rotLeftText" x="187" y="24" font-family="Verdana" font-size="18" fill="white" transform="skewY(26.565)" fill-opacity="1.0">↻</svg:text>
+		<svg:rect id="rotRightButton" x="180" y="38" width="30" height="30" fill="#aaa" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
+		<svg:text id="rotRightText" x="187" y="60" font-family="Verdana" font-size="18" fill="white" transform="skewY(26.565)" fill-opacity="1.0">↺</svg:text>
 	</svg:g>
 	
 	<svg:g id="sideButtonsLeft">
@@ -132,11 +115,6 @@
 		<svg:path d="M 0 16 L 0 48 L 32 64 L 64 48 L 64 16 L 32 0 Z" stroke="#444" stroke-width="2" fill="none"/>
 	</svg:g>
 	
-	<svg:rect id="rotLeftButton" x="0" y="1" width="20" height="25" fill="#aaa" fill-opacity="0.5" rx="1"/>
-	<svg:text id="rotLeftText" x="4" y="20" font-family="Verdana" font-size="16" fill="white">↻</svg:text>
-	<svg:rect id="rotRightButton" x="0" y="1" width="20" height="25" fill="#aaa" fill-opacity="0.5" rx="1"/>
-	<svg:text id="rotRightText" x="4" y="50" font-family="Verdana" font-size="16" fill="white">↺</svg:text>
-	
 	<svg:text id="yAxis" x="0" y="0" font-family="Verdana" font-size="18" fill="#999" stroke="none" font-weight="bold">Y &#8594;</svg:text>
 	<svg:text id="xAxis" x="0" y="0" font-family="Verdana" font-size="18" fill="#999" stroke="none" font-weight="bold">X &#8594;</svg:text>
 	
@@ -145,7 +123,7 @@
 	<svg:g id="markerPoints" fill="red" fill-opacity="0.0"></svg:g>
 </svg:svg>
 
-<!-- <input id="saveFile" type="text" size="100" value="Save file test."></input> -->
+<div id="infoz"></div>
 
 </body>
 </html>

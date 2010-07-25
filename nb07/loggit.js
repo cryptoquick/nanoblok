@@ -10,6 +10,7 @@
  */
 
 var svgNS = "http://www.w3.org/2000/svg";
+var loggitLog = new Array();
 
 function loggit (str) {
 	var log = document.getElementById("debugText");
@@ -30,4 +31,7 @@ function loggit (str) {
 	
 	log.appendChild(textElement);
 	log.getElementsByTagName('tspan')[0].setAttributeNS(null, 'dy', 2);
+	
+	// Save all messages for later.
+	loggitLog.push(textElement);
 }

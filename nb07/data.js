@@ -127,6 +127,8 @@ var Common = function () {
 	
 	// If swatch is fully drawn, this is true.
 	this.swatchComplete = false;
+	
+	testCompat();
 }
 
 function initVoxels (voxArr) {
@@ -143,6 +145,21 @@ function initVoxels (voxArr) {
 				voxArr[x][y][z] = -1;
 			}
 		}
+	}
+}
+
+function testCompat () {
+	var numTests = 1;
+	var passedTests = 0;
+	
+	// Check for Native JSON:
+	JSONtest = JSON.parse('{"works" : true}');
+	if (JSONtest.works) {
+		passedTests++;
+	}
+	
+	if (passedTests == numTests) {
+		// Do something meaningful.
 	}
 }
 
