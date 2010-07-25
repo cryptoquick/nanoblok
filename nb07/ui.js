@@ -107,6 +107,7 @@ function drawUI () {
 		toolButton.setAttributeNS(null, "rx", 3);
 		toolButton.setAttributeNS(null, "transform", "skewY(26.565)");
 		
+		// Same for that tool's text.
 		var toolText = document.createElementNS(svgNS, 'text');
 		toolText.setAttributeNS(null, "id", "toolText" + i);
 		toolText.setAttributeNS(null, "x", x + 4);
@@ -128,6 +129,13 @@ function drawUI () {
 	if ($C.smallDisplay) {
 		document.getElementById('debugBox').setAttributeNS(null, "width", 234);
 	}
+	
+	// Position rotation buttons.
+	// moveElement('rotLeftButton', {move: {x: $C.edges.right - 96, y: $C.edges.fullTop}});
+	
+	// Set Infoz height.
+	var infozDiv = document.getElementById('infoz');
+	infozDiv.setAttributeNS(null, "height", $C.windowSize.y - 5);
 }
 
 // Place all the colors on the right side.
