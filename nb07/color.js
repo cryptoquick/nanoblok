@@ -131,8 +131,6 @@ function drawAllSwatch () {
 	var gridPosition = 0;
 	var coors = new Object();
 	
-	console.log(SwatchField[32767]);
-	
 	for (var i = 0; i < SwatchField.length; i++) {
 		location = {x: SwatchField[i][0], y: SwatchField[i][1], z: SwatchField[i][2]};
 		gridPosition = location.x * $C.gridDims.c + location.y;
