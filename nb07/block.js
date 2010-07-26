@@ -102,7 +102,7 @@ function colorBlock (colorID) {
 }
 
 function colorBlockNew (color) {
-	var blockColors = {};
+	var blockColors = new Object();
 	
 	blockColors.left = "rgb(" + (color.r - 20) + ", " + (color.g - 20) + ", " + (color.b - 20) + ")";
 	blockColors.right = "rgb(" + (color.r - 10) + ", " + (color.g - 10) + ", " + (color.b - 10) + ")";
@@ -110,7 +110,6 @@ function colorBlockNew (color) {
 	blockColors.inset = "rgb(" + (color.r - 30) + ", " + (color.g - 30) + ", " + (color.b - 30) + ")";
 
 	return blockColors;
-	// return {left: colorLeft, right: colorRight, top: colorTop, inset: colorLines};
 }
 
 // Paints a block on the board with proper color and occlusion.
@@ -235,3 +234,4 @@ function popField(x, y, z) {
 		}
 	}
 }
+

@@ -30,6 +30,9 @@ function Initialize ()
 	// Initialize the voxel array.
 	initVoxels(Voxel);
 	
+	// Initialize the color swatch for color IDs.
+	swatchInit();
+	
 	// Run core graphics functions in default state.
 	Update("initialize", {gridMode: "standard"});
 	
@@ -76,3 +79,4 @@ function Update (updateMode, updateSettings) {
 	
 	$C.posInd.redraw();
 }
+

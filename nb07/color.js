@@ -14,11 +14,9 @@ var Swatch = new Array();
 var SwatchGhost = new Array();
 var SwatchField = new Array();
 
-function fillColorSwatch () {
-	$C.swatchActive = true;
-	
-	// Initialize the color swatch array if it hasn't been done already.
-	if ($C.swatchInit == false || $C.swatchComplete == false) {
+// Initialize the color swatch array if it hasn't been done already.
+function swatchInit () {
+	if ($C.swatchInit == false) {
 		loggit("Initializing Color Array");
 		for (var x = -1; x < $C.gridDims.r + 1; x++) {
 			Swatch[x] = new Array();
@@ -44,8 +42,13 @@ function fillColorSwatch () {
 			}
 		}
 		$C.swatchInit = true;
+	}
+}
+
+function fillColorSwatch () {
+	$C.swatchActive = true;
 	
-	
+	if ($C.swatchComplete == false) {
 		// Facilitates drawing of the array using canvasBlock occlusion.
 		for (var x = -1; x < $C.gridDims.r + 1; x++) {
 			SwatchGhost[x] = new Array();
@@ -147,3 +150,4 @@ function closeColorSwatch () {
 	$C.tools.gridDown();
 	SwatchGhost = new Array();
 }
+
