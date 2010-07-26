@@ -61,7 +61,20 @@ var Tools = function () {
 			if ($C.smallDisplay) {gridOffset = -309};
 			document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(-1,"
 				+ (gridOffset - $C.layerOffset.z * $C.blockSize.half) + ")");
-			loggit("Up to " + $C.layerOffset.z);
+			
+			// For Color Cube slicing.
+			if ($C.swatchActive) {
+				for (var s = 0; s < 1023; s++) {
+					SwatchField[s * $C.layerOffset.z][4] = false;
+				}
+				$C.posInd.clearSwatch();
+				drawAllSwatch();
+				
+				loggit("Slice up to " + $C.layerOffset.z);
+			}
+			else {
+				loggit("Up to " + $C.layerOffset.z);
+			}
 		}
 	}
 	this.gridDown = function () {
@@ -73,7 +86,21 @@ var Tools = function () {
 			if ($C.smallDisplay) {gridOffset = -309};
 			document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(-1,"
 				+ (gridOffset - $C.layerOffset.z * $C.blockSize.half) + ")");
-			loggit("Down to " + $C.layerOffset.z);
+			
+			// For Color Cube slicing.
+			if ($C.swatchActive) {
+				for (var s = 0; s < 1024; s++) {
+					SwatchField[s + (($C.layerOffset.z) * 1024)][4] = false;
+				}
+				console.log("Slice: " + 1023 * ($C.layerOffset.z));
+				$C.posInd.clearSwatch();
+				drawAllSwatch();
+				
+				loggit("Slice down to " + $C.layerOffset.z);
+			}
+			else {
+				loggit("Down to " + $C.layerOffset.z);
+			}
 		}
 	}
 	
