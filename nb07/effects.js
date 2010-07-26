@@ -138,12 +138,12 @@ var PositionIndicator = function () {
 	this.drawAll = function () {
 		this.displayCtx.clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
 		this.displayCtx.globalCompositeOperation = "source-over";
+		this.displayCtx.drawImage(this.grids, 0, 0);
 		
 		if ($C.swatchActive) {
 			this.displayCtx.drawImage(this.colors, 0, 0);
 		}
 		else {
-			this.displayCtx.drawImage(this.grids, 0, 0);
 			this.displayCtx.drawImage(this.blocks, 0, 0);
 		}
 		

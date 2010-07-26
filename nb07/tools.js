@@ -64,8 +64,8 @@ var Tools = function () {
 			
 			// For Color Cube slicing.
 			if ($C.swatchActive) {
-				for (var s = 0; s < 1023; s++) {
-					SwatchField[s + (($C.layerOffset.z + 1) * 1024)][4] = true;
+				for (var s = 0; s < 1024; s++) {
+					SwatchField[s + (($C.layerOffset.z) * 1024)][4] = true;
 				}
 				$C.posInd.clearSwatch();
 				drawAllSwatch();
