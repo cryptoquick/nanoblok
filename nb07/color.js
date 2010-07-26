@@ -16,7 +16,9 @@ var SwatchField = new Array();
 
 // Initialize the color swatch array if it hasn't been done already.
 function swatchInit () {
-	if ($C.swatchInit == false) {
+	var index = 0;
+	
+	if ($C.swatchInit === false) {
 		loggit("Initializing Color Array");
 		for (var x = -1; x < $C.gridDims.r + 1; x++) {
 			Swatch[x] = new Array();
@@ -26,14 +28,18 @@ function swatchInit () {
 					if (x > -1 && x < $C.gridDims.c &&
 						y > -1 && y < $C.gridDims.c &&
 						z > -1 && z < $C.gridDims.c) {
+							
 						color = {
 							r: (z + 1) * 8,
-							g: 256 - (y + 1) * 8,
-							b: (x + 1) * 8
+							g: (y + 1) * 8,
+							b: 256 - (x + 1) * 8
 						};
 							
-						Swatch[x][y][z] = color;
-						SwatchField.push([x, y, z, color]);
+						Swatch[x][y][z] = index;
+						// Last field is for a visibility toggle.
+						SwatchField.push([x, y, z, color, true]);
+						
+						index++;
 					}
 					else {
 						Swatch[x][y][z] = -1;
@@ -41,47 +47,31 @@ function swatchInit () {
 				}
 			}
 		}
+		
 		$C.swatchInit = true;
 	}
 }
 
 function fillColorSwatch () {
 	$C.swatchActive = true;
-	
-	if ($C.swatchComplete == false) {
-		// Facilitates drawing of the array using canvasBlock occlusion.
-		for (var x = -1; x < $C.gridDims.r + 1; x++) {
-			SwatchGhost[x] = new Array();
-			for (var y = -1; y < $C.gridDims.r + 1; y++) {
-			SwatchGhost[x][y] = new Array();
-				for (var z = -1; z < $C.gridDims.c + 1; z++) {
-					SwatchGhost[x][y][z] = -1;
-				}
-			}
-		}
-	
-		loggit("Drawing Color Cube");
-		// Run the swatch function in such a way that the browser can render once each level is drawn.
-		if ($C.animating == false) {
-			time0 = new Date();
-			$C.animating = true;
-			t = setInterval(buildColorSwatch, 1);
-		}
-		else {
-			loggit("Animation already being run!");
-		}
+
+	loggit("Drawing Color Cube!");
+	// Run the swatch function in such a way that the browser can render once each level is drawn.
+	if ($C.animating === false) {
+		$C.animating = true;
+		// t = setInterval(buildColorSwatch, 1);
+		$C.layerOffset.z = 31;
+		
+		drawAllSwatch();
 	}
 	else {
-		loggit("Displaying Color Array");
-		$C.swatchActive = true;
-		$C.layerOffset.z = 30;
-		$C.tools.gridUp();
+		loggit("Animation already being run!");
 	}
 }
 
 var h = 0;
 
-function buildColorSwatch () {
+/*function buildColorSwatch () {
 	var gridPosition = 0;
 	var coors = new Object();
 	
@@ -103,26 +93,32 @@ function buildColorSwatch () {
 		z: 0
 	}
 	
+	l = 0;
+	w = 0;
+	
 	if ($C.animating || $C.swatchComplete == false) {
-		for (var w = 0; w < 32; w++) {
-			for (var l = 0; l < 32; l++) {
-				blockColor = colorBlockNew(Swatch[h][l][w]);
+		for (var i = 0; i < 1023; i++) {
+			blockColor = colorBlockNew(SwatchField[i * (h + 1)][3]);
+		
+			location = {x: l, y: w, z: h};
+		
+			gridPosition = l * $C.gridDims.c + w;
+			coors = GridField["x-" + gridPosition].coors;
+		
+			SwatchGhost[location.x][location.y][location.z] = 1;
+		
+			canvasBlock(coors, location, blockColor);
 			
-				location = {x: l, y: w, z: h};
+			l = i % 32;
+			w = (l * i) % 32;
 			
-				gridPosition = l * $C.gridDims.c + w;
-				coors = GridField["x-" + gridPosition].coors;
-			
-				SwatchGhost[location.x][location.y][location.z] = 1;
-			
-				canvasBlock(coors, location, blockColor);
-			}
+			// console.log(l + ", " + w + ", " + h);
 		}
 	
 		$C.posInd.redraw();
 		h++;
 	}
-}
+}*/
 
 function drawAllSwatch () {
 	var location = {
@@ -131,16 +127,49 @@ function drawAllSwatch () {
 		z: 0
 	}
 	
+	time0 = new Date();
+	
+	// Facilitates drawing of the array using canvasBlock occlusion.
+	for (var x = -1; x < $C.gridDims.r + 1; x++) {
+		SwatchGhost[x] = new Array();
+		for (var y = -1; y < $C.gridDims.r + 1; y++) {
+		SwatchGhost[x][y] = new Array();
+			for (var z = -1; z < $C.gridDims.c + 1; z++) {
+				SwatchGhost[x][y][z] = -1;
+			}
+		}
+	}
+	
 	var gridPosition = 0;
 	var coors = new Object();
 	
-	for (var i = 0; i < SwatchField.length; i++) {
-		location = {x: SwatchField[i][0], y: SwatchField[i][1], z: SwatchField[i][2]};
-		gridPosition = location.x * $C.gridDims.c + location.y;
-		coors = GridField["x-" + gridPosition].coors;
-		color = colorBlockNew(SwatchField[i][3]);
-		canvasBlock(coors, location, color);
+	var runs = 0;
+	
+	for (var i = SwatchField.length - 1; i > 0; i--) {
+		if (SwatchField[i][4]) {
+			location = {x: SwatchField[i][0], y: SwatchField[i][1], z: SwatchField[i][2]};
+			gridPosition = location.x * $C.gridDims.c + location.y;
+			coors = GridField["x-" + gridPosition].coors;
+			color = colorBlockNew(SwatchField[i][3]);
+			SwatchGhost[location.x][location.y][location.z] = 1;
+			canvasBlock(coors, location, color);
+			
+			runs++;
+		}
 	}
+	
+	console.log("Swatch: " + runs);
+	
+	$C.animating = false;
+	$C.swatchComplete = true;
+	
+	// DEADLY
+	// $C.tools.gridUp();
+	
+	time1 = new Date();
+	loggit("Color Cube drawn in " + (time1 - time0) + " ms.");
+	
+	$C.posInd.redraw();
 }
 
 function closeColorSwatch () {

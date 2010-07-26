@@ -159,7 +159,6 @@ function Key (evt) {
 			else {
 				$C.tools.selectRm();
 			}
-		//	$C.selected.tool = "delete";
 		}
 		// BKEY for debug script.
 		if (evt.keyCode == 66) {
