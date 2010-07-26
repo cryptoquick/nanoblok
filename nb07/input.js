@@ -151,7 +151,7 @@ function Hover (evt, inout) {
 
 function Key (evt) {
 	if (evt.type == "keydown") {
-		// XKEY for delete.
+		// DKEY for delete.
 		if (evt.keyCode == 68) {
 			if ($C.selected.tool == "remove") {
 				$C.tools.deselectRm();
@@ -159,6 +159,10 @@ function Key (evt) {
 			else {
 				$C.tools.selectRm();
 			}
+		}
+		// CKEY for color cube.
+		if (evt.keyCode == 67) {
+			$C.tools.swatch();
 		}
 		// BKEY for debug script.
 		if (evt.keyCode == 66) {

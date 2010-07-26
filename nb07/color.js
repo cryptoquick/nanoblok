@@ -20,11 +20,12 @@ function swatchInit () {
 	
 	if ($C.swatchInit === false) {
 		loggit("Initializing Color Array");
-		for (var x = -1; x < $C.gridDims.r + 1; x++) {
-			Swatch[x] = new Array();
+		// By inverting this, computation is sped up a great deal.
+		for (var z = -1; z < $C.gridDims.c + 1; z++) {
+			Swatch[z] = new Array();
 			for (var y = -1; y < $C.gridDims.r + 1; y++) {
-			Swatch[x][y] = new Array();
-				for (var z = -1; z < $C.gridDims.c + 1; z++) {
+			Swatch[z][y] = new Array();
+				for (var x = $C.gridDims.r + 1; x >= -1; x--) {
 					if (x > -1 && x < $C.gridDims.c &&
 						y > -1 && y < $C.gridDims.c &&
 						z > -1 && z < $C.gridDims.c) {
@@ -35,14 +36,14 @@ function swatchInit () {
 							b: 256 - (x + 1) * 8
 						};
 							
-						Swatch[x][y][z] = index;
+						Swatch[z][y][x] = index;
 						// Last field is for a visibility toggle.
 						SwatchField.push([x, y, z, color, true]);
 						
 						index++;
 					}
 					else {
-						Swatch[x][y][z] = -1;
+						Swatch[z][y][x] = -1;
 					}
 				}
 			}
@@ -53,8 +54,6 @@ function swatchInit () {
 }
 
 function fillColorSwatch () {
-	$C.swatchActive = true;
-
 	loggit("Drawing Color Cube!");
 	// Run the swatch function in such a way that the browser can render once each level is drawn.
 	if ($C.animating === false) {
@@ -121,6 +120,8 @@ var h = 0;
 }*/
 
 function drawAllSwatch () {
+	$C.swatchActive = true;
+	
 	var location = {
 		x: 0,
 		y: 0,
@@ -145,7 +146,8 @@ function drawAllSwatch () {
 	
 	var runs = 0;
 	
-	for (var i = SwatchField.length - 1; i > 0; i--) {
+	// Inverted so the draw order is better.
+	for (var i = SwatchField.length - 1; i >= 0; i--) {
 		if (SwatchField[i][4]) {
 			location = {x: SwatchField[i][0], y: SwatchField[i][1], z: SwatchField[i][2]};
 			gridPosition = location.x * $C.gridDims.c + location.y;
