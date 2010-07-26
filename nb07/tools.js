@@ -65,7 +65,7 @@ var Tools = function () {
 			// For Color Cube slicing.
 			if ($C.swatchActive) {
 				for (var s = 0; s < 1023; s++) {
-					SwatchField[s * $C.layerOffset.z][4] = false;
+					SwatchField[s + (($C.layerOffset.z + 1) * 1024)][4] = true;
 				}
 				$C.posInd.clearSwatch();
 				drawAllSwatch();
@@ -90,9 +90,8 @@ var Tools = function () {
 			// For Color Cube slicing.
 			if ($C.swatchActive) {
 				for (var s = 0; s < 1024; s++) {
-					SwatchField[s + (($C.layerOffset.z) * 1024)][4] = false;
+					SwatchField[s + (($C.layerOffset.z + 1) * 1024)][4] = false;
 				}
-				console.log("Slice: " + 1023 * ($C.layerOffset.z));
 				$C.posInd.clearSwatch();
 				drawAllSwatch();
 				
@@ -207,9 +206,19 @@ function rotate (direction) {
 		
 		// Assign color. Works with both old and new color systems.
 		var color = Fld[i][3];
+		var visibility = false;
+		
+		if ($C.swatchActive) {
+			visibility = Fld[i][4];
+		}
 
 		// Add to respective field, but voxel doesn't need to be added to color cube.
-		Fld[i] = [x, y, z, color];
+		if ($C.swatchActive) {
+			Fld[i] = [x, y, z, color, visibility];
+		}
+		else {
+			Fld[i] = [x, y, z, color];
+		}
 		Voxel[x][y][z] = Fld[i][3];
 	}
 	
