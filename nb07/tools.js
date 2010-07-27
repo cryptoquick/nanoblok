@@ -10,6 +10,34 @@
 
 // Top-side mode/settings buttons.
 var Tools = function () {
+	this.activate = function (toolName) {
+		if ($C.selected.tool == "toolButton" + toolName)
+		{
+			this.selectColor();
+		}
+		else {
+			console.log('bla');
+			document.getElementById($C.selected.tool).setAttributeNS(null, "stroke-opacity", "0.0");
+			$C.selected.tool = "toolButton" + toolName;
+			document.getElementById($C.selected.tool).setAttributeNS(null, "stroke-opacity", "1.0");
+			loggit($C.selected.tool.substr(10,100) + " tool activated.");
+		}
+	}
+	// For when the tool button is clicked again, to default to block placement.
+	// Get the color swatch (its name corresponds to its color), then set its black outline to transparent,
+	// making it appear deselected.
+	this.selectColor = function () {
+		// Deselect previous tool.
+		if ($C.selected.tool.substr(0,5) == "color") {
+			document.getElementById($C.selected.tool).setAttributeNS(null, "stroke-opacity", "0.0");
+		}
+		else {
+			document.getElementById($C.selected.tool).setAttributeNS(null, "stroke-opacity", "0.0");
+		}
+		$C.selected.tool = "color" + $C.selected.color;
+		document.getElementById($C.selected.tool).setAttributeNS(null, "stroke-opacity", "1.0");
+	}
+	
 	// Save button.
 	this.save = function () {
 		saveField();
@@ -31,25 +59,7 @@ var Tools = function () {
 		
 	// Remove button, its state can be toggled by the user.
 	this.remove = function () {
-		if ($C.selected.tool == "remove")
-		{
-			$C.tools.deselectRm();
-		}
-		else {
-			$C.tools.selectRm();
-		}
-	}
-	this.selectRm = function () {
-		document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
-		$C.selected.tool = "remove";
-		document.getElementById("toolButton5").setAttributeNS(null, "stroke-opacity", "1.0");
-		loggit("Deletion tool selected.");
-	}
-	this.deselectRm = function () {
-		$C.selected.tool = "color" + $C.selected.color + $C.palette[$C.selected.color][3];
-		document.getElementById("toolButton5").setAttributeNS(null, "stroke-opacity", "0.0");
-		document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "1.0");
-		loggit("Deletion tool deselected.");
+		this.activate("Delete");
 	}
 	
 	this.gridUp = function () {
@@ -104,27 +114,18 @@ var Tools = function () {
 	}
 	
 	this.color = function () {
-		document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
-		// Get the color swatch (its name corresponds to its color), then set its black outline to transparent,
-		// making it appear deselected.
-		document.getElementById("color" + $C.selected.lastColor + $C.palette[$C.selected.lastColor][3] + "Button")
-			.setAttributeNS(null, "stroke-opacity", "0.0");
-		$C.selected.tool = "color" + $C.selected.color + $C.palette[$C.selected.color][3];
+		this.selectColor();
 		loggit("Selected color is: " + $C.palette[$C.selected.color][3] + ".");
 	}
 	
 	this.swatch = function () {
 		if ($C.swatchActive) {
-			$C.selected.tool = "color" + $C.selected.color + $C.palette[$C.selected.color][3];
-			document.getElementById("toolButton4").setAttributeNS(null, "stroke-opacity", "0.0");
-			document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "1.0");
+			this.activate("Colors");
 			closeColorSwatch();
 			loggit("Color Cube closed.");
 		}
 		else {
-			document.getElementById($C.selected.tool + "Button").setAttributeNS(null, "stroke-opacity", "0.0");
-			$C.selected.tool = "swatch";
-			document.getElementById("toolButton4").setAttributeNS(null, "stroke-opacity", "1.0");
+			this.activate("Colors");
 			fillColorSwatch();
 		}
 	}
@@ -135,6 +136,14 @@ var Tools = function () {
 	
 	this.rotRight = function () {
 		rotate(0);
+	}
+	
+	this.select = function () {
+		this.activate("Select");
+	}
+	
+	this.fill = function () {
+		this.activate("Fill");
 	}
 }
 

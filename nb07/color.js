@@ -59,8 +59,8 @@ function fillColorSwatch () {
 	if ($C.animating === false) {
 		$C.animating = true;
 		// t = setInterval(buildColorSwatch, 1);
-		$C.layerOffset.z = 31;
-		
+		$C.layerOffset.z = 30;
+		$C.tools.gridUp();
 		drawAllSwatch();
 	}
 	else {
@@ -164,9 +164,6 @@ function drawAllSwatch () {
 	
 	$C.animating = false;
 	$C.swatchComplete = true;
-	
-	// DEADLY
-	// $C.tools.gridUp();
 	
 	time1 = new Date();
 	loggit("Color Cube drawn in " + (time1 - time0) + " ms.");
