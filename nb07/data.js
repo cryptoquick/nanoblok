@@ -92,7 +92,7 @@ var Common = function () {
 	this.selected = {
 		color: 0,
 		lastColor: 0,
-		tool: "color0red",
+		tool: "color0",
 		blocks: false,
 		area: {x: 0, y: 0, z: 0, l: 0, w: 0, h: 0},
 		initialSelection: {x: -1, y: -1, z: -1},
@@ -114,7 +114,26 @@ var Common = function () {
 	// If the program is using the MouseMove event rather than an SVG grid, this will be enabled.
 	this.mouseMove = false;
 	
+	// Make a new tools object containing all tool methods. (Separate from Input functions)
 	this.tools = new Tools();
+	
+	this.toolNames = [
+		"Load",
+		"Save",
+		"Fill",
+		"Select",
+		"Colors",
+		"Delete"
+	];
+	
+	this.toolMethods = [
+		"load",
+		"save",
+		"fill",
+		"select",
+		"swatch",
+		"remove"
+	];
 	
 	// This is to make sure to not run another animation if an animation is already being run.
 	this.animating = false;

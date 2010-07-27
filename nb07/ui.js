@@ -99,7 +99,7 @@ function drawUI () {
 		
 		// Create a rect and give it all its attributes.
 		var toolButton = document.createElementNS(svgNS, 'rect');
-		toolButton.setAttributeNS(null, "id", "toolButton" + i);
+		toolButton.setAttributeNS(null, "id", "toolButton" + $C.toolNames[i]);
 		toolButton.setAttributeNS(null, "x", x);
 		toolButton.setAttributeNS(null, "y", y);
 		toolButton.setAttributeNS(null, "height", 30);
@@ -109,7 +109,7 @@ function drawUI () {
 		
 		// Same for that tool's text.
 		var toolText = document.createElementNS(svgNS, 'text');
-		toolText.setAttributeNS(null, "id", "toolText" + i);
+		toolText.setAttributeNS(null, "id", "toolText" + $C.toolNames[i]);
 		toolText.setAttributeNS(null, "x", x + 4);
 		toolText.setAttributeNS(null, "y", y + 24);
 		toolText.setAttributeNS(null, "fill", "white");
@@ -147,7 +147,7 @@ function populatePalette () {
 	for (var i = 0; i < 9; i++) {
 		var colorBlock = document.createElementNS(svgNS, 'rect');
 		
-		colorBlock.setAttributeNS(null, "id", "color" + i + $C.palette[i][3] + "Button");
+		colorBlock.setAttributeNS(null, "id", "color" + i);
 		colorBlock.setAttributeNS(null, "x", -35);
 		colorBlock.setAttributeNS(null, "y", 35 * i);
 		colorBlock.setAttributeNS(null, "height", 30);

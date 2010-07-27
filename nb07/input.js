@@ -66,28 +66,10 @@ function Click (evt) {
 		"rotRight"
 	];
 	
-	var toolNames = [
-		"Load",
-		"Save",
-		"Fill",
-		"Select",
-		"Colors",
-		"Delete"
-	]
-	
-	var toolMethods = [
-		"load",
-		"save",
-		"fill",
-		"select",
-		"swatch",
-		"remove"
-	]
-	
 	// References toolNames in ui.js.
-	for (var i = 0; i < toolNames.length; i++) {
-		if (target.id == "toolButton" + i || target.id == "toolText" + i) {
-			eval("$C.tools." + toolMethods[i] + "()");
+	for (var i = 0; i < $C.toolNames.length; i++) {
+		if (target.id == "toolButton" + toolNames[i] || target.id == "toolText" + toolNames[i]) {
+			eval("$C.tools." + $C.toolMethods[i] + "()");
 		}
 	}
 	
@@ -111,7 +93,7 @@ function Click (evt) {
 	}
 	
 	// Block placement (first click, and if only one single click)
-	if ($C.selected.tool == "remove" && target.id.substr(0,2) == 'x-') {
+	if ($C.selected.tool == "toolButtonDelete" && target.id.substr(0,2) == 'x-') {
 		removeBlock(target);
 	}
 	else if ($C.selected.tool == "select") {
@@ -137,7 +119,7 @@ function Hover (evt, inout) {
 	if ((target.id.substr(0,2) == 'x-') && mouseDown && inout == "in" && $C.selected.tool.substr(0,5) == "color") {
 		placeBlock(target);
 	}
-	else if ((target.id.substr(0,2) == 'x-') && mouseDown && inout == "in" && $C.selected.tool == "remove") {
+	else if ((target.id.substr(0,2) == 'x-') && mouseDown && inout == "in" && $C.selected.tool == "toolButtonDelete") {
 		removeBlock(target);
 	}
 	
@@ -153,16 +135,19 @@ function Key (evt) {
 	if (evt.type == "keydown") {
 		// DKEY for delete.
 		if (evt.keyCode == 68) {
-			if ($C.selected.tool == "remove") {
-				$C.tools.deselectRm();
-			}
-			else {
-				$C.tools.selectRm();
-			}
+			$C.tools.remove();
 		}
 		// CKEY for color cube.
 		if (evt.keyCode == 67) {
 			$C.tools.swatch();
+		}
+		// FKEY for fill.
+		if (evt.keyCode == 70) {
+			$C.tools.fill();
+		}
+		// SKEY for select.
+		if (evt.keyCode == 83) {
+			$C.tools.select();
 		}
 		// BKEY for debug script.
 		if (evt.keyCode == 66) {
@@ -181,6 +166,14 @@ function Key (evt) {
 		}
 		if (evt.keyCode == 39) {
 			$C.tools.rotRight();
+		}
+		// CTRL+SKEY for save.
+		if (evt.keyCode == 17 && evt.keyCode == 83) {
+			$C.tools.save();
+		}
+		// CTRL+LKEY for load.
+		if (evt.keyCode == 17 && evt.keyCode == 76) {
+			$C.tools.load();
 		}
 	}
 }

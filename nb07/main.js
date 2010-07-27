@@ -69,11 +69,7 @@ function Update (updateMode, updateSettings) {
 		if (updateSettings.gridMode == "standard") {
 			
 			// Select color button at update.
-			document.getElementById("color" + $C.selected.color + $C.palette[$C.selected.color][3] + "Button").setAttributeNS(null, "stroke-opacity", "1.0");
-		}
-		else if (updateSettings.gridMode == "number") {
-			document.getElementById("numberButton").setAttributeNS(null, "fill-opacity", 1.0);
-			document.getElementById("standardButton").setAttributeNS(null, "fill-opacity", 0.5);
+			$C.tools.selectColor();
 		}
 	}
 	
