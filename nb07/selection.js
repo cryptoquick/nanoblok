@@ -1,5 +1,7 @@
 var time0;
 
+var SelectionVox = new Array();
+
 var Selection = function () {
 	// If a selection has been drawn, this is true.
 	this.enabled = false;
@@ -41,6 +43,19 @@ var Selection = function () {
 	}
 	
 	this.draw = function () {
+		$C.posInd.clearSelection();
+		
+		// Facilitates drawing of the array using canvasBlock occlusion.
+		for (var x = -1; x < $C.gridDims.r + 1; x++) {
+			SelectionVox[x] = new Array();
+			for (var y = -1; y < $C.gridDims.r + 1; y++) {
+			SelectionVox[x][y] = new Array();
+				for (var z = -1; z < $C.gridDims.c + 1; z++) {
+					SelectionVox[x][y][z] = -1;
+				}
+			}
+		}
+		
 		var location = {x: 0, y: 0, z: 0};
 		
 		var i = 0;
@@ -50,6 +65,8 @@ var Selection = function () {
 		
 		console.log(this.start);
 		console.log(this.end);
+		
+		// This basically draws every block inside the selection area.
 		
 		for (var x = 0; x < xDiff + 1; x++) {
 			for (var y = 0; y < yDiff + 1; y++) {
@@ -77,7 +94,8 @@ var Selection = function () {
 				location.z = 0;
 				gridPosition = location.x * $C.gridDims.c + location.y;
 				coors = GridField["x-" + gridPosition].coors;
-				color = colorBlockNew(0);
+				yellow = "rgb(255, 255, 0)";
+				color = {left: yellow, right: yellow, top: yellow, inset: yellow};
 				canvasBlock(coors, location, color);
 				i++;
 			}

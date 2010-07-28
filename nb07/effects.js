@@ -28,6 +28,7 @@ var PositionIndicator = function () {
 	this.display = document.getElementById('display');
 	this.overlays = document.getElementById('overlays');
 	this.colors = document.getElementById('colors');
+	this.selection = document.getElementById('selection');
 	this.displayCtx = context('display');
 	
 	this.redraw = function () {
@@ -91,16 +92,10 @@ var PositionIndicator = function () {
 		this.ctx.beginPath();
 	
 		// Points 1-6, in order.
-		// ctx.moveTo(offsX + gr2, offsYtop);
-		// ctx.lineTo(offsX + gr1, offsYtop + gr4);
-		// ctx.lineTo(offsX + gr1, offsYtop + gr4 + gr2);
-		// ctx.lineTo(offsX + gr2, offsYtop + gr1);
-		// ctx.lineTo(offsX, offsYtop + gr4 + gr2);
 		this.ctx.lineTo(offsX + gr2, offsYtop + gr2);
 		this.ctx.lineTo(offsX + gr1, offsYtop + gr4 + gr2);
 		this.ctx.lineTo(offsX + gr2, offsYtop + gr1);
 		this.ctx.lineTo(offsX, offsYtop + gr4 + gr2);
-		// ctx.lineTo(offsX, offsYtop + gr4);
 	
 		this.ctx.closePath();
 		this.ctx.fill();
@@ -136,7 +131,7 @@ var PositionIndicator = function () {
 	}
 	
 	this.drawAll = function () {
-		this.displayCtx.clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
+		this.displayCtx.clearRect(0, 0, $C.gridSize.x, $C.gridSize.y * 4);
 		this.displayCtx.globalCompositeOperation = "source-over";
 		this.displayCtx.drawImage(this.grids, 0, 0);
 		
@@ -144,6 +139,7 @@ var PositionIndicator = function () {
 			this.displayCtx.drawImage(this.colors, 0, 0);
 		}
 		else {
+			this.displayCtx.drawImage(this.selection, 0, 0);
 			this.displayCtx.drawImage(this.blocks, 0, 0);
 		}
 		
@@ -151,83 +147,14 @@ var PositionIndicator = function () {
 	}
 	
 	this.clearBlocks = function () {
-		context('blocks').clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
+		context('blocks').clearRect(0, 0, $C.gridSize.x, $C.gridSize.y * 4);
 	}
 	
 	this.clearSwatch = function () {
-		context('colors').clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
+		context('colors').clearRect(0, 0, $C.gridSize.x, $C.gridSize.y * 4);
 	}
 	
-	// Selection box
-	// Enabled if there's a value in there.
-	// if ($C.selected.blocks) {
-	// 	offsX = $C.offset.x + ($C.selected.area.x * $C.blockSize.half) + ($C.selected.area.y * $C.blockSize.half);
-	// 	offsYtop = 
-	// 		   ($C.edges.top + $C.gridSize.y - 45)
-	// 		 - ($C.selected.area.z * $C.blockSize.half)
-	// 		 + ($C.selected.area.x * $C.blockSize.quarter)
-	// 		 - ($C.selected.area.y * $C.blockSize.quarter)
-	// 		 - ($C.selected.area.h * $C.blockSize.half)
-	// 		 + ($C.blockSize.half);
-	// 	// loggit(offsYtop);
-	// 
-	// 	ctx.strokeStyle = "rgba(255,0,127,10)";
-	// 	ctx.beginPath();
-	// 
-	// 	// Points 1-6, in order.
-	// 	ctx.moveTo(offsX + (gr2 * $C.selected.area.l), offsYtop);
-	// 	ctx.lineTo(offsX + (gr1 * $C.selected.area.l), offsYtop + (gr4 * $C.selected.area.w));
-	// 	ctx.lineTo(offsX + (gr1 * $C.selected.area.l), offsYtop + ($C.selected.area.h * gr2 + (gr4 * $C.selected.area.w)));
-	// 	ctx.lineTo(offsX + (gr2 * $C.selected.area.l), offsYtop + ($C.selected.area.h * gr2 + (gr2 * $C.selected.area.w)));
-	// 	ctx.lineTo(offsX, offsYtop + ($C.selected.area.h * gr2 + (gr4 * $C.selected.area.l)));
-	// 	ctx.lineTo(offsX, offsYtop + (gr4 * $C.selected.area.w));
-	// 
-	// 	ctx.closePath();
-	// 	ctx.stroke();
-	// }
-	
-	// ctx.save();
-}
-
-function selectArea (target, select) {
-	// var row = target.getAttributeNS(null, "r");
-	
-	var position = {
-		x: target.getAttributeNS(null, "r"),
-		y: target.getAttributeNS(null, "c"),
-		z: $C.layerOffset.z
+	this.clearSelection = function () {
+		context('selection').clearRect(0, 0, $C.gridSize.x, $C.gridSize.y * 4);
 	}
-	
-	var area = {
-		l: 0,
-		w: 0,
-		h: 0
-	}
-	
-	if ($C.selected.secondSelection.x == -1 && $C.selected.initialSelection.x != -1) {
-		$C.selected.secondSelection = position;
-		var length = Math.abs(position.x - $C.selected.initialSelection.x) + 1;
-		var width = Math.abs(position.y - $C.selected.initialSelection.y) + 1;
-		var height = 1;
-		area = {l: length, w: width, h: height};
-		loggit(length + ", " + width);
-	}
-	
-	if ($C.selected.initialSelection.x == -1 && position.x != -1) {
-		loggit("bla");
-		$C.selected.initialSelection = position;
-		area = {l: 1, w: 1, h: 1};
-	}
-	
-	// Clear selection if select is false
-	if (select === false) {
-		// $C.selected.area = {x: 0, y: 0, z: 0, l: 0, w: 0, h: 0};
-		// $C.selected.blocks = false;
-		// Clear initial and second selections
-	}
-	
-	$C.selected.blocks = true;
-	$C.selected.area = {x: position.x, y: position.y, z: position.z, l: area.l, w: area.w, h: area.h};
-	
-	positionIndicator();
 }
