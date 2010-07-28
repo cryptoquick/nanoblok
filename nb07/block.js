@@ -44,6 +44,9 @@ function canvasDrawSet (hexSet, offset, settings) {
 	else if ($C.swatchActive) {
 		canvas = 'colors';
 	}
+	else if ($C.selected.tool == "Select") {
+		canvas = 'selection';
+	}
 	else {
 		canvas = 'blocks';
 	}
@@ -56,6 +59,10 @@ function canvasDrawSet (hexSet, offset, settings) {
 	}
 	if (settings.fill !== false) {
 		ctx.fillStyle = settings.fill;
+	}
+	
+	if ($C.selected.tool == "Select") {
+		ctx.globalAlpha = 0.3;
 	}
 	
 	var hexSpot = hexSet.pop();
@@ -120,6 +127,9 @@ function canvasBlock (position, location, color) {
 	
 	if ($C.swatchActive) {
 		Arr = SwatchGhost;
+	}
+	else if ($C.selected.tool == "Select") {
+		Arr = SelectionVox;
 	}
 	else {
 		Arr = Voxel;

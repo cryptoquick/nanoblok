@@ -15,7 +15,8 @@ var canvases = [
 	'overlays',
 	'display',
 	'debug',
-	'colors'
+	'colors',
+	'selection'
 ];
 
 var toolNames = [
