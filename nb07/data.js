@@ -148,6 +148,8 @@ var Common = function () {
 	this.swatchComplete = false;
 	
 	testCompat();
+	
+	this.selection = new Selection();
 }
 
 function initVoxels (voxArr) {

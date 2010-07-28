@@ -96,8 +96,8 @@ function Click (evt) {
 	if ($C.selected.tool == "toolButtonDelete" && target.id.substr(0,2) == 'x-') {
 		removeBlock(target);
 	}
-	else if ($C.selected.tool == "select") {
-		selectArea(target, true);
+	else if ($C.selected.tool == "Select" && target.id.substr(0,2) == 'x-') {
+		$C.selection.select(target);
 	}
 	else if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-')
 	{

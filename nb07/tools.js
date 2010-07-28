@@ -16,7 +16,6 @@ var Tools = function () {
 			this.selectColor();
 		}
 		else {
-			console.log('bla');
 			document.getElementById($C.selected.tool).setAttributeNS(null, "stroke-opacity", "0.0");
 			$C.selected.tool = "toolButton" + toolName;
 			document.getElementById($C.selected.tool).setAttributeNS(null, "stroke-opacity", "1.0");
@@ -140,6 +139,8 @@ var Tools = function () {
 	
 	this.select = function () {
 		this.activate("Select");
+		$C.selection.enabled = true;
+		$C.selected.tool = "Select";
 	}
 	
 	this.fill = function () {
