@@ -70,55 +70,6 @@ function fillColorSwatch () {
 
 var h = 0;
 
-/*function buildColorSwatch () {
-	var gridPosition = 0;
-	var coors = new Object();
-	
-	if (h >= 32) {
-		clearInterval(t);
-		time1 = new Date();
-		loggit("Color Cube drawn in " + (time1 - time0) + " ms.");
-		$C.animating = false;
-		$C.swatchComplete = true;
-		// SwatchGhost = new Array();
-		$C.layerOffset.z = 30;
-		$C.tools.gridUp();
-		h = 0;
-	}
-	
-	var location = {
-		x: 0,
-		y: 0,
-		z: 0
-	}
-	
-	l = 0;
-	w = 0;
-	
-	if ($C.animating || $C.swatchComplete == false) {
-		for (var i = 0; i < 1023; i++) {
-			blockColor = colorBlockNew(SwatchField[i * (h + 1)][3]);
-		
-			location = {x: l, y: w, z: h};
-		
-			gridPosition = l * $C.gridDims.c + w;
-			coors = GridField["x-" + gridPosition].coors;
-		
-			SwatchGhost[location.x][location.y][location.z] = 1;
-		
-			canvasBlock(coors, location, blockColor);
-			
-			l = i % 32;
-			w = (l * i) % 32;
-			
-			// console.log(l + ", " + w + ", " + h);
-		}
-	
-		$C.posInd.redraw();
-		h++;
-	}
-}*/
-
 function drawAllSwatch () {
 	$C.swatchActive = true;
 	
