@@ -139,7 +139,14 @@ var Tools = function () {
 	
 	this.select = function () {
 		this.activate("Select");
-		$C.selection.enabled = true;
+		// Toggle off.
+		if ($C.selection.enabled) {
+			$C.selection.deselect();
+		}
+		// Toggle on.
+		else {
+			
+		}
 	}
 	
 	this.fill = function () {
