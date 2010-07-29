@@ -13,6 +13,8 @@ var Selection = function () {
 	// This is so the begin is only drawn once.
 	this.begin = true;
 	
+	this.selectionField = new Array();
+	
 	this.select = function (target) {
 		time0 = new Date();
 		
@@ -26,13 +28,11 @@ var Selection = function () {
 			this.end.y = parseInt(target.getAttributeNS(null, "r"));
 			this.end.z = $C.layerOffset.z;
 			this.begin = false;
-			console.log("Start: " + this.start.x + ", " + this.start.y);
 		}
 		else {
 			this.end.x = parseInt(target.getAttributeNS(null, "c"));
 			this.end.y = parseInt(target.getAttributeNS(null, "r"));
 			this.end.z = $C.layerOffset.z;
-			console.log("End: " + this.end.x + ", " + this.end.y);
 		}
 		
 		this.draw();
@@ -63,9 +63,6 @@ var Selection = function () {
 		var xDiff = Math.abs(this.end.x - this.start.x);
 		var yDiff = Math.abs(this.end.y - this.start.y);
 		
-		console.log(this.start);
-		console.log(this.end);
-		
 		// This basically draws every block inside the selection area.
 		
 		for (var x = 0; x < xDiff + 1; x++) {
@@ -92,11 +89,15 @@ var Selection = function () {
 				}
 				
 				location.z = 0;
+				
+				this.selectionField.push([location.x, location.y, location.z]);
+				
 				gridPosition = location.x * $C.gridDims.c + location.y;
 				coors = GridField["x-" + gridPosition].coors;
 				yellow = "rgb(255, 255, 0)";
 				color = {left: yellow, right: yellow, top: yellow, inset: yellow};
 				canvasBlock(coors, location, color);
+				SelectionVox[x][y][z] = 1;
 				i++;
 			}
 		}

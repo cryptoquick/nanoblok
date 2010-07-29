@@ -139,8 +139,11 @@ var PositionIndicator = function () {
 			this.displayCtx.drawImage(this.colors, 0, 0);
 		}
 		else {
-			this.displayCtx.drawImage(this.selection, 0, 0);
 			this.displayCtx.drawImage(this.blocks, 0, 0);
+			// Quick and easy trick to make selection transparent.
+			this.displayCtx.globalAlpha = 0.5;
+			this.displayCtx.drawImage(this.selection, 0, 0);
+			this.displayCtx.globalAlpha = 1.0;
 		}
 		
 		this.displayCtx.drawImage(this.overlays, 0, 0);

@@ -140,7 +140,6 @@ var Tools = function () {
 	this.select = function () {
 		this.activate("Select");
 		$C.selection.enabled = true;
-		$C.selected.tool = "Select";
 	}
 	
 	this.fill = function () {
