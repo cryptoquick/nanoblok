@@ -39,6 +39,16 @@ var Selection = function () {
 	}
 	
 	this.deselect = function () {
+		// Reset start and end values.
+		this.start = {x: 0, y: 0, z: 0};
+		this.end = {x: 0, y: 0, z: 0};
+		this.begin = true;
+		
+		// Clear canvas.
+		$C.posInd.clearSelection();
+		$C.posInd.redraw();
+		
+		// Make sure it's off.
 		this.enabled = false;
 	}
 	
