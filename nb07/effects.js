@@ -29,6 +29,7 @@ var PositionIndicator = function () {
 	this.overlays = document.getElementById('overlays');
 	this.colors = document.getElementById('colors');
 	this.selection = document.getElementById('selection');
+	this.renderer = document.getElementById('renderer');
 	this.displayCtx = context('display');
 	
 	this.redraw = function () {
@@ -146,6 +147,7 @@ var PositionIndicator = function () {
 			this.displayCtx.globalAlpha = 1.0;
 		}
 		
+		this.displayCtx.drawImage(this.renderer, 0, 0);
 		this.displayCtx.drawImage(this.overlays, 0, 0);
 	}
 	

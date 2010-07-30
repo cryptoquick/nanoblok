@@ -72,43 +72,51 @@ var Selection = function () {
 		
 		var xDiff = Math.abs(this.end.x - this.start.x);
 		var yDiff = Math.abs(this.end.y - this.start.y);
+		var zDiff = Math.abs(this.end.z - this.start.z);
 		
 		// This basically draws every block inside the selection area.
 		
 		for (var x = 0; x < xDiff + 1; x++) {
 			for (var y = 0; y < yDiff + 1; y++) {
-				if (this.begin) {
-					location.x = this.start.x;
-					location.y = this.start.y;
-				}
-				else {
-					// location.x = Math.abs(this.end.x - (xDiff - x));
-					// location.y = Math.abs(this.end.y - (yDiff - y));
-					if (this.start.x > this.end.x) {
-						location.x = x + this.end.x;
+				for (var z = 0; z < zDiff + 1; z++) {
+					if (this.begin) {
+						location.x = this.start.x;
+						location.y = this.start.y;
+						location.z = this.start.z;
 					}
 					else {
-						location.x = x + this.start.x;
+						// location.x = Math.abs(this.end.x - (xDiff - x));
+						// location.y = Math.abs(this.end.y - (yDiff - y));
+						if (this.start.x > this.end.x) {
+							location.x = x + this.end.x;
+						}
+						else {
+							location.x = x + this.start.x;
+						}
+						if (this.start.y > this.end.y) {
+							location.y = y + this.end.y;
+						}
+						else {
+							location.y = y + this.start.y;
+						}
+						if (this.start.z > this.end.z) {
+							location.z = z + this.end.z;
+						}
+						else {
+							location.z = z + this.start.z;
+						}
 					}
-					if (this.start.y > this.end.y) {
-						location.y = y + this.end.y;
-					}
-					else {
-						location.y = y + this.start.y;
-					}
+				
+					this.selectionField.push([location.x, location.y, location.z]);
+				
+					gridPosition = location.x * $C.gridDims.c + location.y;
+					coors = GridField["x-" + gridPosition].coors;
+					yellow = "rgb(255, 255, 0)";
+					color = {left: yellow, right: yellow, top: yellow, inset: yellow};
+					canvasBlock(coors, location, color);
+					SelectionVox[x][y][z] = 1;
+					i++;
 				}
-				
-				location.z = 0;
-				
-				this.selectionField.push([location.x, location.y, location.z]);
-				
-				gridPosition = location.x * $C.gridDims.c + location.y;
-				coors = GridField["x-" + gridPosition].coors;
-				yellow = "rgb(255, 255, 0)";
-				color = {left: yellow, right: yellow, top: yellow, inset: yellow};
-				canvasBlock(coors, location, color);
-				SelectionVox[x][y][z] = 1;
-				i++;
 			}
 		}
 		
