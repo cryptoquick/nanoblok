@@ -9,18 +9,19 @@ from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp import util
 from google.appengine.ext import db
 
-import zlib
+# import zlib
 
 class MainPage(webapp.RequestHandler):
-	""" Renders the main template."""
+	"""Renders the main template."""
 	def get(self):
 		template_values = { }
-		self.response.headers['Content-Type'] = "image/svg+xml"
-		path = os.path.join(os.path.dirname(__file__), "index.svg")
+		self.response.headers['Content-Type'] = "application/xhtml+xml"
+		
+		path = os.path.join(os.path.dirname(__file__), "index.xhtml")
 		self.response.out.write(template.render(path, template_values))
 
 
-class RPCHandler(webapp.RequestHandler):
+class SaveHandler(webapp.RequestHandler):
 	""" Allows the functions defined in the RPCMethods class to be RPCed."""
 	def __init__(self):
 		webapp.RequestHandler.__init__(self)
@@ -69,8 +70,8 @@ class RPCMethods:
 
 
 class DBField(db.Model):
-	owner		= db.StringProperty(required=True)# db.UserProperty()
-	name		= db.StringProperty(required=True)
+	author		= db.StringProperty(required=True)# db.UserProperty()
+	title		= db.StringProperty(required=True)
 	field		= db.StringProperty(required=True)
 	datetime	= db.DateTimeProperty(required=True, auto_now_add=True)
 	revision	= db.FloatProperty(required=True)
@@ -80,7 +81,8 @@ class DBField(db.Model):
 def main():
 	app = webapp.WSGIApplication([
 		('/', MainPage),
-		('/rpc', RPCHandler),
+		('/save', SaveHandler),
+		('/load', LoadHandler),
 		], debug=True)
 	util.run_wsgi_app(app)
 

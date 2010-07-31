@@ -18,8 +18,6 @@ var GridField = new Object();
 // Voxels are volumetric pixels, 3D coordinates. This keeps track of those in order to speed up spatial determinations, such as if a block is close by to another block.
 var Voxel = new Array();
 
-var History = new Object();
-
 // Many common variables used throughout the program.
 var Common = function () {
 	// Viewport information from the browser.
@@ -152,6 +150,7 @@ var Common = function () {
 	this.selection = new Selection();
 }
 
+// 3D Voxel array must be initialized before adding variables to it. -1 denotes that there is nothing there.
 function initVoxels (voxArr) {
 	// Initialize the voxel array.
 	for (var x = -1; x < $C.gridDims.r + 1; x++) {
@@ -182,17 +181,5 @@ function testCompat () {
 	if (passedTests == numTests) {
 		// Do something meaningful.
 	}
-}
-
-// Serialization.
-function saveField () {
-	var fieldString = JSON.stringify(Field);
-	document.getElementById("saveFile").value = fieldString;
-}
-
-// Deserialization.
-function loadField () {
-	var fieldString = document.getElementById("saveFile").value;
-	Field = JSON.parse(fieldString);
 }
 
