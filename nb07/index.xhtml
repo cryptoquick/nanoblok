@@ -50,9 +50,25 @@
 		}
 		::selection { background: transparent; }
 		::-moz-selection { background: transparent; }
-		#infoz {
-			display: none;
-			width: 100%;
+		#dialogSave {
+			position: absolute;
+			left: 500px;
+			top: 500px;
+			display: block;
+			width: 170px;
+			height: 50px;
+			/*	background-color: #FFD27F; */
+			background-color: none;
+			font-size: 12px;
+			font-family: "Verdana";
+			color: #fff;
+			text-align: right;
+			padding: 4px;
+		}
+		#dialogSave form input {
+			border: solid #999 1px;
+			width: 10em;
+			margin: 4px;
 		}
 	</style>
 </head>
@@ -128,14 +144,15 @@
 	<svg:g id="sideColorsRight" stroke="black" stroke-width="3" stroke-opacity="0.0"></svg:g>
 	
 	<svg:g id="markerPoints" fill="red" fill-opacity="0.0"></svg:g>
+	
+	<svg:rect id="saveBG" height="58" width="250" rx="3" transform="skewY(26.565)" fill="orange" fill-opacity="0.5"></svg:rect>
 </svg:svg>
 
-<div id="dialog">
-	<div id="dialogSave">
-		<form>
-			<input type="text"></input>
-		</form>
-	</div>
+<div id="dialogSave">
+	<form>
+		Author<input type="text"></input><br/>
+		Title<input type="text"></input>
+	</form>
 </div>
 
 </body>

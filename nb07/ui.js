@@ -137,9 +137,14 @@ function drawUI () {
 	// Position rotation buttons.
 	// moveElement('rotLeftButton', {move: {x: $C.edges.right - 96, y: $C.edges.fullTop}});
 	
-	// Set Infoz height.
-	var infozDiv = document.getElementById('infoz');
-	infozDiv.setAttributeNS(null, "height", $C.windowSize.y - 5);
+	// Move save dialog into position.
+	var savePos = {x: $C.edges.left + $C.gridSize.x / 2 + 15, y: $C.edges.fullTop - 125};
+	
+	var saveDialog = document.getElementById('dialogSave');
+	saveDialog.style.posLeft = savePos.x + 75;
+	saveDialog.style.posTop = savePos.y;
+	
+	moveElement('saveBG', {move: {x: savePos.x, y: savePos.y}, skewX: -116.565});
 }
 
 // Place all the colors on the right side.
