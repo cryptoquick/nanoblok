@@ -171,3 +171,7 @@ function getDefaultColor (paletteNum) {
 		+ ($C.palette[paletteNum][2] + 40) + ")";
 	return rgbOutput;
 }
+
+function displayDialog () {
+	
+}

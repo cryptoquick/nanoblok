@@ -217,3 +217,4 @@ function canvasGrid (side, mode) {
 		}
 	}
 }
+
