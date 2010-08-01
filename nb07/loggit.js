@@ -35,3 +35,4 @@ function loggit (str) {
 	// Save all messages for later.
 	loggitLog.push(textElement);
 }
+

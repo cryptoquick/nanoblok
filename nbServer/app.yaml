@@ -4,9 +4,9 @@ runtime: python
 api_version: 1
 
 handlers:
-- url: .(.*\.(xhtml|js|png|ico))
+- url: .(.*\.(js|png|ico))
   static_files: \1
-  upload: .(.*\.(xhtml|js|png|ico))
+  upload: .(.*\.(js|png|ico))
 
 - url: /.*
   script: main.py

@@ -163,3 +163,4 @@ var PositionIndicator = function () {
 		context('selection').clearRect(0, 0, $C.gridSize.x, $C.gridSize.y * 4);
 	}
 }
+

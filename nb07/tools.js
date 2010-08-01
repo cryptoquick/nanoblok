@@ -272,3 +272,4 @@ function rotate (direction) {
 		loggit("Rotated right to " + rotation * 90 + " degrees.");
 	}
 }
+

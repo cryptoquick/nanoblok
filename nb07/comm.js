@@ -1,4 +1,4 @@
-function makeXHR (type, operation, data, callback) {
+function makeXHR (type, operation, data) {
 	var status = -1;
 	var request = new XMLHttpRequest();
 	if (!request) {
@@ -13,7 +13,7 @@ function makeXHR (type, operation, data, callback) {
 			catch (e) {};
 			
 			if (status == 200) {
-				callback(request.response.responseText);
+				loggit(request.response.responseText);
 				request.onreadystatechage = function () {};
 			}
 		}
@@ -36,16 +36,24 @@ function makeXHR (type, operation, data, callback) {
 
 // Serialization.
 function saveField () {
-	var fieldString = JSON.stringify(Field);
-	makeXHR("POST", "save", fieldString, successfulDelivery);
+	// var fieldString = JSON.stringify(Field);
+	
+	var dbData = [
+		"CryptoQuick",
+		"TestBlock",
+		Field,
+		0.01,
+		"public"
+	];
+	
+	data = JSON.stringify(dbData);
+	
+	makeXHR("POST", "save", data, successfulDelivery);
 }
 
 // Deserialization.
 function loadField () {
-	var fieldString = makeXHR("POST", "load", fieldString, successfulDelivery);
+	var fieldString = makeXHR("POST", "load", fieldString);
 	Field = JSON.parse(fieldString);
 }
 
-function successfulDelivery (message) {
-	loggit(message);
-}
