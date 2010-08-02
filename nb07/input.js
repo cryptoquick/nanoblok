@@ -132,6 +132,8 @@ function Hover (evt, inout) {
 }
 
 function Key (evt) {
+	ctrlPressed = evt.ctrlKey;
+	
 	if (evt.type == "keydown") {
 		// DKEY for delete.
 		if (evt.keyCode == 68) {
@@ -146,7 +148,7 @@ function Key (evt) {
 			$C.tools.fill();
 		}
 		// SKEY for select.
-		if (evt.keyCode == 83) {
+		if (evt.keyCode == 83 && !ctrlPressed) {
 			$C.tools.select();
 		}
 		// BKEY for debug script.
@@ -168,11 +170,11 @@ function Key (evt) {
 			$C.tools.rotRight();
 		}
 		// CTRL+SKEY for save.
-		if (evt.keyCode == 17 && evt.keyCode == 83) {
+		if (evt.keyCode == 83 && ctrlPressed) {
 			$C.tools.save();
 		}
 		// CTRL+LKEY for load.
-		if (evt.keyCode == 17 && evt.keyCode == 76) {
+		if (evt.keyCode == 76 && ctrlPressed) {
 			$C.tools.load();
 		}
 	}

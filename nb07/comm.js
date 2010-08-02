@@ -39,8 +39,8 @@ function saveField () {
 	// var fieldString = JSON.stringify(Field);
 	
 	var dbData = [
-		"CryptoQuick",
-		"TestBlock",
+		document.getElementById('saveAuthor').value,
+		document.getElementById('saveTitle').value,
 		Field,
 		0.01,
 		"public"
