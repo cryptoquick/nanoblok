@@ -99,7 +99,10 @@ function Click (evt) {
 	else if ($C.selected.tool == "toolButtonSelect" && target.id.substr(0,2) == 'x-') {
 		$C.selection.select(target);
 	}
-	else if (target.id.substr(0,2) == 'x-' || target.id.substr(0,2) == 'y-' || target.id.substr(0,2) == 'z-')
+	else if ($C.swatchActive && target.id.substr(0,2) == 'x-') {
+		pickColor(target);
+	}
+	else if (target.id.substr(0,2) == 'x-')
 	{
 		placeBlock(target);
 	}
