@@ -148,5 +148,6 @@ function pickColor (target) {
 	
 	var color = SwatchField[swatchIndex][3];
 	
-	console.log(color);
+	$C.palette.add(swatchIndex);
+	console.log(swatchIndex);
 }

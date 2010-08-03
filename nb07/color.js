@@ -110,9 +110,7 @@ function drawAllSwatch () {
 			runs++;
 		}
 	}
-	
-	console.log("Swatch: " + runs);
-	
+		
 	$C.animating = false;
 	$C.swatchComplete = true;
 	
@@ -130,3 +128,75 @@ function closeColorSwatch () {
 	SwatchGhost = new Array();
 }
 
+var Palette = function () {
+	this.svgGroup = document.getElementById("sideColorsRight");
+	this.colors = [
+		31745, // red
+		32386, // orange
+		32673, // yellow
+		7040, // green
+		255, // blue
+		21530, // purple
+		32056, // pink
+		32701, // white
+		2048 // black;
+	];
+	this.paletteIndex = 0;
+	
+	this.add = function (colorIndex) {
+		this.colors.push(colorIndex);
+		this.draw();
+	}
+	
+	this.remove = function (position) {
+		this.colors.splice(position, 1);
+		this.draw();
+	}
+	
+	this.swatch = function (colorIndex, position) {
+		var colorSwatch = document.createElementNS(svgNS, 'rect');
+		
+		var x = Math.floor(this.paletteIndex / 9);
+		var y = this.paletteIndex % 9;
+		
+		colorSwatch.setAttributeNS(null, "colorID", colorIndex);
+		colorSwatch.setAttributeNS(null, "fill", this.color(colorIndex));
+		colorSwatch.setAttributeNS(null, "name", "color");
+		colorSwatch.setAttributeNS(null, "id", "color" + y);
+		colorSwatch.setAttributeNS(null, "x", -35 + 35 * x);
+		colorSwatch.setAttributeNS(null, "y", 35 * y);
+		colorSwatch.setAttributeNS(null, "height", 30);
+		colorSwatch.setAttributeNS(null, "width", 30);
+		colorSwatch.setAttributeNS(null, "rx", 3);
+		colorSwatch.setAttributeNS(null, "transform", "skewY(26.565)");
+		
+		this.svgGroup.appendChild(colorSwatch);
+		
+		this.paletteIndex++;
+	}
+	
+	this.color = function (colorIndex) {
+		var colorObject = SwatchField[colorIndex][3];
+		
+		var rgbOutput = "rgb("
+			+ colorObject.r + ", "
+		 	+ colorObject.g + ", "
+			+ colorObject.b + ")";
+		return rgbOutput;
+	}
+	
+	this.draw = function () {
+		this.paletteIndex = 0;
+		
+		var colorChilds = this.svgGroup.childNodes;
+		
+		// It's better to loop through and remove from the end. Or you could just remove the firstChild. Either way works.
+		for (var i = colorChilds.length - 1; i > -1; i--) {
+			this.svgGroup.removeChild(colorChilds[i]);
+		}
+		
+		for (var i = 0; i < this.colors.length; i++) {
+			this.swatch(this.colors[i], i);
+		}
+	}
+}

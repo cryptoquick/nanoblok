@@ -170,11 +170,11 @@ function placeBlock (target) {
 		// Draw the actual block using coordinates using the location of the grid's tiles as a reference for pixel-placement for all the rest of the blocks (this is the first argument). The target.id should look something like "x-123".
 		// colorBlock is used to turn the color index into a color object (with separate color values for each face as well as its lines)
 		canvasBlock(GridField[target.id].coors, location, colorBlock($C.selected.color));
-	
-		// Now record information about the position of the block internally using both the Voxel array...
-		Voxel[location.x][location.y][location.z] = $C.selected.color;
-		// ...and the Field array, which is for serialization.
+		
+		// Record information in the Field array, which is for serialization.
 		Field.push([location.x, location.y, location.z, $C.selected.color]);
+		// As well as the Field index of the block internally using the Voxel array.
+		Voxel[location.x][location.y][location.z] = Field.length;
 	
 		// Let the user know they've placed a block.
 		loggit("A " + $C.palette[$C.selected.color][3] + " block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
