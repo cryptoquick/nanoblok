@@ -148,6 +148,8 @@ var Common = function () {
 	testCompat();
 	
 	this.selection = new Selection();
+	
+	this.palette = new Palette();
 }
 
 // 3D Voxel array must be initialized before adding variables to it. -1 denotes that there is nothing there.

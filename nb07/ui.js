@@ -88,8 +88,11 @@ function drawUI () {
 	moveElement('yAxis', {move: {x: $C.edges.left + $C.gridSize.x / 4, y: $C.edges.top + $C.gridSize.y * 1.5},  skewY: 26.565, skewX: -45});
 	moveElement('xAxis', {move: {x: $C.edges.left + $C.gridSize.x / 2 + $C.gridSize.x / 4 - 20, y: $C.edges.top + $C.gridSize.y * 1.5 + 10}, skewY: -26.565, skewX: 45});
 
-	// Draw color palette.
-	populatePalette();
+	// Position color palette.
+	moveElement("sideColorsRight", {move: {x: $C.edges.right + 40, y: $C.edges.top - $C.gridSize.y - 9}});
+	
+	// Make color palette from default colors.
+	$C.palette.draw();
 	
 	// Draw toolbar. Won't work with numbers greater than 10.
 	for (var i = 0; i < 6; i++) {
@@ -147,36 +150,31 @@ function drawUI () {
 	moveElement('saveBG', {move: {x: savePos.x, y: savePos.y}, skewX: -116.565});
 }
 
-// Place all the colors on the right side.
-function populatePalette () {
-	var sideColorsRight = document.getElementById("sideColorsRight");
-	sideColorsRight.setAttributeNS(null, "transform", "translate(" + ($C.edges.right + 40) + ", " + ($C.edges.top - $C.gridSize.y - 9) + ")");
-	
-	// This is very similar to what was done for the toolbar.
-	for (var i = 0; i < 9; i++) {
-		var colorBlock = document.createElementNS(svgNS, 'rect');
-		
-		colorBlock.setAttributeNS(null, "id", "color" + i);
-		colorBlock.setAttributeNS(null, "x", -35);
-		colorBlock.setAttributeNS(null, "y", 35 * i);
-		colorBlock.setAttributeNS(null, "height", 30);
-		colorBlock.setAttributeNS(null, "width", 30);
-		colorBlock.setAttributeNS(null, "fill", getDefaultColor(i));
-		colorBlock.setAttributeNS(null, "rx", 3);
-		colorBlock.setAttributeNS(null, "transform", "skewY(26.565)");
-		
-		sideColorsRight.appendChild(colorBlock);
-	}
-}
-
-function getDefaultColor (paletteNum) {
-	rgbOutput = "rgb("
-		+ ($C.palette[paletteNum][0] + 40) + ", "
-	 	+ ($C.palette[paletteNum][1] + 40) + ", "
-		+ ($C.palette[paletteNum][2] + 40) + ")";
-	return rgbOutput;
-}
-
-function displayDialog () {
-	
-}
+// // Place all the colors on the right side.
+// function populatePalette (pos) {
+// 	var sideColorsRight = document.getElementById("sideColorsRight");
+// 	
+// 	// This is very similar to what was done for the toolbar.
+// 	for (var i = 0; i < 9; i++) {
+// 		var colorBlock = document.createElementNS(svgNS, 'rect');
+// 		
+// 		colorBlock.setAttributeNS(null, "id", "color" + i);
+// 		colorBlock.setAttributeNS(null, "x", -35);
+// 		colorBlock.setAttributeNS(null, "y", 35 * i);
+// 		colorBlock.setAttributeNS(null, "height", 30);
+// 		colorBlock.setAttributeNS(null, "width", 30);
+// 		colorBlock.setAttributeNS(null, "fill", getDefaultColor(i));
+// 		colorBlock.setAttributeNS(null, "rx", 3);
+// 		colorBlock.setAttributeNS(null, "transform", "skewY(26.565)");
+// 		
+// 		sideColorsRight.appendChild(colorBlock);
+// 	}
+// }
+// 
+// function getDefaultColor (paletteNum) {
+// 	rgbOutput = "rgb("
+// 		+ ($C.palette[paletteNum][0] + 40) + ", "
+// 	 	+ ($C.palette[paletteNum][1] + 40) + ", "
+// 		+ ($C.palette[paletteNum][2] + 40) + ")";
+// 	return rgbOutput;
+// }

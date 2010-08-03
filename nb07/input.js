@@ -154,10 +154,6 @@ function Key (evt) {
 		if (evt.keyCode == 83 && !ctrlPressed) {
 			$C.tools.select();
 		}
-		// BKEY for debug script.
-		if (evt.keyCode == 66) {
-			fillSquare();
-		}
 		// UP and DOWN arrows for changing Z level.
 		if (evt.keyCode == 38) {
 			$C.tools.gridUp();

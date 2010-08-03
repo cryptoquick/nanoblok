@@ -130,11 +130,15 @@ var Tools = function () {
 	}
 	
 	this.rotLeft = function () {
-		rotate(1);
+		if (!$C.swatchActive) {
+			rotate(1);
+		}
 	}
 	
 	this.rotRight = function () {
-		rotate(0);
+		if (!$C.swatchActive) {
+			rotate(0);
+		}
 	}
 	
 	this.select = function () {
