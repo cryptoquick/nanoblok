@@ -131,7 +131,7 @@ function closeColorSwatch () {
 var Palette = function () {
 	this.svgGroup = document.getElementById("sideColorsRight");
 	this.colors = [
-		31745, // red
+		29696, // red
 		32386, // orange
 		32673, // yellow
 		7040, // green
@@ -162,7 +162,7 @@ var Palette = function () {
 		colorSwatch.setAttributeNS(null, "colorID", colorIndex);
 		colorSwatch.setAttributeNS(null, "fill", this.color(colorIndex));
 		colorSwatch.setAttributeNS(null, "name", "color");
-		colorSwatch.setAttributeNS(null, "id", "color" + y);
+		colorSwatch.setAttributeNS(null, "id", "color" + colorIndex);
 		colorSwatch.setAttributeNS(null, "x", -35 + 35 * x);
 		colorSwatch.setAttributeNS(null, "y", 35 * y);
 		colorSwatch.setAttributeNS(null, "height", 30);
@@ -200,3 +200,27 @@ var Palette = function () {
 		}
 	}
 }
+
+function pickColor (target) {
+	var pick = new Object();
+	
+	pick.x = parseInt(target.getAttributeNS(null, "c"));
+	pick.y = parseInt(target.getAttributeNS(null, "r"));
+	pick.z = $C.layerOffset.z;
+	
+	var swatchIndex = Swatch[pick.z][pick.y][pick.x];
+	
+	var color = SwatchField[swatchIndex][3];
+	
+	for (var i = 0; i < $C.palette.colors.length; i++) {
+		$C.palette.colors[i]
+	}
+	
+	
+	if ($C.palette.colors[swatchIndex] == undefined) {
+		$C.palette.add(swatchIndex);
+	}
+	
+	$C.selected.color = swatchIndex;
+}
+

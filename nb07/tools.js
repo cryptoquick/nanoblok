@@ -27,12 +27,12 @@ var Tools = function () {
 	// making it appear deselected.
 	this.selectColor = function () {
 		// Deselect previous tool.
-		if ($C.selected.tool.substr(0,5) == "color") {
+		// if ($C.selected.tool.substr(0,5) == "color") {
 			document.getElementById($C.selected.tool).setAttributeNS(null, "stroke-opacity", "0.0");
-		}
-		else {
-			document.getElementById($C.selected.tool).setAttributeNS(null, "stroke-opacity", "0.0");
-		}
+		// }
+		// else {
+		// 	document.getElementById($C.selected.tool).setAttributeNS(null, "stroke-opacity", "0.0");
+		// }
 		$C.selected.tool = "color" + $C.selected.color;
 		document.getElementById($C.selected.tool).setAttributeNS(null, "stroke-opacity", "1.0");
 	}
@@ -114,7 +114,7 @@ var Tools = function () {
 	
 	this.color = function () {
 		this.selectColor();
-		loggit("Selected color is: " + $C.palette[$C.selected.color][3] + ".");
+		// loggit("Selected color is: " + $C.palette[$C.selected.color][3] + ".");
 	}
 	
 	this.swatch = function () {

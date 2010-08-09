@@ -88,13 +88,13 @@ var Common = function () {
 	
 	// Various fields for selection states.
 	this.selected = {
-		color: 0,
+		color: 29696, // red
 		lastColor: 0,
-		tool: "color0",
-		blocks: false,
-		area: {x: 0, y: 0, z: 0, l: 0, w: 0, h: 0},
-		initialSelection: {x: -1, y: -1, z: -1},
-		secondSelection: {x: -1, y: -1, z: -1}
+		tool: "color29696"
+		// blocks: false,
+		// area: {x: 0, y: 0, z: 0, l: 0, w: 0, h: 0},
+		// initialSelection: {x: -1, y: -1, z: -1},
+		// secondSelection: {x: -1, y: -1, z: -1}
 	};
 	
 	this.layerOffset = {x: 0, y: 0, z: 0};
@@ -150,6 +150,8 @@ var Common = function () {
 	this.selection = new Selection();
 	
 	this.palette = new Palette();
+	
+	this.renderer = new Renderer();
 }
 
 // 3D Voxel array must be initialized before adding variables to it. -1 denotes that there is nothing there.

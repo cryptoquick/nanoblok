@@ -137,17 +137,3 @@ function removeSelection () {
 	
 }
 
-function pickColor (target) {
-	var pick = new Object();
-	
-	pick.x = parseInt(target.getAttributeNS(null, "c"));
-	pick.y = parseInt(target.getAttributeNS(null, "r"));
-	pick.z = $C.layerOffset.z;
-	
-	var swatchIndex = Swatch[pick.z][pick.y][pick.x];
-	
-	var color = SwatchField[swatchIndex][3];
-	
-	$C.palette.add(swatchIndex);
-	console.log(swatchIndex);
-}
