@@ -185,7 +185,7 @@ function placeBlock (target) {
 		// Record information in the Field array, which is for serialization.
 		Field.push([location.x, location.y, location.z, $C.selected.color]);
 		// As well as the Field index of the block internally using the Voxel array.
-		Voxel[location.x][location.y][location.z] = Field.length;
+		Voxel[location.x][location.y][location.z] = Field.length - 1;
 	
 		// Let the user know they've placed a block.
 		// loggit("Block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
