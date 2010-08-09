@@ -238,7 +238,7 @@ function drawAllBlocks () {
 		location = {x: Field[i][0], y: Field[i][1], z: Field[i][2]};
 		gridPosition = location.x * $C.gridDims.c + location.y;
 		coors = GridField["x-" + gridPosition].coors;
-		color = colorBlock(Field[i][3]);
+		color = colorBlockNew(SwatchField[Field[i][3]][3]);
 		canvasBlock(coors, location, color);
 	}
 }
