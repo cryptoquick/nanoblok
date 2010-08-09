@@ -135,6 +135,8 @@ function Hover (evt, inout) {
 function Key (evt) {
 	ctrlPressed = evt.ctrlKey;
 	
+	// console.log(evt.keyCode);
+	
 	if (evt.type == "keydown") {
 		// DKEY for delete.
 		if (evt.keyCode == 68) {
@@ -173,6 +175,10 @@ function Key (evt) {
 		// CTRL+LKEY for load.
 		if (evt.keyCode == 76 && ctrlPressed) {
 			$C.tools.load();
+		}
+		// debug (RKEY)
+		if (evt.keyCode == 69) {
+			$C.renderer.render();
 		}
 	}
 }

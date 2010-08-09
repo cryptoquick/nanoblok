@@ -16,8 +16,7 @@ var canvases = [
 	'display',
 	'debug',
 	'colors',
-	'selection',
-	'renderer'
+	'selection'
 ];
 
 var toolNames = [
@@ -131,6 +130,12 @@ function drawUI () {
 	var renderOffset = 96;
 	if($C.smallDisplay) {renderOffset = 20};
 	moveElement('renderDisplay', {move: {x: $C.edges.right - renderOffset, y: $C.edges.fullTop}});
+	var rendererCanvas = document.getElementById('renderer');
+	
+	rendererCanvas.setAttributeNS(null, "height", 64);
+	rendererCanvas.setAttributeNS(null, "width", 64);
+	rendererCanvas.style.left = $C.edges.right - renderOffset + "px";
+	rendererCanvas.style.top = $C.edges.fullTop + "px";
 	
 	// If it's a small display, the size of the debug box should be smaller.
 	if ($C.smallDisplay) {
