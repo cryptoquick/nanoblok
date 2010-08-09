@@ -105,13 +105,24 @@ function colorBlock (colorID) {
 	return {left: colorLeft, right: colorRight, top: colorTop, inset: colorLines};
 }
 
+var cubeShift = {a: -20, b: -10, c: 0, d: -30};
+var blokShift = {a: 0, b: 20, c: 40, d: -20};
+
 function colorBlockNew (color) {
 	var blockColors = new Object();
+	var shift;
 	
-	blockColors.left = "rgb(" + (color.r - 20) + ", " + (color.g - 20) + ", " + (color.b - 20) + ")";
-	blockColors.right = "rgb(" + (color.r - 10) + ", " + (color.g - 10) + ", " + (color.b - 10) + ")";
-	blockColors.top = "rgb(" + (color.r) + ", " + (color.g) + ", " + (color.b) + ")";
-	blockColors.inset = "rgb(" + (color.r - 30) + ", " + (color.g - 30) + ", " + (color.b - 30) + ")";
+	if ($C.swatchActive) {
+		shift = cubeShift;
+	}
+	else {
+		shift = blokShift;
+	}
+	
+	blockColors.left = "rgb(" + (color.r + shift.a) + ", " + (color.g + shift.a) + ", " + (color.b + shift.a) + ")";
+	blockColors.right = "rgb(" + (color.r + shift.b) + ", " + (color.g + shift.b) + ", " + (color.b + shift.b) + ")";
+	blockColors.top = "rgb(" + (color.r + shift.c) + ", " + (color.g + shift.c) + ", " + (color.b + shift.c) + ")";
+	blockColors.inset = "rgb(" + (color.r + shift.d) + ", " + (color.g + shift.d) + ", " + (color.b + shift.d) + ")";
 
 	return blockColors;
 }
@@ -169,7 +180,7 @@ function placeBlock (target) {
 	if (Voxel[location.x][location.y][location.z] != $C.selected.color) {
 		// Draw the actual block using coordinates using the location of the grid's tiles as a reference for pixel-placement for all the rest of the blocks (this is the first argument). The target.id should look something like "x-123".
 		// colorBlock is used to turn the color index into a color object (with separate color values for each face as well as its lines)
-		canvasBlock(GridField[target.id].coors, location, colorBlock($C.selected.color));
+		canvasBlock(GridField[target.id].coors, location, colorBlockNew(SwatchField[$C.selected.color][3]));
 		
 		// Record information in the Field array, which is for serialization.
 		Field.push([location.x, location.y, location.z, $C.selected.color]);
@@ -177,7 +188,7 @@ function placeBlock (target) {
 		Voxel[location.x][location.y][location.z] = Field.length;
 	
 		// Let the user know they've placed a block.
-		loggit("A " + $C.palette[$C.selected.color][3] + " block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
+		// loggit("Block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
 	
 		// Redraw the display so that this change shows up immediately.
 		$C.posInd.redraw();

@@ -149,32 +149,3 @@ function drawUI () {
 	
 	moveElement('saveBG', {move: {x: savePos.x, y: savePos.y}, skewX: -116.565});
 }
-
-// // Place all the colors on the right side.
-// function populatePalette (pos) {
-// 	var sideColorsRight = document.getElementById("sideColorsRight");
-// 	
-// 	// This is very similar to what was done for the toolbar.
-// 	for (var i = 0; i < 9; i++) {
-// 		var colorBlock = document.createElementNS(svgNS, 'rect');
-// 		
-// 		colorBlock.setAttributeNS(null, "id", "color" + i);
-// 		colorBlock.setAttributeNS(null, "x", -35);
-// 		colorBlock.setAttributeNS(null, "y", 35 * i);
-// 		colorBlock.setAttributeNS(null, "height", 30);
-// 		colorBlock.setAttributeNS(null, "width", 30);
-// 		colorBlock.setAttributeNS(null, "fill", getDefaultColor(i));
-// 		colorBlock.setAttributeNS(null, "rx", 3);
-// 		colorBlock.setAttributeNS(null, "transform", "skewY(26.565)");
-// 		
-// 		sideColorsRight.appendChild(colorBlock);
-// 	}
-// }
-// 
-// function getDefaultColor (paletteNum) {
-// 	rgbOutput = "rgb("
-// 		+ ($C.palette[paletteNum][0] + 40) + ", "
-// 	 	+ ($C.palette[paletteNum][1] + 40) + ", "
-// 		+ ($C.palette[paletteNum][2] + 40) + ")";
-// 	return rgbOutput;
-// }

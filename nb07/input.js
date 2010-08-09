@@ -83,13 +83,11 @@ function Click (evt) {
 	if (target.id.substr(0,5) == "color") {
 		// The last color is used to deselect the last color.
 		$C.selected.lastColor = $C.selected.color;
+
+		// Set the current color to the element's color ID.
+		$C.selected.color = parseInt(target.getAttribute('colorID'));
 		
-		// Get the color value from its id and set the currently selected color as this. (not the best way to do this...)
-		$C.selected.color = parseInt(target.id.substr(5,1));
 		$C.tools.color();
-		
-		// 'Select' the clicked-on color swatch.
-		document.getElementById(target.id).setAttributeNS(null, "stroke-opacity", "1.0");
 	}
 	
 	// Block placement (first click, and if only one single click)
