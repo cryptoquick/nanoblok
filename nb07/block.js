@@ -55,13 +55,6 @@ function canvasDrawSet (hexSet, offset, settings) {
 	
 	ctx.globalAlpha = 1.0;
 	
-	if (settings.stroke !== false) {
-		ctx.strokeStyle = settings.stroke;
-	}
-	if (settings.fill !== false) {
-		ctx.fillStyle = settings.fill;
-	}
-	
 	var hexSpot = hexSet.pop();
 	var coorSet = hexiso(offset, $C.blockSize);
 	var offsY = -35;
@@ -82,28 +75,16 @@ function canvasDrawSet (hexSet, offset, settings) {
 	}
 	
 	if (settings.stroke !== false) {
+		ctx.strokeStyle = settings.stroke;
 		ctx.stroke();
 	}
 	if (settings.fill !== false) {
+		ctx.fillStyle = settings.fill;
 		ctx.fill();
 	}
 }
 
-// colorBlock is used to turn the color index into a color object (with separate color values for each face as well as its lines).
-// It basically takes this color index and corresponds it to an RGB value held in the color palette in $C.
-// Later a better system for handling color must be designed.
-/*function colorBlock (colorID) {
-	var color = $C.palette[colorID];
-	var colorR = color[0];
-	var colorG = color[1];
-	var colorB = color[2];
-	var colorLeft = "rgb(" + colorR + ", " + colorG + ", " + colorB + ")";
-	var colorRight = "rgb(" + (colorR + 20) + ", " + (colorG + 20) + ", " + (colorB + 20) + ")";
-	var colorTop = "rgb(" + (colorR + 40) + ", " + (colorG + 40) + ", " + (colorB + 40) + ")";
-	var colorLines = "rgb(" + (colorR -20) + ", " + (colorG - 20) + ", " + (colorB - 20) + ")";
-	
-	return {left: colorLeft, right: colorRight, top: colorTop, inset: colorLines};
-}*/
+// colorBlock uses a color object (with separate color values for each face as well as its lines) to provide different shading for block faces.
 
 var cubeShift = {a: -20, b: -10, c: 0, d: -30};
 var blokShift = {a: -40, b: -20, c: 0, d: -60};
@@ -177,25 +158,34 @@ function placeBlock (target) {
 	}
 	
 	// If the same block already exists at the location being painted, don't paint over it again.
-	if (Voxel[location.x][location.y][location.z] != $C.selected.color) {
-		// Draw the actual block using coordinates using the location of the grid's tiles as a reference for pixel-placement for all the rest of the blocks (this is the first argument). The target.id should look something like "x-123".
-		// colorBlock is used to turn the color index into a color object (with separate color values for each face as well as its lines)
-		canvasBlock(GridField[target.id].coors, location, colorBlockNew(SwatchField[$C.selected.color][3]));
-		
-		// Record information in the Field array, which is for serialization.
-		Field.push([location.x, location.y, location.z, $C.selected.color]);
-		// As well as the Field index of the block internally using the Voxel array.
-		Voxel[location.x][location.y][location.z] = Field.length - 1;
-	
-		// Let the user know they've placed a block.
-		// loggit("Block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
-	
-		// Redraw the display so that this change shows up immediately.
-		$C.posInd.redraw();
+	if (Voxel[location.x][location.y][location.z] != -1) {
+		if (Field[Voxel[location.x][location.y][location.z]][3] != $C.selected.color) {
+			placeBlockDraw(target, location);
+		}
+		else {
+			loggit("Same block already exists at location.");
+		}
 	}
 	else {
-		loggit("Same block already exists at location.");
+		placeBlockDraw(target, location);
 	}
+}
+
+function placeBlockDraw (target, location) {
+	// Draw the actual block using coordinates using the location of the grid's tiles as a reference for pixel-placement for all the rest of the blocks (this is the first argument). The target.id should look something like "x-123".
+	// colorBlock is used to turn the color index into a color object (with separate color values for each face as well as its lines)
+	canvasBlock(GridField[target.id].coors, location, colorBlockNew(SwatchField[$C.selected.color][3]));
+
+	// Record information in the Field array, which is for serialization.
+	Field.push([location.x, location.y, location.z, $C.selected.color]);
+	// As well as the Field index of the block internally using the Voxel array.
+	Voxel[location.x][location.y][location.z] = Field.length - 1;
+
+	// Let the user know they've placed a block.
+	loggit("Block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
+
+	// Redraw the display so that this change shows up immediately.
+	$C.posInd.redraw();
 }
 
 function removeBlock (target) {
