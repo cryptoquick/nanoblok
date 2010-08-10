@@ -92,7 +92,7 @@ function canvasDrawSet (hexSet, offset, settings) {
 // colorBlock is used to turn the color index into a color object (with separate color values for each face as well as its lines).
 // It basically takes this color index and corresponds it to an RGB value held in the color palette in $C.
 // Later a better system for handling color must be designed.
-function colorBlock (colorID) {
+/*function colorBlock (colorID) {
 	var color = $C.palette[colorID];
 	var colorR = color[0];
 	var colorG = color[1];
@@ -103,10 +103,10 @@ function colorBlock (colorID) {
 	var colorLines = "rgb(" + (colorR -20) + ", " + (colorG - 20) + ", " + (colorB - 20) + ")";
 	
 	return {left: colorLeft, right: colorRight, top: colorTop, inset: colorLines};
-}
+}*/
 
 var cubeShift = {a: -20, b: -10, c: 0, d: -30};
-var blokShift = {a: 0, b: 20, c: 40, d: -20};
+var blokShift = {a: -40, b: -20, c: 0, d: -60};
 
 function colorBlockNew (color) {
 	var blockColors = new Object();

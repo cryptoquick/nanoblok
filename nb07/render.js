@@ -11,6 +11,8 @@ var Renderer = function () {
 	}
 	
 	this.render = function () {
+		this.clear();
+		
 		var color = {r: 255, g: 255, b: 255};
 		var img = this.ctx.createImageData(this.canvas.width, this.canvas.height);
 		var index = 0;
@@ -37,4 +39,9 @@ var Renderer = function () {
 		
 		this.ctx.putImageData(img, 0, 0);
 	}
+	
+	this.clear = function () {
+		this.ctx.clearRect(0, 0, 64, 64);
+	}
 }
+
