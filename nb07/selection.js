@@ -13,6 +13,8 @@ var Selection = function () {
 	// This is so the begin is only drawn once.
 	this.begin = true;
 	
+	this.area = {x: 0, y: 0, z: 0};
+	
 	this.selectionField = new Array();
 	
 	this.select = function (target) {
@@ -42,6 +44,7 @@ var Selection = function () {
 		// Reset start and end values.
 		this.start = {x: 0, y: 0, z: 0};
 		this.end = {x: 0, y: 0, z: 0};
+		// this.area = {x: 0, y: 0, z: 0};
 		this.begin = true;
 		
 		// Clear canvas.
@@ -50,6 +53,7 @@ var Selection = function () {
 		
 		// Make sure it's off.
 		this.enabled = false;
+		console.log('selection off');
 	}
 	
 	this.draw = function () {
@@ -76,6 +80,8 @@ var Selection = function () {
 		
 		// This basically draws every block inside the selection area.
 		
+		var offset = {};
+		
 		for (var x = 0; x < xDiff + 1; x++) {
 			for (var y = 0; y < yDiff + 1; y++) {
 				for (var z = 0; z < zDiff + 1; z++) {
@@ -85,28 +91,10 @@ var Selection = function () {
 						location.z = this.start.z;
 					}
 					else {
-						// location.x = Math.abs(this.end.x - (xDiff - x));
-						// location.y = Math.abs(this.end.y - (yDiff - y));
-						if (this.start.x > this.end.x) {
-							location.x = x + this.end.x;
-						}
-						else {
-							location.x = x + this.start.x;
-						}
-						if (this.start.y > this.end.y) {
-							location.y = y + this.end.y;
-						}
-						else {
-							location.y = y + this.start.y;
-						}
-						if (this.start.z > this.end.z) {
-							location.z = z + this.end.z;
-						}
-						else {
-							location.z = z + this.start.z;
-						}
+						offset = {x: x, y: y, z: z};
+						location = this.normalize(this.start, this.end, offset);
 					}
-				
+					
 					this.selectionField.push([location.x, location.y, location.z]);
 				
 					gridPosition = location.x * $C.gridDims.c + location.y;
@@ -125,7 +113,59 @@ var Selection = function () {
 		var time1 = new Date();
 		console.log(xDiff + ", " + yDiff + ", run : " + i + " times.");
 		
-		loggit("Selection drawn in " + (time1 - time0) + " ms.");
+		loggit("Selected " + i + " blocks.");
+		
+		this.area = {x: xDiff, y: yDiff, z: zDiff};
+	}
+	
+	this.fill = function () {
+		var diff = {}
+		var norm = {};
+		
+		for (var z = 0; z < this.area.z + 1; z++) {
+			for (var y = 0; y < this.area.y + 1; y++) {
+				for (var x = 0; x < this.area.x + 1; x++) {
+					diff = {x: x, y: y, z: z};
+					norm = this.normalize(this.start, this.end, diff);
+					Field.push([norm.x, norm.y, norm.z, $C.selected.color]);
+					Voxel[x][y][z] = Field.length - 1;
+				}
+			}
+		}
+		
+		this.deselect();
+		
+		drawAllBlocks();
+		$C.posInd.redraw();
+	}
+	
+	this.remove = function () {
+		
+	}
+	
+	this.normalize = function (start, end, offset) {
+		var location = {x: 0, y: 0, z: 0};
+		
+		if (start.x > end.x) {
+			location.x = offset.x + end.x;
+		}
+		else {
+			location.x = offset.x + start.x;
+		}
+		if (start.y > end.y) {
+			location.y = offset.y + end.y;
+		}
+		else {
+			location.y = offset.y + start.y;
+		}
+		if (start.z > end.z) {
+			location.z = offset.z + end.z;
+		}
+		else {
+			location.z = offset.z + start.z;
+		}
+		
+		return location;
 	}
 }
 

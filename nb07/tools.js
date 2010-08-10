@@ -58,7 +58,12 @@ var Tools = function () {
 		
 	// Remove button, its state can be toggled by the user.
 	this.remove = function () {
-		this.activate("Delete");
+		if ($C.selection.enabled) {
+			$C.selection.remove();
+		}
+		else {
+			this.activate("Delete");
+		}
 	}
 	
 	this.gridUp = function () {
@@ -154,7 +159,13 @@ var Tools = function () {
 	}
 	
 	this.fill = function () {
-		this.activate("Fill");
+		if ($C.selection.enabled) {
+			$C.selection.fill();
+			loggit('Selection fill.');
+		}
+		else {
+			this.activate("Fill");
+		}
 	}
 }
 
