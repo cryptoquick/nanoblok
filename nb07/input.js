@@ -67,13 +67,13 @@ function Click (evt) {
 	];
 	
 	// References toolNames in ui.js.
-	for (var i = 0; i < $C.toolNames.length; i++) {
+	for (var i = 0, ii = $C.toolNames.length; i < ii; i++) {
 		if (target.id == "toolButton" + toolNames[i] || target.id == "toolText" + toolNames[i]) {
 			eval("$C.tools." + $C.toolMethods[i] + "()");
 		}
 	}
 	
-	for (var i = 0; i < inputs.length; i++) {
+	for (var i = 0, ii = inputs.length; i < ii; i++) {
 		if (target.id == inputs[i] + "Button" || target.id == inputs[i] + "Text") {
 			eval("$C.tools." + inputs[i] + "()");
 		}
@@ -132,8 +132,11 @@ function Hover (evt, inout) {
 	}
 }
 
+var shiftPressed;
+
 function Key (evt) {
 	ctrlPressed = evt.ctrlKey;
+	shiftPressed = evt.shiftKey;
 	
 	// console.log(evt.keyCode);
 	

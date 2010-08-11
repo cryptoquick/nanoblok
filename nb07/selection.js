@@ -119,6 +119,8 @@ var Selection = function () {
 	}
 	
 	this.fill = function () {
+		var time2 = new Date();
+		
 		var diff = {}
 		var norm = {};
 		
@@ -137,6 +139,10 @@ var Selection = function () {
 		
 		drawAllBlocks();
 		$C.posInd.redraw();
+		
+		var time3 = new Date();
+		
+		console.log('Fill took: ' + (time3 - time2) + 'ms.');
 	}
 	
 	this.remove = function () {
