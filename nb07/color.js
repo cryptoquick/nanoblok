@@ -131,7 +131,7 @@ function closeColorSwatch () {
 var Palette = function () {
 	this.svgGroup = document.getElementById("sideColorsRight");
 	this.colors = [
-		29696, // red
+		26624, // red
 		32386, // orange
 		32673, // yellow
 		7040, // green

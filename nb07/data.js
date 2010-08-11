@@ -88,9 +88,9 @@ var Common = function () {
 	
 	// Various fields for selection states.
 	this.selected = {
-		color: 29696, // red
+		color: 26624, // red
 		lastColor: 0,
-		tool: "color29696"
+		tool: "color26624"
 		// blocks: false,
 		// area: {x: 0, y: 0, z: 0, l: 0, w: 0, h: 0},
 		// initialSelection: {x: -1, y: -1, z: -1},
