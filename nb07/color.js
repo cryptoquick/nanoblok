@@ -160,6 +160,7 @@ var Palette = function () {
 		var y = this.paletteIndex % 9;
 		
 		colorSwatch.setAttributeNS(null, "colorID", colorIndex);
+		colorSwatch.setAttributeNS(null, "colorPos", this.paletteIndex);
 		colorSwatch.setAttributeNS(null, "fill", this.color(colorIndex));
 		colorSwatch.setAttributeNS(null, "name", "color");
 		colorSwatch.setAttributeNS(null, "id", "color" + colorIndex);
