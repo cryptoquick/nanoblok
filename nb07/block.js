@@ -100,12 +100,29 @@ function colorBlockNew (color) {
 		shift = blokShift;
 	}
 	
-	blockColors.left = "rgb(" + (color.r + shift.a) + ", " + (color.g + shift.a) + ", " + (color.b + shift.a) + ")";
-	blockColors.right = "rgb(" + (color.r + shift.b) + ", " + (color.g + shift.b) + ", " + (color.b + shift.b) + ")";
-	blockColors.top = "rgb(" + (color.r + shift.c) + ", " + (color.g + shift.c) + ", " + (color.b + shift.c) + ")";
-	blockColors.inset = "rgb(" + (color.r + shift.d) + ", " + (color.g + shift.d) + ", " + (color.b + shift.d) + ")";
-
+	blockColors.left = "rgb(" + smartShift(color.r, shift.a) + ", " + smartShift(color.g, shift.a) + ", " + smartShift(color.b, shift.a) + ")";
+	blockColors.right = "rgb(" + smartShift(color.r, shift.b) + ", " + smartShift(color.g, shift.b) + ", " + smartShift(color.b, shift.b) + ")";
+	blockColors.top = "rgb(" + smartShift(color.r, shift.c) + ", " + smartShift(color.g, shift.c) + ", " + smartShift(color.b, shift.c) + ")";
+	blockColors.inset = "rgb(" + smartShift(color.r, shift.d) + ", " + smartShift(color.g, shift.d) + ", " + smartShift(color.b, shift.d) + ")";
+	
 	return blockColors;
+}
+
+function smartShift (color, shift) {
+	if (color + shift < 0) {
+		// For dark black.
+		var shifted = color - shift;
+	}
+	else if (color + shift > 255) {
+		// For light white.
+		var shifted = Math.min(color + shift, 255);
+	}
+	else {
+		// And everything inbetween.
+		var shifted = color + shift;
+	}
+	
+	return shifted;
 }
 
 // Paints a block on the board with proper color and occlusion.
