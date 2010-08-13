@@ -27,12 +27,9 @@ var Tools = function () {
 	// making it appear deselected.
 	this.selectColor = function () {
 		// Deselect previous tool.
-		// if ($C.selected.tool.substr(0,5) == "color") {
+		if ($C.selected.lastColor != -1) {
 			document.getElementById($C.selected.tool).setAttributeNS(null, "stroke-opacity", "0.0");
-		// }
-		// else {
-		// 	document.getElementById($C.selected.tool).setAttributeNS(null, "stroke-opacity", "0.0");
-		// }
+		}
 		$C.selected.tool = "color" + $C.selected.color;
 		document.getElementById($C.selected.tool).setAttributeNS(null, "stroke-opacity", "1.0");
 	}
