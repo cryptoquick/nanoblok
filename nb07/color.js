@@ -148,7 +148,12 @@ var Palette = function () {
 		this.draw();
 	}
 	
-	this.remove = function (position) {
+	this.remove = function (target) {
+		if ($C.selected.color == parseInt(target.getAttribute("colorID"))) {
+			$C.selected.color = -1;
+		}
+		
+		var position = parseInt(target.getAttribute("colorPos"));
 		this.colors.splice(position, 1);
 		this.draw();
 	}
@@ -198,6 +203,27 @@ var Palette = function () {
 		
 		for (var i = 0; i < this.colors.length; i++) {
 			this.swatch(this.colors[i], i);
+		}
+	}
+	
+	this.faded = false;
+	
+	this.fade = function (toggledOn) {
+		if (toggledOn) {
+			var elements = document.getElementsByName("color")
+			for (var i = 0, ii = elements.length; i < ii; i++) {
+				elements[i].setAttributeNS(null, "fill-opacity", 0.3);
+			}
+			
+			this.faded = true;
+		}
+		else {
+			var elements = document.getElementsByName("color")
+			for (var i = 0, ii = elements.length; i < ii; i++) {
+				elements[i].setAttributeNS(null, "fill-opacity", 1.0);
+			}
+			
+			this.faded = false;
 		}
 	}
 }

@@ -42,10 +42,6 @@ function InitEvents () {
 	window.addEventListener('keyup', function (evt) {
 		Key(evt);
 	}, false);
-	
-	// window.addEventListener('mousemove', function (evt) {
-	// 	Mouse(evt);
-	// }, false);
 
 	window.onresize = function() {
 		if(initialized) {
@@ -81,13 +77,18 @@ function Click (evt) {
 	
 	// Color selection.
 	if (target.id.substr(0,5) == "color") {
-		// The last color is used to deselect the last color.
-		$C.selected.lastColor = $C.selected.color;
+		if ($C.palette.faded) {
+			$C.palette.remove(target);
+		}
+		else {
+			// The last color is used to deselect the last color.
+			$C.selected.lastColor = $C.selected.color;
 
-		// Set the current color to the element's color ID.
-		$C.selected.color = parseInt(target.getAttribute('colorID'));
-		
-		$C.tools.color();
+			// Set the current color to the element's color ID.
+			$C.selected.color = parseInt(target.getAttribute('colorID'));
+			
+			$C.tools.color();
+		}
 	}
 	
 	// Block placement (first click, and if only one single click)
@@ -132,11 +133,15 @@ function Hover (evt, inout) {
 	}
 }
 
-var shiftPressed;
+// var shiftPressed;
 
 function Key (evt) {
 	ctrlPressed = evt.ctrlKey;
-	shiftPressed = evt.shiftKey;
+	// shiftPressed = evt.shiftKey;
+	
+	// if (shiftPressed) {
+	// 	$C.palette.cross(evt.type);
+	// }
 	
 	// console.log(evt.keyCode);
 	
@@ -179,10 +184,27 @@ function Key (evt) {
 		if (evt.keyCode == 76 && ctrlPressed) {
 			$C.tools.load();
 		}
+		// SHIFTKEY for toggle options.
+		if (evt.keyCode == 16) {
+			$C.palette.fade(true);
+		}
 		// debug (RKEY)
 		if (evt.keyCode == 69) {
 			$C.renderer.render();
 		}
 	}
+	
+	if (evt.type == "keyup") {
+		// SHIFTKEY for toggle options.
+		if (evt.keyCode == 16) {
+			$C.palette.fade(false);
+		}
+	}
 }
 
+// function KeyUp (evt) {
+// 	// Shift
+// 	if (evt.keyCode == 16) {
+// 		$C.palette.cross(evt.type);
+// 	}
+// }
