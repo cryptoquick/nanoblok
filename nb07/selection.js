@@ -124,12 +124,13 @@ var Selection = function () {
 		var diff = {}
 		var norm = {};
 		
-		for (var z = 0; z < this.area.z + 1; z++) {
-			for (var y = 0; y < this.area.y + 1; y++) {
-				for (var x = 0; x < this.area.x + 1; x++) {
+		for (var z = 0; z < this.area.z; z++) {
+			for (var y = -1; y < this.area.y; y++) {
+				for (var x = this.area.x + 1; x > 0; x--) {
 					diff = {x: x, y: y, z: z};
 					norm = this.normalize(this.start, this.end, diff);
 					Field.push([norm.x, norm.y, norm.z, $C.selected.color]);
+					console.log(norm);
 					Voxel[x][y][z] = Field.length - 1;
 				}
 			}

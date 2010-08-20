@@ -9,14 +9,15 @@
  * Also computes common variables used throughout the program, called by the $C variable attached to the window in main.js.
  */
 
-// Field is short for Playfield, and each element contains 4 values; X, Y, Z, and color. This is strictly for serialization, and is in the order by which the user placed the blocks.
-var Field = new Array();
+// Field is short for Playfield, and each element contains 4 values; X, Y, Z, and color. This is strictly for serialization, and is in the order by which the user placed the blocks. Also, another array to tell if the voxel is visible.
+var Field = [];
+var FieldVisible = [];
 
 // GridField stores the positions of the grid tiles. These are set by gridCoors() in grid.js. Used by the other grid functions to render.
-var GridField = new Object();
+var GridField = {};
 
 // Voxels are volumetric pixels, 3D coordinates. This keeps track of those in order to speed up spatial determinations, such as if a block is close by to another block.
-var Voxel = new Array();
+var Voxel = [];
 
 // Many common variables used throughout the program.
 var Common = function () {

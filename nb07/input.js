@@ -65,13 +65,13 @@ function Click (evt) {
 	// References toolNames in ui.js.
 	for (var i = 0, ii = $C.toolNames.length; i < ii; i++) {
 		if (target.id == "toolButton" + toolNames[i] || target.id == "toolText" + toolNames[i]) {
-			eval("$C.tools." + $C.toolMethods[i] + "()");
+			$C.tools[$C.toolMethods[i]]();
 		}
 	}
 	
 	for (var i = 0, ii = inputs.length; i < ii; i++) {
 		if (target.id == inputs[i] + "Button" || target.id == inputs[i] + "Text") {
-			eval("$C.tools." + inputs[i] + "()");
+			$C.tools[inputs[i]]();
 		}
 	}
 	

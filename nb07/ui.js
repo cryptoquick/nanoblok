@@ -61,7 +61,7 @@ function drawUI () {
 	gridElement.setAttributeNS(null, "height", $C.windowSize.y - 5);
 	
 	// Set positions and dimensions of all canvases.
-	for (var i = 0; i < canvases.length; i++) {
+	for (var i = 0, ii = canvases.length; i < ii; i++) {
 		var effectsElement = document.getElementById(canvases[i]);
 		effectsElement.setAttributeNS(null, "height", $C.gridSize.y * 4 + 2);
 		effectsElement.setAttributeNS(null, "width", $C.gridSize.x);

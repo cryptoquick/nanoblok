@@ -22,7 +22,6 @@ var Renderer = function () {
 				for (var z = 0; z < 32; z++) {
 					if (Voxel[Math.floor(x / 2)][Math.floor(y / 2)][z] != -1) {
 						color = SwatchField[Field[Voxel[Math.floor(x / 2)][Math.floor(y / 2)][z]][3]][3];
-						console.log(color);
 					}
 				}
 				

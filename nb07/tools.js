@@ -199,8 +199,8 @@ function rotate (direction) {
 		ang = (-90 * Math.PI) / 180;
 	}
 
-	// This is where the magic happens. SLOW LOOP
-	for (var i = 0; i < Fld.length; i++) {
+	// This is where the magic happens.
+	for (var i = 0, ii = Fld.length; i < ii; i++) {
 		
 		// Field coordinates.
 		Fx = Fld[i][0];
