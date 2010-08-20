@@ -44,7 +44,7 @@ function canvasDrawSet (hexSet, offset, settings) {
 	else if ($C.swatchActive) {
 		canvas = 'colors';
 	}
-	else if ($C.selected.tool == "toolButtonSelect") {
+	else if ($C.selection.enabled) {
 		canvas = 'selection';
 	}
 	else {
