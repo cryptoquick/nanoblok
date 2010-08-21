@@ -134,16 +134,21 @@ function canvasBlock (position, location, color) {
 	if ($C.swatchActive) {
 		Arr = SwatchGhost;
 	}
-	// else if ($C.selected.tool == "Select") {
-	// 	Arr = SelectionVox;
-	// }
 	else {
 		Arr = Voxel;
 	}
 	
-	// Top side. Always placed, unless there's a block above it.
+	// Top side. Always placed, unless there's a block above it. 
 	if (Arr[location.x][location.y][location.z + 1] == -1) {
 		canvasDrawSet([1, 6, 7, 2], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
+	}
+	// Always draw top if block above it is invisible.
+	else {
+		if (!$C.swatchActive) {
+			if (!FieldVisible[Voxel[location.x][location.y][location.z + 1]]) {
+				canvasDrawSet([1, 6, 7, 2], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
+			}
+		}
 	}
 	
 	// Left side.
@@ -165,7 +170,7 @@ function canvasBlock (position, location, color) {
 	}
 }
 
-// Calls canvasBlock to place a block on the grid.
+// This gathers necessary information for block placement, and determines whether the block should actually be placed.
 function placeBlock (target) {
 	// Make location object.
 	var location = {
@@ -188,6 +193,7 @@ function placeBlock (target) {
 	}
 }
 
+// Here is all the actual functionality required for placing the block, where it calls canvasBlock to place a block on the grid.
 function placeBlockDraw (target, location) {
 	// Draw the actual block using coordinates using the location of the grid's tiles as a reference for pixel-placement for all the rest of the blocks (this is the first argument). The target.id should look something like "x-123".
 	// colorBlock is used to turn the color index into a color object (with separate color values for each face as well as its lines)
@@ -195,6 +201,7 @@ function placeBlockDraw (target, location) {
 
 	// Record information in the Field array, which is for serialization.
 	Field.push([location.x, location.y, location.z, $C.selected.color]);
+	FieldVisible.push(true);
 	// As well as the Field index of the block internally using the Voxel array.
 	Voxel[location.x][location.y][location.z] = Field.length - 1;
 
@@ -242,11 +249,13 @@ function drawAllBlocks () {
 	var coors = new Object();
 	
 	for (var i = 0; i < Field.length; i++) {
-		location = {x: Field[i][0], y: Field[i][1], z: Field[i][2]};
-		gridPosition = location.x * $C.gridDims.c + location.y;
-		coors = GridField["x-" + gridPosition].coors;
-		color = colorBlockNew(SwatchField[Field[i][3]][3]);
-		canvasBlock(coors, location, color);
+		if (FieldVisible[i]) {
+			location = {x: Field[i][0], y: Field[i][1], z: Field[i][2]};
+			gridPosition = location.x * $C.gridDims.c + location.y;
+			coors = GridField["x-" + gridPosition].coors;
+			color = colorBlockNew(SwatchField[Field[i][3]][3]);
+			canvasBlock(coors, location, color);
+		}
 	}
 }
 
@@ -255,6 +264,7 @@ function popField(x, y, z) {
 		// console.log(i);
 		if (Field[i][0] == x && Field[i][1] == y && Field[i][2] == z) {
 			Field.splice(i, 1);
+			FieldVisible.splice(i, 1);
 			break;
 		}
 	}
