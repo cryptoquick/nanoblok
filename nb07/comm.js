@@ -43,12 +43,13 @@ function saveField () {
 		document.getElementById('saveTitle').value,
 		Field,
 		0.01,
-		"public"
+		"public",
+		imageCanvas()
 	];
 	
 	data = JSON.stringify(dbData);
 	
-	makeXHR("POST", "save", data, successfulDelivery);
+	makeXHR("POST", "save", data);
 }
 
 // Deserialization.
@@ -57,3 +58,9 @@ function loadField () {
 	Field = JSON.parse(fieldString);
 }
 
+// Temporary solution.
+function imageCanvas () {
+	var dataURL = document.getElementById('display').toDataURL(); // Will need to change to renderer once finished.
+	
+	return dataURL;
+}

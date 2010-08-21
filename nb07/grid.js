@@ -85,7 +85,7 @@ function drawGrid (side) {
 	
 	var i = 0;
 	
-	var square = [0,0,0,0]
+	var square = [0,0,0,0];
 	
 	for (var x = 0; x < $C.gridDims.c; x++) {
 		for (var y = 0; y < $C.gridDims.r; y++) {
@@ -132,28 +132,6 @@ function drawGrid (side) {
 	}
 	
 	$C.gridCorners = square;
-	
-	/*
-	var path = new String();
-	
-	for (var corner = 0; corner < 4; corner++) {
-		if (corner == 0) {
-			path += 'M ' + square[corner].x + ' ' + square[corner].y;
-		}
-		else if (corner == 3) {
-			path += ' ' + square[corner].x + ' ' + square[corner].y + ' Z';
-		}
-		else {
-			path += ' L ' + square[corner].x + ' ' + square[corner].y;
-		}
-	}
-
-	pathElement = document.createElementNS(svgNS, 'path');
-	pathElement.setAttributeNS(null, 'd', path);
-	pathElement.setAttributeNS(null, 'stroke', 'red');
-	pathElement.setAttributeNS(null, 'stroke-opacity', '0.3');
-	x0 = document.getElementById('x-0');
-	gridContainer.insertBefore(pathElement, x0); */
 }
 
 // Draws the grids using canvas.
