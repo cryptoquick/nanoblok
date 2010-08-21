@@ -103,7 +103,7 @@ var Common = function () {
 	
 	// Updated as the marker is moved about the screen.
 	this.markerPosition = {
-		x: 0,
+		x: 31,
 		y: 0,
 		z: 0
 	};

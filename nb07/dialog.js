@@ -2,6 +2,18 @@ var Dialog = {
 	dialogEl: {},
 	showing: false,
 	
+	text: [
+		'Test object',
+		'Second test object',
+		'Third test object!',
+		'Fourth',
+		'Fifth'
+	],
+	
+	data: [
+		
+	],
+	
 	init: function () {
 		this.dialogEl = document.getElementById('dialog');
 		
@@ -9,6 +21,7 @@ var Dialog = {
 		this.verts(20, 'dialogInner');
 		
 		this.hide();
+		this.print();
 	},
 	
 	verts: function (inset, elementID) {
@@ -59,5 +72,30 @@ var Dialog = {
 	hide: function () {
 		this.dialogEl.style.display = 'none';
 		this.showing = false;
+	},
+	
+	print: function () {
+		var headerText = 'Choose a model:';
+		var dialogLeft = document.getElementById('dialogLeft');
+		
+		maketext(dialogLeft, headerText);
+		
+		for (var i = 0, ii = this.text.length; i < ii; i++) {
+			var textElement = maketext(dialogLeft, '- ' + this.text[i]);
+			textElement.setAttributeNS(null, 'id', 'leftList');
+		}
+	},
+	
+	lastHighlight: false,
+	
+	highlight: function (target) {
+		if (this.lastHighlight) {
+			this.lastHighlight.setAttributeNS(null, 'fill', '#666');
+		}
+		
+		target.setAttributeNS(null, 'fill', 'orange');
+		
+		this.lastHighlight = target;
 	}
 };
+

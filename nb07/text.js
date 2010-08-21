@@ -23,15 +23,22 @@ function loggit (str) {
 		log.removeChild(log.firstChild);
 	}
 	
+	var textElement = maketext(log, str);
+	
+	// Save all messages for later.
+	loggitLog.push(str);
+}
+
+function maketext (element, str) {
 	var textElement = document.createElementNS(svgNS, 'tspan');
 	textElement.setAttributeNS(null, 'x', '7');
 	textElement.setAttributeNS(null, 'dy', '15');
 
 	textElement.textContent = str;
+
+	element.appendChild(textElement);
+	element.getElementsByTagName('tspan')[0].setAttributeNS(null, 'dy', 2);
 	
-	log.appendChild(textElement);
-	log.getElementsByTagName('tspan')[0].setAttributeNS(null, 'dy', 2);
-	
-	// Save all messages for later.
-	loggitLog.push(textElement);
+	return textElement;
 }
+

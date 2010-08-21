@@ -223,7 +223,6 @@ function removeBlock (target) {
 	
 		$C.posInd.clearBlocks();
 		drawAllBlocks();
-		// canvasBlockRemove(GridField[target.id].coors, location);
 		$C.posInd.redraw();
 	
 		var time1 = new Date();

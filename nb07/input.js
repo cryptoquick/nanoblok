@@ -131,6 +131,10 @@ function Hover (evt, inout) {
 		$C.markerPosition.z = target.getAttribute("r");
 		$C.posInd.redraw();
 	}
+	
+	if (target.id == 'leftList') {
+		Dialog.highlight(target);
+	}
 }
 
 // var shiftPressed;
@@ -202,9 +206,3 @@ function Key (evt) {
 	}
 }
 
-// function KeyUp (evt) {
-// 	// Shift
-// 	if (evt.keyCode == 16) {
-// 		$C.palette.cross(evt.type);
-// 	}
-// }
