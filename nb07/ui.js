@@ -50,6 +50,13 @@ function moveElement (name, operation) {
 	}
 
 	element.setAttributeNS(null, "transform", str);
+	
+	if (operation.height) {
+		element.setAttributeNS(null, "height", operation.height);
+	}
+	if (operation.width) {
+		element.setAttributeNS(null, "width", operation.width);
+	}
 }
 
 function drawUI () {
@@ -57,8 +64,9 @@ function drawUI () {
 	moveElement('logoText', {skewY: -$C.isoAngle});
 		
 	// Set viewport height.
-	var gridElement = document.getElementById('grid');
-	gridElement.setAttributeNS(null, "height", $C.windowSize.y - 5);
+	moveElement('grid', {height: $C.windowSize.y - 5});
+	// var gridElement = document.getElementById('grid');
+	// gridElement.setAttributeNS(null, "height", $C.windowSize.y - 5);
 	
 	// Set positions and dimensions of all canvases.
 	for (var i = 0, ii = canvases.length; i < ii; i++) {
@@ -153,4 +161,6 @@ function drawUI () {
 	saveDialog.style.posTop = savePos.y;
 	
 	moveElement('saveBG', {move: {x: savePos.x, y: savePos.y}, skewX: -116.565});
+	
+	moveElement('dialogLeft', {move: {x: $C.edges.left + 30, y: $C.edges.fullTop + $C.gridSize.y / 2 + 70},  skewY: -26.565, height: $C.gridSize.y * 2 - 40, width: $C.gridSize.x / 2 - 30});
 }

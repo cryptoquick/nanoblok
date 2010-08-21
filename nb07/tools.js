@@ -42,9 +42,15 @@ var Tools = function () {
 	
 	// Load button.
 	this.load = function () {
-		loadField();
-		drawBlocks();
-		loggit("Blocks loaded.");
+		if (Dialog.showing) {
+			Dialog.hide();
+		}
+		else {
+			Dialog.show();
+		}
+		// loadField();
+		// drawBlocks();
+		// loggit("Blocks loaded.");
 	}
 	
 	// Refresh button.

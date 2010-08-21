@@ -21,7 +21,7 @@
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 
 	<script type="text/javascript" src="data.js"></script>
-	<script type="text/javascript" src="loggit.js"></script>
+	<script type="text/javascript" src="text.js"></script>
 	<script type="text/javascript" src="grid.js"></script>
 	<script type="text/javascript" src="block.js"></script>
 	<script type="text/javascript" src="effects.js"></script>
@@ -148,8 +148,13 @@
 	<svg:g id="markerPoints" fill="red" fill-opacity="0.0"></svg:g>
 	
 	<svg:rect id="saveBG" height="58" width="250" rx="3" transform="skewY(26.565)" fill="orange" fill-opacity="0.5"></svg:rect>
-	
-	<svg:g id="dialog" fill="green" fill-opacity="1.0"></svg:g>
+	<!-- #aaa -->
+	<svg:g id="dialog">
+		<svg:path id="dialogOuter" fill="#333" fill-opacity="0.3"></svg:path>
+		<svg:path id="dialogInner" fill="#eee" fill-opacity="1.0"></svg:path>
+		<svg:rect id="debugDialog" fill="#333" fill-opacity="0.5" rx="5"/>
+		<svg:text id="dialogLeft" font-family="Verdana" font-size="12" fill="#666">Bla bla bla</svg:text>
+	</svg:g>
 </svg:svg>
 
 <div id="dialogSave">
