@@ -52,7 +52,8 @@ var Common = function () {
 	this.gridDims = {c: 32, r: 32};
 	this.gridSize = {
 		x: this.gridDims.c * this.blockSize.full,
-		y: this.gridDims.r * this.blockSize.quarter
+		y: this.gridDims.r * this.blockSize.quarter,
+		fullY: this.gridDims.r * this.blockSize.full
 	};
 	
 	// Center of the window.

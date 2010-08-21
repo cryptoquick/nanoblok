@@ -152,20 +152,16 @@ function canvasBlock (position, location, color) {
 	}
 	
 	// Left side.
-	if (Arr[location.x - 1][location.y][location.z] == -1
-			&& Arr[location.x - 1][location.y + 1][location.z] == -1) {
+	if (Arr[location.x - 1][location.y][location.z] == -1 && Arr[location.x - 1][location.y + 1][location.z] == -1) {
 		canvasDrawSet([6, 7, 4, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
-	} else if (Arr[location.x - 1][location.y + 1][location.z] != -1
-			&& Arr[location.x - 1][location.y][location.z] == -1) {
+	} else if (Arr[location.x - 1][location.y + 1][location.z] != -1 && Arr[location.x - 1][location.y][location.z] == -1) {
 		canvasDrawSet([6, 7, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
 	}
 	
 	// Right side.
-	if (Arr[location.x][location.y + 1][location.z] == -1
-			&& Arr[location.x - 1][location.y + 1][location.z] == -1) {
+	if (Arr[location.x][location.y + 1][location.z] == -1 && Arr[location.x - 1][location.y + 1][location.z] == -1) {
 		canvasDrawSet([2, 7, 4, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
-	} else if (Arr[location.x - 1][location.y + 1][location.z] != -1
-			&& Arr[location.x][location.y + 1][location.z] == -1) {
+	} else if (Arr[location.x - 1][location.y + 1][location.z] != -1 && Arr[location.x][location.y + 1][location.z] == -1) {
 		canvasDrawSet([2, 7, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
 	}
 }
