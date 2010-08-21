@@ -80,12 +80,21 @@ var Tools = function () {
 				}
 				$C.posInd.clearSwatch();
 				drawAllSwatch();
-				
-				loggit("Slice up to " + $C.layerOffset.z);
 			}
+			// For block slicing.
 			else {
-				loggit("Up to " + $C.layerOffset.z);
+				for (var i = 0, ii = Field.length; i < ii; i++) {
+					if (Field[i][2] == $C.layerOffset.z) {
+						FieldVisible[i] = true;
+					}
+				}
+				
+				$C.posInd.clearBlocks();
+				drawAllBlocks();
+				$C.posInd.redraw();
 			}
+			
+			loggit("Slice up to " + $C.layerOffset.z);
 		}
 	}
 	this.gridDown = function () {
@@ -105,12 +114,21 @@ var Tools = function () {
 				}
 				$C.posInd.clearSwatch();
 				drawAllSwatch();
-				
-				loggit("Slice down to " + $C.layerOffset.z);
 			}
+			// For block slicing.
 			else {
-				loggit("Down to " + $C.layerOffset.z);
+				for (var i = 0, ii = Field.length; i < ii; i++) {
+					if (Field[i][2] > $C.layerOffset.z) {
+						FieldVisible[i] = false;
+					}
+				}
+				
+				$C.posInd.clearBlocks();
+				drawAllBlocks();
+				$C.posInd.redraw();
 			}
+			
+			loggit("Slice down to " + $C.layerOffset.z);
 		}
 	}
 	
