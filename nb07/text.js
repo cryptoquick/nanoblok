@@ -4,7 +4,7 @@
  * Copyright (c) 2009-2010 Alex Trujillo
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  * 
- * Summary for loggit.js:
+ * Summary for text.js:
  * Takes a message and outputs it to a debug box on the screen.
  * Because the box does not have a scroll bar, scrolling code had to be written.
  */
@@ -35,4 +35,3 @@ function loggit (str) {
 	// Save all messages for later.
 	loggitLog.push(textElement);
 }
-
