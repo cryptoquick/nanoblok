@@ -73,6 +73,8 @@ function Update (updateMode, updateSettings) {
 		}
 	}
 	
+	Dialog.init();
+	
 	$C.posInd.redraw();
 }
 
