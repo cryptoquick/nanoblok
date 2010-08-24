@@ -26,6 +26,13 @@ class MainHandler(webapp.RequestHandler):
 		
 		if user:
 			self.response.out.write('Going to copy Alex\'s code from the other example here so it loads his editor.')
+			cheat_sheet = '''
+			<p><a href="/load/190">Load sprite 190</a></p>
+			<p><a href="/my_sprites">List all of my saved sprites</a></p>
+			<form action="/save" method="post"><input type="submit" value="Save NEW sprite"/></form>
+			<form action="/save/190" method="post"><input type="submit" value="Update sprite"/></form>
+			'''
+			self.response.out.write(cheat_sheet)
 		else:
 			self.redirect(users.create_login_url(self.request.uri))
 
@@ -34,11 +41,15 @@ class ListHandler(webapp.RequestHandler):
 		user = users.get_current_user()
 		
 		if user:
-			self.response.out.write("List all of the sprites that have been saved by this user")
+			self.response.out.write("List all of the sprites that have been saved by this user (" + user.nickname() + ")" )
 		else:
 			self.redirect(users.create_login_url(self.request_uri))
 
-class SaveHandler():
+class SaveHandler(webapp.RequestHandler):
+	def save_voxels(self):
+		#maybe this should be a Class method on the Voxel Model? Whatevs.
+		pass
+		
 	def get(self):
 		pass #This will probably never get called
 		
@@ -47,20 +58,32 @@ class SaveHandler():
 		
 		if user:
 			if sprite_id:
-				#make sure this sprite belongs to this user.
-				
+				#retrieve this sprite from the datastore
+				#make sure this sprite belongs to this user
+				#delete all the associated Voxels
+				#update Sprite
+				#call the save_voxels method.
+				pass
 			else:
-				#create & save a new sprite
+				#instantiate new Sprite
+				#call save_voxels method
+				pass
 		else:
 			self.redirect(users.create_login_url(self.request_url))
+
+class LoadHandler(webapp.RequestHandler):
+	def get(self, sprite_id = None):
+		if sprite_id:
+			self.response.out.write("Send the JSON data for sprite " + sprite_id)
+		else:
+			self.response.out.write("Throw some kind of error message")
 
 def main():
 	application = webapp.WSGIApplication([
 		('/', MainHandler),
 		('/my_sprites', ListHandler),
-		('/save/?(+d)?)', SaveHandler),
-		('/load/(+d)', LoadHandler),
-		], debug=True)
+		('/save/?(.+)?', SaveHandler),
+		('/load/?(.+)?', LoadHandler),], debug=True)
 	util.run_wsgi_app(application)
 
 
