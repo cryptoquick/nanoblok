@@ -12,3 +12,8 @@ class Voxel(db.Model):
 	y = db.IntegerProperty()
 	z = db.IntegerProperty()
 	color = db.IntegerProperty()
+	
+	@classmethod
+	def save_voxels(cls, sprite, voxels):
+		for v in voxels:
+			cls(sprite=sprite,x=v[0],y=v[1],z=v[2],color=v[3]).put()
