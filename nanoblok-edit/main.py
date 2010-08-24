@@ -10,7 +10,6 @@ from models import Sprite, Voxel
 class MainHandler(webapp.RequestHandler):
 	def get(self):
 		user = users.get_current_user()
-		
 		if user:
 			self.response.out.write('Going to copy Alex\'s code from the other example here so it loads his editor.')
 			cheat_sheet = '''
@@ -30,12 +29,10 @@ class MainHandler(webapp.RequestHandler):
 class ListHandler(webapp.RequestHandler):
 	def get(self):
 		user = users.get_current_user()
-		
 		if user:
 			self.response.headers['Content-Type'] = 'application/json; charset=utf-8'
 			q = Sprite.all().filter("user =", user)
 			self.response.out.write("{[")
-			
 			objs = []
 			for s in q:
 				objs.append("{\"title\":\"%s\",\"url\":\"/load/%s\"}" % (s.name, s.key()))
@@ -58,6 +55,7 @@ class SaveHandler(webapp.RequestHandler):
 				if sprite.user == user:
 					sprite.name = posted_sprite['title']
 				sprite.put()
+				
 				#This will technically work, but is probably unsafe longterm. If anything goes wrong in the saving process, your Sprite is gone.
 				db.delete( Voxel.all().filter("sprite =", sprite) )
 			else:
