@@ -1,8 +1,16 @@
 application: nanoblok-editor
-version: 3
+version: 1-0-1-alpha
 runtime: python
 api_version: 1
 
 handlers:
-- url: /.*
+- url: /
   script: main.py
+  
+- url: /(.*\.(js))
+  static_files: static/\1
+  upload: static/(.*\.(js))
+  
+- url: /favicon.ico
+  static_files: static/favicon.ico
+  upload: static/favicon.ico
