@@ -255,7 +255,7 @@ function drawAllBlocks () {
 }
 
 function popField(x, y, z) {
-	for (var i = 0; i < Field.length; i++) {
+	for (var i = 0, ii = Field.length; i < ii; i++) {
 		// console.log(i);
 		if (Field[i][0] == x && Field[i][1] == y && Field[i][2] == z) {
 			Field.splice(i, 1);
