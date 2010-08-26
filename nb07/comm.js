@@ -20,11 +20,10 @@ function makeXHR (type, operation, data) {
 	}
 	
 	request.open(type, "/" + operation, true);
+	console.log(type + ", directory: /" + operation + ", data: " + data);
 	
 	if (type == "POST") {
 		request.setRequestHeader("Content-type", "application/json");
-		request.setRequestHeader("Content-length", data.length);
-		request.setRequestHeader("Connection", "close");
 	}
 	
 	try {
@@ -38,14 +37,11 @@ function makeXHR (type, operation, data) {
 function saveField () {
 	// var fieldString = JSON.stringify(Field);
 	
-	var dbData = [
-		document.getElementById('saveAuthor').value,
-		document.getElementById('saveTitle').value,
-		Field,
-		0.01,
-		"public",
-		imageCanvas()
-	];
+	var dbData = {
+		title: document.getElementById('saveTitle').value,
+		Field: Field
+	//	imageCanvas()
+	};
 	
 	data = JSON.stringify(dbData);
 	

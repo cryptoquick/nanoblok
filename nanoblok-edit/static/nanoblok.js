@@ -1,1 +1,2328 @@
-function hexiso(d,a){var c=Array();c[1]=a.half+d.x;c[2]=a.full+d.x;c[3]=a.full+d.x;c[4]=a.half+d.x;c[5]=d.x;c[6]=d.x;c[7]=a.half+d.x;var b=Array();b[1]=d.y;b[2]=a.quarter+d.y;b[3]=a.third+d.y;b[4]=a.full+d.y;b[5]=a.third+d.y;b[6]=a.quarter+d.y;b[7]=a.half+d.y;return{x:c,y:b}}function canvasDrawSet(j,f,e){var c=null;if(e.grid){c="grids"}else{if($C.swatchActive){c="colors"}else{if($C.selection.enabled){c="selection"}else{c="blocks"}}}var k=context(c);k.globalAlpha=1;var a=j.pop();var d=hexiso(f,$C.blockSize);var b=-35;k.beginPath();k.moveTo(d.x[a],d.y[a]+b);var g=0;while(g<j.length||g==7){a=j.pop();k.lineTo(d.x[a],d.y[a]+b);g=g++}if(e.closed){k.closePath()}if(e.stroke!==false){k.strokeStyle=e.stroke;k.stroke()}if(e.fill!==false){k.fillStyle=e.fill;k.fill()}}var cubeShift={a:-20,b:-10,c:0,d:-30};var blokShift={a:-40,b:-20,c:0,d:-60};function colorBlockNew(b){var c=new Object();var a;if($C.swatchActive){a=cubeShift}else{a=blokShift}c.left="rgb("+smartShift(b.r,a.a)+", "+smartShift(b.g,a.a)+", "+smartShift(b.b,a.a)+")";c.right="rgb("+smartShift(b.r,a.b)+", "+smartShift(b.g,a.b)+", "+smartShift(b.b,a.b)+")";c.top="rgb("+smartShift(b.r,a.c)+", "+smartShift(b.g,a.c)+", "+smartShift(b.b,a.c)+")";c.inset="rgb("+smartShift(b.r,a.d)+", "+smartShift(b.g,a.d)+", "+smartShift(b.b,a.d)+")";return c}function smartShift(b,a){if(b+a<0){var c=b-a}else{if(b+a>255){var c=Math.min(b+a,255)}else{var c=b+a}}return c}function canvasBlock(a,b,c){var d={x:a.x,y:a.y-$C.blockSize.half*(b.z+1)};if($C.swatchActive){Arr=SwatchGhost}else{Arr=Voxel}if(Arr[b.x][b.y][b.z+1]==-1){canvasDrawSet([1,6,7,2],d,{closed:true,fill:c.top,stroke:c.inset})}else{if(!$C.swatchActive){if(!FieldVisible[Voxel[b.x][b.y][b.z+1]]){canvasDrawSet([1,6,7,2],d,{closed:true,fill:c.top,stroke:c.inset})}}}if(Arr[b.x-1][b.y][b.z]==-1&&Arr[b.x-1][b.y+1][b.z]==-1){canvasDrawSet([6,7,4,5],d,{closed:true,fill:c.left,stroke:c.inset})}else{if(Arr[b.x-1][b.y+1][b.z]!=-1&&Arr[b.x-1][b.y][b.z]==-1){canvasDrawSet([6,7,5],d,{closed:true,fill:c.left,stroke:c.inset})}}if(Arr[b.x][b.y+1][b.z]==-1&&Arr[b.x-1][b.y+1][b.z]==-1){canvasDrawSet([2,7,4,3],d,{closed:true,fill:c.right,stroke:c.inset})}else{if(Arr[b.x-1][b.y+1][b.z]!=-1&&Arr[b.x][b.y+1][b.z]==-1){canvasDrawSet([2,7,3],d,{closed:true,fill:c.right,stroke:c.inset})}}}function placeBlock(b){var a={x:GridField[b.id].x,y:GridField[b.id].y,z:$C.layerOffset.z};if(Voxel[a.x][a.y][a.z]!=-1){if(Field[Voxel[a.x][a.y][a.z]][3]!=$C.selected.color){placeBlockDraw(b,a)}else{loggit("Same block already exists at location.")}}else{placeBlockDraw(b,a)}}function placeBlockDraw(b,a){canvasBlock(GridField[b.id].coors,a,colorBlockNew(SwatchField[$C.selected.color][3]));Field.push([a.x,a.y,a.z,$C.selected.color]);FieldVisible.push(true);Voxel[a.x][a.y][a.z]=Field.length-1;loggit("Block placed at "+a.x+", "+a.y+", "+a.z+".");$C.posInd.redraw()}function removeBlock(b){var d=new Date();var a={x:GridField[b.id].x,y:GridField[b.id].y,z:0+$C.layerOffset.z};if(Voxel[a.x][a.y][a.z]!=-1){Voxel[a.x][a.y][a.z]=-1;popField(a.x,a.y,a.z);$C.posInd.clearBlocks();drawAllBlocks();$C.posInd.redraw();var c=new Date();loggit("The block at "+a.x+", "+a.y+", "+a.z+" was removed in "+(c-d)+" ms.")}else{loggit("Nothing to remove.")}}function drawAllBlocks(){var a={x:0,y:0,z:0};var d=0;var c=new Object();for(var b=0;b<Field.length;b++){if(FieldVisible[b]){a={x:Field[b][0],y:Field[b][1],z:Field[b][2]};d=a.x*$C.gridDims.c+a.y;c=GridField["x-"+d].coors;color=colorBlockNew(SwatchField[Field[b][3]][3]);canvasBlock(c,a,color)}}}function popField(a,d,c){for(var b=0;b<Field.length;b++){if(Field[b][0]==a&&Field[b][1]==d&&Field[b][2]==c){Field.splice(b,1);FieldVisible.splice(b,1);break}}}function drawSingleBlock(a,b){var e=Field[i];var d=e[0]*$C.gridDims.c+e[1];var c=GridField["x-"+d].coors;canvasBlock(c,a,b)}var t=new Object();var time1=new Object();var time0=new Object();var Swatch=new Array();var SwatchGhost=new Array();var SwatchField=new Array();function swatchInit(){var b=0;if($C.swatchInit===false){loggit("Initializing Color Array");for(var c=-1;c<$C.gridDims.c+1;c++){Swatch[c]=new Array();for(var d=-1;d<$C.gridDims.r+1;d++){Swatch[c][d]=new Array();for(var a=$C.gridDims.r+1;a>=-1;a--){if(a>-1&&a<$C.gridDims.c&&d>-1&&d<$C.gridDims.c&&c>-1&&c<$C.gridDims.c){color={r:(c+1)*8,g:(d+1)*8,b:256-(a+1)*8};Swatch[c][d][a]=b;SwatchField.push([a,d,c,color,true]);b++}else{Swatch[c][d][a]=-1}}}}$C.swatchInit=true}}function fillColorSwatch(){loggit("Drawing Color Cube!");if($C.animating===false){$C.animating=true;$C.layerOffset.z=30;$C.tools.gridUp();drawAllSwatch()}else{loggit("Animation already being run!")}}var h=0;function drawAllSwatch(){$C.swatchActive=true;var b={x:0,y:0,z:0};time0=new Date();for(var a=-1;a<$C.gridDims.r+1;a++){SwatchGhost[a]=new Array();for(var j=-1;j<$C.gridDims.r+1;j++){SwatchGhost[a][j]=new Array();for(var g=-1;g<$C.gridDims.c+1;g++){SwatchGhost[a][j][g]=-1}}}var e=0;var d=new Object();var f=0;for(var c=SwatchField.length-1;c>=0;c--){if(SwatchField[c][4]){b={x:SwatchField[c][0],y:SwatchField[c][1],z:SwatchField[c][2]};e=b.x*$C.gridDims.c+b.y;d=GridField["x-"+e].coors;color=colorBlockNew(SwatchField[c][3]);SwatchGhost[b.x][b.y][b.z]=1;canvasBlock(d,b,color);f++}}$C.animating=false;$C.swatchComplete=true;time1=new Date();loggit("Color Cube drawn in "+(time1-time0)+" ms.");$C.posInd.redraw()}function closeColorSwatch(){$C.swatchActive=false;$C.animating=false;$C.layerOffset.z=1;$C.tools.gridDown();SwatchGhost=new Array()}var Palette=function(){this.svgGroup=document.getElementById("sideColorsRight");this.colors=[26624,32386,32673,7040,255,21530,32056,32701,2048];this.paletteIndex=0;this.add=function(a){this.colors.push(a);this.draw()};this.remove=function(b){if($C.selected.color==parseInt(b.getAttribute("colorID"))){$C.selected.color=-1}var a=parseInt(b.getAttribute("colorPos"));this.colors.splice(a,1);this.draw()};this.swatch=function(e,b){var c=document.createElementNS(svgNS,"rect");var a=Math.floor(this.paletteIndex/9);var d=this.paletteIndex%9;c.setAttributeNS(null,"colorID",e);c.setAttributeNS(null,"colorPos",this.paletteIndex);c.setAttributeNS(null,"fill",this.color(e));c.setAttributeNS(null,"name","color");c.setAttributeNS(null,"id","color"+e);c.setAttributeNS(null,"x",-35+35*a);c.setAttributeNS(null,"y",35*d);c.setAttributeNS(null,"height",30);c.setAttributeNS(null,"width",30);c.setAttributeNS(null,"rx",3);c.setAttributeNS(null,"transform","skewY(26.565)");this.svgGroup.appendChild(c);this.paletteIndex++};this.color=function(c){var a=SwatchField[c][3];var b="rgb("+a.r+", "+a.g+", "+a.b+")";return b};this.draw=function(){this.paletteIndex=0;var b=this.svgGroup.childNodes;for(var a=b.length-1;a>-1;a--){this.svgGroup.removeChild(b[a])}for(var a=0;a<this.colors.length;a++){this.swatch(this.colors[a],a)}};this.faded=false;this.fade=function(c){if(c){var d=document.getElementsByName("color");for(var a=0,b=d.length;a<b;a++){d[a].setAttributeNS(null,"fill-opacity",0.3)}this.faded=true}else{var d=document.getElementsByName("color");for(var a=0,b=d.length;a<b;a++){d[a].setAttributeNS(null,"fill-opacity",1)}this.faded=false}}};function pickColor(e){var c=new Object();c.x=parseInt(e.getAttributeNS(null,"c"));c.y=parseInt(e.getAttributeNS(null,"r"));c.z=$C.layerOffset.z;var d=Swatch[c.z][c.y][c.x];var a=SwatchField[d][3];for(var b=0;b<$C.palette.colors.length;b++){$C.palette.colors[b]}if($C.palette.colors[d]==undefined){$C.palette.add(d)}$C.selected.color=d}function makeXHR(c,b,f){var a=-1;var d=new XMLHttpRequest();if(!d){loggit("Unable to connect.")}d.onreadystatechange=function(){if(d.readyState==4){try{a=d.status}catch(j){}if(a==200){loggit(d.response.responseText);d.onreadystatechage=function(){}}}};d.open(c,"/"+b,true);if(c=="POST"){d.setRequestHeader("Content-type","application/json");d.setRequestHeader("Content-length",f.length);d.setRequestHeader("Connection","close")}try{d.send(f)}catch(g){changeStatus(g)}}function saveField(){var a=[document.getElementById("saveAuthor").value,document.getElementById("saveTitle").value,Field,0.01,"public",imageCanvas()];data=JSON.stringify(a);makeXHR("POST","save",data)}function loadField(){var a=makeXHR("POST","load",a);Field=JSON.parse(a)}function imageCanvas(){var a=document.getElementById("display").toDataURL();return a}var Field=[];var FieldVisible=[];var GridField={};var Voxel=[];var Common=function(){this.windowSize={x:window.innerWidth,y:window.innerHeight};this.blockDims=null;this.smallDisplay=false;this.isoAngle=26.565;if(this.windowSize.x<725||this.windowSize.y<760){this.blockDims=15;loggit("Small display detected, adjusting.");this.smallDisplay=true}else{this.blockDims=20}this.blockSize={full:this.blockDims,half:this.blockDims/2,third:this.blockDims/2+this.blockDims/4,quarter:this.blockDims/4};this.gridDims={c:32,r:32};this.gridSize={x:this.gridDims.c*this.blockSize.full,y:this.gridDims.r*this.blockSize.quarter,fullY:this.gridDims.r*this.blockSize.full};this.center={x:this.windowSize.x/2,y:this.windowSize.y/2};this.edges={left:this.center.x-this.gridSize.x/2,right:this.center.x+this.gridSize.x/2,top:this.windowSize.y-this.gridSize.y*2,fullTop:this.windowSize.y-this.gridSize.y*4};this.offset={x:1,y:this.gridSize.y*2+31};this.palette=[[164,0,0,"red",null],[211,127,4,"orange",null],[213,184,8,"yellow",null],[42,197,18,"green",null],[43,84,200,"blue",null],[147,29,199,"purple",null],[190,67,180,"pink",null],[201,202,188,"white",null],[55,48,51,"black",null],[255,255,255,"transparent",null]];this.selected={color:26624,lastColor:0,tool:"color26624"};this.layerOffset={x:0,y:0,z:0};this.markerPosition={x:31,y:0,z:0};this.posInd=new PositionIndicator();this.mouseMove=false;this.tools=new Tools();this.toolNames=["Load","Save","Fill","Select","Colors","Delete"];this.toolMethods=["load","save","fill","select","swatch","remove"];this.animating=false;this.swatchInit=false;this.swatchActive=false;this.swatchComplete=false;testCompat();this.selection=new Selection();this.palette=new Palette();this.renderer=new Renderer()};function initVoxels(d){for(var a=-1;a<$C.gridDims.r+1;a++){if(d[a]==undefined){d[a]=new Array()}for(var c=-1;c<$C.gridDims.r+1;c++){if(d[a][c]==undefined){d[a][c]=new Array()}for(var b=-1;b<$C.gridDims.c+1;b++){d[a][c][b]=-1}}}}function testCompat(){var b=1;var a=0;JSONtest=JSON.parse('{"works" : true}');if(JSONtest.works){a++}if(a==b){}}function fillSquare(){var f=new Date();var c={x:0,y:0,z:0};var b=0;var a=0;var e=0;var d;if($C.animating==false){f=new Date();$C.animating=true;d=setInterval((function(){if(e>=1023){clearInterval(d);time1=new Date();loggit("Square drawn in "+(time1-f)+" ms.");$C.animating=false}blockColor=colorBlock($C.selected.color);c={x:a,y:b,z:$C.layerOffset.z};var j=a*$C.gridDims.c+b;var g=GridField["x-"+j].coors;Voxel[c.x][c.y][c.z]=$C.selected.color;Field.push([c.x,c.y,c.z,$C.selected.color]);canvasBlock(g,c,blockColor);a++;if(a>=32){b++;a=0;$C.posInd.redraw()}e++}),1)}}var Dialog={dialogEl:{},showing:false,text:["Test object","Second test object","Third test object!","Fourth","Fifth"],data:[],init:function(){this.dialogEl=document.getElementById("dialog");this.verts(10,"dialogOuter");this.verts(20,"dialogInner");this.hide();this.print()},verts:function(b,a){var c=[{x:$C.gridSize.x/2,y:b},{x:$C.gridSize.x-b,y:$C.gridSize.fullY/4+b/2},{x:$C.gridSize.x-b,y:$C.gridSize.fullY/4+$C.gridSize.fullY/2-b/2},{x:$C.gridSize.x/2,y:$C.gridSize.fullY-b},{x:b,y:$C.gridSize.fullY/4+$C.gridSize.fullY/2-b/2},{x:b,y:$C.gridSize.fullY/4+b/2}];var d=document.getElementById(a);this.draw(c,d)},draw:function(a,c){var e=[];var f="";for(var b=0;b<6;b++){e[b]={x:a[b].x+$C.edges.left,y:a[b].y+$C.edges.fullTop-33}}for(var d=0;d<6;d++){if(d==0){f+="M "+e[d].x+" "+e[d].y}else{if(d==5){f+=" "+e[d].x+" "+e[d].y+" Z"}else{f+=" L "+e[d].x+" "+e[d].y}}}c.setAttributeNS(null,"d",f);c.setAttributeNS(null,"stroke","none")},show:function(){this.dialogEl.style.display="inline";this.showing=true},hide:function(){this.dialogEl.style.display="none";this.showing=false},print:function(){var e="Choose a model:";var a=document.getElementById("dialogLeft");maketext(a,e);for(var c=0,d=this.text.length;c<d;c++){var b=maketext(a,"- "+this.text[c]);b.setAttributeNS(null,"id","leftList")}},lastHighlight:false,highlight:function(a){if(this.lastHighlight){this.lastHighlight.setAttributeNS(null,"fill","#666")}a.setAttributeNS(null,"fill","orange");this.lastHighlight=a}};function context(c){var a=document.getElementById(c);if(a.getContext){var b=a.getContext("2d")}return b}var PositionIndicator=function(){this.ctx=context("overlays");this.grids=document.getElementById("grids");this.blocks=document.getElementById("blocks");this.display=document.getElementById("display");this.overlays=document.getElementById("overlays");this.colors=document.getElementById("colors");this.selection=document.getElementById("selection");this.displayCtx=context("display");this.redraw=function(){var g={x:0,y:$C.windowSize.y};this.ctx.clearRect(0,0,$C.windowSize.x,$C.windowSize.y);this.ctx.globalAlpha=0.6;var l=$C.blockSize.full;var k=$C.blockSize.half;var j=$C.blockSize.quarter;var d=-1;if($C.smallDisplay){d=0}var c=($C.gridSize.y-d)-($C.markerPosition.x*$C.blockSize.quarter)+($C.gridDims.c-$C.layerOffset.z-1)*$C.blockSize.half;var a=g.x+$C.markerPosition.x*$C.blockSize.half;this.ctx.fillStyle="#f00";this.ctx.beginPath();this.ctx.moveTo(a,0+c);this.ctx.lineTo(k+a,c-j);this.ctx.lineTo(k+a,j+c);this.ctx.lineTo(0+a,k+c);this.ctx.closePath();this.ctx.fill();var b=6;if($C.smallDisplay){b=4}c=(b)+($C.markerPosition.z*$C.blockSize.quarter)+($C.gridDims.c-$C.layerOffset.z-1)*$C.blockSize.half;a=g.x+$C.gridSize.x/2+($C.markerPosition.z*$C.blockSize.half);this.ctx.fillStyle="#00f";this.ctx.beginPath();this.ctx.moveTo(a,c-j);this.ctx.lineTo(k+a,c);this.ctx.lineTo(k+a,k+c);this.ctx.lineTo(0+a,j+c);this.ctx.closePath();this.ctx.fill();var e=-306;if($C.smallDisplay){e=-229}a=($C.markerPosition.x*$C.blockSize.half)+($C.markerPosition.z*$C.blockSize.half);c=-($C.layerOffset.z*$C.blockSize.half)+($C.markerPosition.z*$C.blockSize.quarter)+($C.gridSize.y-$C.markerPosition.x*$C.blockSize.quarter)-e;this.ctx.fillStyle="#0f0";this.ctx.beginPath();this.ctx.lineTo(a+k,c+k);this.ctx.lineTo(a+l,c+j+k);this.ctx.lineTo(a+k,c+l);this.ctx.lineTo(a,c+j+k);this.ctx.closePath();this.ctx.fill();this.ctx.beginPath();this.ctx.moveTo(a+k,c);this.ctx.lineTo(a+l,c+j);this.ctx.lineTo(a+l,c+j+k);this.ctx.lineTo(a+k,c+l);this.ctx.lineTo(a,c+j+k);this.ctx.lineTo(a,c+j);this.ctx.closePath();this.ctx.strokeStyle="#0f0";this.ctx.stroke();var f=35+$C.blockDims*$C.layerOffset.z*0.5+$C.edges.top;this.ctx.beginPath();this.ctx.moveTo($C.gridCorners[0].x-$C.edges.left,$C.gridCorners[0].y-f);this.ctx.lineTo($C.gridCorners[1].x-$C.edges.left,$C.gridCorners[1].y-f);this.ctx.lineTo($C.gridCorners[2].x-$C.edges.left,$C.gridCorners[2].y-f);this.ctx.lineTo($C.gridCorners[3].x-$C.edges.left,$C.gridCorners[3].y-f);this.ctx.closePath();this.ctx.globalAlpha=1;this.ctx.strokeStyle="#f90";this.ctx.stroke();this.drawAll()};this.drawAll=function(){this.displayCtx.clearRect(0,0,$C.gridSize.x,$C.gridSize.y*4);this.displayCtx.globalCompositeOperation="source-over";this.displayCtx.drawImage(this.grids,0,0);if($C.swatchActive){this.displayCtx.drawImage(this.colors,0,0)}else{this.displayCtx.drawImage(this.blocks,0,0);this.displayCtx.globalAlpha=0.5;this.displayCtx.drawImage(this.selection,0,0);this.displayCtx.globalAlpha=1}this.displayCtx.drawImage(this.overlays,0,0)};this.clearBlocks=function(){context("blocks").clearRect(0,0,$C.gridSize.x,$C.gridSize.y*4)};this.clearSwatch=function(){context("colors").clearRect(0,0,$C.gridSize.x,$C.gridSize.y*4)};this.clearSelection=function(){context("selection").clearRect(0,0,$C.gridSize.x,$C.gridSize.y*4)}};function gridCoors(e){var d=0;for(var b=0;b<$C.gridDims.c;b++){for(var f=0;f<$C.gridDims.r;f++){var a;var c=[1,2,7,6];a={x:(b*$C.blockSize.half)+(f*$C.blockSize.half)+$C.offset.x,y:((f*$C.blockSize.quarter)+($C.gridSize.y-b*$C.blockSize.quarter))+$C.offset.y};GridField["x-"+d]={x:b,y:f,z:-1,coors:a};var c=[1,7,5,6];a={x:(b*$C.blockSize.half)+$C.offset.x,y:((f*$C.blockSize.half)+(-$C.gridSize.y-b*$C.blockSize.quarter))+$C.offset.y};GridField["y-"+d]={x:b,y:f,z:-1,coors:a};var c=[6,7,4,5];a={x:(b*$C.blockSize.half)+$C.gridSize.x/2+$C.offset.x,y:((f*$C.blockSize.half)+(-$C.gridSize.y*2+b*$C.blockSize.quarter))+$C.offset.y};GridField["z-"+d]={x:b,y:f,z:-1,coors:a};d++}}}function gridScreen(){}function drawSet(e,d,a){pathElement=document.createElementNS(svgNS,"path");var c=e.pop();var f="";f+="M "+d.x[c]+" "+d.y[c];var b=0;while(b<e.length||b==7){c=e.pop();f+=" L "+d.x[c]+" "+d.y[c];b=b++}if(a){f+=" Z"}pathElement.setAttributeNS(null,"d",f);return pathElement}function drawGrid(g){var c=document.getElementById("gridContainer");var b=0;var m=[0,0,0,0];for(var k=0;k<$C.gridDims.c;k++){for(var j=0;j<$C.gridDims.r;j++){var d=GridField["x-"+b];var n=[1,2,7,6];var a={x:d.coors.x+($C.windowSize.x-$C.gridSize.x)/2,y:d.coors.y+$C.windowSize.y-$C.gridSize.y*2};var l=hexiso(a,$C.blockSize);if(k==31&&j==0){m[0]={x:l.x[1],y:l.y[1]}}else{if(k==0&&j==0){m[1]={x:l.x[6],y:l.y[6]}}else{if(k==0&&j==31){m[2]={x:l.x[7],y:l.y[7]}}else{if(k==31&&j==31){m[3]={x:l.x[2],y:l.y[2]}}}}}var f=drawSet(n,l,true);f.setAttributeNS(null,"c",k);f.setAttributeNS(null,"r",j);var e="x-"+b;f.setAttributeNS(null,"id",e);c.appendChild(f);b++}}$C.gridCorners=m}function canvasGrid(d,c){var b=0;for(var g=0;g<$C.gridDims.c;g++){for(var f=0;f<$C.gridDims.r;f++){if(d=="bottom"){var e=[1,2,7,6];var a=GridField["x-"+b].coors;if(c=="standard"){var k="#eee";var j="#aaa"}if(c=="number"){var k="rgb("+(255-b/4)+", "+0+", "+0+")";var j="black"}canvasDrawSet(e,a,{closed:true,fill:k,stroke:j,grid:true})}if(d=="left"){var e=[1,7,5,6];var a=GridField["y-"+b].coors;if(c=="standard"){var k="#ddd";var j="#aaa"}if(c=="number"){var k="rgb("+0+", "+(255-b/4)+", "+0+")";var j="black"}canvasDrawSet(e,a,{closed:true,fill:k,stroke:j,grid:true})}if(d=="right"){var e=[6,7,4,5];var a=GridField["z-"+b].coors;if(c=="standard"){var k="#ccc";var j="#aaa"}if(c=="number"){var k="rgb("+0+", "+0+", "+(255-b/4)+")";var j="black"}canvasDrawSet(e,a,{closed:true,fill:k,stroke:j,grid:true})}b++}}}function InitEvents(){window.addEventListener("mousedown",function(a){Click(a);mouseDown=true},false);window.addEventListener("mouseup",function(a){mouseDown=false},false);if(!$C.mouseMove){window.addEventListener("mouseover",function(a){Hover(a,"in")},false);window.addEventListener("mouseout",function(a){Hover(a,"out")},false)}if($C.mouseMove){window.addEventListener("mousemove",function(a){MousePos(a)},false)}window.addEventListener("keydown",function(a){Key(a)},false);window.addEventListener("keyup",function(a){Key(a)},false);window.onresize=function(){if(initialized){loggit("Resolution change detected, click refresh button.")}displayResized=true}}function Click(b){var e=b.target;var a=["gridUp","gridDown","rotLeft","rotRight"];for(var c=0,d=$C.toolNames.length;c<d;c++){if(e.id=="toolButton"+toolNames[c]||e.id=="toolText"+toolNames[c]){$C.tools[$C.toolMethods[c]]()}}for(var c=0,d=a.length;c<d;c++){if(e.id==a[c]+"Button"||e.id==a[c]+"Text"){$C.tools[a[c]]()}}if(e.id.substr(0,5)=="color"){if($C.palette.faded){$C.palette.remove(e)}else{$C.selected.lastColor=$C.selected.color;$C.selected.color=parseInt(e.getAttribute("colorID"));$C.tools.color()}}if($C.selected.tool=="toolButtonDelete"&&e.id.substr(0,2)=="x-"){removeBlock(e)}else{if($C.selected.tool=="toolButtonSelect"&&e.id.substr(0,2)=="x-"){$C.selection.select(e)}else{if($C.swatchActive&&e.id.substr(0,2)=="x-"){pickColor(e)}else{if(e.id.substr(0,2)=="x-"){placeBlock(e)}}}}}function Hover(a,b){var c=null;if($C.mouseMove){c=a}else{c=a.target}if((c.id.substr(0,2)=="x-")&&mouseDown&&b=="in"&&$C.selected.tool.substr(0,5)=="color"){placeBlock(c)}else{if((c.id.substr(0,2)=="x-")&&mouseDown&&b=="in"&&$C.selected.tool=="toolButtonDelete"){removeBlock(c)}}if(c.id.substr(0,2)=="x-"&&b=="in"){$C.markerPosition.x=c.getAttribute("c");$C.markerPosition.z=c.getAttribute("r");$C.posInd.redraw()}if(c.id=="leftList"){Dialog.highlight(c)}}function Key(a){ctrlPressed=a.ctrlKey;if(a.type=="keydown"){if(a.keyCode==68){$C.tools.remove()}if(a.keyCode==67){$C.tools.swatch()}if(a.keyCode==70){$C.tools.fill()}if(a.keyCode==83&&!ctrlPressed){$C.tools.select()}if(a.keyCode==38){$C.tools.gridUp()}if(a.keyCode==40){$C.tools.gridDown()}if(a.keyCode==37){$C.tools.rotLeft()}if(a.keyCode==39){$C.tools.rotRight()}if(a.keyCode==83&&ctrlPressed){$C.tools.save()}if(a.keyCode==76&&ctrlPressed){$C.tools.load()}if(a.keyCode==16){$C.palette.fade(true)}if(a.keyCode==69){$C.renderer.render()}}if(a.type=="keyup"){if(a.keyCode==16){$C.palette.fade(false)}}}var initialized=false;window.addEventListener("load",function(){Initialize()},false);var mouseDown=false;var displayResized=false;function Initialize(){loggit("Program loaded.");var b=new Date();window.$C=new Common();initVoxels(Voxel);swatchInit();Update("initialize",{gridMode:"standard"});var a=new Date();loggit("Program initialized in "+(a-b)+" ms.");initialized=true;InitEvents()}function Update(b,a){if(b=="resize"||b=="initialize"){gridCoors()}if(b=="resize"||b=="initialize"){drawUI();drawGrid("bottom")}if(b=="resize"||b=="canvas"||b=="initialize"){canvasGrid("bottom",a.gridMode);canvasGrid("left",a.gridMode);canvasGrid("right",a.gridMode);if(a.gridMode=="standard"){$C.tools.selectColor()}}Dialog.init();$C.posInd.redraw()}var Renderer=function(){this.canvas=document.getElementById("renderer");this.ctx=context("renderer");this.test=function(){var a=context("grids");a.fillStyle="orange";a.fillRect(0,0,3,3);var b=a.getImageData(0,0,3,3);console.log(b)};this.render=function(){this.clear();var c={r:255,g:255,b:255};var b=this.ctx.createImageData(this.canvas.width,this.canvas.height);var d=0;for(var f=0;f<64;f++){for(var a=0;a<64;a++){for(var e=0;e<32;e++){if(Voxel[Math.floor(a/2)][Math.floor(f/2)][e]!=-1){c=SwatchField[Field[Voxel[Math.floor(a/2)][Math.floor(f/2)][e]][3]][3]}}d=(a+f*64)*4;b.data[d+0]=c.r;b.data[d+1]=c.g;b.data[d+2]=c.b;b.data[d+3]=255;c={r:255,g:255,b:255}}}this.ctx.putImageData(b,0,0)};this.clear=function(){this.ctx.clearRect(0,0,64,64)}};var time0;var SelectionVox=new Array();var Selection=function(){this.enabled=false;this.start={x:0,y:0,z:0};this.end={x:0,y:0,z:0};this.begin=true;this.area={x:0,y:0,z:0};this.selectionField=new Array();this.select=function(a){time0=new Date();this.enabled=true;if(this.begin){this.start.x=parseInt(a.getAttributeNS(null,"c"));this.start.y=parseInt(a.getAttributeNS(null,"r"));this.start.z=$C.layerOffset.z;this.end.x=parseInt(a.getAttributeNS(null,"c"));this.end.y=parseInt(a.getAttributeNS(null,"r"));this.end.z=$C.layerOffset.z;this.begin=false}else{this.end.x=parseInt(a.getAttributeNS(null,"c"));this.end.y=parseInt(a.getAttributeNS(null,"r"));this.end.z=$C.layerOffset.z}this.draw()};this.deselect=function(){this.start={x:0,y:0,z:0};this.end={x:0,y:0,z:0};this.begin=true;$C.posInd.clearSelection();$C.posInd.redraw();this.enabled=false;console.log("selection off")};this.draw=function(){$C.posInd.clearSelection();for(var j=-1;j<$C.gridDims.r+1;j++){SelectionVox[j]=new Array();for(var f=-1;f<$C.gridDims.r+1;f++){SelectionVox[j][f]=new Array();for(var e=-1;e<$C.gridDims.c+1;e++){SelectionVox[j][f][e]=-1}}}var k={x:0,y:0,z:0};var b=0;var g=Math.abs(this.end.x-this.start.x);var d=Math.abs(this.end.y-this.start.y);var c=Math.abs(this.end.z-this.start.z);var a={};for(var j=0;j<g+1;j++){for(var f=0;f<d+1;f++){for(var e=0;e<c+1;e++){if(this.begin){k.x=this.start.x;k.y=this.start.y;k.z=this.start.z}else{a={x:j,y:f,z:e};k=this.normalize(this.start,this.end,a)}this.selectionField.push([k.x,k.y,k.z]);gridPosition=k.x*$C.gridDims.c+k.y;coors=GridField["x-"+gridPosition].coors;yellow="rgb(255, 255, 0)";color={left:yellow,right:yellow,top:yellow,inset:yellow};canvasBlock(coors,k,color);SelectionVox[j][f][e]=1;b++}}}$C.posInd.redraw();var l=new Date();console.log(g+", "+d+", run : "+b+" times.");loggit("Selected "+b+" blocks.");this.area={x:g,y:d,z:c}};this.fill=function(){var e=new Date();var d={};var b={};for(var f=0;f<this.area.z;f++){for(var g=-1;g<this.area.y;g++){for(var a=this.area.x+1;a>0;a--){d={x:a,y:g,z:f};b=this.normalize(this.start,this.end,d);Field.push([b.x,b.y,b.z,$C.selected.color]);console.log(b);Voxel[a][g][f]=Field.length-1}}}this.deselect();drawAllBlocks();$C.posInd.redraw();var c=new Date();console.log("Fill took: "+(c-e)+"ms.")};this.remove=function(){};this.normalize=function(d,b,c){var a={x:0,y:0,z:0};if(d.x>b.x){a.x=c.x+b.x}else{a.x=c.x+d.x}if(d.y>b.y){a.y=c.y+b.y}else{a.y=c.y+d.y}if(d.z>b.z){a.z=c.z+b.z}else{a.z=c.z+d.z}return a}};function fillSelection(){}function removeSelection(){}var svgNS="http://www.w3.org/2000/svg";var loggitLog=new Array();function loggit(e){var d=document.getElementById("debugText");var b=d.getElementsByTagName("tspan").length;var c=5;if(b>=c){d.removeChild(d.firstChild)}var a=maketext(d,e);loggitLog.push(e)}function maketext(b,c){var a=document.createElementNS(svgNS,"tspan");a.setAttributeNS(null,"x","7");a.setAttributeNS(null,"dy","15");a.textContent=c;b.appendChild(a);b.getElementsByTagName("tspan")[0].setAttributeNS(null,"dy",2);return a}var Tools=function(){this.activate=function(a){if($C.selected.tool=="toolButton"+a){this.selectColor()}else{document.getElementById($C.selected.tool).setAttributeNS(null,"stroke-opacity","0.0");$C.selected.tool="toolButton"+a;document.getElementById($C.selected.tool).setAttributeNS(null,"stroke-opacity","1.0");loggit($C.selected.tool.substr(10,100)+" tool activated.")}};this.selectColor=function(){if($C.selected.lastColor!=-1){document.getElementById($C.selected.tool).setAttributeNS(null,"stroke-opacity","0.0")}$C.selected.tool="color"+$C.selected.color;document.getElementById($C.selected.tool).setAttributeNS(null,"stroke-opacity","1.0")};this.save=function(){saveField();loggit("Blocks saved.")};this.load=function(){if(Dialog.showing){Dialog.hide()}else{Dialog.show()}};this.refresh=function(){Update("refresh",{gridMode:"standard"});loggit("Canvas refreshed.")};this.remove=function(){if($C.selection.enabled){$C.selection.remove()}else{this.activate("Delete")}};this.gridUp=function(){if($C.layerOffset.z<($C.gridDims.r-1)){$C.layerOffset.z++;$C.posInd.redraw();var b=-389;if($C.smallDisplay){b=-309}document.getElementById("gridContainer").setAttributeNS(null,"transform","translate(-1,"+(b-$C.layerOffset.z*$C.blockSize.half)+")");if($C.swatchActive){for(var d=0;d<1024;d++){SwatchField[d+(($C.layerOffset.z)*1024)][4]=true}$C.posInd.clearSwatch();drawAllSwatch()}else{for(var a=0,c=Field.length;a<c;a++){if(Field[a][2]==$C.layerOffset.z){FieldVisible[a]=true}}$C.posInd.clearBlocks();drawAllBlocks();$C.posInd.redraw()}loggit("Slice up to "+$C.layerOffset.z)}};this.gridDown=function(){if($C.layerOffset.z>0){$C.layerOffset.z--;$C.posInd.redraw();var b=-389;if($C.smallDisplay){b=-309}document.getElementById("gridContainer").setAttributeNS(null,"transform","translate(-1,"+(b-$C.layerOffset.z*$C.blockSize.half)+")");if($C.swatchActive){for(var d=0;d<1024;d++){SwatchField[d+(($C.layerOffset.z+1)*1024)][4]=false}$C.posInd.clearSwatch();drawAllSwatch()}else{for(var a=0,c=Field.length;a<c;a++){if(Field[a][2]>$C.layerOffset.z){FieldVisible[a]=false}}$C.posInd.clearBlocks();drawAllBlocks();$C.posInd.redraw()}loggit("Slice down to "+$C.layerOffset.z)}};this.color=function(){this.selectColor()};this.swatch=function(){if($C.swatchActive){this.activate("Colors");closeColorSwatch();loggit("Color Cube closed.")}else{this.activate("Colors");fillColorSwatch()}};this.rotLeft=function(){if(!$C.swatchActive){rotate(1)}};this.rotRight=function(){if(!$C.swatchActive){rotate(0)}};this.select=function(){this.activate("Select");if($C.selection.enabled){$C.selection.deselect()}else{}};this.fill=function(){if($C.selection.enabled){$C.selection.fill();loggit("Selection fill.")}else{this.activate("Fill")}}};var rotation=0;function rotate(k){var m=new Object();if($C.swatchActive){initVoxels(Swatch)}else{initVoxels(Voxel)}var l=0;var j=0;var g=0;var f=0;var d=0;if($C.swatchActive){Fld=SwatchField}else{Fld=Field}var c=(90*Math.PI)/180;if(!k){c=(-90*Math.PI)/180}for(var e=0,n=Fld.length;e<n;e++){f=Fld[e][0];d=Fld[e][1];g=Fld[e][2];f++;d++;l=Math.round(f*Math.cos(c)-d*Math.sin(c));j=Math.round(f*Math.sin(c)+d*Math.cos(c));if(l<0){l=($C.gridDims.c)+l}if(j<0){j=($C.gridDims.r)+j}if(k){j--}else{l--}var b=Fld[e][3];var a=false;if($C.swatchActive){a=Fld[e][4]}if($C.swatchActive){Fld[e]=[l,j,g,b,a]}else{Fld[e]=[l,j,g,b]}Voxel[l][j][g]=Fld[e][3]}if($C.swatchActive){SwatchField=Fld;$C.posInd.clearSwatch();drawAllSwatch()}else{Field=Fld;$C.posInd.clearBlocks();drawAllBlocks()}$C.posInd.redraw();if(k){if(rotation<3){rotation++}else{rotation=0}loggit("Rotated left to "+rotation*90+" degrees.")}else{if(rotation>0){rotation--}else{rotation=3}loggit("Rotated right to "+rotation*90+" degrees.")}}var canvases=["grids","blocks","overlays","display","debug","colors","selection"];var toolNames=["Load","Save","Fill","Select","Colors","Delete",];function moveElement(b,a){var c=document.getElementById(b);var d="";if(a.move){d+="translate("+a.move.x+","+a.move.y+")";if(a.skewX||a.skewY){d+=","}}if(a.skewY){d+="skewY("+a.skewY+")";if(a.skewX){d+=","}}if(a.skewX){d+="skewX("+a.skewX+")"}c.setAttributeNS(null,"transform",d);if(a.height){c.setAttributeNS(null,"height",a.height)}if(a.width){c.setAttributeNS(null,"width",a.width)}}function drawUI(){moveElement("logoText",{skewY:-$C.isoAngle});moveElement("grid",{height:$C.windowSize.y-5});for(var f=0,o=canvases.length;f<o;f++){var b=document.getElementById(canvases[f]);b.setAttributeNS(null,"height",$C.gridSize.fullY+2);b.setAttributeNS(null,"width",$C.gridSize.x);b.style.top=$C.edges.top-$C.gridSize.y*2-34+"px";b.style.left=$C.edges.left+"px"}var j=-389;if($C.smallDisplay){j=-309}moveElement("gridContainer",{move:{x:-1,y:j}});moveElement("statusContainer",{move:{x:$C.edges.left,y:($C.edges.top-$C.gridSize.y-145)}});moveElement("sideButtonsTop",{move:{x:$C.center.x+5,y:$C.edges.top-$C.gridSize.y*2-121}});moveElement("sideButtonsLeft",{move:{x:$C.edges.left-25,y:$C.edges.top-$C.gridSize.y-20}});moveElement("yAxis",{move:{x:$C.edges.left+$C.gridSize.x/4,y:$C.edges.top+$C.gridSize.y*1.5},skewY:26.565,skewX:-45});moveElement("xAxis",{move:{x:$C.edges.left+$C.gridSize.x/2+$C.gridSize.x/4-20,y:$C.edges.top+$C.gridSize.y*1.5+10},skewY:-26.565,skewX:45});moveElement("sideColorsRight",{move:{x:$C.edges.right+40,y:$C.edges.top-$C.gridSize.y-9}});$C.palette.draw();for(var f=0;f<6;f++){var m=0;var l=0;if(f%2){m=30*f-30}else{m=30*f}if(f%2){l=0}else{l=38}var n=document.createElementNS(svgNS,"rect");n.setAttributeNS(null,"id","toolButton"+$C.toolNames[f]);n.setAttributeNS(null,"x",m);n.setAttributeNS(null,"y",l);n.setAttributeNS(null,"height",30);n.setAttributeNS(null,"width",52);n.setAttributeNS(null,"rx",3);n.setAttributeNS(null,"transform","skewY(26.565)");var e=document.createElementNS(svgNS,"text");e.setAttributeNS(null,"id","toolText"+$C.toolNames[f]);e.setAttributeNS(null,"x",m+4);e.setAttributeNS(null,"y",l+24);e.setAttributeNS(null,"fill","white");e.setAttributeNS(null,"fill-opacity","1");e.setAttributeNS(null,"stroke","none");e.setAttributeNS(null,"transform","skewY(26.565)");e.textContent=toolNames[f];var k=document.getElementById("sideButtonsTop");k.appendChild(n);k.appendChild(e)}var d=96;if($C.smallDisplay){d=20}moveElement("renderDisplay",{move:{x:$C.edges.right-d,y:$C.edges.fullTop}});var a=document.getElementById("renderer");a.setAttributeNS(null,"height",64);a.setAttributeNS(null,"width",64);a.style.left=$C.edges.right-d+"px";a.style.top=$C.edges.fullTop+"px";if($C.smallDisplay){document.getElementById("debugBox").setAttributeNS(null,"width",234)}var c={x:$C.edges.left+$C.gridSize.x/2+15,y:$C.edges.fullTop-125};var g=document.getElementById("dialogSave");g.style.posLeft=c.x+75;g.style.posTop=c.y;moveElement("saveBG",{move:{x:c.x,y:c.y},skewX:-116.565});moveElement("dialogLeft",{move:{x:$C.edges.left+30,y:$C.edges.fullTop+$C.gridSize.y/2+70},skewY:-26.565,height:$C.gridSize.y*2-40,width:$C.gridSize.x/2-30})};
+/*
+ * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
+ * http://code.google.com/p/nanoblok/
+ * Copyright (c) 2009-2010 Alex Trujillo
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ * 
+ * Summary for block.js:
+ * This file holds outdated SVG-based block rendering code. This stores data in the DOM, which uses more resources and is slower.
+ * Soon to be deprecated.
+ */
+
+// Draws hexagonal points in iso perspective, based on hard coordinate and size of block. Depends on an orientation array (see block-grid.png in Nanoblok Extras). Returns static coordinates of where to draw blocks on the screen.
+function hexiso (offset, blockSize) {
+	// Builds an array of points that corresponds to an entire isometric block (six points), including center (7). Arrays for both X and Y coordinates. Offset added to hexagon proportions.	
+	var isoX = Array();
+	isoX [1] = blockSize.half + offset.x;
+	isoX [2] = blockSize.full + offset.x;
+	isoX [3] = blockSize.full + offset.x;
+	isoX [4] = blockSize.half + offset.x;
+	isoX [5] = offset.x;
+	isoX [6] = offset.x;
+	isoX [7] = blockSize.half + offset.x;
+
+	var isoY = Array();
+	isoY [1] = offset.y;
+	isoY [2] = blockSize.quarter + offset.y;
+	isoY [3] = blockSize.third + offset.y;
+	isoY [4] = blockSize.full + offset.y;
+	isoY [5] = blockSize.third + offset.y;
+	isoY [6] = blockSize.quarter + offset.y;
+	isoY [7] = blockSize.half + offset.y;
+	
+	return {x: isoX, y: isoY};
+}
+
+// A very useful function to draw a set of coordinates in a hexagonal setup at a certain offset.
+// Very necessary for an isometric setup such as this.
+function canvasDrawSet (hexSet, offset, settings) {
+	var canvas = null;
+	
+	if (settings.grid) {
+		canvas = 'grids';
+	}
+	else if ($C.swatchActive) {
+		canvas = 'colors';
+	}
+	else if ($C.selection.enabled) {
+		canvas = 'selection';
+	}
+	else {
+		canvas = 'blocks';
+	}
+	
+	var ctx = context(canvas);
+	
+	ctx.globalAlpha = 1.0;
+	
+	var hexSpot = hexSet.pop();
+	var coorSet = hexiso(offset, $C.blockSize);
+	var offsY = -35;
+	
+	ctx.beginPath();
+	ctx.moveTo(coorSet.x[hexSpot], coorSet.y[hexSpot] + offsY);
+	
+	var i = 0;
+
+	while (i < hexSet.length || i == 7) {
+		hexSpot = hexSet.pop();
+		ctx.lineTo(coorSet.x[hexSpot], coorSet.y[hexSpot] + offsY);
+		i = i++;
+	}
+	
+	if (settings.closed) {
+		ctx.closePath();
+	}
+	
+	if (settings.stroke !== false) {
+		ctx.strokeStyle = settings.stroke;
+		ctx.stroke();
+	}
+	if (settings.fill !== false) {
+		ctx.fillStyle = settings.fill;
+		ctx.fill();
+	}
+}
+
+// colorBlock uses a color object (with separate color values for each face as well as its lines) to provide different shading for block faces.
+
+var cubeShift = {a: -20, b: -10, c: 0, d: -30};
+var blokShift = {a: -40, b: -20, c: 0, d: -60};
+
+function colorBlockNew (color) {
+	var blockColors = new Object();
+	var shift;
+	
+	if ($C.swatchActive) {
+		shift = cubeShift;
+	}
+	else {
+		shift = blokShift;
+	}
+	
+	blockColors.left = "rgb(" + smartShift(color.r, shift.a) + ", " + smartShift(color.g, shift.a) + ", " + smartShift(color.b, shift.a) + ")";
+	blockColors.right = "rgb(" + smartShift(color.r, shift.b) + ", " + smartShift(color.g, shift.b) + ", " + smartShift(color.b, shift.b) + ")";
+	blockColors.top = "rgb(" + smartShift(color.r, shift.c) + ", " + smartShift(color.g, shift.c) + ", " + smartShift(color.b, shift.c) + ")";
+	blockColors.inset = "rgb(" + smartShift(color.r, shift.d) + ", " + smartShift(color.g, shift.d) + ", " + smartShift(color.b, shift.d) + ")";
+	
+	return blockColors;
+}
+
+function smartShift (color, shift) {
+	if (color + shift < 0) {
+		// For dark black.
+		var shifted = color - shift;
+	}
+	else if (color + shift > 255) {
+		// For light white.
+		var shifted = Math.min(color + shift, 255);
+	}
+	else {
+		// And everything inbetween.
+		var shifted = color + shift;
+	}
+	
+	return shifted;
+}
+
+// Paints a block on the board with proper color and occlusion.
+// Takes coors x/y for position, xyz location on the grid, $C, and the color object of the block.
+// A color id can be converted into a color object using the colorBlock function.
+function canvasBlock (position, location, color) {
+	var adjustedPosition = {x: position.x, y: position.y - $C.blockSize.half * (location.z + 1)};
+	
+	if ($C.swatchActive) {
+		Arr = SwatchGhost;
+	}
+	else {
+		Arr = Voxel;
+	}
+	
+	// Top side. Always placed, unless there's a block above it. 
+	if (Arr[location.x][location.y][location.z + 1] == -1) {
+		canvasDrawSet([1, 6, 7, 2], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
+	}
+	// Always draw top if block above it is invisible.
+	else {
+		if (!$C.swatchActive) {
+			if (!FieldVisible[Voxel[location.x][location.y][location.z + 1]]) {
+				canvasDrawSet([1, 6, 7, 2], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
+			}
+		}
+	}
+	
+	// Left side.
+	if (Arr[location.x - 1][location.y][location.z] == -1 && Arr[location.x - 1][location.y + 1][location.z] == -1) {
+		canvasDrawSet([6, 7, 4, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
+	} else if (Arr[location.x - 1][location.y + 1][location.z] != -1 && Arr[location.x - 1][location.y][location.z] == -1) {
+		canvasDrawSet([6, 7, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
+	}
+	
+	// Right side.
+	if (Arr[location.x][location.y + 1][location.z] == -1 && Arr[location.x - 1][location.y + 1][location.z] == -1) {
+		canvasDrawSet([2, 7, 4, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
+	} else if (Arr[location.x - 1][location.y + 1][location.z] != -1 && Arr[location.x][location.y + 1][location.z] == -1) {
+		canvasDrawSet([2, 7, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
+	}
+}
+
+// This gathers necessary information for block placement, and determines whether the block should actually be placed.
+function placeBlock (target) {
+	// Make location object.
+	var location = {
+		x: GridField[target.id].x,
+		y: GridField[target.id].y,
+		z: $C.layerOffset.z
+	}
+	
+	// If the same block already exists at the location being painted, don't paint over it again.
+	if (Voxel[location.x][location.y][location.z] != -1) {
+		if (Field[Voxel[location.x][location.y][location.z]][3] != $C.selected.color) {
+			placeBlockDraw(target, location);
+		}
+		else {
+			loggit("Same block already exists at location.");
+		}
+	}
+	else {
+		placeBlockDraw(target, location);
+	}
+}
+
+// Here is all the actual functionality required for placing the block, where it calls canvasBlock to place a block on the grid.
+function placeBlockDraw (target, location) {
+	// Draw the actual block using coordinates using the location of the grid's tiles as a reference for pixel-placement for all the rest of the blocks (this is the first argument). The target.id should look something like "x-123".
+	// colorBlock is used to turn the color index into a color object (with separate color values for each face as well as its lines)
+	canvasBlock(GridField[target.id].coors, location, colorBlockNew(SwatchField[$C.selected.color][3]));
+
+	// Record information in the Field array, which is for serialization.
+	Field.push([location.x, location.y, location.z, $C.selected.color]);
+	FieldVisible.push(true);
+	// As well as the Field index of the block internally using the Voxel array.
+	Voxel[location.x][location.y][location.z] = Field.length - 1;
+
+	// Let the user know they've placed a block.
+	loggit("Block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
+
+	// Redraw the display so that this change shows up immediately.
+	$C.posInd.redraw();
+}
+
+function removeBlock (target) {
+	var time0 = new Date();
+	
+	var location = {
+		x: GridField[target.id].x,
+		y: GridField[target.id].y,
+		z: 0 + $C.layerOffset.z // forgot why I put a zero here.
+	}
+	
+	if (Voxel[location.x][location.y][location.z] != -1) {
+		Voxel[location.x][location.y][location.z] = -1;
+		popField(location.x, location.y, location.z);
+	
+		$C.posInd.clearBlocks();
+		drawAllBlocks();
+		$C.posInd.redraw();
+	
+		var time1 = new Date();
+		loggit("The block at " + location.x + ", " + location.y + ", " + location.z + " was removed in " + (time1 - time0) + " ms.");
+	}
+	else {
+		loggit("Nothing to remove.");
+	}
+}
+
+function drawAllBlocks () {
+	var location = {
+		x: 0,
+		y: 0,
+		z: 0
+	}
+	
+	var gridPosition = 0;
+	var coors = new Object();
+	
+	for (var i = 0; i < Field.length; i++) {
+		if (FieldVisible[i]) {
+			location = {x: Field[i][0], y: Field[i][1], z: Field[i][2]};
+			gridPosition = location.x * $C.gridDims.c + location.y;
+			coors = GridField["x-" + gridPosition].coors;
+			color = colorBlockNew(SwatchField[Field[i][3]][3]);
+			canvasBlock(coors, location, color);
+		}
+	}
+}
+
+function popField(x, y, z) {
+	for (var i = 0, ii = Field.length; i < ii; i++) {
+		// console.log(i);
+		if (Field[i][0] == x && Field[i][1] == y && Field[i][2] == z) {
+			Field.splice(i, 1);
+			FieldVisible.splice(i, 1);
+			break;
+		}
+	}
+}
+
+function drawSingleBlock (location, color) {
+	var block = Field[i];
+
+	var gridPosition = block[0] * $C.gridDims.c + block[1];
+	var coors = GridField["x-" + gridPosition].coors;
+
+	canvasBlock(coors, location, color);
+}
+
+var t = new Object();
+var time1 = new Object();
+var time0 = new Object();
+var Swatch = new Array();
+var SwatchGhost = new Array();
+var SwatchField = new Array();
+
+// Initialize the color swatch array if it hasn't been done already.
+function swatchInit () {
+	var index = 0;
+	
+	if ($C.swatchInit === false) {
+		loggit("Initializing Color Array");
+		// By inverting this, computation is sped up a great deal.
+		for (var z = -1; z < $C.gridDims.c + 1; z++) {
+			Swatch[z] = new Array();
+			for (var y = -1; y < $C.gridDims.r + 1; y++) {
+			Swatch[z][y] = new Array();
+				for (var x = $C.gridDims.r + 1; x >= -1; x--) {
+					if (x > -1 && x < $C.gridDims.c &&
+						y > -1 && y < $C.gridDims.c &&
+						z > -1 && z < $C.gridDims.c) {
+							
+						color = {
+							r: (z + 1) * 8,
+							g: (y + 1) * 8,
+							b: 256 - (x + 1) * 8
+						};
+							
+						Swatch[z][y][x] = index;
+						// Last field is for a visibility toggle.
+						SwatchField.push([x, y, z, color, true]);
+						
+						index++;
+					}
+					else {
+						Swatch[z][y][x] = -1;
+					}
+				}
+			}
+		}
+		
+		$C.swatchInit = true;
+	}
+}
+
+function fillColorSwatch () {
+	loggit("Drawing Color Cube!");
+	// Run the swatch function in such a way that the browser can render once each level is drawn.
+	if ($C.animating === false) {
+		$C.animating = true;
+		// t = setInterval(buildColorSwatch, 1);
+		$C.layerOffset.z = 30;
+		$C.tools.gridUp();
+		drawAllSwatch();
+	}
+	else {
+		loggit("Animation already being run!");
+	}
+}
+
+var h = 0;
+
+function drawAllSwatch () {
+	$C.swatchActive = true;
+	
+	var location = {
+		x: 0,
+		y: 0,
+		z: 0
+	}
+	
+	time0 = new Date();
+	
+	// Facilitates drawing of the array using canvasBlock occlusion.
+	for (var x = -1; x < $C.gridDims.r + 1; x++) {
+		SwatchGhost[x] = new Array();
+		for (var y = -1; y < $C.gridDims.r + 1; y++) {
+		SwatchGhost[x][y] = new Array();
+			for (var z = -1; z < $C.gridDims.c + 1; z++) {
+				SwatchGhost[x][y][z] = -1;
+			}
+		}
+	}
+	
+	var gridPosition = 0;
+	var coors = new Object();
+	
+	var runs = 0;
+	
+	// Inverted so the draw order is better.
+	for (var i = SwatchField.length - 1; i >= 0; i--) {
+		if (SwatchField[i][4]) {
+			location = {x: SwatchField[i][0], y: SwatchField[i][1], z: SwatchField[i][2]};
+			gridPosition = location.x * $C.gridDims.c + location.y;
+			coors = GridField["x-" + gridPosition].coors;
+			color = colorBlockNew(SwatchField[i][3]);
+			SwatchGhost[location.x][location.y][location.z] = 1;
+			canvasBlock(coors, location, color);
+			
+			runs++;
+		}
+	}
+		
+	$C.animating = false;
+	$C.swatchComplete = true;
+	
+	time1 = new Date();
+	loggit("Color Cube drawn in " + (time1 - time0) + " ms.");
+	
+	$C.posInd.redraw();
+}
+
+function closeColorSwatch () {
+	$C.swatchActive = false;
+	$C.animating = false;
+	$C.layerOffset.z = 1;
+	$C.tools.gridDown();
+	SwatchGhost = new Array();
+}
+
+var Palette = function () {
+	this.svgGroup = document.getElementById("sideColorsRight");
+	this.colors = [
+		26624, // red
+		32386, // orange
+		32673, // yellow
+		7040, // green
+		255, // blue
+		21530, // purple
+		32056, // pink
+		32701, // white
+		2048 // black;
+	];
+	this.paletteIndex = 0;
+	
+	this.add = function (colorIndex) {
+		this.colors.push(colorIndex);
+		this.draw();
+	}
+	
+	this.remove = function (target) {
+		if ($C.selected.color == parseInt(target.getAttribute("colorID"))) {
+			$C.selected.color = -1;
+		}
+		
+		var position = parseInt(target.getAttribute("colorPos"));
+		this.colors.splice(position, 1);
+		this.draw();
+	}
+	
+	this.swatch = function (colorIndex, position) {
+		var colorSwatch = document.createElementNS(svgNS, 'rect');
+		
+		var x = Math.floor(this.paletteIndex / 9);
+		var y = this.paletteIndex % 9;
+		
+		colorSwatch.setAttributeNS(null, "colorID", colorIndex);
+		colorSwatch.setAttributeNS(null, "colorPos", this.paletteIndex);
+		colorSwatch.setAttributeNS(null, "fill", this.color(colorIndex));
+		colorSwatch.setAttributeNS(null, "name", "color");
+		colorSwatch.setAttributeNS(null, "id", "color" + colorIndex);
+		colorSwatch.setAttributeNS(null, "x", -35 + 35 * x);
+		colorSwatch.setAttributeNS(null, "y", 35 * y);
+		colorSwatch.setAttributeNS(null, "height", 30);
+		colorSwatch.setAttributeNS(null, "width", 30);
+		colorSwatch.setAttributeNS(null, "rx", 3);
+		colorSwatch.setAttributeNS(null, "transform", "skewY(26.565)");
+		
+		this.svgGroup.appendChild(colorSwatch);
+		
+		this.paletteIndex++;
+	}
+	
+	this.color = function (colorIndex) {
+		var colorObject = SwatchField[colorIndex][3];
+		
+		var rgbOutput = "rgb("
+			+ colorObject.r + ", "
+		 	+ colorObject.g + ", "
+			+ colorObject.b + ")";
+		return rgbOutput;
+	}
+	
+	this.draw = function () {
+		this.paletteIndex = 0;
+		
+		var colorChilds = this.svgGroup.childNodes;
+		
+		// It's better to loop through and remove from the end. Or you could just remove the firstChild. Either way works.
+		for (var i = colorChilds.length - 1; i > -1; i--) {
+			this.svgGroup.removeChild(colorChilds[i]);
+		}
+		
+		for (var i = 0; i < this.colors.length; i++) {
+			this.swatch(this.colors[i], i);
+		}
+	}
+	
+	this.faded = false;
+	
+	this.fade = function (toggledOn) {
+		if (toggledOn) {
+			var elements = document.getElementsByName("color")
+			for (var i = 0, ii = elements.length; i < ii; i++) {
+				elements[i].setAttributeNS(null, "fill-opacity", 0.3);
+			}
+			
+			this.faded = true;
+		}
+		else {
+			var elements = document.getElementsByName("color")
+			for (var i = 0, ii = elements.length; i < ii; i++) {
+				elements[i].setAttributeNS(null, "fill-opacity", 1.0);
+			}
+			
+			this.faded = false;
+		}
+	}
+}
+
+function pickColor (target) {
+	var pick = new Object();
+	
+	pick.x = parseInt(target.getAttributeNS(null, "c"));
+	pick.y = parseInt(target.getAttributeNS(null, "r"));
+	pick.z = $C.layerOffset.z;
+	
+	var swatchIndex = Swatch[pick.z][pick.y][pick.x];
+	
+	var color = SwatchField[swatchIndex][3];
+	
+	for (var i = 0; i < $C.palette.colors.length; i++) {
+		$C.palette.colors[i]
+	}
+	
+	
+	if ($C.palette.colors[swatchIndex] == undefined) {
+		$C.palette.add(swatchIndex);
+	}
+	
+	$C.selected.color = swatchIndex;
+}
+
+function makeXHR (type, operation, data) {
+	var status = -1;
+	var request = new XMLHttpRequest();
+	if (!request) {
+		loggit("Unable to connect.");
+	}
+	
+	request.onreadystatechange = function () {
+		if (request.readyState == 4) {
+			try {
+				status = request.status;
+			}
+			catch (e) {};
+			
+			if (status == 200) {
+				loggit(request.response.responseText);
+				request.onreadystatechage = function () {};
+			}
+		}
+	}
+	
+	request.open(type, "/" + operation, true);
+	console.log(type + ", directory: /" + operation + ", data: " + data);
+	
+	if (type == "POST") {
+		request.setRequestHeader("Content-type", "application/json");
+	}
+	
+	try {
+		request.send(data);
+	} catch (e) {
+		changeStatus(e);
+	}
+}
+
+// Serialization.
+function saveField () {
+	// var fieldString = JSON.stringify(Field);
+	
+	var dbData = {
+		title: document.getElementById('saveTitle').value,
+		Field: Field
+	//	imageCanvas()
+	};
+	
+	data = JSON.stringify(dbData);
+	
+	makeXHR("POST", "save", data);
+}
+
+// Deserialization.
+function loadField () {
+	var fieldString = makeXHR("POST", "load", fieldString);
+	Field = JSON.parse(fieldString);
+}
+
+// Temporary solution.
+function imageCanvas () {
+	var dataURL = document.getElementById('display').toDataURL(); // Will need to change to renderer once finished.
+	
+	return dataURL;
+}
+/*
+ * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
+ * http://code.google.com/p/nanoblok/
+ * Copyright (c) 2009-2010 Alex Trujillo
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ * 
+ * Summary for data.js:
+ * Handles data structures within the client, as well as requests to the server.
+ * Also computes common variables used throughout the program, called by the $C variable attached to the window in main.js.
+ */
+
+// Field is short for Playfield, and each element contains 4 values; X, Y, Z, and color. This is strictly for serialization, and is in the order by which the user placed the blocks. Also, another array to tell if the voxel is visible.
+var Field = [];
+var FieldVisible = [];
+
+// GridField stores the positions of the grid tiles. These are set by gridCoors() in grid.js. Used by the other grid functions to render.
+var GridField = {};
+
+// Voxels are volumetric pixels, 3D coordinates. This keeps track of those in order to speed up spatial determinations, such as if a block is close by to another block.
+var Voxel = [];
+
+// Many common variables used throughout the program.
+var Common = function () {
+	// Viewport information from the browser.
+	this.windowSize = {x: window.innerWidth, y: window.innerHeight};
+	
+	this.blockDims = null;
+	this.smallDisplay = false;
+	
+	// atan(0.5) in degrees, meant to represent 2:1 pixels.
+	this.isoAngle = 26.565;
+	
+	// Change to a smaller display format if the window is too small. Not yet fully worked out.
+	if (this.windowSize.x < 725 || this.windowSize.y < 760) {
+		this.blockDims = 15; // For smaller screens
+		loggit("Small display detected, adjusting.");
+		this.smallDisplay = true;
+	}
+	else {
+		this.blockDims = 20; // Regular size
+	}
+	
+	// Size of blocks / tiles.
+	this.blockSize = {
+		full: this.blockDims,
+		half: this.blockDims / 2,
+		third: this.blockDims / 2 + this.blockDims / 4,
+		quarter: this.blockDims / 4
+	};
+	
+	// Throughout the program, the c field is used for various measures. If c is not the same as r-- or vice versa--, problems will occur.
+	this.gridDims = {c: 32, r: 32};
+	this.gridSize = {
+		x: this.gridDims.c * this.blockSize.full,
+		y: this.gridDims.r * this.blockSize.quarter,
+		fullY: this.gridDims.r * this.blockSize.full
+	};
+	
+	// Center of the window.
+	this.center = {x: this.windowSize.x / 2, y: this.windowSize.y / 2};
+	
+	// Grid edges.
+	this.edges = {
+		left: this.center.x - this.gridSize.x / 2,
+		right: this.center.x + this.gridSize.x / 2,
+		top: this.windowSize.y - this.gridSize.y * 2,
+		fullTop: this.windowSize.y - this.gridSize.y * 4
+	};
+	
+	// This should technically be how far away from the left and top of the screen that the left-most, top-most corner of grid is located.
+	this.offset = {
+		x: 1,
+		y: this.gridSize.y * 2 + 31
+	};
+	
+	// From Tango Project colors:
+	// http://tango.freedesktop.org/Tango_Icon_Theme_Guidelines
+	this.palette = [
+		[164, 0, 0, 'red', null],
+		[211, 127, 4, 'orange', null],
+		[213, 184, 8, 'yellow', null],
+		[42, 197, 18, 'green', null],
+		[43, 84, 200, 'blue', null],
+		[147, 29, 199, 'purple', null],
+		[190, 67, 180, 'pink', null],
+		[201, 202, 188, 'white', null],
+		[55, 48, 51, 'black', null],
+		[255, 255, 255, 'transparent', null]
+	];
+	
+	// Various fields for selection states.
+	this.selected = {
+		color: 26624, // red
+		lastColor: 0,
+		tool: "color26624"
+		// blocks: false,
+		// area: {x: 0, y: 0, z: 0, l: 0, w: 0, h: 0},
+		// initialSelection: {x: -1, y: -1, z: -1},
+		// secondSelection: {x: -1, y: -1, z: -1}
+	};
+	
+	this.layerOffset = {x: 0, y: 0, z: 0};
+	
+	// Updated as the marker is moved about the screen.
+	this.markerPosition = {
+		x: 31,
+		y: 0,
+		z: 0
+	};
+
+	// Position Indicator (which also contains the handy drawAll function)
+	this.posInd = new PositionIndicator();
+	
+	// If the program is using the MouseMove event rather than an SVG grid, this will be enabled.
+	this.mouseMove = false;
+	
+	// Make a new tools object containing all tool methods. (Separate from Input functions)
+	this.tools = new Tools();
+	
+	this.toolNames = [
+		"Load",
+		"Save",
+		"Fill",
+		"Select",
+		"Colors",
+		"Delete"
+	];
+	
+	this.toolMethods = [
+		"load",
+		"save",
+		"fill",
+		"select",
+		"swatch",
+		"remove"
+	];
+	
+	// This is to make sure to not run another animation if an animation is already being run.
+	this.animating = false;
+	
+	// Swatch only needs to be initialized once.
+	this.swatchInit = false;
+	
+	// Used to tell if swatch is being displayed.
+	this.swatchActive = false;
+	
+	// If swatch is fully drawn, this is true.
+	this.swatchComplete = false;
+	
+	testCompat();
+	
+	this.selection = new Selection();
+	
+	this.palette = new Palette();
+	
+	this.renderer = new Renderer();
+}
+
+// 3D Voxel array must be initialized before adding variables to it. -1 denotes that there is nothing there.
+function initVoxels (voxArr) {
+	// Initialize the voxel array.
+	for (var x = -1; x < $C.gridDims.r + 1; x++) {
+		if (voxArr[x] == undefined) {
+			voxArr[x] = new Array();
+		}
+		for (var y = -1; y < $C.gridDims.r + 1; y++) {
+			if (voxArr[x][y] == undefined) {
+				voxArr[x][y] = new Array();
+			}
+			for (var z = -1; z < $C.gridDims.c + 1; z++) {
+				voxArr[x][y][z] = -1;
+			}
+		}
+	}
+}
+
+function testCompat () {
+	var numTests = 1;
+	var passedTests = 0;
+	
+	// Check for Native JSON:
+	JSONtest = JSON.parse('{"works" : true}');
+	if (JSONtest.works) {
+		passedTests++;
+	}
+	
+	if (passedTests == numTests) {
+		// Do something meaningful.
+	}
+}
+
+function fillSquare () {
+	var time0 = new Date();
+	
+	var location = {
+		x: 0,
+		y: 0,
+		z: 0
+	}
+	
+	var w = 0;
+	var l = 0;
+	var i = 0;
+	var t;
+	
+	if ($C.animating == false) {
+		time0 = new Date();
+		$C.animating = true;
+		t = setInterval((function() {
+			if (i >= 1023) {
+				clearInterval(t);
+				time1 = new Date();
+				loggit("Square drawn in " + (time1 - time0) + " ms.");
+				$C.animating = false;
+			}
+		
+			blockColor = colorBlock($C.selected.color);
+
+			location = {x: l, y: w, z: $C.layerOffset.z};
+
+			var gridPosition = l * $C.gridDims.c + w;
+
+			var coors = GridField["x-" + gridPosition].coors;
+
+			Voxel[location.x][location.y][location.z] = $C.selected.color;
+			Field.push([location.x, location.y, location.z, $C.selected.color]);
+
+			canvasBlock(coors, location, blockColor);
+		
+			l++;
+			if (l >= 32) {
+				w++;
+				l = 0;
+				$C.posInd.redraw();
+			}
+			
+			i++;
+		}), 1);
+	}
+}var Dialog = {
+	dialogEl: {},
+	showing: false,
+	
+	text: [
+		'Test object',
+		'Second test object',
+		'Third test object!',
+		'Fourth',
+		'Fifth'
+	],
+	
+	data: [
+		
+	],
+	
+	init: function () {
+		this.dialogEl = document.getElementById('dialog');
+		
+		this.verts(10, 'dialogOuter');
+		this.verts(20, 'dialogInner');
+		
+		this.hide();
+		this.print();
+	},
+	
+	verts: function (inset, elementID) {
+		var vertices = [
+			{x: $C.gridSize.x / 2, y: inset},
+			{x: $C.gridSize.x - inset, y: $C.gridSize.fullY / 4 + inset / 2},
+			{x: $C.gridSize.x - inset, y: $C.gridSize.fullY / 4 + $C.gridSize.fullY / 2 - inset / 2},
+			{x: $C.gridSize.x / 2, y: $C.gridSize.fullY - inset},
+			{x: inset, y: $C.gridSize.fullY / 4 + $C.gridSize.fullY / 2 - inset / 2},
+			{x: inset, y: $C.gridSize.fullY / 4 + inset / 2}
+		];
+		
+		var element = document.getElementById(elementID);
+		
+		this.draw(vertices, element);
+	},
+	
+	draw: function (vertices, element) {
+		var hex = [];
+		var path = '';
+		
+		// Offset each coordinate.
+		for (var i = 0; i < 6; i++) {
+			hex[i] = {x: vertices[i].x + $C.edges.left, y: vertices[i].y + $C.edges.fullTop - 33};
+		}
+		
+		for (var corner = 0; corner < 6; corner++) {
+			if (corner == 0) {
+				path += 'M ' + hex[corner].x + ' ' + hex[corner].y;
+			}
+			else if (corner == 5) {
+				path += ' ' + hex[corner].x + ' ' + hex[corner].y + ' Z';
+			}
+			else {
+				path += ' L ' + hex[corner].x + ' ' + hex[corner].y;
+			}
+		}
+		
+		element.setAttributeNS(null, 'd', path);
+		element.setAttributeNS(null, 'stroke', 'none');
+	},
+	
+	show: function () {
+		this.dialogEl.style.display = 'inline';
+		this.showing = true;
+	},
+	
+	hide: function () {
+		this.dialogEl.style.display = 'none';
+		this.showing = false;
+	},
+	
+	print: function () {
+		var headerText = 'Choose a model:';
+		var dialogLeft = document.getElementById('dialogLeft');
+		
+		maketext(dialogLeft, headerText);
+		
+		for (var i = 0, ii = this.text.length; i < ii; i++) {
+			var textElement = maketext(dialogLeft, '- ' + this.text[i]);
+			textElement.setAttributeNS(null, 'id', 'leftList');
+		}
+	},
+	
+	lastHighlight: false,
+	
+	highlight: function (target) {
+		if (this.lastHighlight) {
+			this.lastHighlight.setAttributeNS(null, 'fill', '#666');
+		}
+		
+		target.setAttributeNS(null, 'fill', 'orange');
+		
+		this.lastHighlight = target;
+	}
+};
+
+/*
+ * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
+ * http://code.google.com/p/nanoblok/
+ * Copyright (c) 2009-2010 Alex Trujillo
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ * 
+ * Summary for effects.js:
+ * This file is for all the canvas-based effects that don't have a home in any of the other files yet.
+ * Right now it's mostly for the overlays cursors.
+ */
+
+// Returns a canvas context based on its element id.
+function context(element) {
+	// Get the canvas element.
+	var canvas = document.getElementById(element);
+	// Get its 2D context
+	if (canvas.getContext) {
+		var context = canvas.getContext('2d');
+	}
+	return context;
+}
+
+// Updates the position indicators
+var PositionIndicator = function () {
+	this.ctx = context('overlays');
+	this.grids = document.getElementById('grids');
+	this.blocks = document.getElementById('blocks');
+	this.display = document.getElementById('display');
+	this.overlays = document.getElementById('overlays');
+	this.colors = document.getElementById('colors');
+	this.selection = document.getElementById('selection');
+	// this.renderer = document.getElementById('renderer');
+	this.displayCtx = context('display');
+	
+	this.redraw = function () {
+		var offset = {x: 0, y: $C.windowSize.y};
+		
+		this.ctx.clearRect(0, 0, $C.windowSize.x, $C.windowSize.y);
+		this.ctx.globalAlpha = 0.6;
+	
+		var gr1 = $C.blockSize.full;
+		var gr2 = $C.blockSize.half;
+		var gr4 = $C.blockSize.quarter;
+	
+		// Red Marker, and first of three color-coded small display offsets.
+		var redOffs = -1;
+		if ($C.smallDisplay) {redOffs = 0}
+		// var offsY = offset.y - redOffs;
+		var offsYtop = ($C.gridSize.y - redOffs)
+			- ($C.markerPosition.x * $C.blockSize.quarter)
+			+ ($C.gridDims.c - $C.layerOffset.z - 1) * $C.blockSize.half;
+		var offsX = offset.x + $C.markerPosition.x * $C.blockSize.half;
+	
+		this.ctx.fillStyle = '#f00';
+		this.ctx.beginPath();
+
+		this.ctx.moveTo(offsX, 0 + offsYtop);
+		this.ctx.lineTo(gr2 + offsX, offsYtop - gr4);
+		this.ctx.lineTo(gr2 + offsX, gr4 + offsYtop);
+		this.ctx.lineTo(0 + offsX, gr2 + offsYtop);
+
+		this.ctx.closePath();
+		this.ctx.fill();
+	
+		// Blue Marker
+		var blueOffs = 6;
+		if ($C.smallDisplay) {blueOffs = 4}
+		offsYtop = (blueOffs)
+			+ ($C.markerPosition.z * $C.blockSize.quarter)
+			+ ($C.gridDims.c - $C.layerOffset.z - 1) * $C.blockSize.half;
+		offsX = offset.x + $C.gridSize.x / 2 + ($C.markerPosition.z * $C.blockSize.half);
+	
+		this.ctx.fillStyle = '#00f';
+		this.ctx.beginPath();
+	
+		this.ctx.moveTo(offsX, offsYtop - gr4);
+		this.ctx.lineTo(gr2 + offsX, offsYtop);
+		this.ctx.lineTo(gr2 + offsX, gr2 + offsYtop);
+		this.ctx.lineTo(0 + offsX, gr4 + offsYtop);
+	
+		this.ctx.closePath();
+		this.ctx.fill();
+	
+		// ($C.layerOffset.z * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.quarter) + ($C.gridSize.y - $C.markerPosition.x * $C.blockSize.quarter) - greenOffs
+	
+		// Green Cursor
+		var greenOffs = -306; // Couldn't figure out how to pare this down like the others, but this figure works.
+		if ($C.smallDisplay) {greenOffs = -229}
+		offsX = ($C.markerPosition.x * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.half);
+		offsYtop = -($C.layerOffset.z * $C.blockSize.half) + ($C.markerPosition.z * $C.blockSize.quarter) + ($C.gridSize.y - $C.markerPosition.x * $C.blockSize.quarter) - greenOffs;
+	
+		this.ctx.fillStyle = '#0f0';
+		this.ctx.beginPath();
+	
+		// Points 1-6, in order.
+		this.ctx.lineTo(offsX + gr2, offsYtop + gr2);
+		this.ctx.lineTo(offsX + gr1, offsYtop + gr4 + gr2);
+		this.ctx.lineTo(offsX + gr2, offsYtop + gr1);
+		this.ctx.lineTo(offsX, offsYtop + gr4 + gr2);
+	
+		this.ctx.closePath();
+		this.ctx.fill();
+	
+		// Green Outline
+		this.ctx.beginPath();
+		this.ctx.moveTo(offsX + gr2, offsYtop);
+		this.ctx.lineTo(offsX + gr1, offsYtop + gr4);
+		this.ctx.lineTo(offsX + gr1, offsYtop + gr4 + gr2);
+		this.ctx.lineTo(offsX + gr2, offsYtop + gr1);
+		this.ctx.lineTo(offsX, offsYtop + gr4 + gr2);
+		this.ctx.lineTo(offsX, offsYtop + gr4);
+		this.ctx.closePath();
+	
+		this.ctx.strokeStyle = '#0f0';
+		this.ctx.stroke();
+		
+		// Orange level outline.
+		var levelOffs = 35 + $C.blockDims * $C.layerOffset.z * 0.5 + $C.edges.top;
+		this.ctx.beginPath();
+		this.ctx.moveTo($C.gridCorners[0].x - $C.edges.left, $C.gridCorners[0].y - levelOffs);
+		this.ctx.lineTo($C.gridCorners[1].x - $C.edges.left, $C.gridCorners[1].y - levelOffs);
+		this.ctx.lineTo($C.gridCorners[2].x - $C.edges.left, $C.gridCorners[2].y - levelOffs);
+		this.ctx.lineTo($C.gridCorners[3].x - $C.edges.left, $C.gridCorners[3].y - levelOffs);
+		this.ctx.closePath();
+		
+		this.ctx.globalAlpha = 1.0;
+		this.ctx.strokeStyle = '#f90';
+		this.ctx.stroke();
+		
+		// Clear display and draw all.
+		this.drawAll();
+	}
+	
+	this.drawAll = function () {
+		this.displayCtx.clearRect(0, 0, $C.gridSize.x, $C.gridSize.y * 4);
+		this.displayCtx.globalCompositeOperation = "source-over";
+		this.displayCtx.drawImage(this.grids, 0, 0);
+		
+		if ($C.swatchActive) {
+			this.displayCtx.drawImage(this.colors, 0, 0);
+		}
+		else {
+			this.displayCtx.drawImage(this.blocks, 0, 0);
+			// Quick and easy trick to make selection transparent.
+			this.displayCtx.globalAlpha = 0.5;
+			this.displayCtx.drawImage(this.selection, 0, 0);
+			this.displayCtx.globalAlpha = 1.0;
+		}
+		
+		// this.displayCtx.drawImage(this.renderer, 0, 0);
+		this.displayCtx.drawImage(this.overlays, 0, 0);
+	}
+	
+	this.clearBlocks = function () {
+		context('blocks').clearRect(0, 0, $C.gridSize.x, $C.gridSize.y * 4);
+	}
+	
+	this.clearSwatch = function () {
+		context('colors').clearRect(0, 0, $C.gridSize.x, $C.gridSize.y * 4);
+	}
+	
+	this.clearSelection = function () {
+		context('selection').clearRect(0, 0, $C.gridSize.x, $C.gridSize.y * 4);
+	}
+}
+
+/*
+ * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
+ * http://code.google.com/p/nanoblok/
+ * Copyright (c) 2009-2010 Alex Trujillo
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ * 
+ * Summary for grid.js:
+ * Contains grid-related functions; one for the math to setup the points used by the grids, then an SVG-based grid plotter, and then a canvas-based grid plotter.
+ */
+
+// The gridCoors function creates a static set of coordinates from which to base the canvas and SVG grids upon.
+function gridCoors (side) {	
+	var i = 0;
+
+	// Grid loop builds an absolute position tile, then places it at a specific x/y position on the grid.
+	for (var x = 0; x < $C.gridDims.c; x++) {
+		for (var y = 0; y < $C.gridDims.r; y++) {
+			var tileCoors;
+
+			// Bottom side.
+			var hexSide = [1, 2, 7, 6];
+			tileCoors = {
+				x: (x * $C.blockSize.half) + (y * $C.blockSize.half) + $C.offset.x,
+				y: ((y * $C.blockSize.quarter) + ($C.gridSize.y - x * $C.blockSize.quarter)) + $C.offset.y
+			};
+			
+			GridField['x-' + i] = {x: x, y: y, z: -1, coors: tileCoors};
+			
+			// Left side.
+			var hexSide = [1, 7, 5, 6];
+			tileCoors = {
+				x: (x * $C.blockSize.half)  + $C.offset.x,
+				y: ((y * $C.blockSize.half) + (-$C.gridSize.y - x * $C.blockSize.quarter)) + $C.offset.y
+			};
+			
+			GridField['y-' + i] = {x: x, y: y, z: -1, coors: tileCoors};
+
+			// Right side.
+			var hexSide = [6, 7, 4, 5];
+			tileCoors = {
+				x: (x * $C.blockSize.half) + $C.gridSize.x / 2 + $C.offset.x,
+				y: ((y * $C.blockSize.half) + (-$C.gridSize.y * 2 + x * $C.blockSize.quarter)) + $C.offset.y
+			};
+
+			GridField['z-' + i] = {x: x, y: y, z: -1, coors: tileCoors};
+
+			i++;
+		}
+	}
+}
+
+// Will be an option if the SVG mouse events don't work as well.
+function gridScreen () {
+	
+}
+
+// Versatile function for drawing tiles. Perhaps a bit too versatile.
+function drawSet (hexSet, coorSet, closed) {
+	pathElement = document.createElementNS(svgNS, 'path');
+	
+	var hexSpot = hexSet.pop();
+	var path = '';
+	path += 'M ' + coorSet.x[hexSpot] + ' ' + coorSet.y[hexSpot];
+	
+	var i = 0;
+
+	while (i < hexSet.length || i == 7) {
+		hexSpot = hexSet.pop();
+		path += ' L ' + coorSet.x[hexSpot] + ' ' + coorSet.y[hexSpot];
+		i = i++;
+	}
+	
+	if (closed) {
+		path += ' Z';
+	}
+	
+	pathElement.setAttributeNS(null, 'd', path);
+	
+	return pathElement;
+}
+
+// Draws the invisible SVG grid for mouse detection.
+function drawGrid (side) {
+	var gridContainer = document.getElementById('gridContainer');
+	
+	var i = 0;
+	
+	var square = [0,0,0,0];
+	
+	for (var x = 0; x < $C.gridDims.c; x++) {
+		for (var y = 0; y < $C.gridDims.r; y++) {
+			var tileCoors = GridField['x-' + i];
+			var hexSide = [1, 2, 7, 6];
+			
+			var adjCoors = {
+				x: tileCoors.coors.x + ($C.windowSize.x - $C.gridSize.x) / 2,
+				y: tileCoors.coors.y + $C.windowSize.y - $C.gridSize.y * 2
+			};
+			
+			var set = hexiso(adjCoors, $C.blockSize);
+			
+			if (x == 31 && y == 0) {
+				square[0] = {x: set.x[1], y: set.y[1]};
+			}
+			else if (x == 0 && y == 0) {
+				square[1] = {x: set.x[6], y: set.y[6]};
+			}
+			else if (x == 0 && y == 31) {
+				square[2] = {x: set.x[7], y: set.y[7]};
+			}
+			else if (x == 31 && y == 31) {
+				square[3] = {x: set.x[2], y: set.y[2]};
+			}
+			
+			var tile = drawSet(hexSide, set, true);
+			
+			// Column, Row
+			tile.setAttributeNS(null, 'c', x);
+			tile.setAttributeNS(null, 'r', y);
+			
+			var blockID = 'x-' + i;
+			tile.setAttributeNS(null, 'id', blockID);
+			
+			// Debug
+			// tile.setAttributeNS(null, 'stroke', 'red');
+			// tile.setAttributeNS(null, 'stroke-opacity', '0.3');
+			
+			gridContainer.appendChild(tile);
+			
+			i++;
+		}
+	}
+	
+	$C.gridCorners = square;
+}
+
+// Draws the grids using canvas.
+// Lots of nested loops here. Individual loops for each grid.
+function canvasGrid (side, mode) {
+	var i = 0;
+		
+	for (var x = 0; x < $C.gridDims.c; x++) {
+		for (var y = 0; y < $C.gridDims.r; y++) {
+			if (side == "bottom") {
+				var hexSet = [1, 2, 7, 6];
+				var offset = GridField["x-" + i].coors;
+				
+				if (mode == "standard") {
+					var fill = "#eee";
+					var stroke = "#aaa";
+				}
+				if (mode == "number") {
+					var fill = "rgb(" + (255 - i / 4) + ", " + 0 + ", " + 0 + ")";
+					var stroke = "black";
+				}
+				
+				// hexSet, offset, $C, closed, color, stroke
+				canvasDrawSet(hexSet, offset,
+					{closed: true, fill: fill, stroke: stroke, grid: true});
+			}
+			if (side == "left") {
+				var hexSet = [1, 7, 5, 6];
+				var offset = GridField["y-" + i].coors;
+				
+				if (mode == "standard") {
+					var fill = "#ddd";
+					var stroke = "#aaa";
+				}
+				if (mode == "number") {
+					var fill = "rgb(" + 0 + ", " + (255 - i / 4) + ", " + 0 + ")";
+					var stroke = "black";
+				}
+				
+				canvasDrawSet(hexSet, offset,
+					{closed: true, fill: fill, stroke: stroke, grid: true});
+			}
+			if (side == "right") {
+				var hexSet = [6, 7, 4, 5];
+				var offset = GridField["z-" + i].coors;
+				
+				if (mode == "standard") {
+					var fill = "#ccc";
+					var stroke = "#aaa";
+				}
+				if (mode == "number") {
+					var fill = "rgb(" + 0 + ", " + 0 + ", " + (255 - i / 4) + ")";
+					var stroke = "black";
+				}
+				
+				canvasDrawSet(hexSet, offset,
+					{closed: true, fill: fill, stroke: stroke, grid: true});
+			}
+			
+			i++;
+		}
+	}
+}
+
+/*
+ * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
+ * http://code.google.com/p/nanoblok/
+ * Copyright (c) 2009-2010 Alex Trujillo
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ * 
+ * Summary for input.js:
+ * Event handlers and the functions they run.
+ */
+
+function InitEvents () {
+	/* Event listeners */
+	window.addEventListener('mousedown', function (evt) {
+		Click(evt);
+		mouseDown = true;
+	}, false);
+	
+	window.addEventListener('mouseup', function (evt) {
+		mouseDown = false;
+	}, false);
+
+	if (!$C.mouseMove) {
+		window.addEventListener('mouseover', function (evt) {
+			Hover(evt, 'in');
+		}, false);
+
+		window.addEventListener('mouseout', function (evt) {
+			Hover(evt, 'out');
+		}, false);
+	}
+	
+	if ($C.mouseMove) {
+		window.addEventListener('mousemove', function (evt) {
+			MousePos(evt);
+		}, false);
+	}
+	
+	window.addEventListener('keydown', function (evt) {
+		Key(evt);
+	}, false);
+	
+	window.addEventListener('keyup', function (evt) {
+		Key(evt);
+	}, false);
+
+	window.onresize = function() {
+		if(initialized) {
+			loggit('Resolution change detected, click refresh button.');
+		}
+		displayResized = true;
+	}
+}
+
+// Handles click events from its corresponding event listener.
+function Click (evt) {
+	var target = evt.target;
+	
+	var inputs = [
+		"gridUp",
+		"gridDown",
+		"rotLeft",
+		"rotRight"
+	];
+	
+	// References toolNames in ui.js.
+	for (var i = 0, ii = $C.toolNames.length; i < ii; i++) {
+		if (target.id == "toolButton" + toolNames[i] || target.id == "toolText" + toolNames[i]) {
+			$C.tools[$C.toolMethods[i]]();
+		}
+	}
+	
+	for (var i = 0, ii = inputs.length; i < ii; i++) {
+		if (target.id == inputs[i] + "Button" || target.id == inputs[i] + "Text") {
+			$C.tools[inputs[i]]();
+		}
+	}
+	
+	// Color selection.
+	if (target.id.substr(0,5) == "color") {
+		if ($C.palette.faded) {
+			$C.palette.remove(target);
+		}
+		else {
+			// The last color is used to deselect the last color.
+			$C.selected.lastColor = $C.selected.color;
+
+			// Set the current color to the element's color ID.
+			$C.selected.color = parseInt(target.getAttribute('colorID'));
+			
+			$C.tools.color();
+		}
+	}
+	
+	// Block placement (first click, and if only one single click)
+	if ($C.selected.tool == "toolButtonDelete" && target.id.substr(0,2) == 'x-') {
+		removeBlock(target);
+	}
+	else if ($C.selected.tool == "toolButtonSelect" && target.id.substr(0,2) == 'x-') {
+		$C.selection.select(target);
+	}
+	else if ($C.swatchActive && target.id.substr(0,2) == 'x-') {
+		pickColor(target);
+	}
+	else if (target.id.substr(0,2) == 'x-')
+	{
+		placeBlock(target);
+	}
+}
+
+// Gets hover events from its corresponding event listener, including whether the user hovered in or out of the object.
+function Hover (evt, inout) {
+	var target = null;
+	
+	if ($C.mouseMove) {
+		target = evt;
+	}
+	else {
+		target = evt.target;
+	}
+	// Place a block on the x-grid as long as the mouse is down and place it only when moving into the cell, otherwise the block would be placed twice.
+	if ((target.id.substr(0,2) == 'x-') && mouseDown && inout == "in" && $C.selected.tool.substr(0,5) == "color") {
+		placeBlock(target);
+	}
+	else if ((target.id.substr(0,2) == 'x-') && mouseDown && inout == "in" && $C.selected.tool == "toolButtonDelete") {
+		removeBlock(target);
+	}
+	
+	// Puts information about the position of the cursor over the grid into the markerPosition field in $C, allowing that to be used by the positionIndicator function.
+	if (target.id.substr(0,2) == 'x-' && inout == "in") {
+		$C.markerPosition.x = target.getAttribute("c");
+		$C.markerPosition.z = target.getAttribute("r");
+		$C.posInd.redraw();
+	}
+	
+	if (target.id == 'leftList') {
+		Dialog.highlight(target);
+	}
+}
+
+// var shiftPressed;
+
+function Key (evt) {
+	ctrlPressed = evt.ctrlKey;
+	// shiftPressed = evt.shiftKey;
+	
+	// if (shiftPressed) {
+	// 	$C.palette.cross(evt.type);
+	// }
+	
+	// console.log(evt.keyCode);
+	
+	if (evt.type == "keydown") {
+		// DKEY for delete.
+		if (evt.keyCode == 68) {
+			$C.tools.remove();
+		}
+		// CKEY for color cube.
+		if (evt.keyCode == 67) {
+			$C.tools.swatch();
+		}
+		// FKEY for fill.
+		if (evt.keyCode == 70) {
+			$C.tools.fill();
+		}
+		// SKEY for select.
+		if (evt.keyCode == 83 && !ctrlPressed) {
+			$C.tools.select();
+		}
+		// UP and DOWN arrows for changing Z level.
+		if (evt.keyCode == 38) {
+			$C.tools.gridUp();
+		}
+		if (evt.keyCode == 40) {
+			$C.tools.gridDown();
+		}
+		// LEFT and RIGHT arrows for rotation.
+		if (evt.keyCode == 37) {
+			$C.tools.rotLeft();
+		}
+		if (evt.keyCode == 39) {
+			$C.tools.rotRight();
+		}
+		// CTRL+SKEY for save.
+		if (evt.keyCode == 83 && ctrlPressed) {
+			$C.tools.save();
+		}
+		// CTRL+LKEY for load.
+		if (evt.keyCode == 76 && ctrlPressed) {
+			$C.tools.load();
+		}
+		// SHIFTKEY for toggle options.
+		if (evt.keyCode == 16) {
+			$C.palette.fade(true);
+		}
+		// debug (RKEY)
+		if (evt.keyCode == 69) {
+			$C.renderer.render();
+		}
+	}
+	
+	if (evt.type == "keyup") {
+		// SHIFTKEY for toggle options.
+		if (evt.keyCode == 16) {
+			$C.palette.fade(false);
+		}
+	}
+}
+
+/*
+ * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
+ * http://code.google.com/p/nanoblok/
+ * Copyright (c) 2009-2010 Alex Trujillo
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ * 
+ * Summary for main.js:
+ * Has event listeners and corresponding handlers for Initialization, Update (to refresh all parts of the screen), Click, and Hover. 
+ */
+
+var initialized = false;
+
+window.addEventListener('load', function () {
+	Initialize();
+}, false);
+
+var mouseDown = false;
+var displayResized = false;
+
+/* Main Functions */
+function Initialize ()
+{
+	loggit("Program loaded.");
+	
+	var init0 = new Date();
+	
+	// Attach our common variables to the window for easy access.
+	window.$C = new Common();
+	
+	// Initialize the voxel array.
+	initVoxels(Voxel);
+	
+	// Initialize the color swatch for color IDs.
+	swatchInit();
+	
+	// Run core graphics functions in default state.
+	Update("initialize", {gridMode: "standard"});
+	
+	// Post-initialization tasks.
+	var init1 = new Date();
+	
+	loggit('Program initialized in ' + (init1 - init0) + ' ms.');
+	initialized = true;
+	
+	InitEvents();
+}
+
+// Redraw grid, redraw UI, redraw canvas...
+function Update (updateMode, updateSettings) {	
+	if (updateMode == "resize" || updateMode == "initialize") {
+		gridCoors();
+	//	removeUI();
+	//	removeGrid();
+	}
+	
+	// Draw SVG elements
+	if (updateMode == "resize" || updateMode == "initialize") {
+		drawUI();
+		drawGrid("bottom");
+	}
+
+	// Draw canvas grid...
+	if (updateMode == "resize" || updateMode == "canvas" || updateMode == "initialize") {		
+		canvasGrid("bottom", updateSettings.gridMode);
+		canvasGrid("left", updateSettings.gridMode);
+		canvasGrid("right", updateSettings.gridMode);
+		
+		// ...and some logic for button outlines / selection.
+		if (updateSettings.gridMode == "standard") {
+			
+			// Select color button at update.
+			$C.tools.selectColor();
+		}
+	}
+	
+	Dialog.init();
+	
+	$C.posInd.redraw();
+}
+
+var Renderer = function () {
+	this.canvas = document.getElementById('renderer');
+	this.ctx = context('renderer');
+	
+	this.test = function () {
+		var ctx = context('grids');
+		ctx.fillStyle = 'orange';
+		ctx.fillRect(0,0,3,3);
+		var img = ctx.getImageData(0, 0, 3, 3);
+		console.log(img);
+	}
+	
+	this.render = function () {
+		this.clear();
+		
+		var color = {r: 255, g: 255, b: 255};
+		var img = this.ctx.createImageData(this.canvas.width, this.canvas.height);
+		var index = 0;
+		
+		for (var y = 0; y < 64; y++) {
+			for (var x = 0; x < 64; x++) {
+				for (var z = 0; z < 32; z++) {
+					if (Voxel[Math.floor(x / 2)][Math.floor(y / 2)][z] != -1) {
+						color = SwatchField[Field[Voxel[Math.floor(x / 2)][Math.floor(y / 2)][z]][3]][3];
+					}
+				}
+				
+				index = (x + y * 64) * 4;
+				
+				img.data[index + 0] = color.r;
+				img.data[index + 1] = color.g;
+				img.data[index + 2] = color.b;
+				img.data[index + 3] = 255;
+				
+				color = {r: 255, g: 255, b: 255};
+			}
+		}
+		
+		this.ctx.putImageData(img, 0, 0);
+	}
+	
+	this.clear = function () {
+		this.ctx.clearRect(0, 0, 64, 64);
+	}
+}
+
+var time0;
+
+var SelectionVox = new Array();
+
+var Selection = function () {
+	// If a selection has been drawn, this is true.
+	this.enabled = false;
+	
+	// Defines the bounds of selection.
+	this.start = {x: 0, y: 0, z: 0};
+	this.end = {x: 0, y: 0, z: 0};
+	
+	// This is so the begin is only drawn once.
+	this.begin = true;
+	
+	this.area = {x: 0, y: 0, z: 0};
+	
+	this.selectionField = new Array();
+	
+	this.select = function (target) {
+		time0 = new Date();
+		
+		this.enabled = true;
+		
+		if (this.begin) {
+		 	this.start.x = parseInt(target.getAttributeNS(null, "c"));
+			this.start.y = parseInt(target.getAttributeNS(null, "r"));
+			this.start.z = $C.layerOffset.z;
+			this.end.x = parseInt(target.getAttributeNS(null, "c"));
+			this.end.y = parseInt(target.getAttributeNS(null, "r"));
+			this.end.z = $C.layerOffset.z;
+			this.begin = false;
+		}
+		else {
+			this.end.x = parseInt(target.getAttributeNS(null, "c"));
+			this.end.y = parseInt(target.getAttributeNS(null, "r"));
+			this.end.z = $C.layerOffset.z;
+		}
+		
+		this.draw();
+	}
+	
+	this.deselect = function () {
+		// Reset start and end values.
+		this.start = {x: 0, y: 0, z: 0};
+		this.end = {x: 0, y: 0, z: 0};
+		// this.area = {x: 0, y: 0, z: 0};
+		this.begin = true;
+		
+		// Clear canvas.
+		$C.posInd.clearSelection();
+		$C.posInd.redraw();
+		
+		// Make sure it's off.
+		this.enabled = false;
+		console.log('selection off');
+	}
+	
+	this.draw = function () {
+		$C.posInd.clearSelection();
+		
+		// Facilitates drawing of the array using canvasBlock occlusion.
+		for (var x = -1; x < $C.gridDims.r + 1; x++) {
+			SelectionVox[x] = new Array();
+			for (var y = -1; y < $C.gridDims.r + 1; y++) {
+			SelectionVox[x][y] = new Array();
+				for (var z = -1; z < $C.gridDims.c + 1; z++) {
+					SelectionVox[x][y][z] = -1;
+				}
+			}
+		}
+		
+		var location = {x: 0, y: 0, z: 0};
+		
+		var i = 0;
+		
+		var xDiff = Math.abs(this.end.x - this.start.x);
+		var yDiff = Math.abs(this.end.y - this.start.y);
+		var zDiff = Math.abs(this.end.z - this.start.z);
+		
+		// This basically draws every block inside the selection area.
+		
+		var offset = {};
+		
+		for (var x = 0; x < xDiff + 1; x++) {
+			for (var y = 0; y < yDiff + 1; y++) {
+				for (var z = 0; z < zDiff + 1; z++) {
+					if (this.begin) {
+						location.x = this.start.x;
+						location.y = this.start.y;
+						location.z = this.start.z;
+					}
+					else {
+						offset = {x: x, y: y, z: z};
+						location = this.normalize(this.start, this.end, offset);
+					}
+					
+					this.selectionField.push([location.x, location.y, location.z]);
+				
+					gridPosition = location.x * $C.gridDims.c + location.y;
+					coors = GridField["x-" + gridPosition].coors;
+					yellow = "rgb(255, 255, 0)";
+					color = {left: yellow, right: yellow, top: yellow, inset: yellow};
+					canvasBlock(coors, location, color);
+					SelectionVox[x][y][z] = 1;
+					i++;
+				}
+			}
+		}
+		
+		$C.posInd.redraw();
+		
+		var time1 = new Date();
+		console.log(xDiff + ", " + yDiff + ", run : " + i + " times.");
+		
+		loggit("Selected " + i + " blocks.");
+		
+		this.area = {x: xDiff, y: yDiff, z: zDiff};
+	}
+	
+	this.fill = function () {
+		var time2 = new Date();
+		
+		var diff = {}
+		var norm = {};
+		
+		for (var z = 0; z < this.area.z; z++) {
+			for (var y = -1; y < this.area.y; y++) {
+				for (var x = this.area.x + 1; x > 0; x--) {
+					diff = {x: x, y: y, z: z};
+					norm = this.normalize(this.start, this.end, diff);
+					Field.push([norm.x, norm.y, norm.z, $C.selected.color]);
+					console.log(norm);
+					Voxel[x][y][z] = Field.length - 1;
+				}
+			}
+		}
+		
+		this.deselect();
+		
+		drawAllBlocks();
+		$C.posInd.redraw();
+		
+		var time3 = new Date();
+		
+		console.log('Fill took: ' + (time3 - time2) + 'ms.');
+	}
+	
+	this.remove = function () {
+		
+	}
+	
+	this.normalize = function (start, end, offset) {
+		var location = {x: 0, y: 0, z: 0};
+		
+		if (start.x > end.x) {
+			location.x = offset.x + end.x;
+		}
+		else {
+			location.x = offset.x + start.x;
+		}
+		if (start.y > end.y) {
+			location.y = offset.y + end.y;
+		}
+		else {
+			location.y = offset.y + start.y;
+		}
+		if (start.z > end.z) {
+			location.z = offset.z + end.z;
+		}
+		else {
+			location.z = offset.z + start.z;
+		}
+		
+		return location;
+	}
+}
+
+function fillSelection () {
+	
+}
+
+function removeSelection () {
+	
+}
+
+/*
+ * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
+ * http://code.google.com/p/nanoblok/
+ * Copyright (c) 2009-2010 Alex Trujillo
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ * 
+ * Summary for text.js:
+ * Takes a message and outputs it to a debug box on the screen.
+ * Because the box does not have a scroll bar, scrolling code had to be written.
+ */
+
+var svgNS = "http://www.w3.org/2000/svg";
+var loggitLog = new Array();
+
+function loggit (str) {
+	var log = document.getElementById("debugText");
+	
+	var childCount = log.getElementsByTagName('tspan').length;
+
+	var numLines = 5;
+	
+	if (childCount >= numLines){
+		log.removeChild(log.firstChild);
+	}
+	
+	var textElement = maketext(log, str);
+	
+	// Save all messages for later.
+	loggitLog.push(str);
+}
+
+function maketext (element, str) {
+	var textElement = document.createElementNS(svgNS, 'tspan');
+	textElement.setAttributeNS(null, 'x', '7');
+	textElement.setAttributeNS(null, 'dy', '15');
+
+	textElement.textContent = str;
+
+	element.appendChild(textElement);
+	element.getElementsByTagName('tspan')[0].setAttributeNS(null, 'dy', 2);
+	
+	return textElement;
+}
+
+/*
+ * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
+ * http://code.google.com/p/nanoblok/
+ * Copyright (c) 2009-2010 Alex Trujillo
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ * 
+ * Summary for tools.js:
+ * Logic for selecting tools and their associated functions.
+ */
+
+// Top-side mode/settings buttons.
+var Tools = function () {
+	this.activate = function (toolName) {
+		if ($C.selected.tool == "toolButton" + toolName)
+		{
+			this.selectColor();
+		}
+		else {
+			document.getElementById($C.selected.tool).setAttributeNS(null, "stroke-opacity", "0.0");
+			$C.selected.tool = "toolButton" + toolName;
+			document.getElementById($C.selected.tool).setAttributeNS(null, "stroke-opacity", "1.0");
+			loggit($C.selected.tool.substr(10,100) + " tool activated.");
+		}
+	}
+	// For when the tool button is clicked again, to default to block placement.
+	// Get the color swatch (its name corresponds to its color), then set its black outline to transparent,
+	// making it appear deselected.
+	this.selectColor = function () {
+		// Deselect previous tool.
+		if ($C.selected.lastColor != -1) {
+			document.getElementById($C.selected.tool).setAttributeNS(null, "stroke-opacity", "0.0");
+		}
+		$C.selected.tool = "color" + $C.selected.color;
+		document.getElementById($C.selected.tool).setAttributeNS(null, "stroke-opacity", "1.0");
+	}
+	
+	// Save button.
+	this.save = function () {
+		saveField();
+		loggit("Blocks saved.");
+	}
+	
+	// Load button.
+	this.load = function () {
+		if (Dialog.showing) {
+			Dialog.hide();
+		}
+		else {
+			Dialog.show();
+		}
+		// loadField();
+		// drawBlocks();
+		// loggit("Blocks loaded.");
+	}
+	
+	// Refresh button.
+	this.refresh = function () {
+		Update("refresh", {gridMode: "standard"});
+		loggit("Canvas refreshed.");
+	}
+		
+	// Remove button, its state can be toggled by the user.
+	this.remove = function () {
+		if ($C.selection.enabled) {
+			$C.selection.remove();
+		}
+		else {
+			this.activate("Delete");
+		}
+	}
+	
+	this.gridUp = function () {
+		if($C.layerOffset.z < ($C.gridDims.r - 1)) {
+			$C.layerOffset.z++;
+			$C.posInd.redraw();
+			// Raise the SVG grid.
+			var gridOffset = -389;
+			if ($C.smallDisplay) {gridOffset = -309};
+			document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(-1,"
+				+ (gridOffset - $C.layerOffset.z * $C.blockSize.half) + ")");
+			
+			// For Color Cube slicing.
+			if ($C.swatchActive) {
+				for (var s = 0; s < 1024; s++) {
+					SwatchField[s + (($C.layerOffset.z) * 1024)][4] = true;
+				}
+				$C.posInd.clearSwatch();
+				drawAllSwatch();
+			}
+			// For block slicing.
+			else {
+				for (var i = 0, ii = Field.length; i < ii; i++) {
+					if (Field[i][2] == $C.layerOffset.z) {
+						FieldVisible[i] = true;
+					}
+				}
+				
+				$C.posInd.clearBlocks();
+				drawAllBlocks();
+				$C.posInd.redraw();
+			}
+			
+			loggit("Slice up to " + $C.layerOffset.z);
+		}
+	}
+	this.gridDown = function () {
+		if($C.layerOffset.z > 0) {
+			$C.layerOffset.z--;
+			$C.posInd.redraw();
+			// Lower the SVG grid.
+			var gridOffset = -389;
+			if ($C.smallDisplay) {gridOffset = -309};
+			document.getElementById("gridContainer").setAttributeNS(null, "transform", "translate(-1,"
+				+ (gridOffset - $C.layerOffset.z * $C.blockSize.half) + ")");
+			
+			// For Color Cube slicing.
+			if ($C.swatchActive) {
+				for (var s = 0; s < 1024; s++) {
+					SwatchField[s + (($C.layerOffset.z + 1) * 1024)][4] = false;
+				}
+				$C.posInd.clearSwatch();
+				drawAllSwatch();
+			}
+			// For block slicing.
+			else {
+				for (var i = 0, ii = Field.length; i < ii; i++) {
+					if (Field[i][2] > $C.layerOffset.z) {
+						FieldVisible[i] = false;
+					}
+				}
+				
+				$C.posInd.clearBlocks();
+				drawAllBlocks();
+				$C.posInd.redraw();
+			}
+			
+			loggit("Slice down to " + $C.layerOffset.z);
+		}
+	}
+	
+	this.color = function () {
+		this.selectColor();
+		// loggit("Selected color is: " + $C.palette[$C.selected.color][3] + ".");
+	}
+	
+	this.swatch = function () {
+		if ($C.swatchActive) {
+			this.activate("Colors");
+			closeColorSwatch();
+			loggit("Color Cube closed.");
+		}
+		else {
+			this.activate("Colors");
+			fillColorSwatch();
+		}
+	}
+	
+	this.rotLeft = function () {
+		if (!$C.swatchActive) {
+			rotate(1);
+		}
+	}
+	
+	this.rotRight = function () {
+		if (!$C.swatchActive) {
+			rotate(0);
+		}
+	}
+	
+	this.select = function () {
+		this.activate("Select");
+		// Toggle off.
+		if ($C.selection.enabled) {
+			$C.selection.deselect();
+		}
+		// Toggle on.
+		else {
+			
+		}
+	}
+	
+	this.fill = function () {
+		if ($C.selection.enabled) {
+			$C.selection.fill();
+			loggit('Selection fill.');
+		}
+		else {
+			this.activate("Fill");
+		}
+	}
+}
+
+var rotation = 0;
+
+function rotate (direction) {
+	var location = new Object();
+	
+	// This function works on both the grid and the color cube.
+	if ($C.swatchActive) {
+		initVoxels(Swatch);
+	}
+	else {
+		initVoxels(Voxel);
+	}
+	
+	var x = 0;
+	var y = 0;
+	var z = 0;
+	
+	var Fx = 0;
+	var Fy = 0;
+	
+	if ($C.swatchActive) {
+		Fld = SwatchField;
+	}
+	else {
+		Fld = Field;
+	}
+	
+	var ang = (90 * Math.PI) / 180;
+	
+	if (!direction) {
+		ang = (-90 * Math.PI) / 180;
+	}
+
+	// This is where the magic happens.
+	for (var i = 0, ii = Fld.length; i < ii; i++) {
+		
+		// Field coordinates.
+		Fx = Fld[i][0];
+		Fy = Fld[i][1];
+		z = Fld[i][2];
+		
+		// Translate coordinates over one in order to compensate for the zero origin issue.
+		Fx++;
+		Fy++;
+		
+		// A lovely matrix transformation.
+		x = Math.round(Fx * Math.cos(ang) - Fy * Math.sin(ang));
+		y = Math.round(Fx * Math.sin(ang) + Fy * Math.cos(ang));
+		
+		// To keep blocks from going off-grid, put them on the other side.
+		if (x < 0) {
+			x = ($C.gridDims.c) + x;
+		}
+		
+		if (y < 0) {
+			y = ($C.gridDims.r) + y;
+		}
+		
+		// More compensation for zero origin issue.
+		if (direction) {
+			y--;
+		}
+		else {
+			x--;
+		}
+		
+		// Assign color. Works with both old and new color systems.
+		var color = Fld[i][3];
+		var visibility = false;
+		
+		if ($C.swatchActive) {
+			visibility = Fld[i][4];
+		}
+
+		// Add to respective field, but voxel doesn't need to be added to color cube.
+		if ($C.swatchActive) {
+			Fld[i] = [x, y, z, color, visibility];
+		}
+		else {
+			Fld[i] = [x, y, z, color];
+		}
+		Voxel[x][y][z] = Fld[i][3];
+	}
+	
+	// Tell which field to put back into (cube or grid), and their associated functions.
+	if ($C.swatchActive) {
+		SwatchField = Fld;
+		$C.posInd.clearSwatch();
+		drawAllSwatch();
+	}
+	else {
+		Field = Fld;
+		$C.posInd.clearBlocks();
+		drawAllBlocks();
+	}
+	
+	$C.posInd.redraw();
+	
+	// True for left, False for right.
+	if (direction) {	
+		if (rotation < 3) {
+			rotation++;
+		}
+		else {
+			rotation = 0;
+		}
+		loggit("Rotated left to " + rotation * 90 + " degrees.");
+	}
+	else {
+		if (rotation > 0) {
+			rotation--;
+		}
+		else {
+			rotation = 3;
+		}
+		loggit("Rotated right to " + rotation * 90 + " degrees.");
+	}
+}
+
+/*
+ * Nanoblok (Experimental) - Web-Based Graphical Editor for Game Sprite Development
+ * http://code.google.com/p/nanoblok/
+ * Copyright (c) 2009-2010 Alex Trujillo
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ * 
+ * Summary for ui.js:
+ * Organizes a static user interface layout based upon window size and absolute positioning, but with proportions so that the interface looks similar from window to window.
+ * Contains some flawed animation code that needs to be deprecated.
+ */
+
+var canvases = [
+	'grids',
+	'blocks',
+	'overlays',
+	'display',
+	'debug',
+	'colors',
+	'selection'
+];
+
+var toolNames = [
+	"Load",
+	"Save",
+	"Fill",
+	"Select",
+	"Colors",
+	"Delete",
+]
+
+function moveElement (name, operation) {
+	var element = document.getElementById(name);
+	
+	var str = "";
+	
+	if (operation.move) {
+		str += "translate(" + operation.move.x + "," + operation.move.y + ")";
+		if (operation.skewX || operation.skewY) {
+			str += ",";
+		}
+	}
+	if (operation.skewY) {
+		str += "skewY(" + operation.skewY + ")";
+		if (operation.skewX) {
+			str += ",";
+		}
+	}
+	if (operation.skewX) {
+		str += "skewX(" + operation.skewX + ")";
+	}
+
+	element.setAttributeNS(null, "transform", str);
+	
+	if (operation.height) {
+		element.setAttributeNS(null, "height", operation.height);
+	}
+	if (operation.width) {
+		element.setAttributeNS(null, "width", operation.width);
+	}
+}
+
+function drawUI () {
+	// Nanoblok logo text
+	moveElement('logoText', {skewY: -$C.isoAngle});
+		
+	// Set viewport height.
+	moveElement('grid', {height: $C.windowSize.y - 5});
+	// var gridElement = document.getElementById('grid');
+	// gridElement.setAttributeNS(null, "height", $C.windowSize.y - 5);
+	
+	// Set positions and dimensions of all canvases.
+	for (var i = 0, ii = canvases.length; i < ii; i++) {
+		var effectsElement = document.getElementById(canvases[i]);
+		effectsElement.setAttributeNS(null, "height", $C.gridSize.fullY + 2);
+		effectsElement.setAttributeNS(null, "width", $C.gridSize.x);
+		effectsElement.style.top = $C.edges.top - $C.gridSize.y * 2 - 34 + "px";
+		effectsElement.style.left = $C.edges.left + "px";
+	}
+	
+	// Position SVG grid.
+	var gridOffset = -389;
+	if ($C.smallDisplay) {gridOffset = -309};
+	moveElement('gridContainer', {move: {x: -1, y: gridOffset}});
+	
+	// Position debug / status.
+	moveElement('statusContainer', {move: {x: $C.edges.left, y: ($C.edges.top - $C.gridSize.y - 145)}});
+	
+	// Position buttons on the top.
+	moveElement('sideButtonsTop', {move: {x: $C.center.x + 5, y: $C.edges.top - $C.gridSize.y * 2 - 121}});
+	
+	// Position arrows on the left side.
+	moveElement('sideButtonsLeft', {move: {x: $C.edges.left - 25, y: $C.edges.top - $C.gridSize.y - 20}});
+
+	// Position axis labels.
+	moveElement('yAxis', {move: {x: $C.edges.left + $C.gridSize.x / 4, y: $C.edges.top + $C.gridSize.y * 1.5},  skewY: 26.565, skewX: -45});
+	moveElement('xAxis', {move: {x: $C.edges.left + $C.gridSize.x / 2 + $C.gridSize.x / 4 - 20, y: $C.edges.top + $C.gridSize.y * 1.5 + 10}, skewY: -26.565, skewX: 45});
+
+	// Position color palette.
+	moveElement("sideColorsRight", {move: {x: $C.edges.right + 40, y: $C.edges.top - $C.gridSize.y - 9}});
+	
+	// Make color palette from default colors.
+	$C.palette.draw();
+	
+	// Draw toolbar. Won't work with numbers greater than 10.
+	for (var i = 0; i < 6; i++) {
+		var x = 0;
+		var y = 0;
+		
+		if(i % 2) {x = 30 * i - 30} else {x = 30 * i};
+		if(i % 2) {y = 0} else {y = 38};
+		
+		// Create a rect and give it all its attributes.
+		var toolButton = document.createElementNS(svgNS, 'rect');
+		toolButton.setAttributeNS(null, "id", "toolButton" + $C.toolNames[i]);
+		toolButton.setAttributeNS(null, "x", x);
+		toolButton.setAttributeNS(null, "y", y);
+		toolButton.setAttributeNS(null, "height", 30);
+		toolButton.setAttributeNS(null, "width", 52);
+		toolButton.setAttributeNS(null, "rx", 3);
+		toolButton.setAttributeNS(null, "transform", "skewY(26.565)");
+		
+		// Same for that tool's text.
+		var toolText = document.createElementNS(svgNS, 'text');
+		toolText.setAttributeNS(null, "id", "toolText" + $C.toolNames[i]);
+		toolText.setAttributeNS(null, "x", x + 4);
+		toolText.setAttributeNS(null, "y", y + 24);
+		toolText.setAttributeNS(null, "fill", "white");
+		toolText.setAttributeNS(null, "fill-opacity", "1");
+		toolText.setAttributeNS(null, "stroke", "none");
+		toolText.setAttributeNS(null, "transform", "skewY(26.565)");
+		toolText.textContent = toolNames[i];
+		
+		var sideButtonsTop = document.getElementById("sideButtonsTop");
+		sideButtonsTop.appendChild(toolButton);
+		sideButtonsTop.appendChild(toolText);
+	}
+	
+	var renderOffset = 96;
+	if($C.smallDisplay) {renderOffset = 20};
+	moveElement('renderDisplay', {move: {x: $C.edges.right - renderOffset, y: $C.edges.fullTop}});
+	var rendererCanvas = document.getElementById('renderer');
+	
+	rendererCanvas.setAttributeNS(null, "height", 64);
+	rendererCanvas.setAttributeNS(null, "width", 64);
+	rendererCanvas.style.left = $C.edges.right - renderOffset + "px";
+	rendererCanvas.style.top = $C.edges.fullTop + "px";
+	
+	// If it's a small display, the size of the debug box should be smaller.
+	if ($C.smallDisplay) {
+		document.getElementById('debugBox').setAttributeNS(null, "width", 234);
+	}
+	
+	// Position rotation buttons.
+	// moveElement('rotLeftButton', {move: {x: $C.edges.right - 96, y: $C.edges.fullTop}});
+	
+	// Move save dialog into position.
+	var savePos = {x: $C.edges.left + $C.gridSize.x / 2 + 15, y: $C.edges.fullTop - 125};
+	
+	var saveDialog = document.getElementById('dialogSave');
+	saveDialog.style.posLeft = savePos.x + 75;
+	saveDialog.style.posTop = savePos.y;
+	
+	moveElement('saveBG', {move: {x: savePos.x, y: savePos.y}, skewX: -116.565});
+	
+	moveElement('dialogLeft', {move: {x: $C.edges.left + 30, y: $C.edges.fullTop + $C.gridSize.y / 2 + 70},  skewY: -26.565, height: $C.gridSize.y * 2 - 40, width: $C.gridSize.x / 2 - 30});
+}
+
