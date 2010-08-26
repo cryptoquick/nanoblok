@@ -8,23 +8,9 @@ handlers:
   static_files: static/\1
   upload: static/(.*\.(js))
   
-<<<<<<< local
-#- url: /favicon.ico
-#  static_files: static/favicon.ico
-#  upload: static/favicon.ico
-#
-- url: /
-=======
 - url: /favicon.ico
   static_files: static/favicon.ico
   upload: static/favicon.ico
   
 - url: /*
->>>>>>> other
   script: main.py
-
-<<<<<<< local
-=======
-- url: /save
-  script: main.py
->>>>>>> other
