@@ -1,4 +1,5 @@
 import os
+import logging
 
 from google.appengine.api import users
 from google.appengine.ext import webapp
@@ -13,8 +14,8 @@ from models import Sprite, Voxel
 debug = 0
 
 class MainHandler(webapp.RequestHandler):
-	if debug:
-		def get(self):
+	def get(self):
+		if debug:
 			user = users.get_current_user()
 			if user:
 				self.response.out.write('Going to copy Alex\'s code from the other example here so it loads his editor.')
@@ -30,9 +31,8 @@ class MainHandler(webapp.RequestHandler):
 				'''
 				self.response.out.write(cheat_sheet)
 			else:
-				self.redirect(users.create_login_url(self.request.uri))
-	else:
-		def get(self):
+				self.redirect(users.create_login_url(self.request.path))
+		else:
 			template_values = { }
 			self.response.headers['Content-Type'] = "application/xhtml+xml"
 			path = os.path.join(os.path.dirname(__file__), "index.xhtml")
@@ -53,7 +53,7 @@ class ListHandler(webapp.RequestHandler):
 			self.response.out.write(",".join(objs))
 			self.response.out.write("]}")
 		else:
-			self.redirect(users.create_login_url(self.request_uri))
+			self.redirect(users.create_login_url(self.request.path))
 
 class SaveHandler(webapp.RequestHandler):		
 	def get(self):
@@ -62,7 +62,8 @@ class SaveHandler(webapp.RequestHandler):
 	def post(self, sprite_id = None):
 		user = users.get_current_user()
 		if user:
-			posted_sprite = json.loads(self.request.get("data"))
+			logging.info(self.request.arguments())
+			posted_sprite = json.loads(self.request.body)
 			if sprite_id:
 				sprite = Sprite(key_name=sprite_id)
 				if sprite.user == user:
@@ -78,7 +79,7 @@ class SaveHandler(webapp.RequestHandler):
 			Voxel.save_voxels(sprite, posted_sprite['Field'])
 			self.response.out.write(posted_sprite)
 		else:
-			self.redirect(users.create_login_url(self.request_uri))
+			self.redirect(users.create_login_url(self.request.path))
 
 class LoadHandler(webapp.RequestHandler):
 	def get(self, sprite_id = None):
