@@ -78,7 +78,7 @@ class SaveHandler(webapp.RequestHandler):
 			Voxel.save_voxels(sprite, posted_sprite['Field'])
 			self.response.out.write(posted_sprite)
 		else:
-			self.redirect(users.create_login_url(self.request_url))
+			self.redirect(users.create_login_url(self.request_uri))
 
 class LoadHandler(webapp.RequestHandler):
 	def get(self, sprite_id = None):
