@@ -265,6 +265,7 @@ function popField(x, y, z) {
 	}
 }
 
+// Rebuilds the entire model scene from a field gotten from the server.
 function rebuild () {
 	initVoxels(Voxel);
 	

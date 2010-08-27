@@ -23,13 +23,13 @@ function loggit (str) {
 		log.removeChild(log.firstChild);
 	}
 	
-	var textElement = maketext(log, str);
+	var textElement = addtext(log, str);
 	
 	// Save all messages for later.
 	loggitLog.push(str);
 }
 
-function maketext (element, str) {
+function addtext (element, str) {
 	var textElement = document.createElementNS(svgNS, 'tspan');
 	textElement.setAttributeNS(null, 'x', '7');
 	textElement.setAttributeNS(null, 'dy', '15');

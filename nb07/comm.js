@@ -1,4 +1,5 @@
-function makeXHR (type, operation, data) {
+function makeXHR (operation, data) {
+	var newData;
 	var status = -1;
 	var request = new XMLHttpRequest();
 	if (!request) {
@@ -13,44 +14,53 @@ function makeXHR (type, operation, data) {
 			catch (e) {};
 			
 			if (status == 200) {
-				loggit(request.response.responseText);
-				request.onreadystatechage = function () {};
+				newData = request.responseText;
 			}
 		}
 	}
 	
-	request.open(type, "/" + operation, true);
-	console.log(type + ", directory: /" + operation + ", data: " + data);
+	request.open("POST", "/" + operation, true);
+	console.log("POST, directory: /" + operation + ", data: " + data);
 	
-	if (type == "POST") {
-		request.setRequestHeader("Content-type", "application/json");
-	}
+	request.setRequestHeader("Content-type", "application/json");
 	
 	try {
 		request.send(data);
 	} catch (e) {
 		changeStatus(e);
 	}
+	
+	console.log(newData);
+	return newData;
 }
 
 // Serialization.
 function saveField () {
 	// var fieldString = JSON.stringify(Field);
+	var title = document.getElementById('saveTitle').value
 	
-	var dbData = {
-		title: document.getElementById('saveTitle').value,
-		Field: Field
-	//	imageCanvas()
-	};
+	if (title == '') {
+		Dialog.alert('No title entered.');
+	}
+	else if (Field == []) {
+		Dialog.alert('No blocks to save.');
+	}
+	else {
+		var dbData = {
+			title: title,
+			Field: Field
+		//	imageCanvas()
+		};
 	
-	data = JSON.stringify(dbData);
+		data = JSON.stringify(dbData);
 	
-	makeXHR("POST", "save", data);
+		makeXHR("save", data);
+	}
 }
 
 // Deserialization.
 function loadField () {
-	var fieldString = makeXHR("POST", "load", fieldString);
+	var fieldString = makeXHR("load", fieldString);
 	Field = JSON.parse(fieldString);
 }
 

@@ -1,24 +1,21 @@
 var Dialog = {
 	dialogEl: {},
+	alertEl: {},
 	showing: false,
+	active: 'none',
 	
-	text: [
-		'Test object',
-		'Second test object',
-		'Third test object!',
-		'Fourth',
-		'Fifth'
-	],
+	testString: '[{"title":"","url":"/load/ag9uYW5vYmxvay1lZGl0b3JyDQsSBlNwcml0ZRiVTgw"},{"title":"","url":"/load/ag9uYW5vYmxvay1lZGl0b3JyDgsSBlNwcml0ZRjK3AMM"},{"title":"","url":"/load/ag9uYW5vYmxvay1lZGl0b3JyDgsSBlNwcml0ZRjxogQM"}]',
 	
-	data: [
-		{title: 'Erl Test Object', user: 'erlange', date: 1282787556, id: 100, image: false}
-	],
+	data: [],
 	
 	init: function () {
 		this.dialogEl = document.getElementById('dialog');
+		this.alertEl = document.getElementById('alert');
 		
 		this.verts(10, 'dialogOuter');
 		this.verts(20, 'dialogInner');
+		this.verts(200, 'alertOuter');
+		this.verts(210, 'alertInner');
 		
 		this.hide();
 		this.print();
@@ -64,13 +61,21 @@ var Dialog = {
 		element.setAttributeNS(null, 'stroke', 'none');
 	},
 	
-	show: function () {
-		this.dialogEl.style.display = 'inline';
-		this.showing = true;
+	show: function (type) {
+		if (type == 'dialog' && !this.showing) {
+			this.dialogEl.style.display = 'inline';
+			this.showing = true;
+		}
+		if (type == 'alert' && !this.showing) {
+			this.alertEl.style.display = 'inline';
+			this.showing = true;
+		}
 	},
 	
 	hide: function () {
 		this.dialogEl.style.display = 'none';
+		this.alertEl.style.display = 'none';
+		
 		this.showing = false;
 	},
 	
@@ -78,7 +83,7 @@ var Dialog = {
 		var headerText = 'Choose a model:';
 		var dialogLeft = document.getElementById('dialogLeft');
 		
-		maketext(dialogLeft, headerText);
+		addtext(dialogLeft, headerText);
 		
 		for (var i = 0, ii = this.data.length; i < ii; i++) {
 			var textElement = maketext(dialogLeft, '- ' + this.data[i].title);
@@ -96,6 +101,12 @@ var Dialog = {
 		target.setAttributeNS(null, 'fill', 'orange');
 		
 		this.lastHighlight = target;
+	},
+	
+	alert: function (msg) {
+		this.show('alert');
+		var alertText = document.getElementById('alertText');
+		addtext(alertText, msg);
 	}
 };
 
