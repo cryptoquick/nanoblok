@@ -1,0 +1,46 @@
+<?xml version='1.0'?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:svg="http://www.w3.org/2000/svg">
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta http-equiv="Content-Style-Type" content="text/css"/>
+	
+	<title>nanoblok r04</title>
+	
+	<script type="text/javascript" charset="utf-8" src="nanoblok.js"></script>
+
+	<style type="text/css" media="screen">
+		body {
+			margin: 0;
+			padding: 0;
+            text-align: center;
+		}
+		
+		#canvasGrid, #nano {
+			position: absolute;
+			top: 0px;
+			left: 50%;
+			margin-left: -400px;
+		}
+		
+		#canvasGrid {
+			z-index: -1;
+		}
+		
+		#debug {
+			text-align: left;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvasGrid" width="800" height="400"></canvas>
+	
+	<svg:svg id='display' width="800" height="400">
+		<svg:g id="nano"></svg:g>
+		<svg:g id="blok"></svg:g>
+	</svg:svg>
+
+	<div id="debug"></div>
+	<canvas id="lodrBar" width="250" height="30"></canvas>
+</body>
+</html>
