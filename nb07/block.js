@@ -270,6 +270,7 @@ function rebuild () {
 	
 	for (var i = 0, ii = Field.length; i < ii; i++) {
 		Voxel[Field[i][0]][Field[i][1]][Field[i][2]] = i;
+		FieldVisible.push(true);
 	}
 	
 	$C.posInd.clearBlocks();
