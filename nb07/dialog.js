@@ -11,7 +11,7 @@ var Dialog = {
 	],
 	
 	data: [
-		
+		{title: 'Erl Test Object', user: 'erlange', date: 1282787556, id: 100, image: false}
 	],
 	
 	init: function () {
@@ -80,8 +80,8 @@ var Dialog = {
 		
 		maketext(dialogLeft, headerText);
 		
-		for (var i = 0, ii = this.text.length; i < ii; i++) {
-			var textElement = maketext(dialogLeft, '- ' + this.text[i]);
+		for (var i = 0, ii = this.data.length; i < ii; i++) {
+			var textElement = maketext(dialogLeft, '- ' + this.data[i].title);
 			textElement.setAttributeNS(null, 'id', 'leftList');
 		}
 	},

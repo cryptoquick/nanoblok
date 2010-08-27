@@ -243,7 +243,7 @@ function drawAllBlocks () {
 	var gridPosition = 0;
 	var coors = new Object();
 	
-	for (var i = 0; i < Field.length; i++) {
+	for (var i = 0, ii = Field.length; i < ii; i++) {
 		if (FieldVisible[i]) {
 			location = {x: Field[i][0], y: Field[i][1], z: Field[i][2]};
 			gridPosition = location.x * $C.gridDims.c + location.y;
@@ -265,3 +265,14 @@ function popField(x, y, z) {
 	}
 }
 
+function rebuild () {
+	initVoxels(Voxel);
+	
+	for (var i = 0, ii = Field.length; i < ii; i++) {
+		Voxel[Field[i][0]][Field[i][1]][Field[i][2]] = i;
+	}
+	
+	$C.posInd.clearBlocks();
+	drawAllBlocks();
+	$C.posInd.redraw();
+}

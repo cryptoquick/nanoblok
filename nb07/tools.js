@@ -173,10 +173,6 @@ var Tools = function () {
 		if ($C.selection.enabled) {
 			$C.selection.deselect();
 		}
-		// Toggle on.
-		else {
-			
-		}
 	}
 	
 	this.fill = function () {
@@ -187,6 +183,8 @@ var Tools = function () {
 		else {
 			this.activate("Fill");
 		}
+		
+		loggit('Fill tool not yet implemented.');
 	}
 }
 
