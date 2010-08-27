@@ -243,7 +243,7 @@ function drawAllBlocks () {
 	var gridPosition = 0;
 	var coors = new Object();
 	
-	for (var i = 0; i < Field.length; i++) {
+	for (var i = 0, ii = Field.length; i < ii; i++) {
 		if (FieldVisible[i]) {
 			location = {x: Field[i][0], y: Field[i][1], z: Field[i][2]};
 			gridPosition = location.x * $C.gridDims.c + location.y;
@@ -265,6 +265,19 @@ function popField(x, y, z) {
 	}
 }
 
+// Rebuilds the entire model scene from a field gotten from the server.
+function rebuild () {
+	initVoxels(Voxel);
+	
+	for (var i = 0, ii = Field.length; i < ii; i++) {
+		Voxel[Field[i][0]][Field[i][1]][Field[i][2]] = i;
+		FieldVisible.push(true);
+	}
+	
+	$C.posInd.clearBlocks();
+	drawAllBlocks();
+	$C.posInd.redraw();
+}
 function drawSingleBlock (location, color) {
 	var block = Field[i];
 
@@ -518,7 +531,8 @@ function pickColor (target) {
 	$C.selected.color = swatchIndex;
 }
 
-function makeXHR (type, operation, data) {
+function makeXHR (operation, data) {
+	var newData;
 	var status = -1;
 	var request = new XMLHttpRequest();
 	if (!request) {
@@ -533,24 +547,25 @@ function makeXHR (type, operation, data) {
 			catch (e) {};
 			
 			if (status == 200) {
-				loggit(request.response.responseText);
-				request.onreadystatechage = function () {};
+				newData = request.responseText;
 			}
 		}
 	}
 	
-	request.open(type, "/" + operation, true);
-	console.log(type + ", directory: /" + operation + ", data: " + data);
+	request.open("POST", "/" + operation, true);
+	loggit(request.statusText);
+	console.log(POST + ", directory: /" + operation + ", data: " + data);
 	
-	if (type == "POST") {
-		request.setRequestHeader("Content-type", "application/json");
-	}
+	request.setRequestHeader("Content-type", "application/json");
 	
 	try {
 		request.send(data);
 	} catch (e) {
 		changeStatus(e);
 	}
+	
+	console.log(newData);
+	return newData;
 }
 
 // Serialization.
@@ -565,12 +580,12 @@ function saveField () {
 	
 	data = JSON.stringify(dbData);
 	
-	makeXHR("POST", "save", data);
+	makeXHR("save", data);
 }
 
 // Deserialization.
 function loadField () {
-	var fieldString = makeXHR("POST", "load", fieldString);
+	var fieldString = makeXHR("load", fieldString);
 	Field = JSON.parse(fieldString);
 }
 
@@ -823,17 +838,9 @@ function fillSquare () {
 	dialogEl: {},
 	showing: false,
 	
-	text: [
-		'Test object',
-		'Second test object',
-		'Third test object!',
-		'Fourth',
-		'Fifth'
-	],
+	testString: '[{"title":"","url":"/load/ag9uYW5vYmxvay1lZGl0b3JyDQsSBlNwcml0ZRiVTgw"},{"title":"","url":"/load/ag9uYW5vYmxvay1lZGl0b3JyDgsSBlNwcml0ZRjK3AMM"},{"title":"","url":"/load/ag9uYW5vYmxvay1lZGl0b3JyDgsSBlNwcml0ZRjxogQM"}]',
 	
-	data: [
-		
-	],
+	data: [],
 	
 	init: function () {
 		this.dialogEl = document.getElementById('dialog');
@@ -899,10 +906,10 @@ function fillSquare () {
 		var headerText = 'Choose a model:';
 		var dialogLeft = document.getElementById('dialogLeft');
 		
-		maketext(dialogLeft, headerText);
+		addtext(dialogLeft, headerText);
 		
-		for (var i = 0, ii = this.text.length; i < ii; i++) {
-			var textElement = maketext(dialogLeft, '- ' + this.text[i]);
+		for (var i = 0, ii = this.data.length; i < ii; i++) {
+			var textElement = maketext(dialogLeft, '- ' + this.data[i].title);
 			textElement.setAttributeNS(null, 'id', 'leftList');
 		}
 	},
@@ -1829,13 +1836,13 @@ function loggit (str) {
 		log.removeChild(log.firstChild);
 	}
 	
-	var textElement = maketext(log, str);
+	var textElement = addtext(log, str);
 	
 	// Save all messages for later.
 	loggitLog.push(str);
 }
 
-function maketext (element, str) {
+function addtext (element, str) {
 	var textElement = document.createElementNS(svgNS, 'tspan');
 	textElement.setAttributeNS(null, 'x', '7');
 	textElement.setAttributeNS(null, 'dy', '15');
@@ -2023,10 +2030,6 @@ var Tools = function () {
 		if ($C.selection.enabled) {
 			$C.selection.deselect();
 		}
-		// Toggle on.
-		else {
-			
-		}
 	}
 	
 	this.fill = function () {
@@ -2037,6 +2040,8 @@ var Tools = function () {
 		else {
 			this.activate("Fill");
 		}
+		
+		loggit('Fill tool not yet implemented.');
 	}
 }
 

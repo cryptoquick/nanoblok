@@ -192,6 +192,10 @@ function Key (evt) {
 		if (evt.keyCode == 16) {
 			$C.palette.fade(true);
 		}
+		// ESCKEY to hide dialogs.
+		if (evt.keyCode == 27) {
+			Dialog.hide();
+		}
 		// debug (RKEY)
 		if (evt.keyCode == 69) {
 			$C.renderer.render();

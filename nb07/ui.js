@@ -163,5 +163,6 @@ function drawUI () {
 	moveElement('saveBG', {move: {x: savePos.x, y: savePos.y}, skewX: -116.565});
 	
 	moveElement('dialogLeft', {move: {x: $C.edges.left + 30, y: $C.edges.fullTop + $C.gridSize.y / 2 + 70},  skewY: -26.565, height: $C.gridSize.y * 2 - 40, width: $C.gridSize.x / 2 - 30});
+	moveElement('alertText', {move: {x: $C.edges.left + $C.gridSize.x / 2 - 110, y: $C.edges.fullTop + $C.gridSize.y + 90},  skewY: -26.565, height: $C.gridSize.y - 40, width: $C.gridSize.x / 4 - 30});
 }
 

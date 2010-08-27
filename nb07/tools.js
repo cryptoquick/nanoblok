@@ -46,11 +46,8 @@ var Tools = function () {
 			Dialog.hide();
 		}
 		else {
-			Dialog.show();
+			Dialog.show('dialog');
 		}
-		// loadField();
-		// drawBlocks();
-		// loggit("Blocks loaded.");
 	}
 	
 	// Refresh button.
