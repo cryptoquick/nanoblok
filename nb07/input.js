@@ -208,6 +208,12 @@ function Key (evt) {
 		if (evt.keyCode == 82) {
 			$C.renderer.render();
 		}
+		// example (EKEY)
+		if (evt.keyCode == 69) {
+			Field = JSON.parse(example1);
+			rebuild();
+			console.log('rebuilding model');
+		}
 	}
 	
 	if (evt.type == "keyup") {

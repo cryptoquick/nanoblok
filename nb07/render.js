@@ -2,6 +2,54 @@ var Renderer = function () {
 	this.canvas = document.getElementById('renderer');
 	this.ctx = context('renderer');
 	
+	this.scale = 2;
+	this.rectPoints = [];
+	
+	this.buildRectPoints = function () {
+		var rectPoints = {x: 0, y: 0, z: 0, w: 0, h: 0, c: null};
+		
+		for (var i = 0, ii = Field.length; i < ii; i++) {
+			rectPoints.x = Field[i][0] * this.scale;
+			rectPoints.y = Field[i][1] * this.scale;
+			rectPoints.z = Field[i][2] * this.scale;
+			rectPoints.w = this.scale;
+			rectPoints.h = this.scale;
+			rectPoints.c = SwatchField[Field[i][3]][3];
+			
+			this.rectPoints.push(rectPoints);
+		}
+	}
+	
+	this.transformPoints = function () {
+		
+	}
+	
+	this.rectMask = [];
+	
+	this.renderRects = function () {
+		// Create rectMask 2D array
+		for (var i = 0; i < 64 * 64; i++) {
+			// if () {
+				this.rectMask.push(Math.floor(this.rectPoints[i].z));
+			// }
+		}
+		
+		var it = 0;
+		
+		for (var y = 0; y < 64; y++) {
+			for (var x = 0; x < 64; x++) {
+				this.rectMask[it]
+			}
+			
+			it++;
+		}
+	}
+	
+	this.render = function () {
+		this.buildRectPoints();
+		this.renderRects();
+	}
+	
 	this.test = function () {
 		var ctx = context('grids');
 		ctx.fillStyle = 'orange';
@@ -10,7 +58,7 @@ var Renderer = function () {
 		console.log(img);
 	}
 	
-	this.render = function () {
+	this.pixrender = function () {
 		this.clear();
 		
 		var color = {r: 255, g: 255, b: 255};
