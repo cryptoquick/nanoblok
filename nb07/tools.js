@@ -37,7 +37,6 @@ var Tools = function () {
 	// Save button.
 	this.save = function () {
 		saveField();
-		loggit("Blocks saved.");
 	}
 	
 	// Load button.

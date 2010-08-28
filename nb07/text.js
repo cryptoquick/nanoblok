@@ -42,3 +42,11 @@ function addtext (element, str) {
 	return textElement;
 }
 
+// Thanks to Matt Thommes: http://matthom.com/archive/2007/05/03/removing-all-child-nodes-from-an-element
+function removetext (element) {
+	if (element.hasChildNodes()) {
+		while (element.childNodes.length >= 1) {
+			element.removeChild(element.firstChild);
+		}
+	}
+}

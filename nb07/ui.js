@@ -164,5 +164,7 @@ function drawUI () {
 	
 	moveElement('dialogLeft', {move: {x: $C.edges.left + 30, y: $C.edges.fullTop + $C.gridSize.y / 2 + 70},  skewY: -26.565, height: $C.gridSize.y * 2 - 40, width: $C.gridSize.x / 2 - 30});
 	moveElement('alertText', {move: {x: $C.edges.left + $C.gridSize.x / 2 - 110, y: $C.edges.fullTop + $C.gridSize.y + 90},  skewY: -26.565, height: $C.gridSize.y - 40, width: $C.gridSize.x / 4 - 30});
+	moveElement('alertButton', {move: {x: $C.edges.left + $C.gridSize.x / 2 + 3, y: $C.edges.fullTop + $C.gridSize.y + 27},  skewY: 26.565, height: 30, width: 100});
+	moveElement('alertButtonText', {move: {x: $C.edges.left + $C.gridSize.x / 2 + 3, y: $C.edges.fullTop + $C.gridSize.y + 27},  skewY: 26.565, height: 30, width: 100});
 }
 

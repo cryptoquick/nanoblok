@@ -12,8 +12,11 @@ var Dialog = {
 		this.dialogEl = document.getElementById('dialog');
 		this.alertEl = document.getElementById('alert');
 		
+		// Load Dialog
 		this.verts(10, 'dialogOuter');
 		this.verts(20, 'dialogInner');
+		
+		// Alert Window
 		this.verts(200, 'alertOuter');
 		this.verts(210, 'alertInner');
 		
@@ -106,7 +109,21 @@ var Dialog = {
 	alert: function (msg) {
 		this.show('alert');
 		var alertText = document.getElementById('alertText');
+		removetext(alertText);
 		addtext(alertText, msg);
+	},
+	
+	alertHighlight: false,
+	
+	alertButton: function (highlight) {
+		var alertButton = document.getElementById('alertButton');
+		
+		if (highlight) {
+			alertButton.setAttributeNS(null, 'fill', '#eee');
+		}
+		else {
+			alertButton.setAttributeNS(null, 'fill', '#ddd');
+		}
 	}
 };
 

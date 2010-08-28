@@ -55,6 +55,8 @@ function saveField () {
 		data = JSON.stringify(dbData);
 	
 		makeXHR("save", data);
+		
+		loggit("Blocks saved.");
 	}
 }
 

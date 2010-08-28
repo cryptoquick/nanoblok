@@ -10,7 +10,7 @@
  * XHTML format with SVG-prefixed namespaces, because SVG with HTML5 Canvas is harder to pull off (and performs poorly).
  */
 -->
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg" xmlns:html="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta http-equiv="Content-Style-Type" content="text/css"/>
@@ -100,16 +100,16 @@
 		</svg:g>
 	</svg:g>
 	
-	<svg:g id="nanoblok-logo" stroke-width="1" fill-opacity="1" stroke-opacity="1" transform="scale(3)">
-		<svg:path d="M 5 10 L 5 20 L 15 25 L 15 15 Z" fill="rgb(42, 197, 18)" id="left" fill-opacity="1"/>
-		<svg:path d="M 15 15 L 15 25 L 25 20 L 25 10 Z" fill="rgb(62, 217, 38)" id="right" fill-opacity="1"/>
-		<svg:path d="M 5 10 L 15 15 L 25 10 L 15 5 Z" fill="rgb(82, 237, 58)" id="top" fill-opacity="1"/>
-		<svg:path d="M 5 10 L 5 20 L 15 25 L 25 20 L 25 10 L 15 5 Z" stroke="#444" fill="none"/>
-	</svg:g>
+	<svg:a id="logoLink" xlink:href="http://code.google.com/p/nanoblok/" onmouseover="document.getElementById('logoText').setAttributeNS(null, 'fill', '#444')" onmouseout="document.getElementById('logoText').setAttributeNS(null, 'fill', 'white')">
+		<svg:g id="nanoblok-logo" stroke-width="1" fill-opacity="1" stroke-opacity="1" transform="scale(3)" >
+			<svg:path d="M 5 10 L 5 20 L 15 25 L 15 15 Z" fill="rgb(42, 197, 18)" id="left" fill-opacity="1"/>
+			<svg:path d="M 15 15 L 15 25 L 25 20 L 25 10 Z" fill="rgb(62, 217, 38)" id="right" fill-opacity="1"/>
+			<svg:path d="M 5 10 L 15 15 L 25 10 L 15 5 Z" fill="rgb(82, 237, 58)" id="top" fill-opacity="1"/>
+			<svg:path d="M 5 10 L 5 20 L 15 25 L 25 20 L 25 10 L 15 5 Z" stroke="#444" fill="none"/>
+		</svg:g>
+		<svg:text id="logoText" x="49" y="90" font-family="Verdana" font-size="16" font-weight="bold" fill="white" stroke="none" transform="skewY(-26.565)">nb</svg:text>
+	</svg:a>
 	
-	<svg:text id="logoText" x="49" y="90" font-family="Verdana" font-size="16" font-weight="bold" fill="white" stroke="none"
-		transform="skewY(-26.565)">nb</svg:text>
-		
 	<svg:g id="sideButtonsTop" stroke="black" stroke-width="3" stroke-opacity="0.0" fill="orange" fill-opacity="0.5" font-family="Verdana" font-size="14">
 		<svg:rect id="rotLeftButton" x="180" y="1" width="30" height="30" fill="#aaa" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
 		<svg:text id="rotLeftText" x="187" y="24" font-family="Verdana" font-size="18" fill="white" stroke="none" transform="skewY(26.565)" fill-opacity="1.0">&#8635;</svg:text>
@@ -159,6 +159,8 @@
 		<svg:path id="alertOuter" fill="#333" fill-opacity="0.3"></svg:path>
 		<svg:path id="alertInner" fill="#eee" fill-opacity="1.0"></svg:path>
 		<svg:text id="alertText" font-family="Verdana" font-size="12" fill="#666"></svg:text>
+		<svg:rect id="alertButton" stroke="#444" fill="#ddd" rx="2" onmouseover="Dialog.alertButton(true)" onmouseout="Dialog.alertButton(false)"></svg:rect>
+		<svg:text id="alertButtonText" x="30" y="20" font-family="Verdana" font-size="12" fill="#666">Cancel</svg:text>
 	</svg:g>
 </svg:svg>
 
