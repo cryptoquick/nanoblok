@@ -33,10 +33,14 @@ class MainHandler(webapp.RequestHandler):
 			else:
 				self.redirect(users.create_login_url(self.request.path))
 		else:
-			template_values = { }
-			self.response.headers['Content-Type'] = "application/xhtml+xml"
-			path = os.path.join(os.path.dirname(__file__), "index.xhtml")
-			self.response.out.write(template.render(path, template_values))
+			user = users.get_current_user()
+			if user:
+				template_values = { }
+				self.response.headers['Content-Type'] = "application/xhtml+xml"
+				path = os.path.join(os.path.dirname(__file__), "index.xhtml")
+				self.response.out.write(template.render(path, template_values))
+			else:
+				self.redirect(users.create_login_url(self.request.path))
 
 
 class ListHandler(webapp.RequestHandler):
