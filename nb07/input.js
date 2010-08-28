@@ -105,6 +105,11 @@ function Click (evt) {
 	{
 		placeBlock(target);
 	}
+	
+	// UI Elements
+	if (target.id == 'alertButton' || target.id == 'alertButtonText') {
+		Dialog.hide();
+	}
 }
 
 // Gets hover events from its corresponding event listener, including whether the user hovered in or out of the object.
@@ -132,6 +137,7 @@ function Hover (evt, inout) {
 		$C.posInd.redraw();
 	}
 	
+	// UI Elements
 	if (target.id == 'leftList') {
 		Dialog.highlight(target);
 	}
@@ -192,12 +198,14 @@ function Key (evt) {
 		if (evt.keyCode == 16) {
 			$C.palette.fade(true);
 		}
-		// ESCKEY to hide dialogs.
-		if (evt.keyCode == 27) {
-			Dialog.hide();
+		// ESCKEY or ENTER to hide dialogs.
+		if (Dialog.showing) {
+			if (evt.keyCode == 27 || evt.keyCode == 13) {
+				Dialog.hide();
+			}
 		}
 		// debug (RKEY)
-		if (evt.keyCode == 69) {
+		if (evt.keyCode == 82) {
 			$C.renderer.render();
 		}
 	}
