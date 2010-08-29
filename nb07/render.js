@@ -5,6 +5,49 @@ var Renderer = function () {
 	this.scale = 2;
 	this.rectPoints = [];
 	
+	this.bufferMask = [];
+	
+	this.octree = [];
+	this.scale = 32;
+	this.depth = 0;
+	
+	this.buildOctree = function () {
+		var date0 = new Date();
+		// First, find how deep the octrees should go. For a 32vx object, this is 5.
+		var level = this.scale;
+		while (level > 1) {
+			level /= 2;
+			this.depth++;
+		}
+		
+		this.octree = this.recursiveArray([], 5, 8);
+		
+		var temp = [];
+		
+		var date1 = new Date();
+		console.log('time: ' + (date1 - date0));
+	}
+	
+	this.recursiveArray = function (array, depth, leaves) {
+		var temp = [];
+		
+		if (depth > 0) {
+			for (var node = 0; node < leaves; node++) {
+				temp.push(array);
+			}
+			return (this.recursiveArray(temp, depth - 1, leaves));
+		}
+		else {
+			console.log(this.its);
+			return array;
+		}
+	}
+	
+	this.findDepthBuffer = function () {
+		// find top Voxels
+		
+	}
+	
 	this.buildRectPoints = function () {
 		var rectPoints = {x: 0, y: 0, z: 0, w: 0, h: 0, c: null};
 		
@@ -46,8 +89,8 @@ var Renderer = function () {
 	}
 	
 	this.render = function () {
-		this.buildRectPoints();
-		this.renderRects();
+		// this.buildRectPoints();
+		// this.renderRects();
 	}
 	
 	this.test = function () {

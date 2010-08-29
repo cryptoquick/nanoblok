@@ -42,7 +42,7 @@ function saveField () {
 	if (title == '') {
 		Dialog.alert('No title entered.');
 	}
-	else if (Field == []) {
+	else if (Field.length == 0) {
 		Dialog.alert('No blocks to save.');
 	}
 	else {
