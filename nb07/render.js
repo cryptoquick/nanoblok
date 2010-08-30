@@ -12,23 +12,20 @@ var Renderer = function () {
 	this.depth = 0;
 	
 	this.buildOctree = function () {
-		var date0 = new Date();
 		// First, find how deep the octrees should go. For a 32vx object, this is 5.
+		this.depth = 0;
 		var level = this.scale;
 		while (level > 1) {
 			level /= 2;
 			this.depth++;
 		}
 		
-		this.octree = this.recursiveArray([], 5, 8);
-		
-		var temp = [];
-		
-		var date1 = new Date();
-		console.log('time: ' + (date1 - date0));
+		// Then, build your octree. Eight for the octants.
+		this.octree = this.recursiveArray(this.depth, 8, []);
 	}
 	
-	this.recursiveArray = function (array, depth, leaves) {
+	// This function works backwards, creating an array of eight leaves, then pushing several of those to a new array of nodes, recursively.
+	this.recursiveArray = function (depth, leaves, array) {
 		var temp = [];
 		
 		if (depth > 0) {
@@ -38,9 +35,79 @@ var Renderer = function () {
 			return (this.recursiveArray(temp, depth - 1, leaves));
 		}
 		else {
-			console.log(this.its);
 			return array;
 		}
+	}
+	
+	this.scales = [];
+	this.rscales = [];
+	
+	this.convertVoxels = function () {
+		var octree = new Array(Field.length);
+		
+		for (var i = 0, ii = this.depth; i < ii; i++) {
+			this.scales.push(Math.pow(2, i));
+		}
+		for (var i = this.depth - 1; i >= 0; i--) {
+			this.rscales.push(Math.pow(2, i));
+		}
+		
+		for (var i = 0, ii = Field.length; i < ii; i++) {
+			// ind = new Array(6);
+			// octree[i] = this.saveVoxel(Field[i], this.depth, ind);
+			octree[i] = this.saveVoxel(Field[i], this.depth - 1, []);
+		}
+		
+		this.octree = octree;
+		console.log(octree);
+	}
+	
+	this.iterations = 0;
+	
+	// Saves the voxel in the appropriate spot in the octree array.
+	// Indices in the octree array, in order of scale.
+	this.saveVoxel = function (vox, level, indices) {
+		var x = vox[0];
+		var y = vox[1];
+		var z = vox[2];
+		
+		// var pos = {x: 0, y: 0, z: 0};
+		var index = 0;
+		
+		if (level >= 0) {
+			(x / this.scales[level] > this.rscales[level]) ? index += 1 : index += 0;
+			(y / this.scales[level] > this.rscales[level]) ? index += 2 : index += 0;
+			(z / this.scales[level] > this.rscales[level]) ? index += 4 : index += 0;
+			
+			// indices[level] = index;
+			indices.push(index);
+			console.log('level:' + level + ' scale:' + this.scales[level] + ' x: ' + x / this.scales[level] + ', ' + index);
+			// console.log(level + ': ' + x + ', ' + y + ', ' + z);
+			// console.log('x: ' + x / level > scale);
+			// this.iterations++;
+			// console.log('iterations: ' + this.iterations);
+			return (this.saveVoxel(vox, level - 1, indices));
+		}
+		else {
+			return indices;
+		}
+	}
+	
+	this.recursiveVoxels = function (vox, level) {
+		if (level > 1) {
+			
+			return (this.recursiveVoxels(vox, level / 2));
+		}
+	}
+	
+	this.render = function () {
+		var date0 = new Date();
+		
+		this.buildOctree();
+		this.convertVoxels();
+		
+		var date1 = new Date();
+		console.log('time: ' + (date1 - date0));
 	}
 	
 	this.findDepthBuffer = function () {
@@ -86,11 +153,6 @@ var Renderer = function () {
 			
 			it++;
 		}
-	}
-	
-	this.render = function () {
-		// this.buildRectPoints();
-		// this.renderRects();
 	}
 	
 	this.test = function () {
