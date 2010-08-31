@@ -3,7 +3,7 @@ var Dialog = {
 	alertEl: {},
 	showing: false,
 	active: 'none',
-	
+	json: '[]',
 	testString: '[{"title":"","url":"/load/ag9uYW5vYmxvay1lZGl0b3JyDQsSBlNwcml0ZRiVTgw"},{"title":"","url":"/load/ag9uYW5vYmxvay1lZGl0b3JyDgsSBlNwcml0ZRjK3AMM"},{"title":"","url":"/load/ag9uYW5vYmxvay1lZGl0b3JyDgsSBlNwcml0ZRjxogQM"}]',
 	
 	data: [],
@@ -66,6 +66,7 @@ var Dialog = {
 	
 	show: function (type) {
 		if (type == 'dialog' && !this.showing) {
+			this.print();
 			this.dialogEl.style.display = 'inline';
 			this.showing = true;
 		}
@@ -86,11 +87,16 @@ var Dialog = {
 		var headerText = 'Choose a model:';
 		var dialogLeft = document.getElementById('dialogLeft');
 		
+		removetext(dialogLeft);
 		addtext(dialogLeft, headerText);
 		
+		this.data = JSON.parse(this.json);
+		
 		for (var i = 0, ii = this.data.length; i < ii; i++) {
-			var textElement = maketext(dialogLeft, '- ' + this.data[i].title);
+			var textElement = addtext(dialogLeft, '- ' + this.data[i].title);
 			textElement.setAttributeNS(null, 'id', 'leftList');
+			console.log(this.data[i].url);
+			textElement.setAttributeNS(null, 'url', this.data[i].url);
 		}
 	},
 	

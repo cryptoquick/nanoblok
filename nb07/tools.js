@@ -45,7 +45,7 @@ var Tools = function () {
 			Dialog.hide();
 		}
 		else {
-			Dialog.show('dialog');
+			listFields();
 		}
 	}
 	

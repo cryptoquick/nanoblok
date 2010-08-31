@@ -138,8 +138,22 @@ function canvasBlock (position, location, color) {
 		Arr = Voxel;
 	}
 	
-	// Top side. Always placed, unless there's a block above it. 
-	if (Arr[location.x][location.y][location.z + 1] == -1) {
+	// Top side. Always placed, unless there's a block above it.
+	// Top block.
+	/*
+	var top = false;
+	
+	for (var i = location.z, ii = 32; i < ii; i++) {
+		if (Arr[location.x][location.y][i] == -1) {
+			top = true;
+		}
+		else {
+			top = false;
+			break;
+		}
+	} */
+	
+	if (Arr[location.x][location.y][location.z + 1] == -1) { // && top) {
 		canvasDrawSet([1, 6, 7, 2], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
 	}
 	// Always draw top if block above it is invisible.
@@ -278,3 +292,4 @@ function rebuild () {
 	drawAllBlocks();
 	$C.posInd.redraw();
 }
+
