@@ -144,6 +144,7 @@ function Hover (evt, inout) {
 }
 
 // var shiftPressed;
+var ex = 0;
 
 function Key (evt) {
 	ctrlPressed = evt.ctrlKey;
@@ -208,9 +209,18 @@ function Key (evt) {
 		if (evt.keyCode == 82) {
 			$C.renderer.render();
 		}
+		
 		// example (EKEY)
 		if (evt.keyCode == 69) {
-			Field = JSON.parse(example1);
+			if (ex < Examples.length) {
+				Field = JSON.parse(Examples[ex]);
+				ex++;
+			}
+			else {
+				ex = 0;
+				Field = JSON.parse(Examples[ex]);
+				ex++;
+			}
 			rebuild();
 			console.log('rebuilding model');
 		}
