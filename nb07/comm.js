@@ -1,4 +1,4 @@
-function makeXHR (operation, data) {
+function makeXHR (type, operation, data, callback) {
 	var newData;
 	var status = -1;
 	var request = new XMLHttpRequest();
@@ -6,32 +6,22 @@ function makeXHR (operation, data) {
 		loggit("Unable to connect.");
 	}
 	
+	request.open(type, operation, true);
+	request.setRequestHeader("Content-type", "application/json");
+	// console.log(type + ", directory: /" + operation + ", data: " + data);
+	
 	request.onreadystatechange = function () {
-		if (request.readyState == 4) {
-			try {
-				status = request.status;
-			}
-			catch (e) {};
-			
-			if (status == 200) {
-				newData = request.responseText;
-			}
+		if (request.readyState == 4 && request.status == 200) {
+			newData = request.responseText;
+			callback(newData);
 		}
 	}
-	
-	request.open("POST", "/" + operation, true);
-	console.log("POST, directory: /" + operation + ", data: " + data);
-	
-	request.setRequestHeader("Content-type", "application/json");
 	
 	try {
 		request.send(data);
 	} catch (e) {
-		changeStatus(e);
+		console.log(e);
 	}
-	
-	console.log(newData);
-	return newData;
 }
 
 // Serialization.
@@ -60,10 +50,34 @@ function saveField () {
 	}
 }
 
+function listFields () {
+	makeXHR("GET", "list", null, populateList);
+}
+
+function populateList (listData) {
+	if (listData != undefined) {
+		console.log(listData + ', adding json.');
+		Dialog.json = listData;
+		Dialog.show('dialog');
+	}
+	else {
+		console.log(listData);
+		loggit('There was an error listing.');
+	}
+}
+
 // Deserialization.
-function loadField () {
-	var fieldString = makeXHR("load", fieldString);
-	Field = JSON.parse(fieldString);
+function loadModel (url) {
+	var fieldString = makeXHR("GET", url, null, loadField);
+	// Field = JSON.parse(fieldString);
+}
+
+function loadField (loadData) {
+	var loadString = JSON.parse(loadData);
+	document.getElementById('saveTitle').value = loadString.title;
+	Field = loadString.Field;
+	Dialog.hide();
+	rebuild();
 }
 
 // Temporary solution.
@@ -72,3 +86,4 @@ function imageCanvas () {
 	
 	return dataURL;
 }
+

@@ -49,13 +49,13 @@ class ListHandler(webapp.RequestHandler):
 		if user:
 			self.response.headers['Content-Type'] = 'application/json; charset=utf-8'
 			q = Sprite.all().filter("user =", user)
-			self.response.out.write("{[")
+			self.response.out.write("[")
 			objs = []
 			for s in q:
 				objs.append("{\"title\":\"%s\",\"url\":\"/load/%s\"}" % (s.name, s.key()))
 			
 			self.response.out.write(",".join(objs))
-			self.response.out.write("]}")
+			self.response.out.write("]")
 		else:
 			self.redirect(users.create_login_url(self.request.path))
 

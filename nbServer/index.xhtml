@@ -10,17 +10,32 @@
  * XHTML format with SVG-prefixed namespaces, because SVG with HTML5 Canvas is harder to pull off (and performs poorly).
  */
 -->
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg" xmlns:html="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta http-equiv="Content-Style-Type" content="text/css"/>
 
-	<title>Nanoblok r0.7 Alpha 0.1</title>
+	<title>Nanoblok Open Alpha 1</title>
 
 	<link rel="icon" href="favicon.ico" type="image/x-icon"/> 
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 
-	<script type="text/javascript" src="nanoblok.js"></script>
+	<script type="text/javascript" src="data.js"></script>
+	<script type="text/javascript" src="text.js"></script>
+	<script type="text/javascript" src="grid.js"></script>
+	<script type="text/javascript" src="block.js"></script>
+	<script type="text/javascript" src="effects.js"></script>
+	<script type="text/javascript" src="ui.js"></script>
+	<script type="text/javascript" src="input.js"></script>
+	<script type="text/javascript" src="tools.js"></script>
+	<script type="text/javascript" src="color.js"></script>
+	<script type="text/javascript" src="selection.js"></script>
+	<script type="text/javascript" src="comm.js"></script>
+	<script type="text/javascript" src="render.js"></script>
+	<script type="text/javascript" src="dialog.js"></script>
+	<script type="text/javascript" src="main.js"></script>
+	<!-- examples -->
+	<script type="text/javascript" src="examples.js"></script>
 	
 	<style>
 		body {
@@ -33,15 +48,31 @@
 			position: absolute;
 			z-index: -2;
 		}
-		#display {
+		#display, #renderer {
 			display: block;
 			z-index: -1;
 		}
 		::selection { background: transparent; }
 		::-moz-selection { background: transparent; }
-		#infoz {
-			display: none;
-			width: 100%;
+		#dialogSave {
+			position: absolute;
+			left: 500px;
+			top: 500px;
+			display: block;
+			width: 170px;
+			height: 50px;
+			/*	background-color: #FFD27F; */
+			background-color: none;
+			font-size: 12px;
+			font-family: "Verdana";
+			color: #fff;
+			text-align: right;
+			padding: 4px;
+		}
+		#dialogSave form input {
+			border: solid #999 1px;
+			width: 10em;
+			margin: 4px;
 		}
 	</style>
 </head>
@@ -71,21 +102,21 @@
 		</svg:g>
 	</svg:g>
 	
-	<svg:g id="nanoblok-logo" stroke-width="1" fill-opacity="1" stroke-opacity="1" transform="scale(3)">
-		<svg:path d="M 5 10 L 5 20 L 15 25 L 15 15 Z" fill="rgb(42, 197, 18)" id="left" fill-opacity="1"/>
-		<svg:path d="M 15 15 L 15 25 L 25 20 L 25 10 Z" fill="rgb(62, 217, 38)" id="right" fill-opacity="1"/>
-		<svg:path d="M 5 10 L 15 15 L 25 10 L 15 5 Z" fill="rgb(82, 237, 58)" id="top" fill-opacity="1"/>
-		<svg:path d="M 5 10 L 5 20 L 15 25 L 25 20 L 25 10 L 15 5 Z" stroke="#444" fill="none"/>
-	</svg:g>
+	<svg:a id="logoLink" xlink:href="http://code.google.com/p/nanoblok/" onmouseover="document.getElementById('logoText').setAttributeNS(null, 'fill', '#444')" onmouseout="document.getElementById('logoText').setAttributeNS(null, 'fill', 'white')">
+		<svg:g id="nanoblok-logo" stroke-width="1" fill-opacity="1" stroke-opacity="1" transform="scale(3)" >
+			<svg:path d="M 5 10 L 5 20 L 15 25 L 15 15 Z" fill="rgb(42, 197, 18)" id="left" fill-opacity="1"/>
+			<svg:path d="M 15 15 L 15 25 L 25 20 L 25 10 Z" fill="rgb(62, 217, 38)" id="right" fill-opacity="1"/>
+			<svg:path d="M 5 10 L 15 15 L 25 10 L 15 5 Z" fill="rgb(82, 237, 58)" id="top" fill-opacity="1"/>
+			<svg:path d="M 5 10 L 5 20 L 15 25 L 25 20 L 25 10 L 15 5 Z" stroke="#444" fill="none"/>
+		</svg:g>
+		<svg:text id="logoText" x="49" y="90" font-family="Verdana" font-size="16" font-weight="bold" fill="white" stroke="none" transform="skewY(-26.565)">nb</svg:text>
+	</svg:a>
 	
-	<svg:text id="logoText" x="49" y="90" font-family="Verdana" font-size="16" font-weight="bold" fill="white" stroke="none"
-		transform="skewY(-26.565)">nb</svg:text>
-		
 	<svg:g id="sideButtonsTop" stroke="black" stroke-width="3" stroke-opacity="0.0" fill="orange" fill-opacity="0.5" font-family="Verdana" font-size="14">
 		<svg:rect id="rotLeftButton" x="180" y="1" width="30" height="30" fill="#aaa" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
-		<svg:text id="rotLeftText" x="187" y="24" font-family="Verdana" font-size="18" fill="white" transform="skewY(26.565)" fill-opacity="1.0">&#8635;</svg:text>
+		<svg:text id="rotLeftText" x="187" y="24" font-family="Verdana" font-size="18" fill="white" stroke="none" transform="skewY(26.565)" fill-opacity="1.0">&#8635;</svg:text>
 		<svg:rect id="rotRightButton" x="180" y="38" width="30" height="30" fill="#aaa" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
-		<svg:text id="rotRightText" x="187" y="60" font-family="Verdana" font-size="18" fill="white" transform="skewY(26.565)" fill-opacity="1.0">&#8634;</svg:text>
+		<svg:text id="rotRightText" x="187" y="60" font-family="Verdana" font-size="18" fill="white" stroke="none" transform="skewY(26.565)" fill-opacity="1.0">&#8634;</svg:text>
 	</svg:g>
 	
 	<svg:g id="sideButtonsLeft">
@@ -117,9 +148,30 @@
 	<svg:g id="sideColorsRight" stroke="black" stroke-width="3" stroke-opacity="0.0"></svg:g>
 	
 	<svg:g id="markerPoints" fill="red" fill-opacity="0.0"></svg:g>
+	
+	<svg:rect id="saveBG" height="58" width="250" rx="3" transform="skewY(26.565)" fill="orange" fill-opacity="0.5"></svg:rect>
+	<!-- #aaa -->
+	<svg:g id="dialog">
+		<svg:path id="dialogOuter" fill="#333" fill-opacity="0.3"></svg:path>
+		<svg:path id="dialogInner" fill="#eee" fill-opacity="1.0"></svg:path>
+		<svg:rect id="debugDialog" fill="#333" fill-opacity="0.5" rx="5"/>
+		<svg:text id="dialogLeft" font-family="Verdana" font-size="12" fill="#666"></svg:text>
+	</svg:g>
+	<svg:g id="alert">
+		<svg:path id="alertOuter" fill="#333" fill-opacity="0.3"></svg:path>
+		<svg:path id="alertInner" fill="#eee" fill-opacity="1.0"></svg:path>
+		<svg:text id="alertText" font-family="Verdana" font-size="11" fill="#666"></svg:text>
+		<svg:rect id="alertButton" stroke="#444" fill="#ddd" rx="2" onmouseover="Dialog.alertButton(true)" onmouseout="Dialog.alertButton(false)"></svg:rect>
+		<svg:text id="alertButtonText" x="30" y="20" font-family="Verdana" font-size="12" fill="#666">Cancel</svg:text>
+	</svg:g>
 </svg:svg>
 
-<div id="infoz"></div>
+<div id="dialogSave">
+	<form>
+		Author<input id="saveAuthor" type="text" style="width:100px"></input><br/>
+		Title<input id="saveTitle" type="text" style="width:100px"></input>
+	</form>
+</div>
 
 </body>
 </html>

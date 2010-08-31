@@ -110,6 +110,9 @@ function Click (evt) {
 	if (target.id == 'alertButton' || target.id == 'alertButtonText') {
 		Dialog.hide();
 	}
+	if (target.id == 'leftList') {
+		loadModel(target.getAttribute('url'));
+	}
 }
 
 // Gets hover events from its corresponding event listener, including whether the user hovered in or out of the object.
@@ -148,81 +151,81 @@ var ex = 0;
 
 function Key (evt) {
 	ctrlPressed = evt.ctrlKey;
-	// shiftPressed = evt.shiftKey;
-	
-	// if (shiftPressed) {
-	// 	$C.palette.cross(evt.type);
-	// }
 	
 	// console.log(evt.keyCode);
 	
 	if (evt.type == "keydown") {
-		// DKEY for delete.
-		if (evt.keyCode == 68) {
-			$C.tools.remove();
-		}
-		// CKEY for color cube.
-		if (evt.keyCode == 67) {
-			$C.tools.swatch();
-		}
-		// FKEY for fill.
-		if (evt.keyCode == 70) {
-			$C.tools.fill();
-		}
-		// SKEY for select.
-		if (evt.keyCode == 83 && !ctrlPressed) {
-			$C.tools.select();
-		}
-		// UP and DOWN arrows for changing Z level.
-		if (evt.keyCode == 38) {
-			$C.tools.gridUp();
-		}
-		if (evt.keyCode == 40) {
-			$C.tools.gridDown();
-		}
-		// LEFT and RIGHT arrows for rotation.
-		if (evt.keyCode == 37) {
-			$C.tools.rotLeft();
-		}
-		if (evt.keyCode == 39) {
-			$C.tools.rotRight();
-		}
-		// CTRL+SKEY for save.
-		if (evt.keyCode == 83 && ctrlPressed) {
-			$C.tools.save();
-		}
-		// CTRL+LKEY for load.
-		if (evt.keyCode == 76 && ctrlPressed) {
-			$C.tools.load();
-		}
-		// SHIFTKEY for toggle options.
-		if (evt.keyCode == 16) {
-			$C.palette.fade(true);
-		}
-		// ESCKEY or ENTER to hide dialogs.
-		if (Dialog.showing) {
-			if (evt.keyCode == 27 || evt.keyCode == 13) {
-				Dialog.hide();
+		if (!$C.titleFieldSelected) {
+			// DKEY for delete.
+			if (evt.keyCode == 68) {
+				$C.tools.remove();
 			}
-		}
-		// debug (RKEY)
-		if (evt.keyCode == 82) {
-			$C.renderer.render();
-		}
-		
-		// example (EKEY)
-		if (evt.keyCode == 69) {
-			if (ex < Examples.length) {
-				Field = JSON.parse(Examples[ex]);
-				ex++;
+			// CKEY for color cube.
+			if (evt.keyCode == 67) {
+				$C.tools.swatch();
 			}
-			else {
-				ex = 0;
-				Field = JSON.parse(Examples[ex]);
-				ex++;
+			// FKEY for fill.
+			if (evt.keyCode == 70) {
+				$C.tools.fill();
 			}
-			rebuild();
-			console.log('rebuilding model');
+			// SKEY for select.
+			if (evt.keyCode == 83 && !ctrlPressed) {
+				$C.tools.select();
+			}
+			// UP and DOWN arrows for changing Z level.
+			if (evt.keyCode == 38) {
+				$C.tools.gridUp();
+			}
+			if (evt.keyCode == 40) {
+				$C.tools.gridDown();
+			}
+			// LEFT and RIGHT arrows for rotation.
+			if (evt.keyCode == 37) {
+				$C.tools.rotLeft();
+			}
+			if (evt.keyCode == 39) {
+				$C.tools.rotRight();
+			}
+			// CTRL+SKEY for save.
+			if (evt.keyCode == 83 && ctrlPressed) {
+				$C.tools.save();
+			}
+			// CTRL+LKEY for load.
+			if (evt.keyCode == 76 && ctrlPressed) {
+				$C.tools.load();
+			}
+			// SHIFTKEY for toggle options.
+			if (evt.keyCode == 16) {
+				$C.palette.fade(true);
+			}
+			// ESCKEY or ENTER to hide dialogs.
+			if (Dialog.showing) {
+				if (evt.keyCode == 27 || evt.keyCode == 13) {
+					Dialog.hide();
+				}
+			}
+			// debug (RKEY)
+			if (evt.keyCode == 82) {
+				// $C.renderer.render();
+				var temp = JSON.stringify(Field);
+				Field = JSON.parse(temp);
+				rebuild();
+				loggit('Model rebuilt. (sorry!)');
+			}
+			// example (EKEY)
+			if (evt.keyCode == 69) {
+				if (ex < Examples.length) {
+					Field = JSON.parse(Examples[ex]);
+					ex++;
+				}
+				else {
+					ex = 0;
+					Field = JSON.parse(Examples[ex]);
+					ex++;
+				}
+				rebuild();
+				console.log('rebuilding model');
+			}
 		}
 	}
 	
