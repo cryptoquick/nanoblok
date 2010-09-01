@@ -592,10 +592,12 @@ function saveField () {
 	
 		data = JSON.stringify(dbData);
 	
-		makeXHR("save", data);
-		
-		loggit("Blocks saved.");
+		makeXHR("POST", "save", data, successfulSave);
 	}
+}
+
+function successfulSave () {
+	loggit("Blocks saved.");
 }
 
 function listFields () {
