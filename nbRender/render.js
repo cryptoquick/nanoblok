@@ -1,10 +1,28 @@
 // Pixel Width
-var pX = 4;
-var pY = 4;
+var pX = 2;
+var pY = 2;
 var dbg0 = 0;
 var dbg1 = 1;
 
-function Render () {
+function RectRender() {
+	var canvas = document.getElementById('nbRender');
+	var ctx = canvas.getContext('2d');
+	
+	for (var x = 0; x < Math.floor(canvas.width / pX); x++) {
+		for (var y = 0; y < Math.floor(canvas.height / pY); y++) {
+			var xx = x % 32;
+			var yy = y % 32;
+			
+			ctx.fillStyle = "rgb(" +
+				SwatchField[Swatch[xx][yy][0]][3].r + "," +
+				SwatchField[Swatch[xx][yy][0]][3].g + "," +
+				SwatchField[Swatch[xx][yy][0]][3].b + ")";
+			ctx.fillRect(x * pX, y * pY, pX, pY);
+		}
+	}
+}
+
+function PixelRender () {
 	var canvas = document.getElementById('nbRender');
 	var ctx = canvas.getContext('2d');
 	var canvasData = ctx.getImageData(0, 0, canvas.width, canvas.height);

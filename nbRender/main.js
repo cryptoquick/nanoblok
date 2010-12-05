@@ -6,7 +6,7 @@ function Initialize () {
 	var date0 = new Date();
 	window.$C = new Common();
 	swatchInit();
-	Render();
+	RectRender();
 	var date1 = new Date();
 	console.log("Took " + (date1 - date0) + "ms to render.");
 }
