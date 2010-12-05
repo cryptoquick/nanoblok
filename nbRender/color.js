@@ -19,7 +19,7 @@ function swatchInit () {
 	var index = 0;
 	
 	if ($C.swatchInit === false) {
-		console.log("Initializing Color Array");
+		console.log("Initializing Color Array.");
 		// By inverting this, computation is sped up a great deal.
 		for (var z = -1; z < 32 + 1; z++) {
 			Swatch[z] = new Array();
