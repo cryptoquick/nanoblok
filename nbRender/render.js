@@ -59,14 +59,6 @@ function overhead (field) {
 			pixels[x][y] = {r: 255, g: 255, b: 255};
 			for (var z = 0; z < 32; z++) {
 				if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][z] != null) {
-				//	console.log(pixels
-					
-				/*	var color = {
-						r: SwatchField[example1[0]][3].r,
-						g: SwatchField[example1[1]][3].g,
-						b: SwatchField[example1[2]][3].b
-					}*/
-				
 					pixels[x][y] = voxels[x][y][z];
 					break;
 				}
@@ -75,7 +67,8 @@ function overhead (field) {
 	}
 	
 	console.log('Overhead rendering.');
-	rectRender(pixels);
+//	rectRender(pixels);
+	return pixels;
 }
 
 // Pixel Width
@@ -84,20 +77,13 @@ var pY = 6;
 var dbg0 = 0;
 var dbg1 = 1;
 
-function rectRender(pixArr) {
+function rectRender (pixArr) {
 	var canvas = document.getElementById('nbRender');
 	var ctx = canvas.getContext('2d');
 	
 	for (var x = 0; x < Math.floor(canvas.width / pX); x++) {
 		for (var y = 0; y < Math.floor(canvas.height / pY); y++) {
-		//	var xx = x % 32;
-		//	var yy = y % 32;
-		
 			if (x < 32 && y < 32) {
-			/*	ctx.fillStyle = "rgb(" +
-					SwatchField[Swatch[x][y][0]][3].r + "," +
-					SwatchField[Swatch[x][y][0]][3].g + "," +
-					SwatchField[Swatch[x][y][0]][3].b + ")";*/
 				ctx.fillStyle = "rgb(" +
 					pixArr[x][y].r + "," +
 					pixArr[x][y].g + "," +
@@ -110,74 +96,39 @@ function rectRender(pixArr) {
 	console.log('Rendering model with rects.');
 }
 
-function pixelRender () {
+function pixelRender (pixArr, renderOver) {
 	var canvas = document.getElementById('nbRender');
 	var ctx = canvas.getContext('2d');
 	var canvasData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-	var i = 0;
-	for (var y = 0, yyy = Math.floor(canvasData.height / pY); y < yyy; y += pY)  {
-		var line = [];
-		for (var x = 0, xxx = Math.floor(canvasData.width / pX); x < xxx; x += pX)  {
-			var xx = x % 32;
-			var yy = y % 32;
+	
+	for (var y = 0, yy = canvasData.height; y < yy; y++)  {
+		for (var x = 0, xx = canvasData.width; x < xx; x++)  {
 			
-		//	var i = (x + y * canvasData.width) * 4;
-			var r = 0;
-			var g = 0;
-			var b = 0;
-			var a = 255;
+			var i = (x + y * canvasData.width) * 4;
 			
-			if (xx < 32 && yy < 32) {
-				r = SwatchField[Swatch[xx][yy][0]][3].r;
-				g = SwatchField[Swatch[xx][yy][0]][3].g;
-				b = SwatchField[Swatch[xx][yy][0]][3].b;
+			if (renderOver) {
+				var r = canvasData.data[i + 0];
+				var g = canvasData.data[i + 1];
+				var b = canvasData.data[i + 2];
+				var a = canvasData.data[i + 3];
+			} else {
+				var r, g, b = 255;
+				var a = 0;
 			}
 			
-		//	i -= canvasData.width * 4;
-			
-	//		if (x < 480 && y < 320) {
-			//	var i = (x + y * canvasData.width) * 4;
-			//	if (x % pY) {
-			for (var j = 0, jj = pX; j < jj; j++) {
-				i = (x + (y * (canvasData.width * pY))) * 4;
-				
-				canvasData.data[i + 0] = r;
-				canvasData.data[i + 1] = g;
-				canvasData.data[i + 2] = b;
-				canvasData.data[i + 3] = a;
-			//	i += 4;
-				
-				dbg0++;
-				line.push(r, g, b, a);
+			if (x < 32 && y < 32) {
+				if (r == 255 && g == 255 && b == 255) {
+					r = pixArr[x][y].r;
+					g = pixArr[x][y].g;
+					b = pixArr[x][y].b;
+				}
 			}
-			//	}
-			/*	else {
-					for (var k = 0, kk = pY; k < kk; k++) {
-						canvasData.data[i + 0] = canvasData.data[i - (x % 2) * canvasData.width];
-						canvasData.data[i + 1] = canvasData.data[i - (x % 2) * canvasData.width];;
-						canvasData.data[i + 2] = canvasData.data[i - (x % 2) * canvasData.width];;
-						canvasData.data[i + 3] = canvasData.data[i - (x % 2) * canvasData.width];;
-						dbg1++;
-					}
-				//	i += canvasData.width * 4;
-				//	i = (x + y * canvasData.width) * 4;
-				}*/
-		//	}
-		}
 		
-		if (y % pY != 0) {
-			for (var l = 0, ll = canvasData.width * pY; l < ll; l++) {
-				i = x * pX + (pY - y % pY);
-				
-				canvasData.data[i + 0] = line[l];
-				canvasData.data[i + 1] = line[l + 1];
-				canvasData.data[i + 2] = line[l + 2];
-				canvasData.data[i + 3] = line[l + 3];
-				
-				dbg1++;
-			}
+			canvasData.data[i + 0] = r;
+			canvasData.data[i + 1] = g;
+			canvasData.data[i + 2] = b;
+			canvasData.data[i + 3] = a;
 		}
-		console.log(line.length);
 	}
 	
 	ctx.putImageData(canvasData, 0, 0);

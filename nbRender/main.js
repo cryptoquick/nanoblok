@@ -10,9 +10,16 @@ function Initialize () {
 	var date0 = new Date();
 	window.$C = new Common();
 	swatchInit();
-	overhead(example1);
+	var pixArr = overhead(example1);
+	render(pixArr);
 	var date1 = new Date();
 	console.log("Took " + (date1 - date0) + "ms to render.");
+}
+
+function render (pixArr) {
+	rectRender(pixArr);
+	// Render Over should be false if canvas is blank.
+	pixelRender(pixArr, true);
 }
 
 var ex = 1;
@@ -31,7 +38,8 @@ function Key (evt) {
 			Field = Examples[ex];
 			ex++;
 		}
-		overhead(Field);
+		var pixArr = overhead(Field);
+		render(pixArr);
 		console.log('New model loaded.');
 	}
 }
