@@ -49,8 +49,8 @@ function expand (field) {
 	return voxels;
 }
 
-function overhead (field) {
-	var voxels = expand(field);
+function overhead (voxels) {
+//	var voxels = expand(field);
 	var pixels = [];
 	
 	for (var x = 0; x < 32; x++) {
@@ -96,7 +96,7 @@ function rectRender (pixArr) {
 	console.log('Rendering model with rects.');
 }
 
-function pixelRender (pixArr, renderOver) {
+function pixelRender (pixArr) {
 	var canvas = document.getElementById('nbRender');
 	var ctx = canvas.getContext('2d');
 	var canvasData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -105,25 +105,14 @@ function pixelRender (pixArr, renderOver) {
 		for (var x = 0, xx = canvasData.width; x < xx; x++)  {
 			
 			var i = (x + y * canvasData.width) * 4;
-			
-			if (renderOver) {
-				var r = canvasData.data[i + 0];
-				var g = canvasData.data[i + 1];
-				var b = canvasData.data[i + 2];
-				var a = canvasData.data[i + 3];
-			} else {
-				var r, g, b = 255;
-				var a = 0;
-			}
+			var r, g, b, a = 255;
 			
 			if (x < 32 && y < 32) {
-				if (r == 255 && g == 255 && b == 255) {
-					r = pixArr[x][y].r;
-					g = pixArr[x][y].g;
-					b = pixArr[x][y].b;
-				}
+				r = pixArr[x][y].r;
+				g = pixArr[x][y].g;
+				b = pixArr[x][y].b;
 			}
-		
+			
 			canvasData.data[i + 0] = r;
 			canvasData.data[i + 1] = g;
 			canvasData.data[i + 2] = b;
@@ -132,5 +121,14 @@ function pixelRender (pixArr, renderOver) {
 	}
 	
 	ctx.putImageData(canvasData, 0, 0);
-	console.log(dbg0 + ', ' + dbg1);
+//	console.log(dbg0 + ', ' + dbg1);
+	
+	return canvas;
+}
+
+function displayDraw (img, offset) {
+	var sprite = document.getElementById("nbRender");
+	var canvas = document.getElementById("nbDisplay");
+	var ctx = canvas.getContext('2d');
+	ctx.drawImage(sprite, offset.x, offset.y, 32, 32);
 }
