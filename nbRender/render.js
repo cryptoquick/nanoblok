@@ -38,15 +38,14 @@ function expand (field) {
 //	console.log(field[0]);
 //	console.log(SwatchField[field[2][0]]);
 	for (var i = 0, ii = field.length; i < ii; i++) {
-	//	var vox = field[i];
-		var x = SwatchField[field[i][0]][0];
-		var y = SwatchField[field[i][1]][1];
-		var z = SwatchField[field[i][2]][2];
+		var x = field[i][0];
+		var y = field[i][1];
+		var z = field[i][2];
 		var color = SwatchField[field[i][3]][3];
 		
 		voxels[x][y][z] = color;
 	}
-	console.log(voxels[0][0][0]);
+	console.log("Model expanded into voxel array.");
 	return voxels;
 }
 
@@ -75,6 +74,7 @@ function overhead (field) {
 		}
 	}
 	
+	console.log('Overhead rendering.');
 	rectRender(pixels);
 }
 
@@ -106,6 +106,8 @@ function rectRender(pixArr) {
 			}
 		}
 	}
+	
+	console.log('Rendering model with rects.');
 }
 
 function pixelRender () {
