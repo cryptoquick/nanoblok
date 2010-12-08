@@ -48,78 +48,36 @@ function expand (field) {
 	console.log("Model expanded into voxel array.");
 	return voxels;
 }
-var times;
+
 function overhead (voxels) {
-times = 0;
 	var pixels = [];
+	
+	// Loop Controls
+	var l = {
+		xIt: 0, yIt: 0, zIt: 0,
+		xHi: 0, yHi: 0, zHi: 0,
+		xLo: 0, yLo: 0, zLo: 0
+	}
 	
 	for (var px = 0; px < 32; px++) {
 		pixels[px] = new Array();
 		for (var py = 0; py < 32; py++) {
-			pixels[px][py] = {r: 127, g: 127, b: 127};
+			pixels[px][py] = {r: 255, g: 255, b: 255};
 		}
 	}
 	
-	// Loop Controls
-	var xFlip = false, yFlip = false, zFlip = false;
-	var x = 0, y = 0, z = 0;
-	var xVal = 31, yVal = 31, zVal = 31;
-	var xIt = 1, yIt = 1, zIt = 1;
-	var xLoop = true, yLoop = true, zLoop = true;
-	var px = 0, py = 0;
-	
-	while (xLoop) {
-		if (!xFlip && x < xVal) {
-			xLoop = true;
-			x += xIt;
-		}
-		else if (xFlip && x > xVal) {
-			xLoop = true;
-			x -= xIt;
-		}
-		else {
-			xLoop = false;
-		}
-		px++;
-		
-		while (yLoop) {
-			if (!yFlip && y < yVal) {
-				yLoop = true;
-				y += yIt;
-			}
-			else if (yFlip && y > yVal) {
-				yLoop = true;
-				zLoop = true;
-				y -= yIt;
-			}
-			else {
-				yLoop = false;
-			}
-		//	pixels[x][y] = {r: 127, g: 127, b: 127};
-			py++;
-			
-			while (zLoop) {
-				if (!zFlip && z < zVal) {
-					zLoop = true;
-					z += zIt;
-				}
-				else if (zFlip && z > zVal) {
-					zLoop = true;
-					z -= zIt;
-				}
-				else {
-					zLoop = false;
-				}
-				
-				times++;
+	var x = 32; while (x--) {
+		var y = 32; while (y--) {
+			var z = 32; while (z--) {
 				if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][z] != null) {
-					pixels[px][py] = voxels[x][y][z];
+					pixels[x][y] = voxels[x][y][z];
+					break;
 				}
 			}
 		}
 	}
 	
-	console.log('Overhead rendering.' + times);
+	console.log('Overhead rendering.');
 	return pixels;
 }
 
@@ -183,4 +141,4 @@ function displayDraw (img, offset) {
 	var canvas = document.getElementById("nbDisplay");
 	var ctx = canvas.getContext('2d');
 	ctx.drawImage(sprite, offset.x, offset.y, 32, 32);
-}
+}pixels[x][y] = {r: 255, g: 255, b: 255};
