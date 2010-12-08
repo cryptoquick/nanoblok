@@ -22,7 +22,7 @@ function demo () {
 	var img;
 	for (var i = 0; i < Examples.length; i++) {
 		for (var j = 0; j < 1; j++) {
-			img = pixelRender(overhead(SpriteModels[i], j));
+			img = pixelRender(overhead(SpriteModels[i]));
 			displayDraw(img, {x: 32 * i, y: j * 32});
 		}
 	}

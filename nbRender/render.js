@@ -48,102 +48,78 @@ function expand (field) {
 	console.log("Model expanded into voxel array.");
 	return voxels;
 }
-
-function overhead (voxels, direction) {
-//	var voxels = expand(field);
+var times;
+function overhead (voxels) {
+times = 0;
 	var pixels = [];
 	
-	// Loop Controls
-	var l = {
-		xIt: 0, yIt: 0, zIt: 0,
-		xHi: 0, yHi: 0, zHi: 0,
-		xLo: 0, yLo: 0, zLo: 0
-	}
-	
-	switch (direction) {
-	/*	case 0:
-			l.xIt = 1;		l.yIt = 1;		l.zIt = 1;
-			l.xHi = 32;		l.yHi = 32;		l.zHi = 32;
-			l.xLo = 0; 		l.yLo = 0;		l.zLo = 0;
-			break;*/
-		case 0:
-			l.xIt = -1;		l.yIt = -1;		l.zIt = -1;
-			l.xHi = 0;		l.yHi = 0;		l.zHi = 0;
-			l.xLo = 31;		l.yLo = 31;		l.zLo = 31;
-			break;
-	/*	case 2:
-			l.xIt = -1;		l.yIt = 1;		l.zIt = 1;
-			l.xHi = 0;		l.yHi = 32;		l.zHi = 32;
-			l.xLo = 32; 	l.yLo = 0;		l.zLo = 0;
-			break;
-		case 3:
-			l.xIt = 1;		l.yIt = 1;		l.zIt = 1;
-			l.xHi = 32;		l.yHi = 32;		l.zHi = 32;
-			l.xLo = 0; 		l.yLo = 0;		l.zLo = 0;
-			break;
-		case 4:
-			l.xIt = 1;		l.yIt = 1;		l.zIt = 1;
-			l.xHi = 32;		l.yHi = 32;		l.zHi = 32;
-			l.xLo = 0; 		l.yLo = 0;		l.zLo = 0;
-			break;
-		case 5:
-			l.xIt = 1;		l.yIt = 1;		l.zIt = 1;
-			l.xHi = 32;		l.yHi = 32;		l.zHi = 32;
-			l.xLo = 0; 		l.yLo = 0;		l.zLo = 0;
-			break;
-		case 6:
-			l.xIt = -1;		l.yIt = -1;		l.zIt = -1;
-			l.xHi = 0;		l.yHi = 0;		l.zHi = 0;
-			l.xLo = 32; 	l.yLo = 32;		l.zLo = 32;
-			break;*/
-	}
-	
-	for (var x = 0; x < 32; x++) {
-		pixels.push(new Array());
-		for (var y = 0; y < 32; y++) {
-			pixels[x] = new Array();
+	for (var px = 0; px < 32; px++) {
+		pixels[px] = new Array();
+		for (var py = 0; py < 32; py++) {
+			pixels[px][py] = {r: 127, g: 127, b: 127};
 		}
 	}
 	
-	for (var x = 32; x >= 0; x++) {
-	//	console.log(x);
+	// Loop Controls
+	var xFlip = false, yFlip = false, zFlip = false;
+	var x = 0, y = 0, z = 0;
+	var xVal = 31, yVal = 31, zVal = 31;
+	var xIt = 1, yIt = 1, zIt = 1;
+	var xLoop = true, yLoop = true, zLoop = true;
+	var px = 0, py = 0;
+	
+	while (xLoop) {
+		if (!xFlip && x < xVal) {
+			xLoop = true;
+			x += xIt;
+		}
+		else if (xFlip && x > xVal) {
+			xLoop = true;
+			x -= xIt;
+		}
+		else {
+			xLoop = false;
+		}
+		px++;
 		
-		for (var y = 0; y < 32; y++) {
-			pixels[x][y] = {r: 255, g: 255, b: 255};
-			for (var z = 0; z >= ; z += l.zIt) {
-				if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][z] != null && direction == 0) {
-					pixels[x][y] = voxels[x][y][z];
-					break;
+		while (yLoop) {
+			if (!yFlip && y < yVal) {
+				yLoop = true;
+				y += yIt;
+			}
+			else if (yFlip && y > yVal) {
+				yLoop = true;
+				zLoop = true;
+				y -= yIt;
+			}
+			else {
+				yLoop = false;
+			}
+		//	pixels[x][y] = {r: 127, g: 127, b: 127};
+			py++;
+			
+			while (zLoop) {
+				if (!zFlip && z < zVal) {
+					zLoop = true;
+					z += zIt;
 				}
-				if (voxels[32-x] != null && voxels[32-x][y] != null && voxels[32-x][y][z] != null && direction == 1) {
-					pixels[x][y] = voxels[32-x][y][z];
-					break;
+				else if (zFlip && z > zVal) {
+					zLoop = true;
+					z -= zIt;
 				}
-			/*	if (voxels[x] != null && voxels[x][32-y] != null && voxels[x][32-y][z] != null && direction == 2) {
-					pixels[x][y] = voxels[x][32-y][z];
-					break;
+				else {
+					zLoop = false;
 				}
-				if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][32-z] != null && direction == 3) {
-					pixels[x][y] = voxels[x][y][32-z];
-					break;
+				
+				times++;
+				if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][z] != null) {
+					pixels[px][py] = voxels[x][y][z];
 				}
-				if (voxels[32-x] != null && voxels[32-x][32-y] != null && voxels[32-x][32-y][z] != null && direction == 4) {
-					pixels[x][y] = voxels[32-x][32-y][z];
-					break;
-				}
-				if (voxels[x] != null && voxels[x][32-y] != null && voxels[x][32-y][32-z] != null && direction == 5) {
-					pixels[x][y] = voxels[x][32-y][32-z];
-					break;
-				}
-				if (voxels[32-x] != null && voxels[32-x][32-y] != null && voxels[32-x][32-y][32-z] != null && direction == 6) {
-					pixels[x][y] = voxels[32-x][32-y][32-z];
-					break;
-				}*/
 			}
 		}
 	}
 	
-	console.log('Overhead rendering.');
+	console.log('Overhead rendering.' + times);
 	return pixels;
 }
 
