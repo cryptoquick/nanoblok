@@ -66,11 +66,16 @@ function overhead (voxels) {
 		}
 	}
 	
-	var x = 32; while (x--) {
-		var y = 32; while (y--) {
-			var z = 32; while (z--) {
+	var px = 0, py = 0;
+	
+	var x = 31; while (x--) {
+		px++;
+		py = 0;
+		var y = 31; while (y--) {
+			py++;
+			var z = 31; while (z--) {
 				if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][z] != null) {
-					pixels[x][y] = voxels[x][y][z];
+					pixels[px][py] = voxels[x][y][z];
 					break;
 				}
 			}
@@ -141,4 +146,4 @@ function displayDraw (img, offset) {
 	var canvas = document.getElementById("nbDisplay");
 	var ctx = canvas.getContext('2d');
 	ctx.drawImage(sprite, offset.x, offset.y, 32, 32);
-}pixels[x][y] = {r: 255, g: 255, b: 255};
+}
