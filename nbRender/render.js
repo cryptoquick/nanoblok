@@ -52,6 +52,45 @@ function expand (field) {
 function overhead (voxels) {
 	var pixels = [];
 	
+	for (var x = 0; x < 32; x++) {
+		for (var y = 0; y < 64; y++) {
+			pixels = diagonal(voxels, pixels, x, y, 0);
+		}
+	}
+}
+
+function diagonal (voxels, pixels, x, y, z) {
+	if (y >= 31 || z >= 31) {
+		return diagonal (voxels, pixels, x, 31, 31);
+	}
+	else {
+		return diagonal (voxels, pixels, x, y++, z++);
+	}
+}
+
+/*function diagonal(voxels, pixels, x) {
+	var color = 
+	
+	for (var y = 0; y < x; y++) {
+		for (var z = 0; z < x; z++) {
+			if (voxels[x] != null && voxels[x][y+1] != null && voxels[x][y+1][z+1] != null) {
+				
+				return 
+			}
+		}
+		
+		return diagonal(voxels, x, );
+	}
+	else {
+		return 
+	}
+}*/
+
+
+/*
+function overhead (voxels) {
+	var pixels = [];
+	
 	// Loop Controls
 	var l = {
 		xIt: 0, yIt: 0, zIt: 0,
@@ -61,7 +100,7 @@ function overhead (voxels) {
 	
 	for (var px = 0; px < 32; px++) {
 		pixels[px] = new Array();
-		for (var py = 0; py < 32; py++) {
+		for (var py = 0; py < 64; py++) {
 			pixels[px][py] = {r: 255, g: 255, b: 255};
 		}
 	}
@@ -72,19 +111,25 @@ function overhead (voxels) {
 		px++;
 		py = 0;
 		var y = 31; while (y--) {
-			py++;
+			py+=1;
 			var z = 31; while (z--) {
-				if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][z] != null) {
-					pixels[px][py] = voxels[x][y][z];
+				if (voxels[x+0] != null && voxels[x][y] != null && voxels[x+0][y][z+0] != null) {
+					pixels[px][py] = voxels[x+0][y][z+0];
 					break;
 				}
-			}
-		}
+			}*/
+		/*	var z2 = 31; while (z2--) {
+				if (voxels[x+2] != null && voxels[x+2][y+0] != null && voxels[x+2][y+0][z2] != null) {
+					pixels[px][py+1] = voxels[x+2][y+0][z2];
+					break
+				}
+			}*/
+		}/*
 	}
 	
 	console.log('Overhead rendering.');
 	return pixels;
-}
+}*/
 
 // Pixel Width
 var pX = 6;
@@ -122,7 +167,7 @@ function pixelRender (pixArr) {
 			var i = (x + y * canvasData.width) * 4;
 			var r, g, b, a = 255;
 			
-			if (x < 32 && y < 32) {
+			if (x < 32 && y < 64) {
 				r = pixArr[x][y].r;
 				g = pixArr[x][y].g;
 				b = pixArr[x][y].b;
@@ -145,5 +190,5 @@ function displayDraw (img, offset) {
 	var sprite = document.getElementById("nbRender");
 	var canvas = document.getElementById("nbDisplay");
 	var ctx = canvas.getContext('2d');
-	ctx.drawImage(sprite, offset.x, offset.y, 32, 32);
+	ctx.drawImage(sprite, offset.x, offset.y, 32, 64);
 }
