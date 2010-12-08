@@ -19,18 +19,14 @@ function demo () {
 	for (var i = 0; i < Examples.length; i++) {
 		SpriteModels.push(expand(Examples[i]));
 	}
-	
-	for (var i = 0; i < 4; i++) {
-		var img = pixelRender(overhead(SpriteModels[i]));
-		displayDraw(img, {x: 32 * i, y: 0});
+	var img;
+	for (var i = 0; i < Examples.length; i++) {
+		for (var j = 0; j < 1; j++) {
+			img = pixelRender(overhead(SpriteModels[i], j));
+			displayDraw(img, {x: 32 * i, y: j * 32});
+		}
 	}
 }
-/*
-function render (pixArr) {
-//	rectRender(pixArr);
-	// Render Over should be false if canvas is blank.
-//	pixelRender(pixArr, true);
-}*/
 
 /*var ex = 1;
 
