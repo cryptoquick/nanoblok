@@ -1,0 +1,12 @@
+application: nanoblok-edit
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: .(.*\.(js|png|ico))
+  static_files: \1
+  upload: .(.*\.(js|png|ico))
+
+- url: /.*
+  script: main.py
