@@ -49,8 +49,7 @@ function expand (field) {
 	return voxels;
 }
 
-function overhead (voxels, direction) {
-//	var voxels = expand(field);
+function overhead (voxels) {
 	var pixels = [];
 	
 	// Loop Controls
@@ -60,85 +59,20 @@ function overhead (voxels, direction) {
 		xLo: 0, yLo: 0, zLo: 0
 	}
 	
-	switch (direction) {
-	/*	case 0:
-			l.xIt = 1;		l.yIt = 1;		l.zIt = 1;
-			l.xHi = 32;		l.yHi = 32;		l.zHi = 32;
-			l.xLo = 0; 		l.yLo = 0;		l.zLo = 0;
-			break;*/
-		case 0:
-			l.xIt = -1;		l.yIt = -1;		l.zIt = -1;
-			l.xHi = 0;		l.yHi = 0;		l.zHi = 0;
-			l.xLo = 31;		l.yLo = 31;		l.zLo = 31;
-			break;
-	/*	case 2:
-			l.xIt = -1;		l.yIt = 1;		l.zIt = 1;
-			l.xHi = 0;		l.yHi = 32;		l.zHi = 32;
-			l.xLo = 32; 	l.yLo = 0;		l.zLo = 0;
-			break;
-		case 3:
-			l.xIt = 1;		l.yIt = 1;		l.zIt = 1;
-			l.xHi = 32;		l.yHi = 32;		l.zHi = 32;
-			l.xLo = 0; 		l.yLo = 0;		l.zLo = 0;
-			break;
-		case 4:
-			l.xIt = 1;		l.yIt = 1;		l.zIt = 1;
-			l.xHi = 32;		l.yHi = 32;		l.zHi = 32;
-			l.xLo = 0; 		l.yLo = 0;		l.zLo = 0;
-			break;
-		case 5:
-			l.xIt = 1;		l.yIt = 1;		l.zIt = 1;
-			l.xHi = 32;		l.yHi = 32;		l.zHi = 32;
-			l.xLo = 0; 		l.yLo = 0;		l.zLo = 0;
-			break;
-		case 6:
-			l.xIt = -1;		l.yIt = -1;		l.zIt = -1;
-			l.xHi = 0;		l.yHi = 0;		l.zHi = 0;
-			l.xLo = 32; 	l.yLo = 32;		l.zLo = 32;
-			break;*/
-	}
-	
-	for (var x = 0; x < 32; x++) {
-		pixels.push(new Array());
-		for (var y = 0; y < 32; y++) {
-			pixels[x] = new Array();
+	for (var px = 0; px < 32; px++) {
+		pixels[px] = new Array();
+		for (var py = 0; py < 32; py++) {
+			pixels[px][py] = {r: 255, g: 255, b: 255};
 		}
 	}
 	
-	for (var x = 32; x >= 0; x++) {
-	//	console.log(x);
-		
-		for (var y = 0; y < 32; y++) {
-			pixels[x][y] = {r: 255, g: 255, b: 255};
-			for (var z = 0; z >= ; z += l.zIt) {
-				if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][z] != null && direction == 0) {
+	var x = 32; while (x--) {
+		var y = 32; while (y--) {
+			var z = 32; while (z--) {
+				if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][z] != null) {
 					pixels[x][y] = voxels[x][y][z];
 					break;
 				}
-				if (voxels[32-x] != null && voxels[32-x][y] != null && voxels[32-x][y][z] != null && direction == 1) {
-					pixels[x][y] = voxels[32-x][y][z];
-					break;
-				}
-			/*	if (voxels[x] != null && voxels[x][32-y] != null && voxels[x][32-y][z] != null && direction == 2) {
-					pixels[x][y] = voxels[x][32-y][z];
-					break;
-				}
-				if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][32-z] != null && direction == 3) {
-					pixels[x][y] = voxels[x][y][32-z];
-					break;
-				}
-				if (voxels[32-x] != null && voxels[32-x][32-y] != null && voxels[32-x][32-y][z] != null && direction == 4) {
-					pixels[x][y] = voxels[32-x][32-y][z];
-					break;
-				}
-				if (voxels[x] != null && voxels[x][32-y] != null && voxels[x][32-y][32-z] != null && direction == 5) {
-					pixels[x][y] = voxels[x][32-y][32-z];
-					break;
-				}
-				if (voxels[32-x] != null && voxels[32-x][32-y] != null && voxels[32-x][32-y][32-z] != null && direction == 6) {
-					pixels[x][y] = voxels[32-x][32-y][32-z];
-					break;
-				}*/
 			}
 		}
 	}
@@ -207,4 +141,4 @@ function displayDraw (img, offset) {
 	var canvas = document.getElementById("nbDisplay");
 	var ctx = canvas.getContext('2d');
 	ctx.drawImage(sprite, offset.x, offset.y, 32, 32);
-}
+}pixels[x][y] = {r: 255, g: 255, b: 255};
