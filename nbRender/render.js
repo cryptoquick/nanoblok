@@ -63,7 +63,7 @@ function overhead (voxels) {
 	}
 	
 	for (var x = 0; x < 32; x++) {
-		for (var y = 0; y < 64; y++) {
+		for (var y = 0; y < 32; y++) {
 			runs1++;
 			pixels = diagonal(voxels, pixels, x, y, 0);
 		}
@@ -75,16 +75,25 @@ function overhead (voxels) {
 function diagonal (voxels, pixels, x, y, z) {
 //	var found = false;
 	
-	if (y >= 64 || z >= 32) {
+	if (z >= 32) {
 	//	console.log('bla');
 	//	runs2++;
 		return pixels;
 	}
 	else {
 	//	console.log(x + ', ' + y + ', ' + z + ', ' + voxels[x][y][z]);
-		if (voxels[x] != null && voxels[x][y % 32] != null && voxels[x][y % 32][z] != null) {
+		var pixFound = false;
+		
+		if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][z] != null) {
 		//	console.log(voxels[x][y][z]);
-			pixels[x][y] = voxels[x][y % 32][z];
+			pixels[x][y * 2] = voxels[x][y][z];
+			pixFound = true;
+		}
+		if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][z + 1] != null) {
+			pixels[x][y * 2] = voxels[x][y][z + 1];
+			pixFound = true;
+		}
+		if (pixFound) {
 			return pixels;
 		}
 		runs2++;
