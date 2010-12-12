@@ -49,22 +49,46 @@ function expand (field) {
 	return voxels;
 }
 
+var runs1 = 0;
+var runs2 = 0;
+
 function overhead (voxels) {
 	var pixels = [];
 	
+	for (var px = 0; px < 32; px++) {
+		pixels[px] = new Array();
+		for (var py = 0; py < 64; py++) {
+			pixels[px][py] = {r: 255, g: 255, b: 255};
+		}
+	}
+	
 	for (var x = 0; x < 32; x++) {
 		for (var y = 0; y < 64; y++) {
+			runs1++;
 			pixels = diagonal(voxels, pixels, x, y, 0);
 		}
 	}
+	console.log(runs1 + ", " + runs2);
+	return pixels;
 }
 
 function diagonal (voxels, pixels, x, y, z) {
-	if (y >= 31 || z >= 31) {
-		return diagonal (voxels, pixels, x, 31, 31);
+//	var found = false;
+	
+	if (y >= 64 || z >= 32) {
+	//	console.log('bla');
+	//	runs2++;
+		return pixels;
 	}
 	else {
-		return diagonal (voxels, pixels, x, y++, z++);
+	//	console.log(x + ', ' + y + ', ' + z + ', ' + voxels[x][y][z]);
+		if (voxels[x] != null && voxels[x][y % 32] != null && voxels[x][y % 32][z] != null) {
+		//	console.log(voxels[x][y][z]);
+			pixels[x][y] = voxels[x][y % 32][z];
+			return pixels;
+		}
+		runs2++;
+		return diagonal(voxels, pixels, x, y, z + 1);
 	}
 }
 
@@ -123,7 +147,7 @@ function overhead (voxels) {
 					pixels[px][py+1] = voxels[x+2][y+0][z2];
 					break
 				}
-			}*/
+			}
 		}/*
 	}
 	
