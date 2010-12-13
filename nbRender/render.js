@@ -49,18 +49,61 @@ function expand (field) {
 	return voxels;
 }
 
+function blank () {
+	var pixels = [];
+	
+	for (var px = 0; px < 128; px++) {
+		pixels[px] = new Array();
+		for (var py = 0; py < 128; py++) {
+			pixels[px][py] = {r: 255, g: 255, b: 255};
+		}
+	}
+	
+	return pixels;
+}
+
+function iso (voxels) {
+	var pixels = blank();
+	
+	pixels = isoPass(voxels, pixels, isoTop);
+	
+	return pixels;
+}
+
+function isoPass (voxels, pixels, func) {
+//	for (var x = 0; x < 32; x++) {
+	//	for (var y = 0; y < 32; y++) {
+		//	for (var z = 0; z < 32; z++) {
+		
+	var x = 31; while (x--) {
+		var y = 31; while (y--) {
+			var z = 31; while (z--) {
+				pixels = func(voxels, pixels, x, y, z);
+			}
+		}
+	}
+	
+	return pixels;
+}
+
+function isoTop (voxels, pixels, x, y, z) {
+	if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][z] != null) {
+		var px = Math.floor(x + y);
+		var py = Math.floor(y / 2 + (128 - x) / 2) - z;
+		if (px < 128 && py < 128) {
+			pixels[px][py] = voxels[x][y][z];
+			pixels[px + 1][py] = voxels[x][y][z];
+		}
+	}
+	
+	return pixels;
+}
+
 var runs1 = 0;
 var runs2 = 0;
 
 function overhead (voxels) {
-	var pixels = [];
-	
-	for (var px = 0; px < 32; px++) {
-		pixels[px] = new Array();
-		for (var py = 0; py < 64; py++) {
-			pixels[px][py] = {r: 255, g: 255, b: 255};
-		}
-	}
+	var pixels = blank();
 	
 	for (var x = 0; x < 32; x++) {
 		for (var y = 0; y < 32; y++) {
@@ -200,7 +243,7 @@ function pixelRender (pixArr) {
 			var i = (x + y * canvasData.width) * 4;
 			var r, g, b, a = 255;
 			
-			if (x < 32 && y < 64) {
+			if (x < 128 && y < 128) {
 				r = pixArr[x][y].r;
 				g = pixArr[x][y].g;
 				b = pixArr[x][y].b;
@@ -223,5 +266,5 @@ function displayDraw (img, offset) {
 	var sprite = document.getElementById("nbRender");
 	var canvas = document.getElementById("nbDisplay");
 	var ctx = canvas.getContext('2d');
-	ctx.drawImage(sprite, offset.x, offset.y, 32, 64);
+	ctx.drawImage(sprite, offset.x, offset.y, 128, 128);
 }
