@@ -65,10 +65,14 @@ function blank () {
 function iso (voxels) {
 	var pixels = blank();
 	
+	pixels = isoPass(voxels, pixels, isoLeft);
 	pixels = isoPass(voxels, pixels, isoTop);
 	
 	return pixels;
 }
+
+var runY = true;
+var runZ = true;
 
 function isoPass (voxels, pixels, func) {
 //	for (var x = 0; x < 32; x++) {
@@ -76,8 +80,10 @@ function isoPass (voxels, pixels, func) {
 		//	for (var z = 0; z < 32; z++) {
 		
 	var x = 31; while (x--) {
-		var y = 31; while (y--) {
-			var z = 31; while (z--) {
+		runY = true;
+		var y = 31; while (y-- && runY) {
+			runZ = true;
+			var z = 31; while (z-- && runZ) {
 				pixels = func(voxels, pixels, x, y, z);
 			}
 		}
@@ -94,9 +100,66 @@ function isoTop (voxels, pixels, x, y, z) {
 			pixels[px][py] = voxels[x][y][z];
 			pixels[px + 1][py] = voxels[x][y][z];
 		}
+		
+		runZ = false;
 	}
 	
 	return pixels;
+}
+
+function isoLeft (voxels, pixels, x, z, y) {
+	if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][z] != null) {
+		var px = Math.floor((x * 2 - z));
+		var py = Math.floor(63 - z) + 16;
+		if (px > 0 && px < 128 && py > 0 && py < 128) {
+			var color = shade(voxels[x][y][z], 'left');
+			pixels[px][py] = color;
+			pixels[px + 1][py] = color;
+		}
+		
+		runZ = false;
+	}
+	
+	return pixels;
+}
+
+// Adapted color code from Nanoblok Editor.
+var blokShift = {a: -40, b: -20, c: 0, d: -60};
+
+function shade (color, side) {
+	var shaded = {};
+	shaded.r = color.r;
+	shaded.g = color.g;
+	shaded.b = color.b;
+	
+	if (side == 'left') {
+		shaded.r = smartShift(color.r, blokShift.a)
+		shaded.g = smartShift(color.g, blokShift.a)
+		shaded.b = smartShift(color.b, blokShift.a);
+	}
+	else if (side == 'right') {
+		shaded.r = smartShift(color.r, blokShift.b)
+		shaded.g = smartShift(color.g, blokShift.b)
+		shaded.b = smartShift(color.b, blokShift.b);
+	}
+	return shaded;
+}
+
+function smartShift (color, degree) {
+	if (color + degree < 0) {
+		// For dark black.
+		var shifted = color - degree;
+	}
+	else if (color + degree > 255) {
+		// For light white.
+		var shifted = Math.min(color + degree, 255);
+	}
+	else {
+		// And everything inbetween.
+		var shifted = color + degree;
+	}
+	   
+	return shifted;
 }
 
 var runs1 = 0;
