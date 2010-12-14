@@ -21,7 +21,7 @@ function demo () {
 	}
 	var img;
 	for (var i = 0; i < Examples.length; i++) {
-		for (var j = 0; j < 2; j++) {
+		for (var j = 0; j < 1; j++) {
 			img = pixelRender(iso(SpriteModels[i]));
 			displayDraw(img, {x: 129 * i, y: j * 129});
 		}
