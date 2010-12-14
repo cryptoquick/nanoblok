@@ -66,6 +66,7 @@ function iso (voxels) {
 	var pixels = blank();
 	
 	pixels = isoPass(voxels, pixels, isoLeft);
+	pixels = isoPass(voxels, pixels, isoRight);
 	pixels = isoPass(voxels, pixels, isoTop);
 	
 	return pixels;
@@ -79,11 +80,11 @@ function isoPass (voxels, pixels, func) {
 	//	for (var y = 0; y < 32; y++) {
 		//	for (var z = 0; z < 32; z++) {
 		
-	var x = 31; while (x--) {
+	var x = 32; while (x--) {
 		runY = true;
-		var y = 31; while (y-- && runY) {
+		var y = 32; while (y-- && runY) {
 			runZ = true;
-			var z = 31; while (z-- && runZ) {
+			var z = 32; while (z-- && runZ) {
 				pixels = func(voxels, pixels, x, y, z);
 			}
 		}
@@ -109,8 +110,10 @@ function isoTop (voxels, pixels, x, y, z) {
 
 function isoLeft (voxels, pixels, x, z, y) {
 	if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][z] != null) {
-		var px = Math.floor((x * 2 - z));
-		var py = Math.floor(63 - z) + 16;
+	//	var px = Math.floor((x * 2 - z));
+	//	var py = Math.floor(63 - z) + 16;
+		var px = Math.floor(x + y);
+		var py = Math.floor(y / 2 + (128 - x) / 2) - z + 16;
 		if (px > 0 && px < 128 && py > 0 && py < 128) {
 			var color = shade(voxels[x][y][z], 'left');
 			pixels[px][py] = color;
@@ -123,8 +126,26 @@ function isoLeft (voxels, pixels, x, z, y) {
 	return pixels;
 }
 
+function isoRight (voxels, pixels, z, y, x ) {
+	if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][z] != null) {
+	//	var px = Math.floor((x * 2 - z));
+	//	var py = Math.floor(63 - z) + 16;
+		var px = Math.floor(x + y) + 16;
+		var py = Math.floor(y / 2 + (128 - x) / 2) - z;
+		if (px > 0 && px < 128 && py > 0 && py < 128) {
+			var color = shade(voxels[x][y][z], 'right');
+			pixels[px][py] = color;
+			pixels[px + 1][py] = color;
+		}
+		
+		runZ = false;
+	}
+	
+	return pixels;
+}
+
 // Adapted color code from Nanoblok Editor.
-var blokShift = {a: -40, b: -20, c: 0, d: -60};
+var blokShift = {a: -40, b: 40, c: 0, d: -60};
 
 function shade (color, side) {
 	var shaded = {};
