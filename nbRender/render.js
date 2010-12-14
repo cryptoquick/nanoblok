@@ -1,3 +1,5 @@
+var size = 64;
+
 function colorOverhead () {
 	var pixArr = [];
 	
@@ -52,9 +54,9 @@ function expand (field) {
 function blank () {
 	var pixels = [];
 	
-	for (var px = 0; px < 128; px++) {
+	for (var px = 0; px < size; px++) {
 		pixels[px] = new Array();
-		for (var py = 0; py < 128; py++) {
+		for (var py = 0; py < size; py++) {
 			pixels[px][py] = {r: 255, g: 255, b: 255};
 		}
 	}
@@ -96,8 +98,8 @@ function isoPass (voxels, pixels, func) {
 function isoTop (voxels, pixels, x, y, z) {
 	if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][z] != null) {
 		var px = Math.floor(x + y);
-		var py = Math.floor(y / 2 + (128 - x) / 2) - z;
-		if (px < 128 && py < 128) {
+		var py = Math.floor(y / 2 + (size - x) / 2) - z;
+		if (px > 0 && px < size && py > 0 && py < size) {
 			pixels[px][py] = voxels[x][y][z];
 			pixels[px + 1][py] = voxels[x][y][z];
 		}
@@ -113,8 +115,8 @@ function isoLeft (voxels, pixels, x, z, y) {
 	//	var px = Math.floor((x * 2 - z));
 	//	var py = Math.floor(63 - z) + 16;
 		var px = Math.floor(x + y);
-		var py = Math.floor(y / 2 + (128 - x) / 2) - z + 16;
-		if (px > 0 && px < 128 && py > 0 && py < 128) {
+		var py = Math.floor(y / 2 + (size - x) / 2) - z // + 16;
+		if (px > 0 && px < size && py > 0 && py < size) {
 			var color = shade(voxels[x][y][z], 'left');
 			pixels[px][py] = color;
 			pixels[px + 1][py] = color;
@@ -128,11 +130,9 @@ function isoLeft (voxels, pixels, x, z, y) {
 
 function isoRight (voxels, pixels, z, y, x ) {
 	if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][z] != null) {
-	//	var px = Math.floor((x * 2 - z));
-	//	var py = Math.floor(63 - z) + 16;
-		var px = Math.floor(x + y) + 16;
-		var py = Math.floor(y / 2 + (128 - x) / 2) - z;
-		if (px > 0 && px < 128 && py > 0 && py < 128) {
+		var px = Math.floor(x + y) // + 16;
+		var py = Math.floor(y / 2 + (size - x) / 2) - z;
+		if (px > 0 && px < size && py > 0 && py < size) {
 			var color = shade(voxels[x][y][z], 'right');
 			pixels[px][py] = color;
 			pixels[px + 1][py] = color;
@@ -327,7 +327,7 @@ function pixelRender (pixArr) {
 			var i = (x + y * canvasData.width) * 4;
 			var r, g, b, a = 255;
 			
-			if (x < 128 && y < 128) {
+			if (x > -1 && x < size && y > -1 && y < size) {
 				r = pixArr[x][y].r;
 				g = pixArr[x][y].g;
 				b = pixArr[x][y].b;
@@ -350,5 +350,5 @@ function displayDraw (img, offset) {
 	var sprite = document.getElementById("nbRender");
 	var canvas = document.getElementById("nbDisplay");
 	var ctx = canvas.getContext('2d');
-	ctx.drawImage(sprite, offset.x, offset.y, 128, 128);
+	ctx.drawImage(sprite, offset.x, offset.y, size, size);
 }
