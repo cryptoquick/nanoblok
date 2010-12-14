@@ -15,17 +15,34 @@ function Initialize () {
 	console.log("Took " + (date1 - date0) + "ms to render.");
 }
 
+function colorDemo () {
+	var field = SwatchField;
+	var voxels = voxArr(32);
+	for (var i = 0, ii = field.length; i < ii; i++) {
+		var x = field[i][0];
+		var y = field[i][1];
+		var z = field[i][2];
+		var color = SwatchField[i][3];
+		
+		voxels[x][y][z] = color;
+	}
+	return voxels;
+}
+
 function demo () {
 	for (var i = 0; i < Examples.length; i++) {
 		SpriteModels.push(expand(Examples[i]));
 	}
+	SpriteModels.push(colorDemo());
 	var img;
-	for (var i = 0; i < Examples.length; i++) {
+	for (var i = 0; i < Examples.length + 1; i++) {
 		for (var j = 0; j < 1; j++) {
-			img = pixelRender(iso(SpriteModels[i]));
-			displayDraw(img, {x: 129 * i, y: j * 129});
+			var img = pixelRender(iso(SpriteModels[i]));
+			displayDraw(img, {x: (size + 1) * i, y: (j * size) + 1});
 		}
 	}
+//	var img = pixelRender(iso(expand(SwatchField)));
+//	displayDraw(img, {x: (64 * 5 + 1) * i, y: (64 * 5) + 1});
 }
 
 /*var ex = 1;
