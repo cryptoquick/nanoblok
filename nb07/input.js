@@ -17,6 +17,10 @@ function InitEvents () {
 	
 	window.addEventListener('mouseup', function (evt) {
 		mouseDown = false;
+		if ($C.newBlocks) {
+			pixelRender(iso(expand(Field)));
+			$C.newBlocks = false;
+		}
 	}, false);
 
 	if (!$C.mouseMove) {
@@ -94,6 +98,7 @@ function Click (evt) {
 	// Block placement (first click, and if only one single click)
 	if ($C.selected.tool == "toolButtonDelete" && target.id.substr(0,2) == 'x-') {
 		removeBlock(target);
+		$C.newBlocks = true;
 	}
 	else if ($C.selected.tool == "toolButtonSelect" && target.id.substr(0,2) == 'x-') {
 		$C.selection.select(target);
@@ -104,6 +109,7 @@ function Click (evt) {
 	else if (target.id.substr(0,2) == 'x-')
 	{
 		placeBlock(target);
+		$C.newBlocks = true;
 	}
 	
 	// UI Elements
@@ -128,9 +134,11 @@ function Hover (evt, inout) {
 	// Place a block on the x-grid as long as the mouse is down and place it only when moving into the cell, otherwise the block would be placed twice.
 	if ((target.id.substr(0,2) == 'x-') && mouseDown && inout == "in" && $C.selected.tool.substr(0,5) == "color") {
 		placeBlock(target);
+		$C.newBlocks = true;
 	}
 	else if ((target.id.substr(0,2) == 'x-') && mouseDown && inout == "in" && $C.selected.tool == "toolButtonDelete") {
 		removeBlock(target);
+		$C.newBlocks = true;
 	}
 	
 	// Puts information about the position of the cursor over the grid into the markerPosition field in $C, allowing that to be used by the positionIndicator function.

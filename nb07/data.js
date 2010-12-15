@@ -153,9 +153,11 @@ var Common = function () {
 	
 	this.palette = new Palette();
 	
-	this.renderer = new Renderer();
+//	this.renderer = new Renderer();
 	
 	this.titleFieldSelected = false;
+	
+	this.newBlocks = false;
 }
 
 // 3D Voxel array must be initialized before adding variables to it. -1 denotes that there is nothing there.
