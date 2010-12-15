@@ -99,6 +99,7 @@ var Tools = function () {
 			loggit("Slice up to " + $C.layerOffset.z);
 		}
 	}
+	
 	this.gridDown = function () {
 		if($C.layerOffset.z > 0) {
 			$C.layerOffset.z--;
@@ -144,10 +145,12 @@ var Tools = function () {
 			this.activate("Colors");
 			closeColorSwatch();
 			loggit("Color Cube closed.");
+			pixelRender(iso(expand(Field)));
 		}
 		else {
 			this.activate("Colors");
 			fillColorSwatch();
+			pixelRender(iso(colorDemo()));
 		}
 	}
 	
