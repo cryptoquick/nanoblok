@@ -160,7 +160,7 @@ var Common = function () {
 	this.newBlocks = false;
 }
 
-// 3D Voxel array must be initialized before adding variables to it. -1 denotes that there is nothing there.
+// 3D Voxel array must be initialized before adding variables to it.
 function initVoxels (voxArr) {
 	// Initialize the voxel array.
 	for (var x = -1; x < $C.gridDims.r + 1; x++) {
@@ -172,7 +172,7 @@ function initVoxels (voxArr) {
 				voxArr[x][y] = new Array();
 			}
 			for (var z = -1; z < $C.gridDims.c + 1; z++) {
-				voxArr[x][y][z] = -1;
+				voxArr[x][y][z] = null;
 			}
 		}
 	}

@@ -43,7 +43,7 @@ function swatchInit () {
 						index++;
 					}
 					else {
-						Swatch[z][y][x] = -1;
+						Swatch[z][y][x] = null;
 					}
 				}
 			}
@@ -87,7 +87,7 @@ function drawAllSwatch () {
 		for (var y = -1; y < $C.gridDims.r + 1; y++) {
 		SwatchGhost[x][y] = new Array();
 			for (var z = -1; z < $C.gridDims.c + 1; z++) {
-				SwatchGhost[x][y][z] = -1;
+				SwatchGhost[x][y][z] = null;
 			}
 		}
 	}
