@@ -140,10 +140,10 @@ function canvasBlock (position, location, color) {
 	
 	// Top side. Always placed, unless there's a block above it.
 	// Top block.
-	/*
-	var top = false;
 	
-	for (var i = location.z, ii = 32; i < ii; i++) {
+/*	var top = false;
+	
+	for (var i = location.z, ii = 0; i > ii; i--) {
 		if (Arr[location.x][location.y][i] == -1) {
 			top = true;
 		}
@@ -151,9 +151,9 @@ function canvasBlock (position, location, color) {
 			top = false;
 			break;
 		}
-	} */
+	}*/
 	
-	if (Arr[location.x][location.y][location.z + 1] == -1) { // && top) {
+	if (Arr[location.x][location.y][location.z + 1] == null) { // && top) {
 		canvasDrawSet([1, 6, 7, 2], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
 	}
 	// Always draw top if block above it is invisible.
@@ -166,16 +166,16 @@ function canvasBlock (position, location, color) {
 	}
 	
 	// Left side.
-	if (Arr[location.x - 1][location.y][location.z] == -1 && Arr[location.x - 1][location.y + 1][location.z] == -1) {
+	if (Arr[location.x - 1][location.y][location.z] == null && Arr[location.x - 1][location.y + 1][location.z] == null) {
 		canvasDrawSet([6, 7, 4, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
-	} else if (Arr[location.x - 1][location.y + 1][location.z] != -1 && Arr[location.x - 1][location.y][location.z] == -1) {
+	} else if (Arr[location.x - 1][location.y + 1][location.z] != null && Arr[location.x - 1][location.y][location.z] == null) {
 		canvasDrawSet([6, 7, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
 	}
 	
 	// Right side.
-	if (Arr[location.x][location.y + 1][location.z] == -1 && Arr[location.x - 1][location.y + 1][location.z] == -1) {
+	if (Arr[location.x][location.y + 1][location.z] == null && Arr[location.x - 1][location.y + 1][location.z] == null) {
 		canvasDrawSet([2, 7, 4, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
-	} else if (Arr[location.x - 1][location.y + 1][location.z] != -1 && Arr[location.x][location.y + 1][location.z] == -1) {
+	} else if (Arr[location.x - 1][location.y + 1][location.z] != null && Arr[location.x][location.y + 1][location.z] == null) {
 		canvasDrawSet([2, 7, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
 	}
 }
@@ -190,7 +190,7 @@ function placeBlock (target) {
 	}
 	
 	// If the same block already exists at the location being painted, don't paint over it again.
-	if (Voxel[location.x][location.y][location.z] != -1) {
+	if (Voxel[location.x][location.y][location.z] != null) {
 		if (Field[Voxel[location.x][location.y][location.z]][3] != $C.selected.color) {
 			placeBlockDraw(target, location);
 		}
@@ -231,8 +231,8 @@ function removeBlock (target) {
 		z: 0 + $C.layerOffset.z // forgot why I put a zero here.
 	}
 	
-	if (Voxel[location.x][location.y][location.z] != -1) {
-		Voxel[location.x][location.y][location.z] = -1;
+	if (Voxel[location.x][location.y][location.z] != null) {
+		Voxel[location.x][location.y][location.z] = null;
 		popField(location.x, location.y, location.z);
 	
 		$C.posInd.clearBlocks();
@@ -291,5 +291,6 @@ function rebuild () {
 	$C.posInd.clearBlocks();
 	drawAllBlocks();
 	$C.posInd.redraw();
+	pixelRender(iso(expand(Field)));
 }
 
