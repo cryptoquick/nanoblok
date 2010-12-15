@@ -67,9 +67,10 @@ function blank () {
 function iso (voxels) {
 	var pixels = blank();
 	
-	pixels = isoPass(voxels, pixels, isoLeft);
-	pixels = isoPass(voxels, pixels, isoRight);
 	pixels = isoPass(voxels, pixels, isoTop);
+	pixels = isoPass(voxels, pixels, isoRight);
+	pixels = isoPass(voxels, pixels, isoLeft);
+	
 	
 	return pixels;
 }
@@ -98,10 +99,11 @@ function isoPass (voxels, pixels, func) {
 function isoTop (voxels, pixels, x, y, z) {
 	if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][z] != null) {
 		var px = Math.floor(x + y);
-		var py = Math.floor(y / 2 + (size - x) / 2) - z;
+		var py = Math.floor(y / 2 + (size - x) / 2) - z + size / 4;
 		if (px > 0 && px < size && py > 0 && py < size) {
-			pixels[px][py] = voxels[x][y][z];
-			pixels[px + 1][py] = voxels[x][y][z];
+			var color = voxels[x][y][z]
+			pixels[px][py-1] = color;
+			pixels[px+1][py-1] = color;
 		}
 		
 		runZ = false;
@@ -110,16 +112,16 @@ function isoTop (voxels, pixels, x, y, z) {
 	return pixels;
 }
 
-function isoLeft (voxels, pixels, x, z, y) {
+function isoRight (voxels, pixels, x, z, y) {
 	if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][z] != null) {
 	//	var px = Math.floor((x * 2 - z));
 	//	var py = Math.floor(63 - z) + 16;
 		var px = Math.floor(x + y);
-		var py = Math.floor(y / 2 + (size - x) / 2) - z // + 16;
-		if (px > 0 && px < size && py > 0 && py < size) {
-			var color = shade(voxels[x][y][z], 'left');
+		var py = Math.floor(y / 2 + (size - x) / 2) - z + size / 4; // + 16;
+		if (px >= 0 && px < size && py >= 0 && py < size) {
+			var color = shade(voxels[x][y][z], 'right');
 			pixels[px][py] = color;
-			pixels[px + 1][py] = color;
+			pixels[px+1][py] = color;
 		}
 		
 		runZ = false;
@@ -127,15 +129,16 @@ function isoLeft (voxels, pixels, x, z, y) {
 	
 	return pixels;
 }
-
-function isoRight (voxels, pixels, z, y, x ) {
-	if (voxels[x] != null && voxels[x][y] != null && voxels[x][y][z] != null) {
-		var px = Math.floor(x + y) // + 16;
-		var py = Math.floor(y / 2 + (size - x) / 2) - z;
-		if (px > 0 && px < size && py > 0 && py < size) {
-			var color = shade(voxels[x][y][z], 'right');
-			pixels[px][py] = color;
-			pixels[px + 1][py] = color;
+var cube = 31;
+function isoLeft (voxels, pixels, z, y, x) {
+	if (voxels[cube-x] != null && voxels[cube-x][cube-y] != null && voxels[cube-x][cube-y][cube-z] != null) {
+		var px = Math.floor(size - (x + y)); // + 16;
+		var py = Math.floor(size - ((y / 2 + (size - x) / 2) - z + size / 4)); //((y/2 + (x/2)) - z));
+	//	if (px > 0 && px < size && py > 0 && py < size) {
+		if (px >= 0 && px < size && py >= 0 && py < size) {
+			var color = shade(voxels[cube-x][cube-y][cube-z], 'left'); //shade(voxels[32-x][y][z], 'right');
+			pixels[px-1][py+1] = color;
+			pixels[px][py+1] = color;
 		}
 		
 		runZ = false;
