@@ -234,6 +234,11 @@ function Key (evt) {
 				rebuild();
 				console.log('rebuilding model');
 			}
+			// noise (NKEY)
+			if (evt.keyCode == 78) {
+				noise();
+				rebuild();
+			}
 		}
 	}
 	
