@@ -1,24 +1,34 @@
 function noise () {
-//	var arr = [];
+	var arr = [];
 	var largest = 0;
 	var t0 = new Date();
 	for (var x = 0; x < 32; x++) {
-	//	arr[x] = [];
+		arr[x] = [];
 		for (var y = 0; y < 32; y++) {
 			var perl = PerlinNoise2D(x, y);
-			if (perl > largest) {
+			if (perl < largest) {
 				largest = perl;
 			}
-			var color = Math.floor((perl / 2064557441592) * 32767);
-		//	arr[x][y] = perl;
+			var color = Math.floor(((perl / 2) + 1) * 25);
+			arr[x][y] = color;
 		//	var color = clamp(perl, 0, 32767);
 			Field.push([x, y, 0, color]);
 		}
 	}
 	var t1 = new Date();
-//	console.log(arr);
+	
+	var arrS = "";
+	
+	for (var x = 0; x < 32; x++) {
+		for (var y = 0; y < 32; y++) {
+			arrS += arr[x][y] + ", ";
+		}
+		arrS += "\n";
+	}
+	
+	console.log(arrS);
 	console.log((t1 - t0) + "ms.");
-	console.log(largest + "");
+	console.log(largest + " num");
 }
 
 function clamp (val, min, max) {
@@ -28,7 +38,7 @@ function clamp (val, min, max) {
 // Multiply With Carry
 // From: http://www.rlmueller.net/Programs/MWC32.txt
 // lngX and lngC are integers greater than or equal to 0  and less than M
-function Noise (lngX, lngC) {
+/*function Noise (lngX, lngC) {
 		var S_Hi, S_Lo, C_Hi, C_Lo
 	    var F1, F2, F3, T1, T2, T3
 
@@ -69,6 +79,20 @@ function Noise (lngX, lngC) {
 	    MWC = lngX;
 		
 		return MWC;
+}*/
+
+var harbl = [];
+
+function Noise (x, y) {
+	var n = x + y * 57
+	n = Math.pow(n<<13, n);
+	var result = ( 1.0 - ( (n * (n * n * 15731 + 789221) + 1376312589) & 2147483647) / 1073741824.0);
+	harbl.push(result);
+	return result;  
+}
+
+function blarbl () {
+	console.log(harbl + "");
 }
 
 // Cosine Interpolate
@@ -104,19 +128,23 @@ function InterpolatedNoise(x, y) {
 	var i1 = Interpolate(v1 , v2 , fractional_X)
 	var i2 = Interpolate(v3 , v4 , fractional_X)
 
-      return Interpolate(i1 , i2 , fractional_Y)
+	return Interpolate(i1 , i2 , fractional_Y)
 }
+
+var totalAmplitude = 0;
 
 function PerlinNoise2D(x, y) {
 	var total = 0;
 	var p = 0.5; // Persistence
 	var n = 4; // - 1 (Number_Of_Octaves)
-
+	
 	for (var i = 0; i < n; i++) {
-		var frequency = p; //Math.pow(2, i);
-		var amplitude = n; //Math.pow(p, i);
+		var frequency = Math.pow(2, i);
+		var amplitude = Math.pow(p, i);
+		totalAmplitude += amplitude;
 		total = total + InterpolatedNoise(x * frequency, y * frequency) * amplitude;
 	}
 
-	return total;
+	return total; // /= totalAmplitude;
+//	return Math.sqrt(total);
 }
