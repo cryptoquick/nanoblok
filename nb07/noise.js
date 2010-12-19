@@ -1,20 +1,33 @@
-function noise () {
+function blokNoise (seed) {
+//	noiseDetail (0.24, 0.5);
+	noiseSeed(seed);
+	
+	Field = [];
+	Voxel = [];
+	
 	var arr = [];
 	var largest = 0;
 	var t0 = new Date();
-	for (var x = 0; x < 32; x++) {
+	
+	for (var x = 31; x >= 0; x--) {
 		arr[x] = [];
-		for (var y = 0; y < 32; y++) {
-			var perl = PerlinNoise2D(x, y);
-			if (perl < largest) {
+		for (var y = 31; y >= 0; y--) {
+		//	
+			var perl = noise(x + Math.random(), y + Math.random());
+		/*	if (perl < largest) {
 				largest = perl;
+			}*/
+			var safe = Math.floor(perl * 64) - 16;
+		//	arr[x][y] = safe;
+			var color = Math.floor((noise(Math.random(), Math.random(), Math.random()) * 32768));
+			
+			for (var z = safe - 1; z >= 0; z--) {
+				Field.push([x, y, z, 32767]);
 			}
-			var color = Math.floor(((perl / 2) + 1) * 25);
-			arr[x][y] = color;
-		//	var color = clamp(perl, 0, 32767);
-			Field.push([x, y, 0, color]);
+			Field.push([x, y, safe, color]);
 		}
 	}
+	
 	var t1 = new Date();
 	
 	var arrS = "";
@@ -26,9 +39,7 @@ function noise () {
 		arrS += "\n";
 	}
 	
-	console.log(arrS);
-	console.log((t1 - t0) + "ms.");
-	console.log(largest + " num");
+	loggit("Noise demo rendered in " + (t1 - t0) + "ms.");
 }
 
 function clamp (val, min, max) {

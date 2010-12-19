@@ -164,3 +164,10 @@ var PositionIndicator = function () {
 	}
 }
 
+function perlNoise () {
+	console.log(noise(0, 0, 0));
+}
+
+function NoiseGen () {
+	perlNoise();
+}

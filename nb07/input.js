@@ -236,7 +236,7 @@ function Key (evt) {
 			}
 			// noise (NKEY)
 			if (evt.keyCode == 78) {
-				noise();
+				blokNoise(Math.floor(Math.random() * 1000));
 				rebuild();
 			}
 		}
