@@ -31,9 +31,9 @@ function swatchInit () {
 						z > -1 && z < $C.gridDims.c) {
 							
 						color = {
-							r: (z + 1) * 8,
-							g: (y + 1) * 8,
-							b: 256 - (x + 1) * 8
+							r: (z) * 8,
+							g: (y) * 8,
+							b: 256 - (x) * 8
 						};
 							
 						Swatch[z][y][x] = index;
@@ -251,3 +251,12 @@ function pickColor (target) {
 	$C.selected.color = swatchIndex;
 }
 
+function cubeColor (r, g, b) {
+	color = {
+		r: Math.floor(r / 8),
+		g: Math.floor(g / 8),
+		b: 32 - Math.floor(b / 8)
+	}
+	
+	return (color.r * 1024 + color.g * 32 + color.b) - 1;
+}

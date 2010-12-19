@@ -14,10 +14,12 @@ function blokNoise (seed) {
 		for (var y = 31; y >= 0; y--) {
 		//	
 			var perl = noise(x + Math.random(), y + Math.random());
+		//	var perl = Math.random() / 2;
 		/*	if (perl < largest) {
 				largest = perl;
 			}*/
-			var safe = Math.floor(perl * 64) - 16;
+			var safe = Math.floor(perl * 32);
+		//	var safe = Math.floor(perl * 16) + 8;
 		//	arr[x][y] = safe;
 			var color = Math.floor((noise(Math.random(), Math.random(), Math.random()) * 32768));
 			
