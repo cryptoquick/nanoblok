@@ -252,11 +252,16 @@ function pickColor (target) {
 }
 
 function cubeColor (r, g, b) {
-	color = {
-		r: Math.floor(r / 8),
-		g: Math.floor(g / 8),
-		b: 32 - Math.floor(b / 8)
-	}
+	if (r > 0 && r < 256 && g > 0 && g < 256 && b > 0 && b < 256) {
+		color = {
+			r: Math.floor(r / 8),
+			g: Math.floor(g / 8),
+			b: 32 - Math.floor(b / 8)
+		}
 	
-	return (color.r * 1024 + color.g * 32 + color.b) - 1;
+		return (color.r * 1024 + color.g * 32 + color.b) - 1;
+	}
+	else {
+		return 32;
+	}
 }
