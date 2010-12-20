@@ -1,6 +1,7 @@
 function blokNoise (seed) {
-//	noiseDetail (0.24, 0.5);
+	noiseDetail (4, 0.25);
 	noiseSeed(seed);
+	console.log(noiseProfile);
 	
 	Field = [];
 	Voxel = [];
@@ -9,20 +10,22 @@ function blokNoise (seed) {
 	var largest = 0;
 	var t0 = new Date();
 	
+	var scale = 0.04;
+	
 	for (var x = 31; x >= 0; x--) {
 		arr[x] = [];
 		for (var y = 31; y >= 0; y--) {
 		//	
-			var perl = noise(x + Math.random(), y + Math.random());
+			var perl = noise(x * scale, y * scale);
 		//	var perl = Math.random() / 2;
 		/*	if (perl < largest) {
 				largest = perl;
 			}*/
+		//	var safe = Math.floor(perl * 32);
 			var safe = Math.floor(perl * 32);
-		//	var safe = Math.floor(perl * 16) + 8;
 		//	arr[x][y] = safe;
-			var color = Math.floor((noise(Math.random(), Math.random(), Math.random()) * 32768));
-			
+		//	var color = //Math.floor((noise(Math.random(), Math.random(), Math.random()) * 32768));
+			var color = cubeColor(noise(x * scale, y * scale) * 256, noise(x * scale, y * scale) * 256, noise(x * scale, y * scale) * 256);
 			for (var z = safe - 1; z >= 0; z--) {
 				Field.push([x, y, z, 32767]);
 			}
@@ -32,14 +35,14 @@ function blokNoise (seed) {
 	
 	var t1 = new Date();
 	
-	var arrS = "";
+/*	var arrS = "";
 	
 	for (var x = 0; x < 32; x++) {
 		for (var y = 0; y < 32; y++) {
 			arrS += arr[x][y] + ", ";
 		}
 		arrS += "\n";
-	}
+	}*/
 	
 	loggit("Noise demo rendered in " + (t1 - t0) + "ms.");
 }
