@@ -215,10 +215,11 @@ function Key (evt) {
 			// debug (RKEY)
 			if (evt.keyCode == 82) {
 				// $C.renderer.render();
-				var temp = JSON.stringify(Field);
+		/*		var temp = JSON.stringify(Field);
 				Field = JSON.parse(temp);
 				rebuild();
-				loggit('Model rebuilt. (sorry!)');
+				loggit('Model rebuilt. (sorry!)');*/
+				blockRender();
 			}
 			// example (EKEY)
 			if (evt.keyCode == 69) {

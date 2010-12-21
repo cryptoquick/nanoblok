@@ -294,3 +294,52 @@ function rebuild () {
 	pixelRender(iso(expand(Field)));
 }
 
+/* isoX [1] = blockSize.half + offset.x;
+isoX [2] = blockSize.full + offset.x;
+isoX [3] = blockSize.full + offset.x;
+isoX [4] = blockSize.half + offset.x;
+isoX [5] = offset.x;
+isoX [6] = offset.x;
+isoX [7] = blockSize.half + offset.x;
+
+var isoY = Array();
+isoY [1] = offset.y;
+isoY [2] = blockSize.quarter + offset.y;
+isoY [3] = blockSize.third + offset.y;
+isoY [4] = blockSize.full + offset.y;
+isoY [5] = blockSize.third + offset.y;
+isoY [6] = blockSize.quarter + offset.y;
+isoY [7] = blockSize.half + offset.y;*/
+
+function blockRender () {
+	var ctx = context('selection');
+	ctx.fillStyle = 'black';
+	
+	loggit('blockRender?')
+	var t0 = new Date();
+	
+	var toggle = true;
+	
+	for (var px = $C.blockSize.quarter, pxx = $C.gridSize.x; px < pxx; px += $C.blockSize.half) {
+		for (var py = $C.blockSize.quarter, pyy = $C.gridSize.fullY; py < pyy; py += $C.blockSize.quarter) {
+			if (px > $C.gridSize.x / 2 - py * 2 // Top Left
+			&&	$C.gridSize.x - px > $C.gridSize.x / 2 - py * 2 // Top Right
+			&&	$C.gridSize.x / 4 - px / 2 < $C.gridSize.x - py // Lower Left
+			&&	px / 2 < $C.gridSize.x - py // Lower Right
+			&&	toggle // Y-axis
+				) {
+				ctx.fillRect(px, py, 2, 2);
+				toggle = false;
+			}
+			else {
+				toggle = true;
+			}
+		}
+	}
+	
+	$C.posInd.redraw();
+	
+	var t1 = new Date();
+	
+	loggit('blockRender in ' + (t1 - t0) + 'ms!');
+}
