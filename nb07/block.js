@@ -177,7 +177,7 @@ function canvasBlockOld (position, location, color) {
 		canvasDrawSet([2, 7, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
 	}
 }
-
+var count = 0;
 function canvasBlock (position, location, color) {
 	if ($C.swatchActive) {
 		Arr = SwatchGhost;
@@ -185,10 +185,10 @@ function canvasBlock (position, location, color) {
 	else {
 		Arr = Voxel;
 	}
-	
+	count = 0;
 //	var screenLoc = {x: 0, y: 31 - location.y, z: 31 - location.z};
 	
-	var x = location.x;
+	var x = 31 - location.x;
 	var y = location.y;
 	var z = location.z;
 	var zz = 0;
@@ -207,40 +207,55 @@ function canvasBlock (position, location, color) {
 		zz++;
 	}
 	
-	console.log(zz);
 	
-	// if (location.x < 15 || location.y < 15) {
-	// 	var screenLoc = {x: 0, y: location.y, z: z};
-	// }
-	// else {
-		var screenLoc = {x: location.x, y: location.y, z: zz};
-	// }
 	
-	var adjustedPosition = {
-		x: $C.blockSize.half * location.x + $C.blockSize.half * location.y,
-		y: $C.blockSize.quarter * location.y - $C.blockSize.quarter * location.x + $C.gridSize.y / 2 + $C.center.y - $C.blockSize.half * (location.z) + $C.blockSize.full
-	};
-	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
+/*	if (location.x < 15 || location.y < 15) {
+		var screenLoc = {x: 0, y: location.y, z: z};
+	}
+	else {
+		var screenLoc = {x: location.x, y: 31, z: z};
+	}*/
 	
-	// compareLoc(location, canvasBlockRay(screenLoc, position, color, Arr))
+	var screenLoc = {x: location.x, y: location.y, z: z};
+	
+	// var adjustedPosition = {
+	// 	x: $C.blockSize.half * location.x + $C.blockSize.half * location.y,
+	// 	y: $C.blockSize.quarter * location.y - $C.blockSize.quarter * location.x + $C.gridSize.y / 2 + $C.center.y - $C.blockSize.half * (location.z) + $C.blockSize.full
+	// };
+	// canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
+	
+	compareLoc(location, canvasBlockRay(screenLoc, position, color, Arr))
+	
+	// console.log(z + "z, run " + count);	
 }
 
 function canvasBlockRay (location, position, color, arr) {
 	var adjustedPosition = {
 		x: $C.blockSize.half * location.x + $C.blockSize.half * location.y,
-		y: $C.blockSize.half * (location.z + 1) + $C.gridSize.fullY / 2
+		y: $C.blockSize.quarter * location.y
+		- $C.blockSize.quarter * location.x
+		+ $C.gridSize.y / 2 + $C.center.y
+		- $C.blockSize.half * (location.z)
+		+ $C.blockSize.full
 	};
+	
 	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
+	count++;
+	console.log(location);
 	if (location.z <= 0) {
 		return null;
 	}
-	else if (arr[location.x] != null 
-		&& arr[location.x][location.y] !=null 
-		&& arr[location.x][location.y][location.z] != null
+/*	else if (//arr[location.x] != null 
+	//	&& arr[location.x][location.y] !=null 
+		arr[location.x][location.y][location.z] != null
 	) {
+		var adjustedPosition = {
+			x: $C.blockSize.half * location.x + $C.blockSize.half * location.y,
+			y: $C.blockSize.quarter * location.y - $C.blockSize.quarter * location.x + $C.gridSize.y / 2 + $C.center.y - $C.blockSize.half * (location.z) + $C.blockSize.full
+		};
 		canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
 		return location;
-	}
+	}*/
 	else {
 		location.x++;
 		location.y--;
@@ -277,7 +292,7 @@ function placeBlock (target) {
 			placeBlockDraw(target, location);
 		}
 		else {
-			loggit("Same block already exists at location.");
+			loggit("Same block already exists at " + location.x + ", " + location.y + ", " + location.z +".");
 		}
 	}
 	else {
