@@ -64,14 +64,44 @@ function blank () {
 	return pixels;
 }
 
+// For testing performance (big O) of the following algorithms.
+// Tested against the absolute worst case, the color cube.
+// Approach 1 (isoPass) writes pixels 3071 times.
+// Approach 2 (arriso/reciso) writes pixels xx times.
+var test = 0;
+
 function iso (voxels) {
+	test = 0;
 	var pixels = blank();
 	
 	pixels = isoPass(voxels, pixels, isoTop);
 	pixels = isoPass(voxels, pixels, isoRight);
 	pixels = isoPass(voxels, pixels, isoLeft);
 	
+//	pixels = arriso(voxels, pixels);
+//	console.log(test);
 	return pixels;
+}
+
+function arriso (voxels, pixels) {
+	for (var px = 0; px < size; px++) {
+		for (var py = 0; py < size; py++) {
+			if (px > size / 2 - py * 2 // Top Left
+				&&	size - px > size / 2 - py * 2 // Top Right
+				&&	size / 4 - px / 2 < size - py // Lower Left
+				&&	px / 2 < size * 1.25 - py // Lower Right
+			) {
+				pixels[px][py] = {r: 123, g: 123, b: 123};
+				test++;
+			}
+		}
+	}
+	
+	return pixels;
+}
+
+function reciso (voxels, pixels) {
+	
 }
 
 var runY = true;
@@ -108,6 +138,7 @@ function isoTop (voxels, pixels, x, y, z) {
 			// }
 			pixels[px][py-1] = color;
 			pixels[px+1][py-1] = color;
+			test++;
 		}
 		
 		runZ = false;
@@ -131,6 +162,7 @@ function isoRight (voxels, pixels, x, z, y) {
 			// 	}
 			pixels[px][py] = color;
 			pixels[px+1][py] = color;
+			test++;
 		}
 		
 		runZ = false;
@@ -153,6 +185,7 @@ function isoLeft (voxels, pixels, z, y, x) {
 			// }
 			pixels[px-1][py+1] = color;
 			pixels[px][py+1] = color;
+			test++;
 		}
 		
 		runZ = false;

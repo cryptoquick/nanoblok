@@ -155,15 +155,15 @@ var Tools = function () {
 	}
 	
 	this.rotLeft = function () {
-		if (!$C.swatchActive) {
+	//	if (!$C.swatchActive) {
 			rotate(1);
-		}
+	//	}
 	}
 	
 	this.rotRight = function () {
-		if (!$C.swatchActive) {
+	//	if (!$C.swatchActive) {
 			rotate(0);
-		}
+	//	}
 	}
 	
 	this.select = function () {
