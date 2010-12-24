@@ -128,23 +128,21 @@ function smartShift (color, shift) {
 // Paints a block on the board with proper color and occlusion.
 // Takes coors x/y for position, xyz location on the grid, $C, and the color object of the block.
 // A color id can be converted into a color object using the colorBlock function.
-function canvasBlock (position, location, color) {
+function canvasBlockOld (position, location, color) {
 	var adjustedPosition = {x: position.x, y: position.y - $C.blockSize.half * (location.z + 1)};
 	
+	// Switch between color cube and block on the grid.
 	if ($C.swatchActive) {
 		Arr = SwatchGhost;
 	}
 	else {
 		Arr = Voxel;
 	}
-	
-	// Top side. Always placed, unless there's a block above it.
-	// Top block.
-	
-/*	var top = false;
+	/*
+	var top = false;
 	
 	for (var i = location.z, ii = 0; i > ii; i--) {
-		if (Arr[location.x][location.y][i] == -1) {
+		if (Arr[location.x][location.y][i] == null) {
 			top = true;
 		}
 		else {
@@ -177,6 +175,90 @@ function canvasBlock (position, location, color) {
 		canvasDrawSet([2, 7, 4, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
 	} else if (Arr[location.x - 1][location.y + 1][location.z] != null && Arr[location.x][location.y + 1][location.z] == null) {
 		canvasDrawSet([2, 7, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
+	}
+}
+
+function canvasBlock (position, location, color) {
+	if ($C.swatchActive) {
+		Arr = SwatchGhost;
+	}
+	else {
+		Arr = Voxel;
+	}
+	
+//	var screenLoc = {x: 0, y: 31 - location.y, z: 31 - location.z};
+	
+	var x = location.x;
+	var y = location.y;
+	var z = location.z;
+	var zz = 0;
+	
+/*	while (x > 0 && y > 0 && z > 0) {
+		x--;
+		y--;
+		z--;
+		zz++;
+	}*/
+	zz = 0;
+	while (x < 31 && y < 31 && z < 31) {
+		x++;
+		y++;
+		z++;
+		zz++;
+	}
+	
+	console.log(zz);
+	
+	// if (location.x < 15 || location.y < 15) {
+	// 	var screenLoc = {x: 0, y: location.y, z: z};
+	// }
+	// else {
+		var screenLoc = {x: location.x, y: location.y, z: zz};
+	// }
+	
+	var adjustedPosition = {
+		x: $C.blockSize.half * location.x + $C.blockSize.half * location.y,
+		y: $C.blockSize.quarter * location.y - $C.blockSize.quarter * location.x + $C.gridSize.y / 2 + $C.center.y - $C.blockSize.half * (location.z) + $C.blockSize.full
+	};
+	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
+	
+	// compareLoc(location, canvasBlockRay(screenLoc, position, color, Arr))
+}
+
+function canvasBlockRay (location, position, color, arr) {
+	var adjustedPosition = {
+		x: $C.blockSize.half * location.x + $C.blockSize.half * location.y,
+		y: $C.blockSize.half * (location.z + 1) + $C.gridSize.fullY / 2
+	};
+	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
+	if (location.z <= 0) {
+		return null;
+	}
+	else if (arr[location.x] != null 
+		&& arr[location.x][location.y] !=null 
+		&& arr[location.x][location.y][location.z] != null
+	) {
+		canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
+		return location;
+	}
+	else {
+		location.x++;
+		location.y--;
+		location.z--;
+	//	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
+		return canvasBlockRay (location, position, color, arr);
+	}
+}
+
+function compareLoc (loc1, loc2) {
+	if (loc1 == null || loc2 == null) {
+		return false;
+	}
+	else if (loc1.x == loc2.x && loc1.y == loc2.y && loc1.z == loc2.z) {
+		return true;
+	}
+	else {
+		return false;
 	}
 }
 
@@ -248,6 +330,8 @@ function removeBlock (target) {
 }
 
 function drawAllBlocks () {
+	var t0 = new Date();
+	
 	var location = {
 		x: 0,
 		y: 0,
@@ -266,6 +350,9 @@ function drawAllBlocks () {
 			canvasBlock(coors, location, color);
 		}
 	}
+	
+	var t1 = new Date();
+	console.log("All blocks drawn in " + (t1 - t0) + "ms.")
 }
 
 function popField(x, y, z) {
@@ -294,23 +381,7 @@ function rebuild () {
 	pixelRender(iso(expand(Field)));
 }
 
-/* isoX [1] = blockSize.half + offset.x;
-isoX [2] = blockSize.full + offset.x;
-isoX [3] = blockSize.full + offset.x;
-isoX [4] = blockSize.half + offset.x;
-isoX [5] = offset.x;
-isoX [6] = offset.x;
-isoX [7] = blockSize.half + offset.x;
-
-var isoY = Array();
-isoY [1] = offset.y;
-isoY [2] = blockSize.quarter + offset.y;
-isoY [3] = blockSize.third + offset.y;
-isoY [4] = blockSize.full + offset.y;
-isoY [5] = blockSize.third + offset.y;
-isoY [6] = blockSize.quarter + offset.y;
-isoY [7] = blockSize.half + offset.y;*/
-
+/* // Experiment. Can be removed, but good for posterity.
 function blockRender () {
 	var ctx = context('selection');
 	ctx.fillStyle = 'black';
@@ -323,11 +394,11 @@ function blockRender () {
 	for (var px = $C.blockSize.quarter, pxx = $C.gridSize.x; px < pxx; px += $C.blockSize.half) {
 		for (var py = $C.blockSize.quarter, pyy = $C.gridSize.fullY; py < pyy; py += $C.blockSize.quarter) {
 			if (px > $C.gridSize.x / 2 - py * 2 // Top Left
-			&&	$C.gridSize.x - px > $C.gridSize.x / 2 - py * 2 // Top Right
-			&&	$C.gridSize.x / 4 - px / 2 < $C.gridSize.x - py // Lower Left
-			&&	px / 2 < $C.gridSize.x - py // Lower Right
-			&&	toggle // Y-axis
-				) {
+				&&	$C.gridSize.x - px > $C.gridSize.x / 2 - py * 2 // Top Right
+				&&	$C.gridSize.x / 4 - px / 2 < $C.gridSize.x - py // Lower Left
+				&&	px / 2 < $C.gridSize.x * 1.25 - py // Lower Right
+				&&	toggle // Y-axis
+			) {
 				ctx.fillRect(px, py, 2, 2);
 				toggle = false;
 			}
@@ -343,3 +414,4 @@ function blockRender () {
 	
 	loggit('blockRender in ' + (t1 - t0) + 'ms!');
 }
+*/
