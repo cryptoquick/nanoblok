@@ -177,7 +177,10 @@ function canvasBlockOld (position, location, color) {
 		canvasDrawSet([2, 7, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
 	}
 }
+
 var count = 0;
+var blockMask = [];
+
 function canvasBlock (position, location, color) {
 	if ($C.swatchActive) {
 		Arr = SwatchGhost;
@@ -188,7 +191,7 @@ function canvasBlock (position, location, color) {
 	count = 0;
 //	var screenLoc = {x: 0, y: 31 - location.y, z: 31 - location.z};
 	
-	var x = 31 - location.x;
+	var x = 31-location.x;
 	var y = location.y;
 	var z = location.z;
 	var zz = 0;
@@ -207,8 +210,6 @@ function canvasBlock (position, location, color) {
 		zz++;
 	}
 	
-	
-	
 /*	if (location.x < 15 || location.y < 15) {
 		var screenLoc = {x: 0, y: location.y, z: z};
 	}
@@ -224,12 +225,6 @@ function canvasBlock (position, location, color) {
 	// };
 	// canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
 	
-	compareLoc(location, canvasBlockRay(screenLoc, position, color, Arr))
-	
-	// console.log(z + "z, run " + count);	
-}
-
-function canvasBlockRay (location, position, color, arr) {
 	var adjustedPosition = {
 		x: $C.blockSize.half * location.x + $C.blockSize.half * location.y,
 		y: $C.blockSize.quarter * location.y
@@ -239,9 +234,38 @@ function canvasBlockRay (location, position, color, arr) {
 		+ $C.blockSize.full
 	};
 	
+	var hash = pixelhash(adjustedPosition.x, adjustedPosition.y)
+	
+	if (blockMask[hash] == undefined){
+		blockMask[hash] = true;
+		count++;
+		compareLoc(location, canvasBlockRay(screenLoc, adjustedPosition, color, Arr));
+	}
+	// else {
+	// 		blockMask[hash] = true;
+	// 	}
+	
+	
+	
+	// console.log(z + "z, run " + count);	
+}
+
+function canvasBlockRay (location, adjustedPosition, color, arr) {
+/*	var adjustedPosition = {
+		x: $C.blockSize.half * location.x + $C.blockSize.half * location.y,
+		y: $C.blockSize.quarter * location.y
+		- $C.blockSize.quarter * location.x
+		+ $C.gridSize.y / 2 + $C.center.y
+		- $C.blockSize.half * (location.z)
+		+ $C.blockSize.full
+	};*/
+	
 	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
-	count++;
-	console.log(location);
+//	count++;
+	// if (!$C.swatchActive) {
+	// 	console.log(location);
+	// }
+	
 	if (location.z <= 0) {
 		return null;
 	}
@@ -261,7 +285,7 @@ function canvasBlockRay (location, position, color, arr) {
 		location.y--;
 		location.z--;
 	//	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
-		return canvasBlockRay (location, position, color, arr);
+		return canvasBlockRay (location, adjustedPosition, color, arr);
 	}
 }
 
@@ -275,6 +299,11 @@ function compareLoc (loc1, loc2) {
 	else {
 		return false;
 	}
+}
+
+// NxN -> N / dovetailing / cantor pairing function.
+function pixelhash (k1, k2) {
+	return 1 / 2 * (k1, k2) * (k1 + k2 + 1) + k2;
 }
 
 // This gathers necessary information for block placement, and determines whether the block should actually be placed.
@@ -355,6 +384,9 @@ function drawAllBlocks () {
 	
 	var gridPosition = 0;
 	var coors = new Object();
+	
+	// Clear out the blockMask hash table.
+	blockMask = [];
 	
 	for (var i = 0, ii = Field.length; i < ii; i++) {
 		if (FieldVisible[i]) {
