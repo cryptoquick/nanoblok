@@ -191,33 +191,33 @@ function canvasBlock (position, location, color) {
 	count = 0;
 //	var screenLoc = {x: 0, y: 31 - location.y, z: 31 - location.z};
 	
-	var x = 31-location.x;
+	var x = location.x;
 	var y = location.y;
 	var z = location.z;
 	var zz = 0;
 	
-/*	while (x > 0 && y > 0 && z > 0) {
+	while (x >= 0 && y <= 31 && z <= 31) {
 		x--;
-		y--;
-		z--;
-		zz++;
-	}*/
+		y++;
+		z++;
+	//	zz++;
+	}
 	zz = 0;
-	while (x < 31 && y < 31 && z < 31) {
+/*	while (x < 31 && y < 31 && z < 31) {
 		x++;
 		y++;
 		z++;
 		zz++;
-	}
-	
-/*	if (location.x < 15 || location.y < 15) {
-		var screenLoc = {x: 0, y: location.y, z: z};
-	}
-	else {
-		var screenLoc = {x: location.x, y: 31, z: z};
 	}*/
 	
-	var screenLoc = {x: location.x, y: location.y, z: z};
+//	if (location.x < 15 || location.y < 15) {
+	var screenLoc = {x: x, y: y, z: z};
+//	}
+//	else {
+//		var screenLoc = {x: x, y: y, z: z};
+//	}
+	
+//	var screenLoc = {x: location.x, y: location.y, z: z};
 	
 	// var adjustedPosition = {
 	// 	x: $C.blockSize.half * location.x + $C.blockSize.half * location.y,
@@ -234,13 +234,13 @@ function canvasBlock (position, location, color) {
 		+ $C.blockSize.full
 	};
 	
-	var hash = pixelhash(adjustedPosition.x, adjustedPosition.y)
+	// var hash = pixelhash(adjustedPosition.x, adjustedPosition.y)
 	
-	if (blockMask[hash] == undefined){
-		blockMask[hash] = true;
-		count++;
+	// if (blockMask[hash] == undefined){
+	// 	blockMask[hash] = true;
+	// 	count++;
 		compareLoc(location, canvasBlockRay(screenLoc, adjustedPosition, color, Arr));
-	}
+//	}
 	// else {
 	// 		blockMask[hash] = true;
 	// 	}
@@ -260,32 +260,38 @@ function canvasBlockRay (location, adjustedPosition, color, arr) {
 		+ $C.blockSize.full
 	};*/
 	
-	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
+//	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
 //	count++;
-	// if (!$C.swatchActive) {
-	// 	console.log(location);
-	// }
 	
-	if (location.z <= 0) {
+	
+	if (location.z <= -1) {
 		return null;
 	}
-/*	else if (//arr[location.x] != null 
-	//	&& arr[location.x][location.y] !=null 
-		arr[location.x][location.y][location.z] != null
+	else if (arr[location.x] != null 
+		&& arr[location.x][location.y] !=null 
+		&& arr[location.x][location.y][location.z] != null
 	) {
-		var adjustedPosition = {
+	/*	var adjustedPosition = {
 			x: $C.blockSize.half * location.x + $C.blockSize.half * location.y,
 			y: $C.blockSize.quarter * location.y - $C.blockSize.quarter * location.x + $C.gridSize.y / 2 + $C.center.y - $C.blockSize.half * (location.z) + $C.blockSize.full
-		};
-		canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
+		};*/
+		var hash = pixelhash(adjustedPosition.x, adjustedPosition.y);
+		if (blockMask[hash] == undefined){
+			blockMask[hash] = true;
+			count++;
+			canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
+		}
 		return location;
-	}*/
+	}
 	else {
-		location.x++;
-		location.y--;
-		location.z--;
+		newLoc = {x: location.x + 1, y: location.y - 1, z: location.z - 1};
+		
+	/*	if (!$C.swatchActive) {
+			console.log(newLoc);
+		}*/
+		
 	//	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
-		return canvasBlockRay (location, adjustedPosition, color, arr);
+		return canvasBlockRay (newLoc, adjustedPosition, color, arr);
 	}
 }
 
@@ -303,7 +309,7 @@ function compareLoc (loc1, loc2) {
 
 // NxN -> N / dovetailing / cantor pairing function.
 function pixelhash (k1, k2) {
-	return 1 / 2 * (k1, k2) * (k1 + k2 + 1) + k2;
+	return (1 / 2) * (k1, k2) * (k1 + k2 + 1) + k2;
 }
 
 // This gathers necessary information for block placement, and determines whether the block should actually be placed.
@@ -333,19 +339,22 @@ function placeBlock (target) {
 function placeBlockDraw (target, location) {
 	// Draw the actual block using coordinates using the location of the grid's tiles as a reference for pixel-placement for all the rest of the blocks (this is the first argument). The target.id should look something like "x-123".
 	// colorBlock is used to turn the color index into a color object (with separate color values for each face as well as its lines)
-	canvasBlock(GridField[target.id].coors, location, colorBlockNew(SwatchField[$C.selected.color][3]));
+//	canvasBlock(GridField[target.id].coors, location, colorBlockNew(SwatchField[$C.selected.color][3]));
+	// ...not
 
 	// Record information in the Field array, which is for serialization.
 	Field.push([location.x, location.y, location.z, $C.selected.color]);
 	FieldVisible.push(true);
 	// As well as the Field index of the block internally using the Voxel array.
 	Voxel[location.x][location.y][location.z] = Field.length - 1;
-
-	// Let the user know they've placed a block.
-	loggit("Block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
-
+	
+	$C.posInd.clearBlocks();
+	drawAllBlocks();
 	// Redraw the display so that this change shows up immediately.
 	$C.posInd.redraw();
+	
+	// Let the user know they've placed a block.
+	loggit("Block placed at " + location.x + ", " + location.y + ", " + location.z + ".")
 }
 
 function removeBlock (target) {

@@ -66,6 +66,8 @@ var Tools = function () {
 	}
 	
 	this.gridUp = function () {
+		blockMask = [];
+		
 		if($C.layerOffset.z < ($C.gridDims.r - 1)) {
 			$C.layerOffset.z++;
 			$C.posInd.redraw();
@@ -101,6 +103,8 @@ var Tools = function () {
 	}
 	
 	this.gridDown = function () {
+		blockMask = [];
+		
 		if($C.layerOffset.z > 0) {
 			$C.layerOffset.z--;
 			$C.posInd.redraw();
@@ -191,7 +195,7 @@ var rotation = 0;
 
 function rotate (direction) {
 	var location = new Object();
-	
+	blockMask = [];
 	// This function works on both the grid and the color cube.
 	if ($C.swatchActive) {
 		initVoxels(Swatch);
