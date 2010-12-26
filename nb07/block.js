@@ -229,17 +229,19 @@ function canvasBlock (position, location, color) {
 		x: $C.blockSize.half * location.x + $C.blockSize.half * location.y,
 		y: $C.blockSize.quarter * location.y
 		- $C.blockSize.quarter * location.x
-		+ $C.gridSize.y / 2 + $C.center.y
+		+ $C.gridSize.y * 3 //+ $C.center.y
 		- $C.blockSize.half * (location.z)
 		+ $C.blockSize.full
 	};
-	
+	canvasBlockRay(screenLoc, adjustedPosition, color, Arr)
 	// var hash = pixelhash(adjustedPosition.x, adjustedPosition.y)
 	
 	// if (blockMask[hash] == undefined){
 	// 	blockMask[hash] = true;
 	// 	count++;
-		compareLoc(location, canvasBlockRay(screenLoc, adjustedPosition, color, Arr));
+	//	if (compareLoc(location, canvasBlockRay(screenLoc, adjustedPosition, color, Arr))) {
+	//		occlusionDraw (Arr, location, adjustedPosition, color);
+	//	}
 //	}
 	// else {
 	// 		blockMask[hash] = true;
@@ -275,17 +277,19 @@ function canvasBlockRay (location, adjustedPosition, color, arr) {
 			x: $C.blockSize.half * location.x + $C.blockSize.half * location.y,
 			y: $C.blockSize.quarter * location.y - $C.blockSize.quarter * location.x + $C.gridSize.y / 2 + $C.center.y - $C.blockSize.half * (location.z) + $C.blockSize.full
 		};*/
-		var hash = pixelhash(adjustedPosition.x, adjustedPosition.y);
-		if (blockMask[hash] == undefined){
-			blockMask[hash] = true;
+	//	var hash = pixelhash(adjustedPosition.x, adjustedPosition.y);
+	//	if (blockMask[hash] == undefined){
+	//		blockMask[hash] = true;
+			occlusionDraw (Arr, location, adjustedPosition, color);
 			count++;
-			canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
-		}
-		return location;
+		//	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
+		//	occlusionDraw (Arr, location, adjustedPosition, color);
+	//	}
+	//	return location;
 	}
 	else {
 		newLoc = {x: location.x + 1, y: location.y - 1, z: location.z - 1};
-		
+		count++;
 	/*	if (!$C.swatchActive) {
 			console.log(newLoc);
 		}*/
@@ -310,6 +314,34 @@ function compareLoc (loc1, loc2) {
 // NxN -> N / dovetailing / cantor pairing function.
 function pixelhash (k1, k2) {
 	return (1 / 2) * (k1, k2) * (k1 + k2 + 1) + k2;
+}
+
+function occlusionDraw (Arr, location, adjustedPosition, color) {
+	if (Arr[location.x][location.y][location.z + 1] == null) { // && top) {
+		canvasDrawSet([1, 6, 7, 2], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
+	}
+	// Always draw top if block above it is invisible.
+	else {
+		if (!$C.swatchActive) {
+			if (!FieldVisible[Voxel[location.x][location.y][location.z + 1]]) {
+				canvasDrawSet([1, 6, 7, 2], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
+			}
+		}
+	}
+	
+	// Left side.
+	if (Arr[location.x - 1][location.y][location.z] == null && Arr[location.x - 1][location.y + 1][location.z] == null) {
+		canvasDrawSet([6, 7, 4, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
+	} else if (Arr[location.x - 1][location.y + 1][location.z] != null && Arr[location.x - 1][location.y][location.z] == null) {
+		canvasDrawSet([6, 7, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
+	}
+	
+	// Right side.
+	if (Arr[location.x][location.y + 1][location.z] == null && Arr[location.x - 1][location.y + 1][location.z] == null) {
+		canvasDrawSet([2, 7, 4, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
+	} else if (Arr[location.x - 1][location.y + 1][location.z] != null && Arr[location.x][location.y + 1][location.z] == null) {
+		canvasDrawSet([2, 7, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
+	}
 }
 
 // This gathers necessary information for block placement, and determines whether the block should actually be placed.
