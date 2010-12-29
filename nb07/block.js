@@ -182,6 +182,11 @@ var count = 0;
 var blockMask = [];
 
 function canvasBlock (position, location, color) {
+	location.color = color;
+	hashRender(location);
+}
+
+function canvasBlockRecursive (position, location, color) {
 	if ($C.swatchActive) {
 		Arr = SwatchGhost;
 	}
@@ -191,17 +196,17 @@ function canvasBlock (position, location, color) {
 	count = 0;
 //	var screenLoc = {x: 0, y: 31 - location.y, z: 31 - location.z};
 	
-	var x = location.x;
+/*	var x = location.x;
 	var y = location.y;
 	var z = location.z;
-	var zz = 0;
+	var zz = 0;*/
 	
-	while (x >= 0 && y <= 31 && z <= 31) {
-		x--;
-		y++;
-		z++;
+/*	while (x >= 0 && y <= 31 && z <= 31) {
+		x++;
+		y--;
+		z--;
 	//	zz++;
-	}
+	}*/
 	zz = 0;
 /*	while (x < 31 && y < 31 && z < 31) {
 		x++;
@@ -211,7 +216,7 @@ function canvasBlock (position, location, color) {
 	}*/
 	
 //	if (location.x < 15 || location.y < 15) {
-	var screenLoc = {x: x, y: y, z: z};
+//	var screenLoc = {x: x, y: y, z: z};
 //	}
 //	else {
 //		var screenLoc = {x: x, y: y, z: z};
@@ -233,23 +238,50 @@ function canvasBlock (position, location, color) {
 		- $C.blockSize.half * (location.z)
 		+ $C.blockSize.full
 	};
-	canvasBlockRay(screenLoc, adjustedPosition, color, Arr)
+	canvasBlockRay(location, adjustedPosition, color, Arr)
 	// var hash = pixelhash(adjustedPosition.x, adjustedPosition.y)
 	
-	// if (blockMask[hash] == undefined){
-	// 	blockMask[hash] = true;
-	// 	count++;
-	//	if (compareLoc(location, canvasBlockRay(screenLoc, adjustedPosition, color, Arr))) {
-	//		occlusionDraw (Arr, location, adjustedPosition, color);
-	//	}
+//	if (blockMask[hash] == undefined){
+	//	blockMask[hash] = true;
+	//	count++;
+		if (!compareLoc(location, canvasBlockRay(location, adjustedPosition, color, Arr))) {
+			occlusionDraw (Arr, location, adjustedPosition, color);
+		}
 //	}
-	// else {
-	// 		blockMask[hash] = true;
-	// 	}
+//	else {
+//		blockMask[hash] = true;
+//	}
 	
 	
 	
-	// console.log(z + "z, run " + count);	
+	console.log(location.z + "z, run " + count);	
+}
+
+var blockbuffer = [];
+var bufferfield = [];
+
+function hashRender (location) {
+	var x = location.x;
+	var y = location.y;
+	var z = location.z;
+	var zz = 0;
+	
+	while (x <= 31 && y >= 0 && z >= 0) {
+		x++;
+		y--;
+		z--;
+		zz++;
+		threehash(x, y, z);
+	}
+	
+	var index = threehash(x, y, z);
+	location.zz = zz;
+	
+	if (blockbuffer[index] == undefined || zz < blockbuffer[index].zz) {
+		blockbuffer[index] = location;
+		
+		console.log(location);
+	}
 }
 
 function canvasBlockRay (location, adjustedPosition, color, arr) {
@@ -266,11 +298,12 @@ function canvasBlockRay (location, adjustedPosition, color, arr) {
 //	count++;
 	
 	
-	if (location.z <= -1) {
+	if (location.x <= 31 && location.y <= 31 && location.z <= 31) {
+	//	occlusionDraw (Arr, location, adjustedPosition, color);
 		return null;
 	}
 	else if (arr[location.x] != null 
-		&& arr[location.x][location.y] !=null 
+		&& arr[location.x][location.y] != null 
 		&& arr[location.x][location.y][location.z] != null
 	) {
 	/*	var adjustedPosition = {
@@ -280,15 +313,15 @@ function canvasBlockRay (location, adjustedPosition, color, arr) {
 	//	var hash = pixelhash(adjustedPosition.x, adjustedPosition.y);
 	//	if (blockMask[hash] == undefined){
 	//		blockMask[hash] = true;
-			occlusionDraw (Arr, location, adjustedPosition, color);
-			count++;
+			// occlusionDraw (Arr, location, adjustedPosition, color);
+		//	count++;
 		//	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
 		//	occlusionDraw (Arr, location, adjustedPosition, color);
 	//	}
-	//	return location;
+		return location;
 	}
 	else {
-		newLoc = {x: location.x + 1, y: location.y - 1, z: location.z - 1};
+		newLoc = {x: location.x - 1, y: location.y + 1, z: location.z + 1};
 		count++;
 	/*	if (!$C.swatchActive) {
 			console.log(newLoc);
@@ -307,13 +340,60 @@ function compareLoc (loc1, loc2) {
 		return true;
 	}
 	else {
-		return false;
+		return null;
 	}
 }
 
+// Hash Test, to test if the hash algorithm returns a unique value for each possible value going into it.
+
+var hashtestarr = [];
+var hashtestcount = 0;
+
+function hashtest () {
+	for (var x = 0; x < 32; x++) {
+		for (var y = 0; y < 32; y++) {
+			for (var z = 0; z < 32; z++) {
+				hashtestarr[threehash(x, y, z)] = true;
+			}
+		}
+	}
+	
+	for (var i = 0; i < hashtestarr.length; i++) {
+		if (hashtestarr[i]) {
+			hashtestcount++;
+		}
+	}
+	
+	return hashtestcount;
+}
+
 // NxN -> N / dovetailing / cantor pairing function.
-function pixelhash (k1, k2) {
-	return (1 / 2) * (k1, k2) * (k1 + k2 + 1) + k2;
+function twohash (k1, k2) {
+	k1++;
+	k2++;
+	return (1 / 2) * (k1 + k2) * (k1 + k2 + 1) + k2;
+}
+
+function threehash (v1, v2, v3) {
+	v1++; v2++; v3++;
+	return v1 * 1024 + v2 * 32 + v3;
+}
+
+function drawAllBuffer () {
+	for (var i = 0, ii = bufferfield.length; i < ii; i++) {
+		var location = bufferfield[i];
+		
+		var adjustedPosition = {
+			x: $C.blockSize.half * location.x + $C.blockSize.half * location.y,
+			y: $C.blockSize.quarter * location.y
+			- $C.blockSize.quarter * location.x
+			+ $C.gridSize.y * 3 //+ $C.center.y
+			- $C.blockSize.half * (location.z)
+			+ $C.blockSize.full
+		};
+		
+		canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: location.color.top, stroke: location.color.inset});
+	}
 }
 
 function occlusionDraw (Arr, location, adjustedPosition, color) {
@@ -432,11 +512,14 @@ function drawAllBlocks () {
 	for (var i = 0, ii = Field.length; i < ii; i++) {
 		if (FieldVisible[i]) {
 			location = {x: Field[i][0], y: Field[i][1], z: Field[i][2]};
-			gridPosition = location.x * $C.gridDims.c + location.y;
-			coors = GridField["x-" + gridPosition].coors;
-			color = colorBlockNew(SwatchField[Field[i][3]][3]);
-			canvasBlock(coors, location, color);
+		//	gridPosition = location.x * $C.gridDims.c + location.y;
+		//	coors = GridField["x-" + gridPosition].coors;
+			location.color = colorBlockNew(SwatchField[Field[i][3]][3]);
+		//	canvasBlock(coors, location, color);
+			hashRender(location);
 		}
+		
+		drawAllBuffer();
 	}
 	
 	var t1 = new Date();
