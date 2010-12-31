@@ -181,10 +181,18 @@ function canvasBlockOld (position, location, color) {
 var count = 0;
 var blockMask = [];
 
-function canvasBlock (position, location, color) {
-	location.color = color;
-	hashRender(location);
+function canvasBlock (location) {
+	zBuffer(location);
 }
+
+/*
+while (x <= 31 && y >= 0 && z >= 0) {
+	x++;
+	y--;
+	z--;
+	zz++;
+}
+*/
 
 function canvasBlockRecursive (position, location, color) {
 	if ($C.swatchActive) {
@@ -258,29 +266,25 @@ function canvasBlockRecursive (position, location, color) {
 }
 
 var blockbuffer = [];
-var bufferfield = [];
+// var bufferfield = [];
+// var zVox = [];
 
-function hashRender (location) {
+function zBuffer (location) {
 	var x = location.x;
 	var y = location.y;
 	var z = location.z;
-	var zz = 0;
 	
-	while (x <= 31 && y >= 0 && z >= 0) {
-		x++;
-		y--;
-		z--;
-		zz++;
-		threehash(x, y, z);
-	}
+	var hash = threehash(x, y, z);
 	
-	var index = threehash(x, y, z);
-	location.zz = zz;
-	
-	if (blockbuffer[index] == undefined || zz < blockbuffer[index].zz) {
-		blockbuffer[index] = location;
+	if (blockbuffer[hash] == undefined) {
+		blockbuffer[hash] = true;
 		
-		console.log(location);
+		while (x < 31 && y > 0 && z > 0) {
+			x++;
+			y--;
+			z--;
+			blockbuffer[threehash(x, y, z)] = false;
+		}
 	}
 }
 
@@ -350,9 +354,9 @@ var hashtestarr = [];
 var hashtestcount = 0;
 
 function hashtest () {
-	for (var x = 0; x < 32; x++) {
-		for (var y = 0; y < 32; y++) {
-			for (var z = 0; z < 32; z++) {
+	for (var x = 0; x <= 32; x++) {
+		for (var y = 0; y <= 32; y++) {
+			for (var z = 0; z <= 32; z++) {
 				hashtestarr[threehash(x, y, z)] = true;
 			}
 		}
@@ -367,6 +371,23 @@ function hashtest () {
 	return hashtestcount;
 }
 
+function expandBuffer () {
+	var bufferVox = [];
+	initVoxels(bufferVox);
+	
+	for (var i = 0, ii = blockbuffer.length; i < ii; i++) {
+		var x = Math.floor(i / 1024);
+		var y = Math.floor((i % 1024) / 32);
+		var z = i % 32;
+		
+		if (blockbuffer[i]) {
+			bufferVox[x][y][z] = true;
+		}
+	}
+	
+	return bufferVox;
+}
+
 // NxN -> N / dovetailing / cantor pairing function.
 function twohash (k1, k2) {
 	k1++;
@@ -376,24 +397,56 @@ function twohash (k1, k2) {
 
 function threehash (v1, v2, v3) {
 	v1++; v2++; v3++;
-	return v1 * 1024 + v2 * 32 + v3;
+	return (v1 * 1024 + v2 * 32 + v3) - 1057;
 }
 
+var debug = 0;
 function drawAllBuffer () {
-	for (var i = 0, ii = bufferfield.length; i < ii; i++) {
-		var location = bufferfield[i];
-		
-		var adjustedPosition = {
-			x: $C.blockSize.half * location.x + $C.blockSize.half * location.y,
-			y: $C.blockSize.quarter * location.y
-			- $C.blockSize.quarter * location.x
-			+ $C.gridSize.y * 3 //+ $C.center.y
-			- $C.blockSize.half * (location.z)
-			+ $C.blockSize.full
-		};
-		
-		canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: location.color.top, stroke: location.color.inset});
+	debug = 0;
+	
+	var BufferVox = expandBuffer();
+	
+	// Switch between color cube and block on the grid.
+	if ($C.swatchActive) {
+		var V = SwatchGhost;
+		var F = SwatchField;
 	}
+	else {
+		var V = BufferVox;
+		var F = Field;
+	}
+	
+	console.log(F.length);
+	
+	for (var i = 0, ii = F.length; i < ii; i++) {
+		var location = {x: F[i][0], y: F[i][1], z: F[i][2]};
+		var hash = threehash(location.x, location.y, location.z);
+		
+		if (blockbuffer[hash]) {
+		//	console.log(F[i][3]);
+			if ($C.swatchActive) {
+				location.color = colorBlockNew(F[i][3]);
+			}
+			else {
+				location.color = colorBlockNew(SwatchField[F[i][3]][3]);
+			}
+			
+			var adjustedPosition = {
+				x: $C.blockSize.half * location.x + $C.blockSize.half * location.y,
+				y: $C.blockSize.quarter * location.y
+				- $C.blockSize.quarter * location.x
+				+ $C.gridSize.y * 3 //+ $C.center.y
+				- $C.blockSize.half * (location.z)
+				+ $C.blockSize.full
+			};
+			
+		//	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: location.color.top, stroke: location.color.inset});
+			occlusionDraw (V, location, adjustedPosition, location.color);
+			debug++;
+		}
+	}
+	
+	blockbuffer = [];
 }
 
 function occlusionDraw (Arr, location, adjustedPosition, color) {
@@ -493,7 +546,7 @@ function removeBlock (target) {
 		loggit("Nothing to remove.");
 	}
 }
-
+var debug0 = 0;
 function drawAllBlocks () {
 	var t0 = new Date();
 	
@@ -503,24 +556,36 @@ function drawAllBlocks () {
 		z: 0
 	}
 	
-	var gridPosition = 0;
-	var coors = new Object();
+	if ($C.swatchActive) {
+		var V = SwatchGhost;
+		var F = SwatchField;
+	}
+	else {
+		var V = Voxel;
+		var F = Field;
+	}
+	
+//	var gridPosition = 0;
+//	var coors = new Object();
 	
 	// Clear out the blockMask hash table.
 	blockMask = [];
-	
-	for (var i = 0, ii = Field.length; i < ii; i++) {
-		if (FieldVisible[i]) {
-			location = {x: Field[i][0], y: Field[i][1], z: Field[i][2]};
+	console.log(F.length);
+	for (var i = 0, ii = F.length; i < ii; i++) {
+	//	if (FieldVisible[i]) {
+			location = {x: F[i][0], y: F[i][1], z: F[i][2]};
 		//	gridPosition = location.x * $C.gridDims.c + location.y;
 		//	coors = GridField["x-" + gridPosition].coors;
-			location.color = colorBlockNew(SwatchField[Field[i][3]][3]);
+		//	location.color = colorBlockNew(SwatchField[Field[i][3]][3]);
 		//	canvasBlock(coors, location, color);
-			hashRender(location);
-		}
-		
-		drawAllBuffer();
+			debug0++;
+			zBuffer(location);
+	//	}
 	}
+	
+	drawAllBuffer();
+	
+	$C.posInd.redraw();
 	
 	var t1 = new Date();
 	console.log("All blocks drawn in " + (t1 - t0) + "ms.")

@@ -55,23 +55,25 @@ function swatchInit () {
 
 function fillColorSwatch () {
 	loggit("Drawing Color Cube!");
+	$C.swatchActive = true;
 	// Run the swatch function in such a way that the browser can render once each level is drawn.
-	if ($C.animating === false) {
-		$C.animating = true;
+//	if ($C.animating === false) {
+//		$C.animating = true;
 		// t = setInterval(buildColorSwatch, 1);
 		$C.layerOffset.z = 30;
 		$C.tools.gridUp();
-		drawAllSwatch();
-	}
-	else {
-		loggit("Animation already being run!");
-	}
+		drawAllBlocks();
+	//	drawAllSwatch();
+//	}
+//	else {
+//		loggit("Animation already being run!");
+//	}
 }
 
 var h = 0;
 
 function drawAllSwatch () {
-	$C.swatchActive = true;
+//	$C.swatchActive = true;
 	
 	var location = {
 		x: 0,
