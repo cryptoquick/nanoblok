@@ -66,8 +66,6 @@ var Tools = function () {
 	}
 	
 	this.gridUp = function () {
-		blockMask = [];
-		
 		if($C.layerOffset.z < ($C.gridDims.r - 1)) {
 			$C.layerOffset.z++;
 			$C.posInd.redraw();
@@ -93,9 +91,7 @@ var Tools = function () {
 					}
 				}
 				
-				$C.posInd.clearBlocks();
 				drawAllBlocks();
-				$C.posInd.redraw();
 			}
 			
 			loggit("Slice up to " + $C.layerOffset.z);
@@ -103,8 +99,6 @@ var Tools = function () {
 	}
 	
 	this.gridDown = function () {
-		blockMask = [];
-		
 		if($C.layerOffset.z > 0) {
 			$C.layerOffset.z--;
 			$C.posInd.redraw();
@@ -130,9 +124,7 @@ var Tools = function () {
 					}
 				}
 				
-				$C.posInd.clearBlocks();
 				drawAllBlocks();
-				$C.posInd.redraw();
 			}
 			
 			loggit("Slice down to " + $C.layerOffset.z);
