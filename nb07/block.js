@@ -396,7 +396,12 @@ function twohash (k1, k2) {
 }
 
 function threehash (v1, v2, v3) {
-	v1++; v2++; v3++;
+	if (arguments.length == 1) {
+		v2 = v1.y + 1; v3 = v1.z + 1; v1 = v1.x + 1; 
+	}
+	else {
+		v1++; v2++; v3++;
+	}
 	return (v1 * 1024 + v2 * 32 + v3) - 1057;
 }
 
@@ -404,23 +409,21 @@ var debug = 0;
 function drawAllBuffer () {
 	debug = 0;
 	
-	var BufferVox = expandBuffer();
-	
 	// Switch between color cube and block on the grid.
 	if ($C.swatchActive) {
-		var V = SwatchGhost;
 		var F = SwatchField;
+		var V = SwatchGhost;
 	}
 	else {
-		var V = BufferVox;
 		var F = Field;
+		var V = Voxel;
 	}
 	
-	console.log(F.length);
+	// console.log(F.length);
 	
 	for (var i = 0, ii = F.length; i < ii; i++) {
 		var location = {x: F[i][0], y: F[i][1], z: F[i][2]};
-		var hash = threehash(location.x, location.y, location.z);
+		var hash = threehash(location);
 		
 		if (blockbuffer[hash]) {
 		//	console.log(F[i][3]);
@@ -441,7 +444,7 @@ function drawAllBuffer () {
 			};
 			
 		//	canvasDrawSet([1, 2, 3, 4, 5, 6], adjustedPosition, {closed: true, fill: location.color.top, stroke: location.color.inset});
-			occlusionDraw (V, location, adjustedPosition, location.color);
+			occlusionDraw (location, adjustedPosition);
 			debug++;
 		}
 	}
@@ -449,30 +452,42 @@ function drawAllBuffer () {
 	blockbuffer = [];
 }
 
-function occlusionDraw (Arr, location, adjustedPosition, color) {
-	if (Arr[location.x][location.y][location.z + 1] == null) { // && top) {
+function occlusionDraw (location, adjustedPosition) {
+	var color = location.color;
+	// console.log(color);
+//	if (Arr[location.x][location.y][location.z + 1] == null) { // && top) {
+	if (blockbuffer[threehash(location.x, location.y, location.z + 1)] == undefined) { // && top) {
 		canvasDrawSet([1, 6, 7, 2], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
 	}
 	// Always draw top if block above it is invisible.
-	else {
+/*	else {
 		if (!$C.swatchActive) {
-			if (!FieldVisible[Voxel[location.x][location.y][location.z + 1]]) {
+		//	if (!FieldVisible[Voxel[location.x][location.y][location.z + 1]]) {
+			if (!FieldVisible[V[threehash(location.x, location.y, location.z + 1)] == undefined) {
 				canvasDrawSet([1, 6, 7, 2], adjustedPosition, {closed: true, fill: color.top, stroke: color.inset});
 			}
 		}
-	}
+	}*/
 	
 	// Left side.
-	if (Arr[location.x - 1][location.y][location.z] == null && Arr[location.x - 1][location.y + 1][location.z] == null) {
+//	if (Arr[location.x - 1][location.y][location.z] == null && Arr[location.x - 1][location.y + 1][location.z] == null) {
+	if (blockbuffer[threehash(location.x - 1, location.y, location.z)] == undefined
+	&& blockbuffer[threehash(location.x - 1, location.y + 1, location.z)] == undefined) {
 		canvasDrawSet([6, 7, 4, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
-	} else if (Arr[location.x - 1][location.y + 1][location.z] != null && Arr[location.x - 1][location.y][location.z] == null) {
+//	} else if (Arr[location.x - 1][location.y + 1][location.z] != null && Arr[location.x - 1][location.y][location.z] == null) {
+	} else if (blockbuffer[threehash(location.x - 1, location.y + 1, location.z)] != undefined
+	&& blockbuffer[threehash(location.x - 1, location.y, location.z)] == undefined) {
 		canvasDrawSet([6, 7, 5], adjustedPosition, {closed: true, fill: color.left, stroke: color.inset});
 	}
 	
 	// Right side.
-	if (Arr[location.x][location.y + 1][location.z] == null && Arr[location.x - 1][location.y + 1][location.z] == null) {
+//	if (Arr[location.x][location.y + 1][location.z] == null && Arr[location.x - 1][location.y + 1][location.z] == null) {
+	if (blockbuffer[threehash(location.x, location.y + 1, location.z)] == undefined
+	&& blockbuffer[threehash(location.x - 1, location.y + 1, location.z)] == undefined) {
 		canvasDrawSet([2, 7, 4, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
-	} else if (Arr[location.x - 1][location.y + 1][location.z] != null && Arr[location.x][location.y + 1][location.z] == null) {
+//	} else if (Arr[location.x - 1][location.y + 1][location.z] != null && Arr[location.x][location.y + 1][location.z] == null) {
+	} else if (blockbuffer[threehash(location.x - 1, location.y + 1, location.z)] != undefined
+	&& blockbuffer[threehash(location.x, location.y + 1, location.z)] == undefined) {
 		canvasDrawSet([2, 7, 3], adjustedPosition, {closed: true, fill: color.right, stroke: color.inset});
 	}
 }
@@ -546,7 +561,9 @@ function removeBlock (target) {
 		loggit("Nothing to remove.");
 	}
 }
+
 var debug0 = 0;
+
 function drawAllBlocks () {
 	var t0 = new Date();
 	
@@ -557,22 +574,24 @@ function drawAllBlocks () {
 	}
 	
 	if ($C.swatchActive) {
-		var V = SwatchGhost;
+	//	var V = SwatchGhost;
 		var F = SwatchField;
 	}
 	else {
-		var V = Voxel;
+	//	var V = Voxel;
 		var F = Field;
 	}
+	
+	$C.posInd.clearBlocks();
 	
 //	var gridPosition = 0;
 //	var coors = new Object();
 	
 	// Clear out the blockMask hash table.
 	blockMask = [];
-	console.log(F.length);
+	// console.log(F.length);
 	for (var i = 0, ii = F.length; i < ii; i++) {
-	//	if (FieldVisible[i]) {
+		if (FieldVisible[i]) {
 			location = {x: F[i][0], y: F[i][1], z: F[i][2]};
 		//	gridPosition = location.x * $C.gridDims.c + location.y;
 		//	coors = GridField["x-" + gridPosition].coors;
@@ -580,7 +599,7 @@ function drawAllBlocks () {
 		//	canvasBlock(coors, location, color);
 			debug0++;
 			zBuffer(location);
-	//	}
+		}
 	}
 	
 	drawAllBuffer();
