@@ -9,8 +9,14 @@ function Init () {
 	
 	// Test
 //	$C.scene.add({type: "teapot"}, {x: 0, y: 0, z: 0});
-	var blok = new Block();
-	$C.scene.add(blok.make({r: 0.9, g: 0.3, b: 0.9}, {x: 0.0, y: 0.0, z: 0.0}));
+	var blok = new Block("blok");
+	blok.make({r: 0.9, g: 0.3, b: 0.9}, {x: 0.0, y: 0.0, z: 0.0});
+//	$C.scene.add(new SceneJS.Instance({target: "blok"}));
+	$C.scene.add([blok.instance({x: 0, y: 1.0, z: 0})]);
+	
+	// Initialize Grid.
+	$C.grid = new Grid();
+	$C.grid.init(32, 32);
 	
 	// Initial resize.
 	Resize();
@@ -52,10 +58,14 @@ var Mouse = function () {
 	
 	this.move = function (evt) {
 		if (this.dragging) {
-			$C.scene.yaw += (evt.clientX - this.last.x) * 0.5;
-			$C.scene.pitch += (evt.clientY - this.last.y) * 0.5;
+			var yaw = (evt.clientX - this.last.x) * 0.5;
+			var pitch = (evt.clientY - this.last.y) * 0.5;
 			
-			$C.scene.rotate($C.scene.yaw, -$C.scene.pitch, 0.0);
+			if (pitch + $C.scene.pitch > 0 && pitch + $C.scene.pitch < 90) {
+				$C.scene.yaw += yaw;
+				$C.scene.pitch += pitch;
+				$C.scene.rotate($C.scene.yaw, -$C.scene.pitch, 0.0);
+			}
 			
 			this.last.x = evt.clientX;
 			this.last.y = evt.clientY;
@@ -66,7 +76,7 @@ var Mouse = function () {
 	
 	this.wheel = function (evt) {
 		var scale = evt.wheelDelta * 0.00005;
-		console.log(scale + $C.scene.scale);
+		
 		if (scale + $C.scene.scale > 0.01 && scale + $C.scene.scale < 0.10) {
 			$C.scene.scale += scale;
 			Resize();
@@ -76,7 +86,7 @@ var Mouse = function () {
 
 var Scene = function () {
 	this.yaw = 45.0;
-	this.pitch = 45.0;
+	this.pitch = 26.565;
 	this.scale = 0.05;
 	
 	this.init = function () {
@@ -106,15 +116,28 @@ var Scene = function () {
 						mode: "dir",
 						color: {r: 0.9, g: 0.9, b: 0.9},
 						diffuse: true,
-						specular: true,
+						specular: false,
 						dir: {x: 1.0, y: 1.0, z: -1.0}
+					},
+					{
+						type: "light",
+						mode: "dir",
+						color: {r: 0.9, g: 0.9, b: 0.9},
+						diffuse: true,
+						specular: false,
+						dir: {x: -1.0, y: -1.0, z: -1.0}
+					},
+					{
+						type: "light",
+						mode: "dir",
+						color: {r: 0.9, g: 0.9, b: 0.9},
+						diffuse: true,
+						specular: false,
+						dir: {x: 1.0, y: 1.0, z: 1.0}
 					},
 					{
 						type: "material",
 						baseColor: {r: 0.9, g: 0.9, b: 0.9},
-						specularColor: {r: 0.9, g: 0.9, b: 0.9},
-						specular: 0.9,
-						shine: 0.0,
 						nodes: [{
 							type: "cube",
 							xSize: 200,
@@ -123,7 +146,7 @@ var Scene = function () {
 							nodes: [{
 								type: "rotate",
 								id: "pitch",
-								angle: -45.0,
+								angle: -26.565,
 								x: 1.0,
 								nodes: [{
 									type: "rotate",
@@ -160,7 +183,7 @@ var Scene = function () {
 	}
 	
 	this.add = function (node) {
-		SceneJS.withNode("root").add("node", node);
+		SceneJS.withNode("root").add("nodes", node);
 	}
 	
 	this.camera = function (width, height) {
@@ -176,11 +199,13 @@ var Scene = function () {
 	}
 }
 
-var Block = function () {
+var Block = function (name) {
 	this.color = {};
 	this.position = {};
 	this.size = {x: 1.0, y: 1.0, z: 1.0};
 	this.solid = true;
+	this.node = {};
+	this.name = name;
 	
 	this.make = function (color, position, size) {
 		if (this.position == {}) {
@@ -205,27 +230,71 @@ var Block = function () {
 		}
 		
 		// Build Node object.
-		var node = {
-			type: "translate",
-			x: this.position.x,
-			y: this.position.y,
-			z: this.position.z,
+		this.node = {
+			type: "library",
 			nodes: [{
-				type: "material",
-				baseColor: this.color,
-				specularColor: this.color,
-				specular: 0.9,
-				shine: 1.0,
+				type: "translate",
+				x: this.position.x,
+				y: this.position.y,
+				z: this.position.z,
 				nodes: [{
-					type: "cube",
-					xSize: this.size.x,
-					ySize: this.size.y,
-					zSize: this.size.z,
-					solid: this.solid
+					type: "node",
+					id: this.name,
+					nodes: [{
+						type: "material",
+						baseColor: this.color,
+						specularColor: this.color,
+						specular: 0.9,
+						shine: 1.0,
+						nodes: [{
+							type: "texture",
+							layers: [{
+								uri: "grid128.png",
+						/*		minFilter: "linear",
+								magFilter: "linear",
+								wrapS: "repeat",
+								wrapT: "repeat",
+								isDepth: false,
+								depthMode:"luminance",
+								depthCompareMode: "compareRToTexture",
+								depthCompareFunc: "lequal",
+								flipY: false,
+								width: 1,
+								height: 1,
+								internalFormat:"lequal",
+								sourceFormat:"alpha",
+								sourceType: "unsignedByte",*/
+								applyTo:"baseColor",
+								blendMode: "multiply"
+							}],
+							nodes: [{
+						        type: "cube",
+						        xSize: this.size.x,
+						        ySize: this.size.y,
+						        zSize: this.size.z,
+						        solid: this.solid
+							}]
+						}]
+					}]
 				}]
 			}]
 		}
 		
-		return node;
+		$C.scene.add([this.node]);
+	}
+	
+	this.instance = function (location) {
+		var instanceNode = {
+			type: "translate",
+			x: location.x,
+			y: location.y,
+			z: location.z,
+			nodes: [{
+				type: "instance",
+				target: this.name
+			}]
+		}
+		
+		return instanceNode;
 	}
 }
