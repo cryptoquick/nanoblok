@@ -10,6 +10,11 @@ function Init () {
 	// Mouse object.
 	$C.mouse = new Mouse();
 	
+	// Test
+//	$C.scene.add({type: "teapot"}, {x: 0, y: 0, z: 0});
+	var blok = new Block();
+	$C.scene.add(blok.make({r: 0.9, g: 0.3, b: 0.9}, {x: 0.0, y: 0.0, z: 0.0}));
+	
 	// Initial resize.
 	Resize();
 	
@@ -24,6 +29,7 @@ function Resize () {
 	var canvasElement = document.getElementById("nanoCanvas");
 	canvasElement.setAttribute("height", window.innerHeight);
 	canvasElement.setAttribute("width", window.innerWidth);
+	$C.scene.camera(window.innerWidth, window.innerHeight);
 	$C.scene.render();
 }
 
@@ -47,10 +53,8 @@ var Mouse = function () {
 		if (this.dragging) {
 			$C.scene.yaw += (evt.clientX - this.last.x) * 0.5;
 			$C.scene.pitch += (evt.clientY - this.last.y) * 0.5;
-
-			SceneJS.withNode("yaw").set("angle", $C.scene.yaw);
-			SceneJS.withNode("pitch").set("angle", $C.scene.pitch);
-			SceneJS.withNode("roll").set("angle", $C.scene.pitch);
+			
+			$C.scene.rotate($C.scene.yaw, -$C.scene.pitch, 0.0);
 			
 			this.last.x = evt.clientX;
 			this.last.y = evt.clientY;
@@ -61,31 +65,32 @@ var Mouse = function () {
 }
 
 var Scene = function () {
-	this.yaw = 0.0;
-	this.pitch = 0.0;
+	this.yaw = 45.0;
+	this.pitch = 45.0;
+	this.scale = 0.05;
 	
 	this.init = function () {
 		SceneJS.createNode({
 			type: "scene",
 			id: "mainScene",
 			canvasId: "nanoCanvas",
-
 			nodes: [{
 				type: "lookAt",
-				eye: {x: 0.0, y: 0.0, z: -10.0},
+				eye: {x: 0.0, y: 0.0, z: -100.0},
 				look: {x: 0.0, y: 0.0, z: 0.0},
 				up: {x: 0.0, y: 1.0, z: 0.0},
-
 				nodes: [{
 					type: "camera",
+					id: "mainCamera",
 					optics: {
-						type: "perspective",
-						fovy: 45.0,
-						aspect: window.innerWidth / window.innerHeight,
-						near: 0.10,
-						far: 300.0
+						type: "ortho",
+						left : -30.0,
+						right : 30.0,
+						bottom : -30.0,
+						top : 30.0,
+						near : 0.1,
+						far : 1000.0
 					},
-
 					nodes: [{
 						type: "light",
 						mode: "dir",
@@ -100,41 +105,29 @@ var Scene = function () {
 						specularColor: {r: 0.9, g: 0.9, b: 0.9},
 						specular: 0.9,
 						shine: 0.0,
-						
 						nodes: [{
 							type: "cube",
 							xSize: 200,
 							ySize: 200,
 							zSize: 200,
-							
 							nodes: [{
-								type: "material",
-								baseColor: {r: 0.3, g: 0.3, b: 0.9},
-								specularColor: {r: 0.9, g: 0.9, b: 0.9},
-								specular: 0.9,
-								shine: 6.0,
-								
+								type: "rotate",
+								id: "pitch",
+								angle: -45.0,
+								x: 1.0,
 								nodes: [{
 									type: "rotate",
-									id: "pitch",
-									angle: 0.0,
-									x: 1.0,
-									
+									id: "yaw",
+									angle: 45.0,
+									y: 1.0,
 									nodes: [{
 										type: "rotate",
-										id: "yaw",
+										id: "roll",
 										angle: 0.0,
-										y: 1.0,
-										
+										z: 1.0,
 										nodes: [{
-											type: "rotate",
-											id: "roll",
-											angle: 0.0,
-											z: 1.0,
-											
-											nodes: [{
-												type: "teapot"
-											}]
+											type: "node",
+											id: "root"
 										}]
 									}]
 								}]
@@ -151,10 +144,78 @@ var Scene = function () {
 	}
 	
 	this.rotate = function (rx, ry, rz) {
-		SceneJS.withNode("pitch").set
+		SceneJS.withNode("yaw").set("angle", rx);
+		SceneJS.withNode("pitch").set("angle", ry);
+		SceneJS.withNode("roll").set("angle", rz);
 	}
 	
-	this.add = function (node, offset) {
+	this.add = function (node) {
+		SceneJS.withNode("root").add("node", node);
+	}
+	
+	this.camera = function (width, height) {
+		SceneJS.withNode("mainCamera").set("optics", {
+			type: "ortho",
+			left : -width * this.scale,
+			right : width * this.scale,
+			bottom : -height * this.scale,
+			top : height * this.scale,
+			near : 0.1,
+			far : 1000.0
+		});
+	}
+}
+
+var Block = function () {
+	this.color = {};
+	this.position = {};
+	this.size = {x: 1.0, y: 1.0, z: 1.0};
+	this.solid = true;
+	
+	this.make = function (color, position, size) {
+		if (this.position == {}) {
+			console.log ("Block position not set.");
+			return null;
+		}
 		
+		if (this.color == {}) {
+			console.log ("Color not set.");
+			return null;
+		}
+		
+		if (arguments.length == 2) {
+			this.color = color;
+			this.position = position;
+		}
+		
+		if (arguments.length == 3) {
+			this.color = color;
+			this.position = position;
+			this.size = size;
+		}
+		
+		// Build Node object.
+		var node = {
+			type: "translate",
+			x: this.position.x,
+			y: this.position.y,
+			z: this.position.z,
+			nodes: [{
+				type: "material",
+				baseColor: this.color,
+				specularColor: this.color,
+				specular: 0.9,
+				shine: 1.0,
+				nodes: [{
+					type: "cube",
+					xSize: this.size.x,
+					ySize: this.size.y,
+					zSize: this.size.z,
+					solid: this.solid
+				}]
+			}]
+		}
+		
+		return node;
 	}
 }
