@@ -412,11 +412,9 @@ function drawAllBuffer () {
 	// Switch between color cube and block on the grid.
 	if ($C.swatchActive) {
 		var F = SwatchField;
-		var V = SwatchGhost;
 	}
 	else {
 		var F = Field;
-		var V = Voxel;
 	}
 	
 	// console.log(F.length);

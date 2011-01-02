@@ -81,7 +81,7 @@ var Tools = function () {
 					SwatchField[s + (($C.layerOffset.z) * 1024)][4] = true;
 				}
 				$C.posInd.clearSwatch();
-				drawAllSwatch();
+				drawAllBlocks();
 			}
 			// For block slicing.
 			else {
@@ -114,7 +114,7 @@ var Tools = function () {
 					SwatchField[s + (($C.layerOffset.z + 1) * 1024)][4] = false;
 				}
 				$C.posInd.clearSwatch();
-				drawAllSwatch();
+				drawAllBlocks();
 			}
 			// For block slicing.
 			else {
@@ -271,13 +271,13 @@ function rotate (direction) {
 	if ($C.swatchActive) {
 		SwatchField = Fld;
 		$C.posInd.clearSwatch();
-		drawAllSwatch();
 	}
 	else {
 		Field = Fld;
 		$C.posInd.clearBlocks();
-		drawAllBlocks();
 	}
+	
+	drawAllBlocks();
 	
 	$C.posInd.redraw();
 	
