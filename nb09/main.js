@@ -7,9 +7,6 @@ function Init () {
 	$C.scene.init();
 	$C.scene.render();
 	
-	// Mouse object.
-	$C.mouse = new Mouse();
-	
 	// Test
 //	$C.scene.add({type: "teapot"}, {x: 0, y: 0, z: 0});
 	var blok = new Block();
@@ -18,11 +15,15 @@ function Init () {
 	// Initial resize.
 	Resize();
 	
+	// Mouse object.
+	$C.mouse = new Mouse();
+	
 	// Add event listeners.
-	window.addEventListener('resize', Resize, false);
-	window.addEventListener('mousedown', $C.mouse.down, true);
-	window.addEventListener('mouseup', $C.mouse.up, true);
-	window.addEventListener('mousemove', $C.mouse.move, true);
+	window.onresize = Resize;
+	window.onmousedown = $C.mouse.down;
+	window.onmouseup = $C.mouse.up;
+	window.onmousemove = $C.mouse.move;
+	window.onmousewheel = $C.mouse.wheel;
 }
 
 function Resize () {
@@ -60,6 +61,15 @@ var Mouse = function () {
 			this.last.y = evt.clientY;
 			
 			$C.scene.render();
+		}
+	}
+	
+	this.wheel = function (evt) {
+		var scale = evt.wheelDelta * 0.00005;
+		console.log(scale + $C.scene.scale);
+		if (scale + $C.scene.scale > 0.01 && scale + $C.scene.scale < 0.10) {
+			$C.scene.scale += scale;
+			Resize();
 		}
 	}
 }
