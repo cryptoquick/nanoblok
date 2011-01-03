@@ -8,9 +8,9 @@ function Init () {
 	$C.scene.render();
 	
 	// Test
-	var blok = new Block("blok");
+/*	var blok = new Block("blok");
 	blok.make({r: 0.9, g: 0.3, b: 0.9}, {x: 0.0, y: 0.0, z: 0.0});
-	$C.scene.add([blok.instance({x: 0, y: 1.0, z: 0})]);
+	$C.scene.add([blok.instance({x: 0, y: 1.0, z: 0})]);*/
 	
 	// Initialize Grid.
 	$C.grid = new Grid();
@@ -31,6 +31,9 @@ function Init () {
 	window.onmousemove = $C.mouse.move;
 	window.onmousewheel = $C.mouse.wheel;
 	window.onkeypress = $C.key.press;
+	
+	// Old Stuff
+	swatchInit();
 }
 
 // This implements 2xAA by rendering to a 2x larger canvas, then scales it down with styles.
