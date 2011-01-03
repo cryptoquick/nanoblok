@@ -1,3 +1,5 @@
+var ex = 0;
+
 var Key = function () {
 	this.press = function (evt) {
 		// Shift-R for Reset
@@ -11,7 +13,19 @@ var Key = function () {
 			$C.colors.init();
 			$C.colors.cube(true);
 		}
-		
+		// EKEY for Example Models
+		if (evt.keyCode == 101) {
+			if (ex < Examples.length) {
+				drawExample(JSON.parse(Examples[ex]));
+				ex++;
+			}
+			else {
+				ex = 0;
+				drawExample(JSON.parse(Examples[ex]));
+				ex++;
+			}
+			Resize();
+		}
 		console.log(evt.keyCode);
 	}
 }
@@ -62,7 +76,7 @@ var Colors = function () {
 							{x: 4.0, y: 4.0, z: 4.0} // Scale
 						);
 						
-						this.array.push(blok.instance({x: x * s + 3.0, y: (s4 - y) * s - 4.0, z: z * s + 3.0}));
+						this.array.push(blok.instance({x: x * s + 3.0, y: (s4 - y) * s - 4.0 + $C.grid.offsY, z: z * s + 3.0}));
 					}
 				}
 			}

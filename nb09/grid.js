@@ -1,6 +1,7 @@
 var Grid = function () {
 	this.array = [];
 	this.dims = {cols: 0, rows: 0, height: 0}
+	this.offsY = -20.0;
 	
 	this.init = function (cols, rows) {
 		// For when we want to know the grid size later.
@@ -21,37 +22,10 @@ var Grid = function () {
 		
 		for (var c = -co, cc = co; c < cc; c++) {
 			for (var r = -ro, rr = ro; r < rr; r++) {
-				this.array.push(blok.instance({x: c * s, y: -1.0, z: r * s}));
+				this.array.push(blok.instance({x: c * s, y: -1.0 + this.offsY, z: r * s}));
 			}
 		}
 		
 		$C.scene.add(this.array);
 	}
 }
-
-/*
-
-var node = {
-	type: "translate",
-	x: this.position.x,
-	y: this.position.y,
-	z: this.position.z,
-	nodes: [{
-		type: "material",
-		baseColor: this.color,
-		specularColor: this.color,
-		specular: 0.9,
-		shine: 1.0,
-		nodes: [{
-			type: "cube",
-			xSize: this.size.x,
-			ySize: this.size.y,
-			zSize: this.size.z,
-			solid: this.solid
-		}]
-	}]
-}
-
-$C.scene.add(blok.make({r: 0.9, g: 0.3, b: 0.9}, {x: 0.0, y: 0.0, z: 0.0}));
-
-*/
