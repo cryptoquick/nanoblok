@@ -8,10 +8,8 @@ function Init () {
 	$C.scene.render();
 	
 	// Test
-//	$C.scene.add({type: "teapot"}, {x: 0, y: 0, z: 0});
 	var blok = new Block("blok");
 	blok.make({r: 0.9, g: 0.3, b: 0.9}, {x: 0.0, y: 0.0, z: 0.0});
-//	$C.scene.add(new SceneJS.Instance({target: "blok"}));
 	$C.scene.add([blok.instance({x: 0, y: 1.0, z: 0})]);
 	
 	// Initialize Grid.
@@ -23,6 +21,8 @@ function Init () {
 	
 	// Mouse object.
 	$C.mouse = new Mouse();
+	$C.key = new Key();
+	$C.colors = new Colors();
 	
 	// Add event listeners.
 	window.onresize = Resize;
@@ -30,12 +30,24 @@ function Init () {
 	window.onmouseup = $C.mouse.up;
 	window.onmousemove = $C.mouse.move;
 	window.onmousewheel = $C.mouse.wheel;
+	window.onkeypress = $C.key.press;
 }
 
+// This implements 2xAA by rendering to a 2x larger canvas, then scales it down with styles.
 function Resize () {
 	var canvasElement = document.getElementById("nanoCanvas");
-	canvasElement.setAttribute("height", window.innerHeight);
-	canvasElement.setAttribute("width", window.innerWidth);
+	
+	if ($C.AA) {
+		canvasElement.setAttribute("height", window.innerHeight * 2);
+		canvasElement.setAttribute("width", window.innerWidth * 2);
+		canvasElement.style.height = window.innerHeight;
+		canvasElement.style.width = window.innerWidth;
+	}
+	else {
+		canvasElement.setAttribute("height", window.innerHeight);
+		canvasElement.setAttribute("width", window.innerWidth);
+	}
+	
 	$C.scene.camera(window.innerWidth, window.innerHeight);
 	$C.scene.render();
 }
@@ -206,8 +218,9 @@ var Block = function (name) {
 	this.solid = true;
 	this.node = {};
 	this.name = name;
+	this.scale = {x: 1.0, y: 1.0, z: 1.0};
 	
-	this.make = function (color, position, size) {
+	this.make = function (color, position, size, scale) {
 		if (this.position == {}) {
 			console.log ("Block position not set.");
 			return null;
@@ -227,6 +240,13 @@ var Block = function (name) {
 			this.color = color;
 			this.position = position;
 			this.size = size;
+		}
+		
+		if (arguments.length == 4) {
+			this.color = color;
+			this.position = position;
+			this.size = size;
+			this.scale = scale;
 		}
 		
 		// Build Node object.
@@ -250,7 +270,7 @@ var Block = function (name) {
 							type: "texture",
 							layers: [{
 								uri: "grid128.png",
-						/*		minFilter: "linear",
+								minFilter: "linear",
 								magFilter: "linear",
 								wrapS: "repeat",
 								wrapT: "repeat",
@@ -263,16 +283,22 @@ var Block = function (name) {
 								height: 1,
 								internalFormat:"lequal",
 								sourceFormat:"alpha",
-								sourceType: "unsignedByte",*/
+								sourceType: "unsignedByte",
 								applyTo:"baseColor",
 								blendMode: "multiply"
 							}],
 							nodes: [{
-						        type: "cube",
-						        xSize: this.size.x,
-						        ySize: this.size.y,
-						        zSize: this.size.z,
-						        solid: this.solid
+								type: "scale",
+								x: this.scale.x,
+								y: this.scale.y,
+								z: this.scale.z,
+								nodes: [{
+									type: "cube",
+							        xSize: this.size.x,
+							        ySize: this.size.y,
+							        zSize: this.size.z,
+							        solid: this.solid
+								}]
 							}]
 						}]
 					}]
