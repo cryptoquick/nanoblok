@@ -92,7 +92,7 @@ var Mouse = function () {
 	}
 	
 	this.wheel = function (evt) {
-		var scale = evt.wheelDelta * 0.00005;
+		var scale = evt.wheelDelta * -0.00005;
 		
 		if (scale + $C.scene.scale > 0.01 && scale + $C.scene.scale < 0.10) {
 			$C.scene.scale += scale;
@@ -206,6 +206,7 @@ var Scene = function () {
 			}]
 		});
 		
+		// Renderer.
 		SceneJS.withNode("mainScene").start({
 			fps: 60,
 			idleFunc: function () {}
