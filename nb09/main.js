@@ -101,7 +101,7 @@ var Mouse = function () {
 }
 
 var Scene = function () {
-	this.yaw = 45.0;
+	this.yaw = 225.0;
 	this.pitch = 26.565;
 	this.scale = 0.05;
 	
@@ -167,7 +167,7 @@ var Scene = function () {
 								nodes: [{
 									type: "rotate",
 									id: "yaw",
-									angle: 45.0,
+									angle: 225.0,
 									y: 1.0,
 									nodes: [{
 										type: "rotate",
@@ -235,8 +235,12 @@ var Scene = function () {
 	//	SceneJS.withNode("root").remove({nodes: ["blockRoot"]});
 	//	SceneJS.withNode("root").add("node", {type: "node", id: "blockRoot"});
 		SceneJS.withNode("blockRoot").eachNode(function () {
-			var id = this.get("id");
-			this.parent().remove({nodes: [id]});
+		//	var id = this.get("id");
+			console.log(this.get("type"));
+			if (this.get("type") == "translate") {
+				this.remove({nodes: [this.get("id")]});
+			}
+			
 		})
 		Resize();
 	}
