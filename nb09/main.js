@@ -7,11 +7,6 @@ function Init () {
 	$C.scene.init();
 	$C.scene.render();
 	
-	// Test
-/*	var blok = new Block("blok");
-	blok.make({r: 0.9, g: 0.3, b: 0.9}, {x: 0.0, y: 0.0, z: 0.0});
-	$C.scene.add([blok.instance({x: 0, y: 1.0, z: 0})]);*/
-	
 	// Initialize Grid.
 	$C.grid = new Grid();
 	$C.grid.init(32, 32);
@@ -19,10 +14,15 @@ function Init () {
 	// Initial resize.
 	Resize();
 	
-	// Mouse object.
+	// Create other key objects.
 	$C.mouse = new Mouse();
 	$C.key = new Key();
 	$C.colors = new Colors();
+	$C.colors.init();
+	$C.state = new State();
+	$C.block = new NewBlock();
+	$C.examples = new Examples();
+	$C.examples.init();
 	
 	// Add event listeners.
 	window.onresize = Resize;
@@ -31,13 +31,9 @@ function Init () {
 	window.onmousemove = $C.mouse.move;
 	window.onmousewheel = $C.mouse.wheel;
 	window.onkeypress = $C.key.press;
-	
-	// Colors
-	$C.colors.init();
-	swatchInit();
 }
 
-// This implements 2xAA by rendering to a 2x larger canvas, then scales it down with styles.
+// This can implement 2xAA by rendering to a 2x larger canvas, then scale it down with styles.
 function Resize () {
 	var canvasElement = document.getElementById("nanoCanvas");
 	
@@ -77,7 +73,12 @@ var Mouse = function () {
 			var yaw = (evt.clientX - this.last.x) * 0.5;
 			var pitch = (evt.clientY - this.last.y) * 0.5;
 			
-			if (pitch + $C.scene.pitch > 0 && pitch + $C.scene.pitch < 90) {
+			if (pitch + $C.scene.pitch > 0 && pitch + $C.scene.pitch < 90 && !$C.colors.showing) {
+				$C.scene.yaw += yaw;
+				$C.scene.pitch += pitch;
+				$C.scene.rotate($C.scene.yaw, -$C.scene.pitch, 0.0);
+			}
+			else if ($C.colors.showing) {
 				$C.scene.yaw += yaw;
 				$C.scene.pitch += pitch;
 				$C.scene.rotate($C.scene.yaw, -$C.scene.pitch, 0.0);
@@ -175,19 +176,25 @@ var Scene = function () {
 										angle: 0.0,
 										z: 1.0,
 										nodes: [{
-											type: "node",
+											type: "selector",
 											id: "root",
+											selection: [0,1],
 											nodes: [{
-												type: "node",
-												id: "blockRoot"
-											},
-											{
 												type: "node",
 												id: "gridRoot"
 											},
 											{
 												type: "node",
+												id: "blockRoot"
+											},
+											{
+												type: "node",
 												id: "cubeRoot"
+											},
+											{
+												type: "selector",
+												id: "exampleRoot",
+												selection: [0]
 											}]
 										}]
 									}]
@@ -227,6 +234,11 @@ var Scene = function () {
 		SceneJS.withNode("cubeRoot").add("nodes", nodes);
 	}
 	
+	this.addExample = function (node, index) {
+		SceneJS.withNode("exampleRoot").add("node", node);
+		SceneJS.withNode("exampleRoot").set("selection", [index]);
+	}
+	
 	this.camera = function (width, height) {
 		SceneJS.withNode("mainCamera").set("optics", {
 			type: "ortho",
@@ -248,7 +260,6 @@ var Scene = function () {
 			if (this.get("type") == "translate") {
 				this.remove({nodes: [this.get("id")]});
 			}
-			
 		})
 		Resize();
 	}
@@ -354,6 +365,9 @@ var Block = function (name, type) {
 		else if (type == "grid") {
 			$C.scene.addGrid([this.node]);
 		}
+		else if (type == "example") {
+			$C.scene.addExample([this.node]);
+		}
 		else {
 			console.log("No type supplied.");
 		}
@@ -377,5 +391,100 @@ var Block = function (name, type) {
 		}
 		
 		return instanceNode;
+	}
+}
+
+var NewBlock = function () {
+	this.make = function (blockID) {
+		SceneJS.createNode({
+			type: "texture",
+			id: blockID,
+			layers: [{
+				uri: "grid128.png",
+				minFilter: "linear",
+				magFilter: "linear",
+				wrapS: "repeat",
+				wrapT: "repeat",
+				isDepth: false,
+				depthMode:"luminance",
+				depthCompareMode: "compareRToTexture",
+				depthCompareFunc: "lequal",
+				flipY: false,
+				width: 1,
+				height: 1,
+				internalFormat:"lequal",
+				sourceFormat:"alpha",
+				sourceType: "unsignedByte",
+				applyTo:"baseColor",
+				blendMode: "multiply"
+			}],
+			nodes: [{
+				type: "cube"
+			}]
+		})
+	}
+	
+	this.instance = function (blockID, uniqueID, color, position) {
+		SceneJS.createNode({
+			type: "material",
+			id: uniqueID,
+			baseColor: color,
+			nodes: [{
+				type: "translate",
+				x: position.x,
+				y: position.y,
+				z: position.z,
+				nodes: [{
+					type: "instance",
+					target: blockID
+				}]
+			}]
+		})
+	}
+}
+
+var State = function () {
+	this.grid = true;
+	this.blocks = true;
+	this.colors = false;
+	this.examples = false;
+	
+	this.showGrid = function (show) {
+		this.grid = show;
+		this.setSelection();
+	}
+	
+	this.showBlocks = function (show) {
+		this.blocks = show;
+		this.setSelection();
+	}
+	
+	this.showColors = function (show) {
+		this.colors = show;
+		this.setSelection();
+	}
+	
+	this.showExamples = function (show) {
+		this.examples = show;
+		this.setSelection();
+	}
+	
+	this.setSelection = function () {
+		var displayed = [];
+		
+		if (this.grid) {
+			displayed.push(0);
+		}
+		if (this.blocks) {
+			displayed.push(1);
+		}
+		if (this.colors) {
+			displayed.push(2);
+		}
+		if (this.examples) {
+			displayed.push(3);
+		}
+		
+		SceneJS.withNode("root").set("selection", displayed);
 	}
 }
