@@ -184,6 +184,10 @@ var Scene = function () {
 											{
 												type: "node",
 												id: "gridRoot"
+											},
+											{
+												type: "node",
+												id: "cubeRoot"
 											}]
 										}]
 									}]
@@ -217,6 +221,10 @@ var Scene = function () {
 	
 	this.addGrid = function (nodes) {
 		SceneJS.withNode("gridRoot").add("nodes", nodes);
+	}
+	
+	this.addCube = function (nodes) {
+		SceneJS.withNode("cubeRoot").add("nodes", nodes);
 	}
 	
 	this.camera = function (width, height) {
@@ -299,8 +307,6 @@ var Block = function (name, type) {
 					nodes: [{
 						type: "material",
 						baseColor: this.color,
-						specularColor: this.color,
-						specular: 0.9,
 						shine: 1.0,
 						nodes: [{
 							type: "texture",
@@ -360,8 +366,13 @@ var Block = function (name, type) {
 			y: location.y,
 			z: location.z,
 			nodes: [{
-				type: "instance",
-				target: this.name
+				type: "material",
+				baseColor: this.color,
+				shine: 1.0,
+				nodes: [{
+					type: "instance",
+					target: this.name
+				}]
 			}]
 		}
 		
