@@ -13,7 +13,7 @@ var Grid = function () {
 		var co = Math.floor(cols / 2);
 		var ro = Math.floor(rows / 2);
 		
-		var blok = new Block("tile");
+		var blok = new Block("tile", "grid");
 		blok.make(
 			{r: 0.7, g: 0.7, b: 0.7}, // Color
 			{x: 1.0, y: 1.0, z: 1.0}, // Position
@@ -26,6 +26,6 @@ var Grid = function () {
 			}
 		}
 		
-		$C.scene.add(this.array);
+		$C.scene.addGrid(this.array);
 	}
 }
