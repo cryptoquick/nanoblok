@@ -32,7 +32,8 @@ function Init () {
 	window.onmousewheel = $C.mouse.wheel;
 	window.onkeypress = $C.key.press;
 	
-	// Old Stuff
+	// Colors
+	$C.colors.init();
 	swatchInit();
 }
 
@@ -175,7 +176,15 @@ var Scene = function () {
 										z: 1.0,
 										nodes: [{
 											type: "node",
-											id: "root"
+											id: "root",
+											nodes: [{
+												type: "node",
+												id: "blockRoot"
+											},
+											{
+												type: "node",
+												id: "gridRoot"
+											}]
 										}]
 									}]
 								}]
@@ -184,6 +193,11 @@ var Scene = function () {
 					}]
 				}]
 			}]
+		});
+		
+		SceneJS.withNode("mainScene").start({
+			fps: 60,
+			idleFunc: function () {}
 		});
 	}
 	
@@ -197,8 +211,12 @@ var Scene = function () {
 		SceneJS.withNode("roll").set("angle", rz);
 	}
 	
-	this.add = function (node) {
-		SceneJS.withNode("root").add("nodes", node);
+	this.addBlock = function (nodes) {
+		SceneJS.withNode("blockRoot").add("nodes", nodes);
+	}
+	
+	this.addGrid = function (nodes) {
+		SceneJS.withNode("gridRoot").add("nodes", nodes);
 	}
 	
 	this.camera = function (width, height) {
@@ -212,9 +230,19 @@ var Scene = function () {
 			far : 1000.0
 		});
 	}
+	
+	this.clearBlocks = function () {
+	//	SceneJS.withNode("root").remove({nodes: ["blockRoot"]});
+	//	SceneJS.withNode("root").add("node", {type: "node", id: "blockRoot"});
+		SceneJS.withNode("blockRoot").eachNode(function () {
+			var id = this.get("id");
+			this.parent().remove({nodes: [id]});
+		})
+		Resize();
+	}
 }
 
-var Block = function (name) {
+var Block = function (name, type) {
 	this.color = {};
 	this.position = {};
 	this.size = {x: 1.0, y: 1.0, z: 1.0};
@@ -222,6 +250,7 @@ var Block = function (name) {
 	this.node = {};
 	this.name = name;
 	this.scale = {x: 1.0, y: 1.0, z: 1.0};
+	this.type = "";
 	
 	this.make = function (color, position, size, scale) {
 		if (this.position == {}) {
@@ -309,7 +338,15 @@ var Block = function (name) {
 			}]
 		}
 		
-		$C.scene.add([this.node]);
+		if (type == "block") {
+			$C.scene.addBlock([this.node]);
+		}
+		else if (type == "grid") {
+			$C.scene.addGrid([this.node]);
+		}
+		else {
+			console.log("No type supplied.");
+		}
 	}
 	
 	this.instance = function (location) {

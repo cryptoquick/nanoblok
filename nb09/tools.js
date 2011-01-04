@@ -1,6 +1,6 @@
-var ex = 0;
-
 var Key = function () {
+	this.ex = 0;
+	
 	this.press = function (evt) {
 		// Shift-R for Reset
 		if (evt.keyCode == 82 && evt.shiftKey) {
@@ -10,21 +10,28 @@ var Key = function () {
 		
 		// CKEY for Color Cube
 		if (evt.keyCode == 99) {
-			$C.colors.init();
-			$C.colors.cube(true);
+			var t0 = new Date();
+			$C.colors.cube();
+			var t1 = new Date();
+			console.log("Color cube took " + (t1 - t0) + " ms to render.")
 		}
 		// EKEY for Example Models
 		if (evt.keyCode == 101) {
-			if (ex < Examples.length) {
-				drawExample(JSON.parse(Examples[ex]));
-				ex++;
+			$C.scene.clearBlocks();
+			drawExample(JSON.parse(Examples[$C.key.ex]));
+			
+			if ($C.key.ex < Examples.length) {
+				$C.key.ex++;
 			}
 			else {
-				ex = 0;
-				drawExample(JSON.parse(Examples[ex]));
-				ex++;
+				$C.key.ex = 0;
 			}
+			
 			Resize();
+		}
+		// QKEY for to Clear all blocks
+		if (evt.keyCode == 113) {
+			$C.scene.clearBlocks();
 		}
 		console.log(evt.keyCode);
 	}
@@ -59,15 +66,15 @@ var Colors = function () {
 		}
 	}
 	
-	this.cube = function (show) {
+	this.cube = function () {
 		var s = 8.0;
 		var s4 = Math.floor($C.grid.dims.cols / 8);
 		
-		if (show) {
+		if (!this.showing) {
 			for (var x = -s4; x < s4; x++) {
 				for (var y = -s4; y < s4; y++) {
 					for (var z = -s4; z < s4; z++) {
-						var blok = new Block("color" + (1024 * x + 32 * y + z));
+						var blok = new Block("color" + (1024 * x + 32 * y + z), "block");
 						
 						blok.make(
 							this.colors[x+s4][y+s4][z+s4], // Color
@@ -81,14 +88,15 @@ var Colors = function () {
 				}
 			}
 			
-			$C.scene.add(this.array);
+			$C.scene.addBlock(this.array);
 			
 			this.showing = true;
 			
 			Resize();
 		}
 		else {
-			
+			$C.scene.clearBlocks();
+			this.showing = false;
 		}
 	}
 }
