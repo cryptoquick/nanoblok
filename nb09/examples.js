@@ -90,5 +90,8 @@ var Examples = function () {
 	
 	this.show = function (show) {
 		$C.state.showExamples(show);
+		$C.state.showBlocks(!show);
+		$C.state.showGrid(true);
+		$C.state.showColors(false);
 	}
 }

@@ -129,11 +129,15 @@ var Colors = function () {
 		if (!this.showing) {
 			$C.state.showColors(true);
 			$C.state.showGrid(false);
+			$C.state.showExamples(false);
+			$C.state.showBlocks(false);
 			this.showing = true;
 		}
 		else {
 			$C.state.showColors(false);
 			$C.state.showGrid(true);
+			$C.state.showExamples(false);
+			$C.state.showBlocks(true);
 			this.showing = false;
 			Reset();
 		}
