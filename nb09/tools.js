@@ -1,6 +1,4 @@
 var Key = function () {
-	this.ex = 0;
-	
 	this.press = function (evt) {
 		// Shift-R for Reset
 		if (evt.keyCode == 82 && evt.shiftKey) {
@@ -11,22 +9,13 @@ var Key = function () {
 		// CKEY for Color Cube
 		if (evt.keyCode == 99) {
 			var t0 = new Date();
-			$C.colors.cube();
+			$C.colors.toggle();
 			var t1 = new Date();
 			console.log("Color cube took " + (t1 - t0) + " ms to render.")
 		}
 		// EKEY for Example Models
 		if (evt.keyCode == 101) {
-			$C.scene.clearBlocks();
-			drawExample(JSON.parse(Examples[$C.key.ex]));
-			
-			if ($C.key.ex < Examples.length) {
-				$C.key.ex++;
-			}
-			else {
-				$C.key.ex = 0;
-			}
-			
+			$C.examples.selectNext();
 			Resize();
 		}
 		// QKEY for to Clear all blocks
@@ -64,6 +53,8 @@ var Colors = function () {
 				}
 			}
 		}
+		
+		this.cube();
 	}
 	
 	this.cube = function () {
@@ -103,75 +94,48 @@ var Colors = function () {
 			}]
 		})
 		
-		if (!this.showing) {
-			for (var x = -s4; x < s4; x++) {
-				for (var y = -s4; y < s4; y++) {
-					for (var z = -s4; z < s4; z++) {
-						var colorID = "color" + (1024 * x + 32 * y + z);
-						
-						SceneJS.createNode({
-							type: "material",
-							id: colorID,
-							baseColor: this.colors[x+s4][y+s4][z+s4],
+		// Instantiate each individual cube in the color cube.
+		for (var x = -s4; x < s4; x++) {
+			for (var y = -s4; y < s4; y++) {
+				for (var z = -s4; z < s4; z++) {
+					var colorID = "color" + (1024 * x + 32 * y + z);
+					
+					SceneJS.createNode({
+						type: "material",
+						id: colorID,
+						baseColor: this.colors[x+s4][y+s4][z+s4],
+						nodes: [{
+							type: "translate",
+							x: x * s + 3.0,
+							y: (s4 - y) * s - 4.0 + $C.grid.offsY,
+							z: z * s + 3.0,
 							nodes: [{
-								type: "translate",
-								x: x * s + 3.0,
-								y: (s4 - y) * s - 4.0 + $C.grid.offsY,
-								z: z * s + 3.0,
-								nodes: [{
-									type: "instance",
-									target: "cubeColor"
-								}]
+								type: "instance",
+								target: "cubeColor"
 							}]
-						});
-						
-						SceneJS.withNode("cubeRoot").add("nodes", [{
-							type: "instance",
-							target: colorID
-						}]);
-					}
+						}]
+					});
+					
+					SceneJS.withNode("cubeRoot").add("nodes", [{
+						type: "instance",
+						target: colorID
+					}]);
 				}
 			}
-			
-			
-			
-		//	$C.scene.addCube(this.array);
-			
-			// An experiment. Didn't work, used the message-based implementation above.
-	/*		var r = 0.0;
-			var g = 0.0;
-			var b = 0.0;
-			
-			
-			SceneJS.withNode("cubeRoot").eachNode(function () {
-				console.log(this.node(0).get("type"));
-				if (this.node(0).get("type") == material") {
-					this.node(0).set({baseColor: {r: r, g: g, b: b}});
-					
-					// Calculate color similar to a 3D color cube loop
-					r += 0.12;
-					if (r >= 0.96) {
-						r = 0.0;
-						g += 0.12;
-						if (g >= 0.96) {
-							g = 0.0;
-							b += 0.12;
-							if (b >= 0.96) {
-								b = 0.0;
-							}
-						}
-					}
-				//	console.log(r + ", " + g + ", " + b)
-				}
-			})*/
-			
+		}
+	}
+		
+	this.toggle = function () {
+		if (!this.showing) {
+			$C.state.showColors(true);
+			$C.state.showGrid(false);
 			this.showing = true;
-			
-			Resize();
 		}
 		else {
-			$C.scene.clearCube();
+			$C.state.showColors(false);
+			$C.state.showGrid(true);
 			this.showing = false;
+			Reset();
 		}
 	}
 }
