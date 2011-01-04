@@ -33,13 +33,13 @@ var Key = function () {
 		if (evt.keyCode == 113) {
 			$C.scene.clearBlocks();
 		}
-		console.log(evt.keyCode);
+		console.log("Key pressed: " + evt.keyCode);
 	}
 }
 
 function Reset () {
-	$C.scene.yaw = 45.0; $C.scene.pitch = 26.565;
-	$C.scene.rotate(45.0, -26.565, 0.0);
+	$C.scene.yaw = 225.0; $C.scene.pitch = 26.565;
+	$C.scene.rotate(225.0, -26.565, 0.0);
 	Resize();
 }
 
