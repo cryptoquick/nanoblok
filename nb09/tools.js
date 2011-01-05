@@ -22,6 +22,33 @@ var Key = function () {
 		if (evt.charCode == 113) {
 			$C.scene.clearBlocks();
 		}
+		
+		// Escape key for pause.
+		if (evt.charCode == 96) {
+			console.log('blas')
+			var pauseDiv = document.getElementById('paused');
+			
+			pauseDiv.style.left = $C.ui.window.width / 2 - 100;
+			pauseDiv.style.top = $C.ui.window.width / 2 - 20;
+			
+			if ($C.state.paused) {
+				$C.scene.start();
+				
+				pauseDiv.style.visibility = 'hidden';
+				$C.state.paused = false;
+				console.log("Continuing.");
+			}
+			else {
+				$C.scene.stop();
+				
+				// gui.showBuildMenu(false);
+				// nodeState[0] = false;
+				
+				pauseDiv.style.visibility = 'visible';
+				$C.state.paused = true;
+				console.log("Paused!");
+			}
+		}
 		console.log("Key pressed: " + evt.charCode);
 	}
 }

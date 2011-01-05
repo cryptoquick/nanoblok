@@ -4,18 +4,18 @@
     <title>Nanoblok 3D Editor Experimental</title>
 	<link rel="stylesheet" href="styles.css" type="text/css">
 	<script type="text/javascript" src="lib/scenejs.js"></script>
+	<script type="text/javascript" src="lib/scenejs-query-node-pos.js"></script>
 	<script type="text/javascript" src="data.js"></script>
 	<script type="text/javascript" src="tools.js"></script>
 	<script type="text/javascript" src="grid.js"></script>
 	<script type="text/javascript" src="examples.js"></script>
 	<script type="text/javascript" src="ui.js"></script>
 	<script type="text/javascript" src="main.js"></script>
-	<script>
-		var scene = "editor";
-	</script>
+	<script type="text/javascript" src="mc.js"></script>
 </head>
 <body onload="Init()">
 	<div id="incompatible"></div>
+	<div id="paused">Paused.</div>
 	<canvas id="nanoCanvas">This content is not supported by your browser.</canvas>
 	<div id="logo">
 		<div id="top"></div>
