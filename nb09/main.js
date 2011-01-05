@@ -2,30 +2,37 @@ function Init () {
 	// Common Data object.
 	window.$C = new Data();
 	
+	// Initialize User Interface.
+	$C.ui = new UI();
+	console.log($C.ui);
+	$C.ui.init();
+	
 	// Make main scene.
 	$C.scene = new Scene();
 	$C.scene.init();
-	$C.scene.render();
+	
+	// Create other key objects.
+	$C.mouse = new Mouse();
+	$C.key = new Key();
+	$C.pick = new Pick();
+	$C.state = new State();
 	
 	// Initialize Grid.
 	$C.grid = new Grid();
 	$C.grid.init(32, 32);
 	
-	// Initialize User Interface.
-	$C.ui = new UI();
-	$C.ui.init();
+	// $C.ui.postInit();
+	
+	// Color Cube.
+	$C.colors = new Colors();
+	$C.colors.init();
+	
+	// Examples.
+	$C.examples = new Examples();
+	$C.examples.init();
 	
 	// Initial resize.
 	$C.ui.resize();
-	
-	// Create other key objects.
-	$C.mouse = new Mouse();
-	$C.key = new Key();
-	$C.colors = new Colors();
-	$C.colors.init();
-	$C.state = new State();
-	$C.examples = new Examples();
-	$C.examples.init();
 	
 	// Add event listeners.
 	window.onresize = $C.ui.resize;
@@ -37,9 +44,17 @@ function Init () {
 	
 	// Trying to make it so WebGL-enabled users won't see this message. (Unsuccessful)
 	document.getElementById("incompatible").innerHTML = "<br><br><br><br><br>Nanoblok requires a browser that supports WebGL. See documentation for more details.";
+	
+	$C.initialized = true;
 }
 
-function Idle () {}
+function Idle (scene) {
+	// debugText = $C.ui.toolbar + "";
+	if ($C.initialized) {
+		// debugText = $C.ui.toolbar + "";
+		// $C.ui.toolbar.move();
+	}
+}
 
 var Mouse = function () {
 	this.last = {x: null, y: null};
@@ -50,6 +65,7 @@ var Mouse = function () {
 		this.last = {x: evt.clientX, y: evt.clientY};
 		this.dragging = true;
 		this.clicked = true;
+		SceneJS.withNode("mainScene").pick(evt.clientX, evt.clientY);
 	}
 	
 	this.up = function () {
@@ -122,7 +138,7 @@ var Scene = function () {
 						mode: "dir",
 						color: {r: 0.9, g: 0.9, b: 0.9},
 						diffuse: true,
-						specular: false,
+						specular: true,
 						dir: {x: 1.0, y: 1.0, z: -1.0}
 					},
 					{
@@ -185,6 +201,10 @@ var Scene = function () {
 												id: "exampleRoot",
 												selection: [0]
 											}]
+										},
+										{
+											type: "node",
+											id: "geom"
 										}]
 									}]
 								}]
@@ -196,10 +216,18 @@ var Scene = function () {
 		});
 		
 		// Renderer.
+		this.start();
+	}
+	
+	this.start = function () {
 		SceneJS.withNode("mainScene").start({
-			fps: 60,
-			idleFunc: Idle()
+			fps: 20,
+			idleFunc: Idle
 		});
+	}
+	
+	this.stop = function () {
+		
 	}
 	
 	this.render = function () {
@@ -452,7 +480,10 @@ var Block = function (blockID, uniqueID) {
 	}
 	
 	this.bind = function (callback) {
-		SceneJS.withNode(this.uniqueID).bind("picked", callback);
+		var UID = this.uniqueID;
+		SceneJS.withNode(UID).bind("picked", function (evt) {
+			callback(UID);
+		});
 	}
 }
 
@@ -461,6 +492,7 @@ var State = function () {
 	this.blocks = true;
 	this.colors = false;
 	this.examples = false;
+	this.paused = false;
 	
 	this.showGrid = function (show) {
 		this.grid = show;
