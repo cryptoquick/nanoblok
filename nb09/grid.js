@@ -13,19 +13,17 @@ var Grid = function () {
 		var co = Math.floor(cols / 2);
 		var ro = Math.floor(rows / 2);
 		
-		var blok = new Block("tile", "grid");
-		blok.make(
-			{r: 0.7, g: 0.7, b: 0.7}, // Color
-			{x: 1.0, y: 1.0, z: 1.0}, // Position
-			{x: 1.0, y: 1.0, z: 1.0}  // Size
-		)
+		var color = {r: 0.7, g: 0.7, b: 0.7};
+		
+		var mainTile = new NewBlock("tile", "");
+		mainTile.make();
 		
 		for (var c = -co, cc = co; c < cc; c++) {
 			for (var r = -ro, rr = ro; r < rr; r++) {
-				this.array.push(blok.instance({x: c * s, y: -1.0 + this.offsY, z: r * s}));
+				var tile = new NewBlock("tile", "grid" + 32 * c + r);
+				tile.instance(color, {x: c * s, y: -1.0 + this.offsY, z: r * s});
+				$C.scene.addGrid([tile.uniqueID])
 			}
 		}
-		
-		$C.scene.addGrid(this.array);
 	}
 }
