@@ -15,12 +15,12 @@ var Grid = function () {
 		
 		var color = {r: 0.7, g: 0.7, b: 0.7};
 		
-		var mainTile = new NewBlock("tile", "");
+		var mainTile = new Block("tile", "");
 		mainTile.make();
 		
 		for (var c = -co, cc = co; c < cc; c++) {
 			for (var r = -ro, rr = ro; r < rr; r++) {
-				var tile = new NewBlock("tile", "grid" + 32 * c + r);
+				var tile = new Block("tile", "grid" + 32 * c + r);
 				tile.instance(color, {x: c * s, y: -1.0 + this.offsY, z: r * s});
 				$C.scene.addGrid([tile.uniqueID])
 			}

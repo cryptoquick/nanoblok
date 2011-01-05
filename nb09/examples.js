@@ -54,7 +54,7 @@ var Examples = function () {
 			var hash = model[i][3];
 			
 			// Instance a new block using the color ID.
-			var block = new NewBlock("color" + hash, "");
+			var block = new Block("color" + hash, "");
 			
 			// Hash table ensures no block colors are made twice.
 			// Doesn't make a new textured block unless it's a new color.

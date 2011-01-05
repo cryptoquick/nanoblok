@@ -11,8 +11,12 @@ function Init () {
 	$C.grid = new Grid();
 	$C.grid.init(32, 32);
 	
+	// Initialize User Interface.
+	$C.ui = new UI();
+	$C.ui.init();
+	
 	// Initial resize.
-	Resize();
+	$C.ui.resize();
 	
 	// Create other key objects.
 	$C.mouse = new Mouse();
@@ -20,12 +24,11 @@ function Init () {
 	$C.colors = new Colors();
 	$C.colors.init();
 	$C.state = new State();
-//	$C.block = new NewBlock();
 	$C.examples = new Examples();
 	$C.examples.init();
 	
 	// Add event listeners.
-	window.onresize = Resize;
+	window.onresize = $C.ui.resize;
 	window.onmousedown = $C.mouse.down;
 	window.onmouseup = $C.mouse.up;
 	window.onmousemove = $C.mouse.move;
@@ -34,25 +37,6 @@ function Init () {
 	
 	// Trying to make it so WebGL-enabled users won't see this message. (Unsuccessful)
 	document.getElementById("incompatible").innerHTML = "<br><br><br><br><br>Nanoblok requires a browser that supports WebGL. See documentation for more details.";
-}
-
-// This can implement 2xAA by rendering to a 2x larger canvas, then scale it down with styles.
-function Resize () {
-	var canvasElement = document.getElementById("nanoCanvas");
-	
-	if ($C.AA) {
-		canvasElement.setAttribute("height", window.innerHeight * 2);
-		canvasElement.setAttribute("width", window.innerWidth * 2);
-		canvasElement.style.height = window.innerHeight;
-		canvasElement.style.width = window.innerWidth;
-	}
-	else {
-		canvasElement.setAttribute("height", window.innerHeight);
-		canvasElement.setAttribute("width", window.innerWidth);
-	}
-	
-	$C.scene.camera(window.innerWidth, window.innerHeight);
-	$C.scene.render();
 }
 
 function Idle () {}
@@ -101,7 +85,7 @@ var Mouse = function () {
 		
 		if (scale + $C.scene.scale > 0.01 && scale + $C.scene.scale < 0.10) {
 			$C.scene.scale += scale;
-			Resize();
+			$C.ui.resize();
 		}
 	}
 }
@@ -267,10 +251,10 @@ var Scene = function () {
 				this.remove({nodes: [this.get("id")]});
 			}
 		})
-		Resize();
+		$C.ui.resize();
 	}
 }
-
+/*
 var Block = function (name, type) {
 	this.color = {};
 	this.position = {};
@@ -398,9 +382,9 @@ var Block = function (name, type) {
 		
 		return instanceNode;
 	}
-}
+}*/
 
-var NewBlock = function (blockID, uniqueID) {
+var Block = function (blockID, uniqueID) {
 	this.blockID = "" || blockID;
 	this.uniqueID = "" || uniqueID;
 	this.color = {};
