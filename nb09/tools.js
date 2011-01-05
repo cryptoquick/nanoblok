@@ -1,35 +1,35 @@
 var Key = function () {
 	this.press = function (evt) {
 		// Shift-R for Reset
-		if (evt.keyCode == 82 && evt.shiftKey) {
+		if (evt.charCode == 82 && evt.shiftKey) {
 			Reset();
 		}
 		// Up / Down for Slice
 		
 		// CKEY for Color Cube
-		if (evt.keyCode == 99) {
+		if (evt.charCode == 99 || evt.charCode == 67) {
 			var t0 = new Date();
 			$C.colors.toggle();
 			var t1 = new Date();
 			console.log("Color cube took " + (t1 - t0) + " ms to render.")
 		}
 		// EKEY for Example Models
-		if (evt.keyCode == 101) {
+		if (evt.charCode == 101 || evt.charCode == 69) {
 			$C.examples.selectNext();
-			Resize();
+			$C.ui.resize();
 		}
 		// QKEY for to Clear all blocks
-		if (evt.keyCode == 113) {
+		if (evt.charCode == 113) {
 			$C.scene.clearBlocks();
 		}
-		console.log("Key pressed: " + evt.keyCode);
+		console.log("Key pressed: " + evt.charCode);
 	}
 }
 
 function Reset () {
 	$C.scene.yaw = 225.0; $C.scene.pitch = 26.565;
 	$C.scene.rotate(225.0, -26.565, 0.0);
-	Resize();
+	$C.ui.resize();
 }
 
 var Colors = function () {

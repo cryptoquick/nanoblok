@@ -69,5 +69,21 @@ body, html {
 	top: 0px;
 }
 
+#toolbar {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 300px;
+	height: 100px;
+	background-color: #aaa;
+	padding: 5px;
+	border: 3px solid #444;
+	font-size: 12px;
+	-webkit-transform:	skew(0deg, 26.565deg);
+	-moz-transform:		skew(0deg, 26.565deg);
+	transform:			skew(0deg, 26.565deg);
+	border-radius: 5px;
+}
+
 ::selection { background: transparent; }
 ::-moz-selection { background: transparent; }
