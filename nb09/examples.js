@@ -53,9 +53,13 @@ var Examples = function () {
 			// Hash is used as a color ID, or block ID.
 			var hash = model[i][3];
 			
+			// Instance a new block using the color ID.
+			var block = new NewBlock("color" + hash, "");
+			
 			// Hash table ensures no block colors are made twice.
+			// Doesn't make a new textured block unless it's a new color.
 			if (bloks[hash] == undefined) {
-				$C.block.make("color" + hash);
+				block.make();
 				bloks[hash] = true;
 			}
 			var color = this.swatch[model[i][3]];
@@ -67,9 +71,9 @@ var Examples = function () {
 				z: model[i][1] * s - 16 * s
 			};
 			
-			var uniqueID = modelID + "i" + i;
-			$C.block.instance("color" + hash, uniqueID, color, position);
-			SceneJS.withNode(modelID).add("node", uniqueID);
+			block.uniqueID = modelID + "i" + i;
+			block.instance(color, position);
+			SceneJS.withNode(modelID).add("node", block.uniqueID);
 		}
 		
 		$C.scene.addExample(modelID, modelIndex);

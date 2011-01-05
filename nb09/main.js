@@ -20,7 +20,7 @@ function Init () {
 	$C.colors = new Colors();
 	$C.colors.init();
 	$C.state = new State();
-	$C.block = new NewBlock();
+//	$C.block = new NewBlock();
 	$C.examples = new Examples();
 	$C.examples.init();
 	
@@ -31,6 +31,9 @@ function Init () {
 	window.onmousemove = $C.mouse.move;
 	window.onmousewheel = $C.mouse.wheel;
 	window.onkeypress = $C.key.press;
+	
+	// Trying to make it so WebGL-enabled users won't see this message. (Unsuccessful)
+	document.getElementById("incompatible").innerHTML = "<br><br><br><br><br>Nanoblok requires a browser that supports WebGL. See documentation for more details.";
 }
 
 // This can implement 2xAA by rendering to a 2x larger canvas, then scale it down with styles.
@@ -51,6 +54,8 @@ function Resize () {
 	$C.scene.camera(window.innerWidth, window.innerHeight);
 	$C.scene.render();
 }
+
+function Idle () {}
 
 var Mouse = function () {
 	this.last = {x: null, y: null};
@@ -209,7 +214,7 @@ var Scene = function () {
 		// Renderer.
 		SceneJS.withNode("mainScene").start({
 			fps: 60,
-			idleFunc: function () {}
+			idleFunc: Idle()
 		});
 	}
 	
@@ -395,11 +400,19 @@ var Block = function (name, type) {
 	}
 }
 
-var NewBlock = function () {
-	this.make = function (blockID) {
+var NewBlock = function (blockID, uniqueID) {
+	this.blockID = "" || blockID;
+	this.uniqueID = "" || uniqueID;
+	this.color = {};
+	
+	this.make = function () {
+		if (this.blockID == "") {
+			console.log ("Block ID not set.");
+		}
+		
 		SceneJS.createNode({
 			type: "texture",
-			id: blockID,
+			id: this.blockID,
 			layers: [{
 				uri: "grid128.png",
 				minFilter: "linear",
@@ -425,22 +438,37 @@ var NewBlock = function () {
 		})
 	}
 	
-	this.instance = function (blockID, uniqueID, color, position) {
+	this.instance = function (color, position) {
+		if (this.blockID == "") {
+			console.log ("Block ID not set.");
+		}
+		
+		if (this.uniqueID == "") {
+			console.log ("Unique ID not set.");
+		}
+		
+		this.color = color;
+		this.position = position;
+		
 		SceneJS.createNode({
 			type: "material",
-			id: uniqueID,
-			baseColor: color,
+			id: this.uniqueID,
+			baseColor: this.color,
 			nodes: [{
 				type: "translate",
-				x: position.x,
-				y: position.y,
-				z: position.z,
+				x: this.position.x,
+				y: this.position.y,
+				z: this.position.z,
 				nodes: [{
 					type: "instance",
-					target: blockID
+					target: this.blockID
 				}]
 			}]
 		})
+	}
+	
+	this.bind = function (callback) {
+		SceneJS.withNode(this.uniqueID).bind("picked", callback);
 	}
 }
 
