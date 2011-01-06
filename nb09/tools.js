@@ -58,7 +58,7 @@ function Reset () {
 	$C.scene.rotate(225.0, -26.565, 0.0);
 	$C.ui.resize();
 }
-
+var debugColors = [];
 var Colors = function () {
 	this.colors = [];
 	this.array = [];
@@ -85,15 +85,15 @@ var Colors = function () {
 	}
 	
 	this.cube = function () {
-		var s = 8.0;
-		var s4 = Math.floor($C.grid.dims.cols / 8);
+		var s = 4.0;
+		var s4 = Math.floor($C.grid.dims.cols / 4);
 		
 		SceneJS.createNode({
 			type: "scale",
 			id: "cubeColor",
-			x: 4.0,
-			y: 4.0,
-			z: 4.0,
+			x: 2.0,
+			y: 2.0,
+			z: 2.0,
 			nodes: [{
 				type: "texture",
 				layers: [{
@@ -125,17 +125,17 @@ var Colors = function () {
 		for (var x = -s4; x < s4; x++) {
 			for (var y = -s4; y < s4; y++) {
 				for (var z = -s4; z < s4; z++) {
-					var colorID = "color" + (1024 * x + 32 * y + z);
-					
+					var colorIndex = 1024 * (x * 2 + 1) + 32 * (y * 2 + 1) + (z * 2 + 1) + 15855;
+					debugColors.push("color" + colorIndex);
 					SceneJS.createNode({
 						type: "material",
-						id: colorID,
-						baseColor: this.colors[x+s4][y+s4][z+s4],
+						id: "color" + colorIndex,
+						baseColor: $C.examples.swatch[colorIndex],
 						nodes: [{
 							type: "translate",
-							x: x * s + 3.0,
-							y: (s4 - y) * s - 4.0 + $C.grid.offsY,
-							z: z * s + 3.0,
+							x: -x * s,
+							y: y * s,
+							z: z * s,
 							nodes: [{
 								type: "instance",
 								target: "cubeColor"
@@ -145,7 +145,7 @@ var Colors = function () {
 					
 					SceneJS.withNode("cubeRoot").add("nodes", [{
 						type: "instance",
-						target: colorID
+						target: "color" + colorIndex
 					}]);
 				}
 			}
