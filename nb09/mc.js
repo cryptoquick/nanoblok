@@ -6,18 +6,30 @@ var vertexList = [];
 var vertexArray = [];
 var normalArray = [];
 var indicesArray = [];
+var uvArray = [];
+var colorArray = [];
+var colors = [];
 
-/*var Vertex = function () {
-	this.position = {x: 0.0, y: 0.0, z: 0.0};
-	this.normal = {x: 0.0, y: 0.0, z: 0.0};
-}*/
-
-var Cube = function () {this.p = []; this.val = [];}
+var Cube = function () {this.p = []; this.val = []; this.pos = []}
 
 function marchCubes (exampleIndex, isolevel) {
+	// Clear all values!
+	vertexList = [];
+	vertexArray = [];
+	normalArray = [];
+	indicesArray = [];
+	uvArray = [];
+	colorArray = [];
+	colors = [];
+	
+	// Run the thing!	
 	var Voxels = processExample(exampleIndex);
 	vertexlist = runMarchingCubes(Voxels, 32, 32, 32, 1, 1, 1, isolevel);
+	var x = 0;
+	var y = 0;
+	var tex = new Texture();
 	
+	// Push 'em! Sweet!!
 	for (var i = 0, ii = vertexList.length; i < ii; i++) {
 		vertexArray.push(vertexList[i][0]);
 		vertexArray.push(vertexList[i][1]);
@@ -26,33 +38,55 @@ function marchCubes (exampleIndex, isolevel) {
 		normalArray.push(vertexList[i][4]);
 		normalArray.push(vertexList[i][5]);
 		indicesArray.push(i);
+		if (x >= tex.w * tex.size) {
+			x = 0;
+			y += tex.size;
+		}
+		x += tex.size;
+		uvArray.push(x);
+		uvArray.push(y);
 	}
+	
+	tex.make();
+	// console.log(tex.uri);
 	
 	SceneJS.createNode({
 		type: "material",
 		id: "marchCubeObject",
-		baseColor: {r: 0.3, g: 0.8, b: 0.3},
-		specularColor: {r: 0.4, g: 0.9, b: 0.4},
+		baseColor: {r: 0.7, g: 0.7, b: 0.7},
 		shine: 1.0,	
 		nodes: [{
-			type: "scale",
-			x: 1.0,
-			y: 1.0,
-			z: 1.0,
+			type: "texture",
+			uri: tex.uri,
 			nodes: [{
-				type: "rotate",
-				x: 1.0,
-				angle: -90.0,
+				type: "translate",
+				x: 0.0,
+				y: -20.0,
+				z: 30.0,
 				nodes: [{
-					type: "rotate",
-					z: 1.0,
-					angle: -270,
+					type: "scale",
+					x: 2.0,
+					y: 2.0,
+					z: 2.0,
 					nodes: [{
-						type: "geometry",
-						primitive: "triangles",
-						positions: vertexArray,
-						normals: normalArray,
-						indices: indicesArray
+						nodes: [{
+							type: "rotate",
+							x: 1.0,
+							angle: -90.0,
+							nodes: [{
+								type: "rotate",
+								z: 1.0,
+								angle: 0,
+								nodes: [{
+									type: "geometry",
+									primitive: "triangles",
+									positions: vertexArray,
+									normals: normalArray,
+									uv: uvArray,
+									indices: indicesArray
+								}]
+							}]
+						}]
 					}]
 				}]
 			}]
@@ -64,14 +98,19 @@ function marchCubes (exampleIndex, isolevel) {
 	SceneJS.withNode("geom").add("node", "marchCubeObject")
 }
 
+/* Load specified example model into 3D voxel array.*/
 function processExample (exampleIndex) {
 	var voxels = [];
+	colors = [];
 	for (var x = 0; x < 32; x++) {
 		voxels[x] = [];
+		colors[x] = [];
 		for (var y = 0; y < 32; y++) {
 			voxels[x][y] = [];
+			colors[x][y] = [];
 			for (var z = 0; z < 32; z++) {
-				voxels[x][y][z] = -1;
+				voxels[x][y][z] = 0;
+				colors[x][y][z] = -1;
 			}
 		}
 	}
@@ -80,12 +119,14 @@ function processExample (exampleIndex) {
 	
 	for (var i = 0, ii = model.length; i < ii; i++) {
 		vox = model[i];
-		voxels[vox[0]][vox[1]][vox[2]] = vox[3];
+		voxels[vox[0]][vox[1]][vox[2]] = z * 200; // This the right value??? Needs to be big!
+		colors[vox[0]][vox[1]][vox[2]] = vox[3];
 	}
 	
 	return voxels;
 }
 
+/* Vertices & Normals */
 function interpolate (isolevel, p1, p2, valp1, valp2) {
 	if (Math.abs(isolevel - valp1) < 0.00001) {
 		return p1;
@@ -101,31 +142,39 @@ function interpolate (isolevel, p1, p2, valp1, valp2) {
 	
 	var diff = (isolevel - valp1) / (valp2 - valp1);
 	
+	// Vertices
 	p[0] = p1[0] + diff * (p2[0] - p1[0]);	
 	p[1] = p1[1] + diff * (p2[1] - p1[1]);
 	p[2] = p1[2] + diff * (p2[2] - p1[2]);
 	
+	// Normals
 	p[3] = p1[3] + diff * (p2[3] - p1[3]);
 	p[4] = p1[4] + diff * (p2[4] - p1[4]);
 	p[5] = p1[5] + diff * (p2[5] - p1[5]);
 	
 	return p;
 }
-
+var cubelog = 0;
 function processCube (cube, isolevel) {
 	var cubeindex = 0;
-	if (cube.val[0] > isolevel) cubeindex += 1; // |= ??
-	if (cube.val[1] > isolevel) cubeindex += 2;
-	if (cube.val[2] > isolevel) cubeindex += 4;
-	if (cube.val[3] > isolevel) cubeindex += 8;
-	if (cube.val[4] > isolevel) cubeindex += 16;
-	if (cube.val[5] > isolevel) cubeindex += 32;
-	if (cube.val[6] > isolevel) cubeindex += 64;
-	if (cube.val[7] > isolevel) cubeindex += 128;
+	if (cube.val[0] > isolevel) cubeindex |= 1; // |= ??
+	if (cube.val[1] > isolevel) cubeindex |= 2;
+	if (cube.val[2] > isolevel) cubeindex |= 4;
+	if (cube.val[3] > isolevel) cubeindex |= 8;
+	if (cube.val[4] > isolevel) cubeindex |= 16;
+	if (cube.val[5] > isolevel) cubeindex |= 32;
+	if (cube.val[6] > isolevel) cubeindex |= 64;
+	if (cube.val[7] > isolevel) cubeindex |= 128;
 	
 	// Cube is entirely in/out of the surface
 	if (edgeTable[cubeindex] == 0 || edgeTable[cubeindex] == 255)
 		return;
+	
+	if (cubeindex > 0) {
+		cubelog++;
+	}
+	
+	// console.log(cubeindex);
 	
 	var vertlist = [];
 	// Find the vertices where the surface intersects the cube
@@ -156,6 +205,7 @@ function processCube (cube, isolevel) {
 	
 	for (var i = 0; triTable[cubeindex][i] != -1; i++) {
 	    vertexList.push(vertlist[triTable[cubeindex][i]]);
+		colorArray.push(colors[cube.pos[0]][cube.pos[1]][cube.pos[2]]);
 	}
 }
 var numCubes = 0;
@@ -165,6 +215,7 @@ function runMarchingCubes(voxels, sizeX, sizeY, sizeZ, stepX, stepY, stepZ, isov
 		for(var y = stepY; y < sizeY-2*stepY; y += stepY) {
 			for(var z = stepZ; z < sizeZ-2*stepZ; z += stepZ) {
 				var c = new Cube();
+				c.pos = [x, y, z];
 				c.p = [
 					[x,y,z, 
                         (voxels[x+stepX][y][z]-voxels[x-stepX][y][z]) / -stepX,
@@ -227,6 +278,40 @@ function runMarchingCubes(voxels, sizeX, sizeY, sizeZ, stepX, stepY, stepZ, isov
 	return vertexList;
 }
 
+/* UVs & Texture */
+var Texture = function () {
+	this.canvas = document.getElementById("makeTexture");
+	this.ctx = this.canvas.getContext('2d');
+	this.width = 512;
+	this.height = 512;
+	// 6x6 roughly gotten from (512px * 512px) / (32vx * 32vx * 6 sides).
+	this.size = Math.floor(Math.sqrt((this.width * this.height) / (32 * 32 * 6)));
+	this.w = Math.floor(this.width / this.size);
+	this.h = Math.floor(this.height / this.size);
+	this.x = 0;
+	this.y = 0;
+	this.c = 0;
+	this.uri = "";
+	
+	this.make = function () {
+		for (var i = 0, ii = uvArray.length; i < ii; i += 2) {
+			this.color(uvArray[i], uvArray[i + 1], colorArray[this.c]);
+			this.c++;
+		}
+		this.uri = this.canvas.toDataURL("image/png");
+	}
+	
+	this.color = function (x, y, c) {
+		var color = $C.examples.swatch[c];
+		// console.log("rgb(" + Math.floor(color.r * 256) + ", " + Math.floor(color.g * 256) + ", " + Math.floor(color.b * 256) + ")")
+		
+		this.ctx.fillStyle = "rgb(" + Math.floor(color.r * 256) + ", " + Math.floor(color.g * 256) + ", " + Math.floor(color.b * 256) + ")";
+		
+		this.ctx.fillRect(x, y, this.size, this.size);
+	}
+}
+
+/* Data */
 var edgeTable = [
 0x0  , 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
 0x80c, 0x905, 0xa0f, 0xb06, 0xc0a, 0xd03, 0xe09, 0xf00,

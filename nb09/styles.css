@@ -1,7 +1,7 @@
 body, html {
 	margin: 0px;
 	padding: 0px;
-	background-color: #f0f0f0;
+	background-color: #777;
 	font-family: Verdana;
 	font-size: 25px;
 	font-weight: bold;
@@ -58,12 +58,19 @@ body, html {
 
 #incompatible {
 	position: absolute;
-	left: 0px;
+	left: 20px;
 	top: 0px;
 	color: #444;
 }
 
 #nanoCanvas {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+
+#makeTexture {
+/*	visibility: hidden;*/
 	position: absolute;
 	left: 0px;
 	top: 0px;
