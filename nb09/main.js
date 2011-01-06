@@ -22,13 +22,13 @@ function Init () {
 	
 	// $C.ui.postInit();
 	
-	// Color Cube.
-	$C.colors = new Colors();
-	$C.colors.init();
-	
 	// Examples.
 	$C.examples = new Examples();
 	$C.examples.init();
+	
+	// Color Cube.
+	$C.colors = new Colors();
+	$C.colors.init();
 	
 	// Initial resize.
 	$C.ui.resize();
