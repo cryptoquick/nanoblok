@@ -4,7 +4,6 @@ function Init () {
 	
 	// Initialize User Interface.
 	$C.ui = new UI();
-	console.log($C.ui);
 	$C.ui.init();
 	
 	// Make main scene.
@@ -43,7 +42,7 @@ function Init () {
 	window.onkeypress = $C.key.press;
 	
 	// Trying to make it so WebGL-enabled users won't see this message. (Unsuccessful)
-	document.getElementById("incompatible").innerHTML = "<br><br><br><br><br>Nanoblok requires a browser that supports WebGL. See documentation for more details.";
+	document.getElementById("incompatible").innerHTML = "<br><br><br><br><br>Nanoblok requires a browser that supports WebGL.<br>See documentation for more details.";
 	
 	$C.initialized = true;
 }
@@ -138,7 +137,7 @@ var Scene = function () {
 						mode: "dir",
 						color: {r: 0.9, g: 0.9, b: 0.9},
 						diffuse: true,
-						specular: true,
+						specular: false,
 						dir: {x: 1.0, y: 1.0, z: -1.0}
 					},
 					{

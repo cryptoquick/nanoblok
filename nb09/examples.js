@@ -32,6 +32,12 @@ var Examples = function () {
 			}
 		}
 		
+		this.swatch[-1] = color = {
+			r: 0.00,
+			g: 0.00,
+			b: 0.00
+		};
+		
 		// Draw all examples.
 		for (var i = 0, ii = this.models.length; i < ii; i++) {
 			this.draw(i);
@@ -62,6 +68,7 @@ var Examples = function () {
 				block.make();
 				bloks[hash] = true;
 			}
+			
 			var color = this.swatch[model[i][3]];
 
 			// Positions the blocks by offsetting to the middle of the grid coordinates.

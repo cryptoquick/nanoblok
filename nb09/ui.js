@@ -15,18 +15,20 @@ var UI = function () {
 	
 	// This can implement 2xAA by rendering to a 2x larger canvas, then scale it down with styles.
 	this.resize = function () {
+		$C.ui.window = {width: window.innerWidth, height: window.innerHeight};
+		
 		if ($C.AA) {
-			this.canvas.setAttribute("height", this.window.height * 2);
-			this.canvas.setAttribute("width", this.window.width * 2);
-			this.canvas.style.height = this.window.height;
-			this.canvas.style.width = this.window.width;
+			$C.ui.canvas.setAttribute("height", $C.ui.window.height * 2);
+			$C.ui.canvas.setAttribute("width", $C.ui.window.width * 2);
+			$C.ui.canvas.style.height = $C.ui.window.height;
+			$C.ui.canvas.style.width = $C.ui.window.width;
 		}
 		else {
-			this.canvas.setAttribute("height", this.window.height);
-			this.canvas.setAttribute("width", this.window.width);
+			$C.ui.canvas.setAttribute("height", $C.ui.window.height);
+			$C.ui.canvas.setAttribute("width", $C.ui.window.width);
 		}
 
-		$C.scene.camera(this.window.width, this.window.width);
+		$C.scene.camera($C.ui.window.width, $C.ui.window.width);
 		$C.scene.render();
 		console.log("Resized.");
 	}
