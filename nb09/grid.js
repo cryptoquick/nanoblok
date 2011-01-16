@@ -22,8 +22,9 @@ var Grid = function () {
 			for (var r = -ro, rr = ro; r < rr; r++) {
 				var tile = new Block("tile", "grid-" + ((32 * c + r) + 528));
 				tile.instance(color, {x: c * s, y: -1.0 + this.offsY, z: r * s});
-				tile.bind($C.pick.tile)
+				tile.bind($C.pick.tile);
 				$C.scene.addGrid([tile.uniqueID])
+				this.array.push(tile);
 			}
 		}
 	}

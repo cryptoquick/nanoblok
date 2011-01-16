@@ -25,7 +25,6 @@ var Key = function () {
 		
 		// Escape key for pause.
 		if (evt.charCode == 96) {
-			console.log('blas')
 			var pauseDiv = document.getElementById('paused');
 			
 			pauseDiv.style.left = $C.ui.window.width / 2 - 100;
@@ -41,9 +40,6 @@ var Key = function () {
 			else {
 				$C.scene.stop();
 				
-				// gui.showBuildMenu(false);
-				// nodeState[0] = false;
-				
 				pauseDiv.style.visibility = 'visible';
 				$C.state.paused = true;
 				console.log("Paused!");
@@ -58,7 +54,7 @@ function Reset () {
 	$C.scene.rotate(225.0, -26.565, 0.0);
 	$C.ui.resize();
 }
-var debugColors = [];
+
 var Colors = function () {
 	this.colors = [];
 	this.array = [];
@@ -126,7 +122,7 @@ var Colors = function () {
 			for (var y = -s4; y < s4; y++) {
 				for (var z = -s4; z < s4; z++) {
 					var colorIndex = 1024 * (x * 2 + 1) + 32 * (y * 2 + 1) + (z * 2 + 1) + 15855;
-					debugColors.push("color" + colorIndex);
+					
 					SceneJS.createNode({
 						type: "material",
 						id: "color" + colorIndex,

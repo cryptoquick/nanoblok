@@ -32,6 +32,7 @@ var Examples = function () {
 			}
 		}
 		
+		// For Marching Cubes, for -1 values in the colors array.
 		this.swatch[-1] = color = {
 			r: 0.00,
 			g: 0.00,
@@ -60,7 +61,7 @@ var Examples = function () {
 			var hash = model[i][3];
 			
 			// Instance a new block using the color ID.
-			var block = new Block("color" + hash, "");
+			var block = new Block("exblock" + hash, "");
 			
 			// Hash table ensures no block colors are made twice.
 			// Doesn't make a new textured block unless it's a new color.
