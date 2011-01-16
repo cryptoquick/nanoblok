@@ -20,7 +20,7 @@ function Init () {
 	$C.grid = new Grid();
 	$C.grid.init(32, 32);
 	
-	// $C.ui.postInit();
+	$C.ui.postInit();
 	
 	// Examples.
 	$C.examples = new Examples();
@@ -50,8 +50,8 @@ function Init () {
 function Idle (scene) {
 	// debugText = $C.ui.toolbar + "";
 	if ($C.initialized) {
-		// debugText = $C.ui.toolbar + "";
-		// $C.ui.toolbar.move();
+		debugText = $C.ui.toolbar + "";
+		$C.ui.toolbar.move();
 	}
 }
 
@@ -90,8 +90,6 @@ var Mouse = function () {
 			
 			this.last.x = evt.clientX;
 			this.last.y = evt.clientY;
-			
-			$C.scene.render();
 		}
 	}
 	
@@ -220,13 +218,12 @@ var Scene = function () {
 	
 	this.start = function () {
 		SceneJS.withNode("mainScene").start({
-			fps: 20,
-			idleFunc: Idle
+			fps: 20
 		});
 	}
 	
 	this.stop = function () {
-		
+		SceneJS.withNode("mainScene").stop();
 	}
 	
 	this.render = function () {
@@ -281,135 +278,6 @@ var Scene = function () {
 		$C.ui.resize();
 	}
 }
-/*
-var Block = function (name, type) {
-	this.color = {};
-	this.position = {};
-	this.size = {x: 1.0, y: 1.0, z: 1.0};
-	this.solid = true;
-	this.node = {};
-	this.name = name;
-	this.scale = {x: 1.0, y: 1.0, z: 1.0};
-	this.type = "";
-	
-	this.make = function (color, position, size, scale) {
-		if (this.position == {}) {
-			console.log ("Block position not set.");
-			return null;
-		}
-		
-		if (this.color == {}) {
-			console.log ("Color not set.");
-			return null;
-		}
-		
-		if (arguments.length == 2) {
-			this.color = color;
-			this.position = position;
-		}
-		
-		if (arguments.length == 3) {
-			this.color = color;
-			this.position = position;
-			this.size = size;
-		}
-		
-		if (arguments.length == 4) {
-			this.color = color;
-			this.position = position;
-			this.size = size;
-			this.scale = scale;
-		}
-		
-		// Build Node object.
-		this.node = {
-			type: "library",
-			nodes: [{
-				type: "translate",
-				x: this.position.x,
-				y: this.position.y,
-				z: this.position.z,
-				nodes: [{
-					type: "node",
-					id: this.name,
-					nodes: [{
-						type: "material",
-						baseColor: this.color,
-						shine: 1.0,
-						nodes: [{
-							type: "texture",
-							layers: [{
-								uri: "grid128.png",
-								minFilter: "linear",
-								magFilter: "linear",
-								wrapS: "repeat",
-								wrapT: "repeat",
-								isDepth: false,
-								depthMode:"luminance",
-								depthCompareMode: "compareRToTexture",
-								depthCompareFunc: "lequal",
-								flipY: false,
-								width: 1,
-								height: 1,
-								internalFormat:"lequal",
-								sourceFormat:"alpha",
-								sourceType: "unsignedByte",
-								applyTo:"baseColor",
-								blendMode: "multiply"
-							}],
-							nodes: [{
-								type: "scale",
-								x: this.scale.x,
-								y: this.scale.y,
-								z: this.scale.z,
-								nodes: [{
-									type: "cube",
-							        xSize: this.size.x,
-							        ySize: this.size.y,
-							        zSize: this.size.z,
-							        solid: this.solid
-								}]
-							}]
-						}]
-					}]
-				}]
-			}]
-		}
-		
-		if (type == "block") {
-			$C.scene.addBlock([this.node]);
-		}
-		else if (type == "grid") {
-			$C.scene.addGrid([this.node]);
-		}
-		else if (type == "example") {
-			$C.scene.addExample([this.node]);
-		}
-		else {
-			console.log("No type supplied.");
-		}
-	}
-	
-	this.instance = function (location) {
-		var instanceNode = {
-			type: "translate",
-			x: location.x,
-			y: location.y,
-			z: location.z,
-			nodes: [{
-				type: "material",
-				baseColor: this.color,
-				shine: 1.0,
-				nodes: [{
-					type: "instance",
-					target: this.name
-				}]
-			}]
-		}
-		
-		return instanceNode;
-	}
-}*/
 
 var Block = function (blockID, uniqueID) {
 	this.blockID = "" || blockID;
@@ -482,6 +350,14 @@ var Block = function (blockID, uniqueID) {
 		var UID = this.uniqueID;
 		SceneJS.withNode(UID).bind("picked", function (evt) {
 			callback(UID);
+		});
+	}
+	
+	this.position = function () {
+		var UID = this.uniqueID;
+		SceneJS.withNode(UID).bind("pre-rendered", function (evt) {
+			viewPos = this.query("viewPos");
+			console.log(viewPos);
 		});
 	}
 }
