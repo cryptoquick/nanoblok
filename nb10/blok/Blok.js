@@ -1,4 +1,4 @@
-// Create our single global namespace.
+// Create our global namespace.
 var BLOK = BLOK || {};
 
 // In case the browser doesn't support a signed, 32-bit int array, just use the regular, JavaScript array.

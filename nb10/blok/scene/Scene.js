@@ -7,6 +7,6 @@ BLOK.Scene = function () {
 };
 
 BLOK.Scene.prototype = {
-	constructor: BLOK.Voxel,
+	constructor: BLOK.Scene,
 	
 };
