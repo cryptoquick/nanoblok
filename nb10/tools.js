@@ -76,23 +76,34 @@ var Tools = function () {
 				+ (gridOffset - $C.layerOffset.z * $C.blockSize.half) + ")");
 			
 			// For Color Cube slicing.
-			if ($C.swatchActive) {
+		/*	if ($C.swatchActive) {
 				for (var s = 0; s < 1024; s++) {
 					SwatchField[s + (($C.layerOffset.z) * 1024)][4] = true;
 				}
 				$C.posInd.clearSwatch();
 				drawAllBlocks();
-			}
+			}*/
 			// For block slicing.
-			else {
-				for (var i = 0, ii = Field.length; i < ii; i++) {
-					if (Field[i][2] == $C.layerOffset.z) {
-						FieldVisible[i] = true;
-					}
-				}
-				
-				drawAllBlocks();
+		//	else {
+			var F = [];
+			var Z = 31;
+			
+			if ($C.swatchActive) {
+				F = SwatchField;
 			}
+			else {
+				F = Field;
+				Z = $C.layerOffset.z;
+			}
+			
+			for (var i = 0, ii = F.length; i < ii; i++) {
+				if (F[i][2] <= Z) {
+					FieldVisible[i] = true;
+				}
+			}
+			$C.posInd.clearSwatch();
+			drawAllBlocks();
+		//	}
 			
 			loggit("Slice up to " + $C.layerOffset.z);
 		}
@@ -109,23 +120,34 @@ var Tools = function () {
 				+ (gridOffset - $C.layerOffset.z * $C.blockSize.half) + ")");
 			
 			// For Color Cube slicing.
-			if ($C.swatchActive) {
+		/*	if ($C.swatchActive) {
 				for (var s = 0; s < 1024; s++) {
 					SwatchField[s + (($C.layerOffset.z + 1) * 1024)][4] = false;
 				}
 				$C.posInd.clearSwatch();
 				drawAllBlocks();
-			}
+			}*/
 			// For block slicing.
-			else {
-				for (var i = 0, ii = Field.length; i < ii; i++) {
-					if (Field[i][2] > $C.layerOffset.z) {
-						FieldVisible[i] = false;
-					}
-				}
-				
-				drawAllBlocks();
+		//	else {
+			var F = [];
+			var Z = -1;
+			
+			if ($C.swatchActive) {
+				F = SwatchField;
 			}
+			else {
+				F = Field;
+				Z = $C.layerOffset.z;
+			}
+			
+			for (var i = 0, ii = F.length; i < ii; i++) {
+				if (F[i][2] > Z) {
+					FieldVisible[i] = false;
+				}
+			}
+			$C.posInd.clearSwatch();
+			drawAllBlocks();
+		//	}
 			
 			loggit("Slice down to " + $C.layerOffset.z);
 		}
