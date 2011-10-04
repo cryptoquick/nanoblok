@@ -6,15 +6,18 @@
 	<link rel="icon" href="favicon.ico" type="image/x-icon"/> 
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 	
-	<link type="text/css" rel="stylesheet/less" href="styles/styles.less">
+	<link type="text/css" rel="stylesheet/css" href="styles/styles.css">
 	
-	<script type="text/javascript" src="lib/less.js"></script>
-	<script type="text/javascript" src="blok/Blok.js"></script>
+	<!--
+		The difference between index.html and dev.html is that each separate script is listed here.
+		The index.html requires a built version of Nanoblok.js.
+	-->
 	<script type="text/javascript" src="nano/Nano.js"></script>
+	<script type="text/javascript" src="blok/Blok.js"></script>
+	<script type="text/javascript" src="blok/core/Vector2.js"></script>
+	<script type="text/javascript" src="nano/ui/Panels.js"></script>
 </head>
 <body>
-	<div id="nbSideLeft"></div>
-	<div id="nbScene"></div>
-	<div id="nbSideRight"></div>
+	<div id="container"></div>
 </body>
 </html>
