@@ -1,0 +1,174 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Nanoblok 0.10.0-dev</title>
+	
+	<link rel="icon" href="favicon.ico" type="image/x-icon"/> 
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+	
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			text-align: center;
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+			-o-user-select: none;
+			user-select: none;
+		}
+		
+		::selection { background: transparent; }
+		::-moz-selection { background: transparent; }
+		
+		#grids, #blocks, #overlays, #display, #debug, #colors, #selection, #renderer {
+			display: none;
+			position: absolute;
+			z-index: -2;
+		}
+		
+		#display, #renderer {
+			display: block;
+			z-index: -1;
+		}
+		
+		#dialogSave {
+			position: absolute;
+			left: 500px;
+			top: 500px;
+			display: block;
+			width: 170px;
+			height: 50px;
+			/*	background-color: #FFD27F; */
+			background-color: none;
+			font-size: 12px;
+			font-family: "Verdana";
+			color: #fff;
+			text-align: right;
+			padding: 4px;
+		}
+		
+		#dialogSave form input {
+			border: solid #999 1px;
+			width: 10em;
+			margin: 4px;
+		}
+	</style>
+	
+	<script type="text/javascript" src="data.js"></script>
+	<script type="text/javascript" src="text.js"></script>
+	<script type="text/javascript" src="grid.js"></script>
+	<script type="text/javascript" src="block.js"></script>
+	<script type="text/javascript" src="effects.js"></script>
+	<script type="text/javascript" src="ui.js"></script>
+	<script type="text/javascript" src="input.js"></script>
+	<script type="text/javascript" src="tools.js"></script>
+	<script type="text/javascript" src="color.js"></script>
+	<script type="text/javascript" src="selection.js"></script>
+	<script type="text/javascript" src="comm.js"></script>
+	<script type="text/javascript" src="render.js"></script>
+	<script type="text/javascript" src="dialog.js"></script>
+	<script type="text/javascript" src="processing.js"></script>
+	<script type="text/javascript" src="noise.js"></script>
+	<script type="text/javascript" src="csg.js"></script>
+	<script type="text/javascript" src="main.js"></script>
+	<!-- examples -->
+	<script type="text/javascript" src="examples.js"></script>
+</head>
+<body>
+	<canvas id="grids"></canvas>
+	<canvas id="blocks"></canvas>
+	<canvas id="overlays"></canvas>
+	<canvas id="display"></canvas>
+	<canvas id="debug"></canvas>
+	<canvas id="colors"></canvas>
+	<canvas id="selection"></canvas>
+	<canvas id="renderer"></canvas>
+	
+	<svg id="grid" width="100%">
+		<g id="gridContainer" fill-opacity="0.0"/>
+		
+		<g id="helpDialogs">
+			
+		</g>
+
+		<g id="statusContainer">
+			<g id = "loggitContainer" transform="skewY(-26.565)  translate(0, 0)">
+				<rect id="debugBox" x="0" y="20" width="315" height="85" fill="#333" fill-opacity="0.5" rx="5"/>
+				<text x="20" y="15" font-family="Verdana" font-size="12" font-weight="bold" fill="#333">Event Log</text>
+				<text id="debugText" x="20" y="35" font-family="Verdana" font-size="12" fill="#eee"></text>
+			</g>
+		</g>
+		
+		<a id="logoLink" xlink:href="http://code.google.com/p/nanoblok/" onmouseover="document.getElementById('logoText').setAttributeNS(null, 'fill', '#444')" onmouseout="document.getElementById('logoText').setAttributeNS(null, 'fill', 'white')">
+			<g id="nanoblok-logo" stroke-width="1" fill-opacity="1" stroke-opacity="1" transform="scale(3)" >
+				<path d="M 5 10 L 5 20 L 15 25 L 15 15 Z" fill="rgb(42, 197, 18)" id="left" fill-opacity="1"/>
+				<path d="M 15 15 L 15 25 L 25 20 L 25 10 Z" fill="rgb(62, 217, 38)" id="right" fill-opacity="1"/>
+				<path d="M 5 10 L 15 15 L 25 10 L 15 5 Z" fill="rgb(82, 237, 58)" id="top" fill-opacity="1"/>
+				<path d="M 5 10 L 5 20 L 15 25 L 25 20 L 25 10 L 15 5 Z" stroke="#444" fill="none"/>
+			</g>
+			<text id="logoText" x="49" y="90" font-family="Verdana" font-size="16" font-weight="bold" fill="white" stroke="none" transform="skewY(-26.565)">nb</text>
+		</a>
+		
+		<g id="sideButtonsTop" stroke="black" stroke-width="3" stroke-opacity="0.0" fill="orange" fill-opacity="0.5" font-family="Verdana" font-size="14">
+			<rect id="rotLeftButton" x="180" y="1" width="30" height="30" fill="#aaa" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
+			<text id="rotLeftText" x="187" y="24" font-family="Verdana" font-size="18" fill="white" stroke="none" transform="skewY(26.565)" fill-opacity="1.0">&#8635;</text>
+			<rect id="rotRightButton" x="180" y="38" width="30" height="30" fill="#aaa" fill-opacity="0.5" rx="3" transform="skewY(26.565)"/>
+			<text id="rotRightText" x="187" y="60" font-family="Verdana" font-size="18" fill="white" stroke="none" transform="skewY(26.565)" fill-opacity="1.0">&#8634;</text>
+		</g>
+		
+		<g id="sideButtonsLeft">
+			<rect id="gridUpButton" x="0" y="1" width="20" height="25" fill="#aaa" fill-opacity="0.5" rx="1" transform="skewY(-26.565)"/>
+			<text id="gridUpText" x="4" y="20" font-family="Verdana" font-size="16" fill="white" transform="skewY(-26.565)">?</text>
+			<rect id="gridDownButton" x="0" y="31" width="20" height="25" fill="#aaa" fill-opacity="0.5" rx="1" transform="skewY(-26.565)"/>
+			<text id="gridDownText" x="4" y="50" font-family="Verdana" font-size="16" fill="white" transform="skewY(-26.565)">?</text>
+		</g>
+
+		<g id="renderDisplay" fill="orange">
+			<g fill-opacity="0.5">
+				<rect x="0" y="48" width="32" height="20" transform="skewY(26.565)"/>
+				<rect x="32" y="80" width="32" height="20" transform="skewY(-26.565)"/>
+				<rect x="0" y="-4" width="32" height="20" transform="skewY(-26.565)"/>
+			</g>
+			
+			<g font-family="Verdana" font-size="12" fill="white">
+				<text x="6" y="62" width="32" height="20" transform="skewY(26.565)">REN</text>
+				<text x="32" y="94" width="32" height="20" transform="skewY(-26.565)">DER</text>
+				<text x="4" y="10" width="32" height="20" transform="skewY(-26.565)">ISO</text>
+			</g>
+			
+			<path d="M 0 16 L 0 48 L 32 64 L 64 48 L 64 16 L 32 0 Z" stroke="#444" stroke-width="2" fill="none"/>
+		</g>
+		
+		<text id="yAxis" x="0" y="0" font-family="Verdana" font-size="18" fill="#999" stroke="none" font-weight="bold">Y &#8594;</text>
+		<text id="xAxis" x="0" y="0" font-family="Verdana" font-size="18" fill="#999" stroke="none" font-weight="bold">X &#8594;</text>
+		
+		<g id="sideColorsRight" stroke="black" stroke-width="3" stroke-opacity="0.0"></g>
+		
+		<g id="markerPoints" fill="red" fill-opacity="0.0"></g>
+		
+		<rect id="saveBG" height="58" width="250" rx="3" transform="skewY(26.565)" fill="orange" fill-opacity="0.5"></rect>
+		<!-- #aaa -->
+		<g id="dialog">
+			<path id="dialogOuter" fill="#333" fill-opacity="0.3"></path>
+			<path id="dialogInner" fill="#eee" fill-opacity="1.0"></path>
+			<rect id="debugDialog" fill="#333" fill-opacity="0.5" rx="5"/>
+			<text id="dialogLeft" font-family="Verdana" font-size="12" fill="#666"></text>
+		</g>
+		<g id="alert">
+			<path id="alertOuter" fill="#333" fill-opacity="0.3"></path>
+			<path id="alertInner" fill="#eee" fill-opacity="1.0"></path>
+			<text id="alertText" font-family="Verdana" font-size="11" fill="#666"></text>
+			<rect id="alertButton" stroke="#444" fill="#ddd" rx="2" onmouseover="Dialog.alertButton(true)" onmouseout="Dialog.alertButton(false)"></rect>
+			<text id="alertButtonText" x="30" y="20" font-family="Verdana" font-size="12" fill="#666">Cancel</text>
+		</g>
+	</svg>
+	
+	<div id="dialogSave">
+		<form>
+			Author<input id="saveAuthor" type="text" style="width:100px"></input><br/>
+			Title<input id="saveTitle" type="text" style="width:100px" onfocus="$C.titleFieldSelected = true" onblur="$C.titleFieldSelected = false"></input>
+		</form>
+	</div>
+</body>
+</html>
