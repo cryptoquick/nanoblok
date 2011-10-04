@@ -156,12 +156,15 @@ function isoRight (voxels, pixels, x, z, y) {
 		if (px >= 0 && px < size && py >= 0 && py < size) {
 			// if ($C.swatchActive) {
 				var color = shade(voxels[x][y][z], 'right');
+			//var color = {r: 0, g: 0, b: 0};
 			// }
 			// 	else {
 			// 		var color = shade(SwatchField[Field[voxels[x][y][z]][3]][3], 'right');
 			// 	}
 			pixels[px][py] = color;
 			pixels[px+1][py] = color;
+			pixels[px][py+1] = color;
+			pixels[px+1][py+1] = color;
 			test++;
 		}
 		
@@ -185,6 +188,7 @@ function isoLeft (voxels, pixels, z, y, x) {
 			// }
 			pixels[px-1][py+1] = color;
 			pixels[px][py+1] = color;
+			
 			test++;
 		}
 		

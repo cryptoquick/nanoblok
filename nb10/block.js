@@ -179,7 +179,7 @@ function canvasBlockOld (position, location, color) {
 }
 
 var count = 0;
-var blockMask = [];
+//var blockMask = [];
 
 function canvasBlock (location) {
 	zBuffer(location);
@@ -586,7 +586,7 @@ function drawAllBlocks () {
 //	var coors = new Object();
 	
 	// Clear out the blockMask hash table.
-	blockMask = [];
+//	blockMask = [];
 	// console.log(F.length);
 	for (var i = 0, ii = F.length; i < ii; i++) {
 		if (FieldVisible[i]) {
