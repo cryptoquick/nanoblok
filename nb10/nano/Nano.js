@@ -1,10 +1,14 @@
 // Create our global namespace.
 var NANO = NANO || {};
+var app;
 
 // Initialize Nanoblok.
 function INIT () {
-	var panels = BLOK.Events.resize(NANO.Panels);
-	panels.render(document.getElementById("container");
+	app = new NANO.App();
+	app.events = new BLOK.Events();
+	app.panels = new NANO.Panels(document.getElementById("container"));
+	app.events.set('resize', app.panels.setPanels);
+	app.events.trigger('resize');
 	
 //	var resolution = new BLOK.Vector2();
 //	var panels = new NANO.Panels(resolution);
