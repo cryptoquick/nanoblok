@@ -1,6 +1,6 @@
-NANO.Panels = function () {
+NANO.Panels = function (container) {
 	// Position panels.
-	this.setPanels(this.getPanels());
+	this.container = container;
 	
 	return this;
 };
@@ -8,29 +8,18 @@ NANO.Panels = function () {
 NANO.Panels.prototype = {
 	constructor: NANO.Panels,
 	
-	panels: [
-		{
-			name: "Left Panel",
-			parent: undefined,
-			contents: [],
-			position: BLOK.Vector2(0, 0),
-			dimensions: BLOK.Vector2(200, HEIGHT)
+	container, panels,
+	
+	setPanels: function (resolution) {
+		var panels = new NANO.PanelData(resolution);
+		
+		for (p in panels) {
+			var panel = panels[p];
+			this.setPanel(panel);
 		}
-	],
-	
-	getPanels: function () {
-		var panels = {};
-		panels.left = document.getElementById("nbSideLeft");
-		panels.right = document.getElementById("nbSideRight");
-		
-		return panels;
 	},
 	
-	setPanels: function (panels) {
-		
-	},
-	
-	setPanel: function (position, dimensions) {
+	setPanel: function (panel) {
 		
 	}
 };

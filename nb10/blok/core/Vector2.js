@@ -2,6 +2,7 @@
 
 BLOK.Vector2 = function (x, y) {
 	this.set(x, y);
+	
 	return this;
 };
 
