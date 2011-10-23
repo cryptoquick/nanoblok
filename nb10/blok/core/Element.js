@@ -8,10 +8,16 @@ BLOK.Element = function (type, id) {
 BLOK.Element.prototype = {
 	constructor: BLOK.Element,
 	
-	element,
+	element: {},
 	
 	set: function (name, attribute) {
 		this.element.setAttribute(name, attribute);
+		
+		return this;
+	},
+	
+	style: function (name, val) {
+		this.element.style[name] = val;
 		
 		return this;
 	},
@@ -35,8 +41,11 @@ BLOK.Element.prototype = {
 	},
 	
 	put: function (target) {
-		target.element.appendChild(this.element);
+		if (target.element)
+			target.element.appendChild(this.element);
+		else
+			target.appendChild(this.element);
 		
-		return target;
+		return this;
 	}
 };
