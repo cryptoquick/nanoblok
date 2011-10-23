@@ -17,7 +17,7 @@ BLOK.Vector2.prototype = {
 	},
 	
 	copy: function (v) {
-		if (instanceof(v) == BLOK.Vector2) {
+		if (v instanceof BLOK.Vector2) {
 			this.x = v.x;
 			this.y = v.y;
 			
