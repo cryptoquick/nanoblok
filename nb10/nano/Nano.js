@@ -1,5 +1,6 @@
 // Create our global namespace.
 var NANO = NANO || {};
+
 var app;
 
 // Initialize Nanoblok.

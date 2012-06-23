@@ -1,5 +1,5 @@
 function blokNoise (seed) {
-	noiseDetail (4, 0.25);
+	noiseDetail (4, 0.45);
 	noiseSeed(seed);
 	console.log(noiseProfile);
 	
@@ -10,7 +10,7 @@ function blokNoise (seed) {
 	var largest = 0;
 	var t0 = new Date();
 	
-	var scale = 0.05;
+	var scale = 0.1;
 	
 	for (var x = 31; x >= 0; x--) {
 		arr[x] = [];
