@@ -16,12 +16,6 @@ BLOK.Element.prototype = {
 		return this;
 	},
 	
-	style: function (name, val) {
-		this.element.style[name] = val;
-		
-		return this;
-	},
-	
 	get: function (name) {
 		var attribute = this.element.getAttribute(name);
 		
@@ -45,6 +39,12 @@ BLOK.Element.prototype = {
 			target.element.appendChild(this.element);
 		else
 			target.appendChild(this.element);
+		
+		return this;
+	},
+
+	style: function (name, val) {
+		this.element.style[name] = val;
 		
 		return this;
 	}

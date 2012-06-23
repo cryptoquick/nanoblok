@@ -21,30 +21,23 @@ function swatchInit () {
 	if ($C.swatchInit === false) {
 		loggit("Initializing Color Array");
 		// By inverting this, computation is sped up a great deal.
-		for (var z = -1; z < $C.gridDims.c + 1; z++) {
+		for (var z = 0; z < $C.gridDims.c; z++) {
 			Swatch[z] = new Array();
-			for (var y = -1; y < $C.gridDims.r + 1; y++) {
+			console.log(z);
+			for (var y = 0; y < $C.gridDims.r; y++) {
 			Swatch[z][y] = new Array();
-				for (var x = $C.gridDims.r + 1; x >= -1; x--) {
-					if (x > -1 && x < $C.gridDims.c &&
-						y > -1 && y < $C.gridDims.c &&
-						z > -1 && z < $C.gridDims.c) {
-							
-						color = {
-							r: (z) * 8,
-							g: (y) * 8,
-							b: 256 - (x) * 8
-						};
-							
-						Swatch[z][y][x] = index;
-						// Last field is for a visibility toggle.
-						SwatchField.push([x, y, z, color, true]);
+				for (var x = $C.gridDims.r - 1; x >= 0; x--) {
+					var color = {
+						r: z * 8,
+						g: y * 8,
+						b: 256 - x * 8
+					};
 						
-						index++;
-					}
-					else {
-						Swatch[z][y][x] = null;
-					}
+					Swatch[z][y][x] = index;
+					// Last field is for a visibility toggle.
+					SwatchField.push([x, y, z, color, true]);
+					
+					index++;
 				}
 			}
 		}

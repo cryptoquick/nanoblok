@@ -1,29 +1,29 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<title>Nanoblok 0.10.0-beta</title>
+	<title>Nanoblok 0.10.0-dev</title>
 	
 	<link rel="icon" href="favicon.ico" type="image/x-icon"/> 
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 	
-	<style>
-		body {
-			margin: 0;
-			padding: 0;
-			text-align: center;
-			-webkit-user-select: none;
-			-khtml-user-select: none;
-			-moz-user-select: none;
-			-o-user-select: none;
-			user-select: none;
-		}
-		
-		::selection { background: transparent; }
-		::-moz-selection { background: transparent; }
-	</style>
+	<link type="text/css" rel="stylesheet/css" href="styles/styles.css">
 	
-	<script type="text/javascript" src="js/nanoblok.js"></script>
+	<!--
+		The difference between index.html and dev.html is that each separate script is listed here.
+		The index.html requires a built version of Nanoblok.js.
+	-->
+	<script type="text/javascript" src="blok/Blok.js"></script>
+	<script type="text/javascript" src="blok/core/Vector2.js"></script>
+	<script type="text/javascript" src="blok/core/Element.js"></script>
+	<script type="text/javascript" src="blok/ui/Event.js"></script>
+	
+	<script type="text/javascript" src="nano/Nano.js"></script>
+	<script type="text/javascript" src="nano/core/App.js"></script>
+	<script type="text/javascript" src="nano/ui/Events.js"></script>
+	<script type="text/javascript" src="nano/ui/Panels.js"></script>
+	<script type="text/javascript" src="nano/ui/PanelData.js"></script>
 </head>
-<body>
+<body onload="INIT()">
 </body>
+	<canvas id="mainCanvas"></canvas>
 </html>

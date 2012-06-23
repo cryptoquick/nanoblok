@@ -9,5 +9,13 @@ NANO.Events.prototype = {
 		resolution = new BLOK.Vector2(window.innerWidth, window.innerHeight);
 		
 		f(resolution);
+	},
+
+	set: function () {
+
+	},
+
+	trigger: function () {
+		
 	}
 };
