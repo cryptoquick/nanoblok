@@ -7,9 +7,9 @@ function (render, EXAMPLES) {
 	var nb = {};
 
 	nb.init = function () {
-		console.log(EXAMPLES[0][0]);
 		render.init();
-	}
+		render.full(EXAMPLES[0]);
+	};
 
 	return nb;
 });
