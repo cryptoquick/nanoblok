@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Nanoblok 0.12.0-dev</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="icon" href="favicon.ico" type="image/x-icon"> 
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+	<link type="text/css" rel="stylesheet" href="styles/styles.css">
+	<script type="text/javascript" src="lib/curl.js"></script>
+	<script type="text/javascript">
+		var nb = nb || {}, date0 = new Date();
+		curl([
+			'js!lib/processing',
+			'app/nb',
+			'domReady!'
+		]).then(function (nb) {
+			var date1 = new Date();
+			console.log('Nanoblok took', date1 - date0, 'ms to start.');
+		});
+	</script>
+</head>
+<body>
+	<div id="nb">
+		<canvas id="nb0" data-processing-sources="hello-web.pde"></canvas>
+	</div>
+</body>
+</html>
