@@ -1,7 +1,7 @@
 define(function () {
-	var color = {};
+	var colors = {};
 
-	color.init = function () {
+	colors.init = function () {
 		var index = 0,
 		x = 0, y = 0, z = 0,
 		swatch = {},
@@ -22,9 +22,11 @@ define(function () {
 				}
 			}
 		}
-		
+
 		return swatch;
 	};
 
-	return color;
+	colors.swatch = colors.init();
+	
+	return colors;
 });

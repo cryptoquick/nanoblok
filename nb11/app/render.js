@@ -6,13 +6,15 @@ function (canvas, matrix) {
 	var render = {};
 
 	render.init = function () {
-		canvas.init();
+		
 	};
 
 	// Render
 	render.full = function (data) {
-		canvas.simpleDraw(data);
+		canvas.simpleDraw(data, 1);
 	};
+
+	render.init();
 
 	return render;
 })

@@ -7,9 +7,10 @@ function (render, EXAMPLES) {
 	var nb = {};
 
 	nb.init = function () {
-		render.init();
 		render.full(EXAMPLES[0]);
 	};
+
+	nb.init();
 
 	return nb;
 });
