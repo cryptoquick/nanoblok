@@ -54,7 +54,7 @@ function (colors) {
 					// Calculate index
 					index = ((
 						((x + offsetX * y) * size + sx) + 
-						(y * size + sy) * width
+						((y + offsetY * x) * size + sy) * width
 					) | 0) * 4; // Bitwise floor, then advance by four (colors)
 					
 					if (index >= arraySize)
