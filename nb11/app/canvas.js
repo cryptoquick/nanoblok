@@ -28,7 +28,7 @@ function (colors) {
 	};
 
 	// Render
-	canvas.simpleDraw = function (voxels, size) {
+	canvas.simpleDraw = function (voxels, size, offsetX, offsetY) {
 		var width = canvas.els[0].width,
 			height = canvas.els[0].height,
 			index = 0,
@@ -36,7 +36,9 @@ function (colors) {
 			data = img.data,
 			x = 0, y = 0,
 			color = [],
-			voxel = [];
+			voxel = [],
+			arraySize = width * height * 4,
+			vw = 32, vh = 32;
 
 		for (var v = 0, vv = voxels.length; v < vv; v++) {
 			// Gather coordinate information
@@ -50,8 +52,14 @@ function (colors) {
 			for (var sy = 0; sy < size; sy++) {
 				for (var sx = 0; sx < size; sx++) {
 					// Calculate index
-					index = ((x * size + sx) + (y * size + sy) * width) * 4;
+					index = ((
+						((x + offsetX * y) * size + sx) + 
+						(y * size + sy) * width
+					) | 0) * 4; // Bitwise floor, then advance by four (colors)
 					
+					if (index >= arraySize)
+						break;
+
 					// Set pixel data, times size
 					data[index + 0] = color[0];
 					data[index + 1] = color[1];
