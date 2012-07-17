@@ -42,7 +42,7 @@ function (colors) {
 			// Gather coordinate information
 			voxel = voxels[v];
 			x = voxel[1];
-			y = voxel[2];
+			y = 32 - voxel[2];
 
 			// Get color data from swatch lookup
 			color = colors.swatch[voxel[3]];
