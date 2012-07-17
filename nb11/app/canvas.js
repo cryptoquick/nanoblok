@@ -50,8 +50,8 @@ function (colors) {
 			for (var sy = 0; sy < size; sy++) {
 				for (var sx = 0; sx < size; sx++) {
 					// Calculate index
-					index = (x + y * width) * 4;
-
+					index = ((x * size + sx) + (y * size + sy) * width) * 4;
+					
 					// Set pixel data, times size
 					data[index + 0] = color[0];
 					data[index + 1] = color[1];

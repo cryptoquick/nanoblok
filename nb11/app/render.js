@@ -11,7 +11,7 @@ function (canvas, matrix) {
 
 	// Render
 	render.full = function (data) {
-		canvas.simpleDraw(data, 1);
+		canvas.simpleDraw(data, 16);
 	};
 
 	render.init();
