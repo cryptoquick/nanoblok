@@ -25,7 +25,15 @@ function (colors) {
 		// Initialize canvas image objects
 		canvas.img = [];
 		canvas.img[0] = canvas.ctx[0].createImageData(canvas.els[0].width, canvas.els[0].height);
+
+		// zBuffer Arrays
+		canvas.buf = [];
+		canvas.buf[0] = [];
 	};
+
+/*	function initBuffer () {
+		canvas.buf[0];
+	}*/
 
 	// Render
 	canvas.simpleDraw = function (voxels, size, offsetX, offsetY) {
@@ -38,7 +46,8 @@ function (colors) {
 			color = [],
 			voxel = [],
 			arraySize = width * height * 4,
-			vw = 32, vh = 32;
+			vw = 32, vh = 32,
+			sx = 0, sy = 0;
 
 		for (var v = 0, vv = voxels.length; v < vv; v++) {
 			// Gather coordinate information
@@ -49,8 +58,8 @@ function (colors) {
 			// Get color data from swatch lookup
 			color = colors.swatch[voxel[3]];
 
-			for (var sy = 0; sy < size; sy++) {
-				for (var sx = 0; sx < size; sx++) {
+			for (sy = 0; sy < size; sy++) {
+				for (sx = 0; sx < size; sx++) {
 					// Calculate index
 					index = ((
 						((x + offsetX * y) * size + sx) + 
@@ -72,6 +81,16 @@ function (colors) {
 		img.data = data;
 		canvas.ctx[0].putImageData(img, 0, 0);
 	};
+
+	canvas.zBuffer = function(voxels, direction) {
+		var voxel = [];
+
+		for (var v = 0, vv = voxels.length; v < vv; v++) {
+			voxel = voxels[v];
+
+
+		}
+	}
 
 	canvas.init();
 
