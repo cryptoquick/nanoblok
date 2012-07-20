@@ -156,31 +156,11 @@ function (colors, utils) {
 			x = line[0];
 			y = line[1];
 
-			// Determine beginning and end of the line along the x-axis.
-			if (ylast == y) {
-				if (x < x0)
-					x0 = x;
-				if (x > x1)
-					x1 = x;
-			}
-			// Upon a new line, write out the last one.
-			else {
-				yw = (y - 1) * width;
-				// console.log(x0, x1, yw);
-
-				// Fill in the lines.
-				for (var i = x0; i < x1; i++) {
-					index = (yw + i) * 4;
-					data[index] 	= 0;
-					data[index + 1] = 0;
-					data[index + 2] = 0;
-					data[index + 3] = 255;
-				}
-
-				ylast = y;
-				x0 = width + 1;
-				x1 = -1;
-			}
+			index = l * 4;
+			data[index] 	= 0;
+			data[index + 1] = 0;
+			data[index + 2] = 0;
+			data[index + 3] = 255;
 		}
 
 		img.data = data;
