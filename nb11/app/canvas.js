@@ -168,8 +168,8 @@ function (colors, utils) {
 			ylast = 0,
 			x = 0, y = 0,
 			x0 = width + 1, x1 = -1;
-			console.log(lineBuffer)
-
+	
+		// console.log(lineBuffer[406080]);
 
 		for (var l in lineBuffer) {
 			line = lineBuffer[l];
@@ -186,8 +186,8 @@ function (colors, utils) {
 			// Upon a new line, write out the last one.
 			else {
 				yw = (y - 1) * width;
-				console.log(x0, x1, yw);
-				
+				// console.log(x0, x1, yw);
+
 				// Fill in the lines.
 				for (var i = x0; i < x1; i++) {
 					index = (yw + i) * 4;
