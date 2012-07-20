@@ -133,29 +133,9 @@ function (colors, utils) {
 			}
 
 			canvas.line(x0, y0, x1, y1);
-
-		/*	// Find bounds
-			if (x < negx)
-				negx = x;
-			if (x > posx)
-				posx = x;
-			if (y < negy)
-				negy = y;
-			if (y > posy)
-				posy = y;
-
-				*/
 		}
 
 		canvas.drawIndices();
-
-	/*	for (by = negy; by < posy; by++) {
-			for (bx = negx; bx < posx; bx++) {
-
-			}
-		}
-
-		console.log(points.length, negx, negy, posx, posy);	*/
 	}
 
 	canvas.drawIndices = function () {
