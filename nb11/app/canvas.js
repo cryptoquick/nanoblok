@@ -91,11 +91,12 @@ function (colors, utils) {
 			dy = Math.abs(y1-y0),
 			sx = (x0 < x1) ? 1 : -1,
 			sy = (y0 < y1) ? 1 : -1,
-			err = dx-dy;
+			err = dx-dy,
+			width = canvas.els[0].width;
 
 		while(true){
 			// Put our pixels into a lineBuffer object with pixel indices as keys.
-			canvas.lineBuffer[utils.encode2(x0, y0, canvas.els[0].width)] = [x0, y0];
+			canvas.lineBuffer[utils.encode2(x0, y0, width)] = [x0, y0];
 
 			if ((x0==x1) && (y0==y1)) break;
 
@@ -162,15 +163,44 @@ function (colors, utils) {
 			line = [],
 			img = canvas.img[0],
 			data = img.data,
-			index = 0;
+			index = 0,
+			width = canvas.els[0].width,
+			ylast = 0,
+			x = 0, y = 0,
+			x0 = width + 1, x1 = -1;
+			console.log(lineBuffer)
+
 
 		for (var l in lineBuffer) {
 			line = lineBuffer[l];
-			index = l * 4;
-			data[index] 	= 0;
-			data[index + 1] = 0;
-			data[index + 2] = 0;
-			data[index + 3] = 255;
+			x = line[0];
+			y = line[1];
+
+			// Determine beginning and end of the line along the x-axis.
+			if (ylast == y) {
+				if (x < x0)
+					x0 = x;
+				if (x > x1)
+					x1 = x;
+			}
+			// Upon a new line, write out the last one.
+			else {
+				yw = (y - 1) * width;
+				console.log(x0, x1, yw);
+				
+				// Fill in the lines.
+				for (var i = x0; i < x1; i++) {
+					index = (yw + i) * 4;
+					data[index] 	= 0;
+					data[index + 1] = 0;
+					data[index + 2] = 0;
+					data[index + 3] = 255;
+				}
+
+				ylast = y;
+				x0 = width + 1;
+				x1 = -1;
+			}
 		}
 
 		img.data = data;
