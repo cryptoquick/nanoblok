@@ -5,6 +5,15 @@ define(function () {
 		return y * d + x;
 	}
 
+/*	utils.decode2 = function (hash, d) {
+		var coors = {};
+		coors.y = (hash / d) | 0;
+		coors.x = coors.y % d;
+		// coors.x = hash % d;
+		// coors.y = ((hash - coors.x) / d) | 0;
+		return coors;
+	}*/
+
 	// Hash three values within a cubic dimension.
 	utils.encode3 = function (x, y, z, d) {
 		return x * d * d + y * d + z;
