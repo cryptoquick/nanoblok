@@ -1,7 +1,8 @@
 define([
-	'app/colors'
+	'app/colors',
+	'app/geom'
 ],
-function (colors) {
+function (colors, geom) {
 	var canvas = {},
 	colors = colors;
 
@@ -81,6 +82,44 @@ function (colors) {
 		img.data = data;
 		canvas.ctx[0].putImageData(img, 0, 0);
 	};
+
+	canvas.drawPoly = function (points) {
+		var x = 0, y = 0,
+			negx = Number.MAX_VALUE, posx = Number.MIN_VALUE,
+			negy = Number.MAX_VALUE, posy = Number.MIN_VALUE,
+			bx = 0, by = 0,
+			slopes = [];
+
+		for (var p = 0, pp = points.length; p < pp; p += 2) {
+			x = points[p];
+			y = points[p + 1];
+
+			// Find bounds
+			if (x < negx)
+				negx = x;
+			if (x > posx)
+				posx = x;
+			if (y < negy)
+				negy = y;
+			if (y > posy)
+				posy = y;
+
+			if (p == pp - 2) {
+				
+			}
+			else {
+				
+			}
+		}
+
+		for (by = negy; by < posy; by++) {
+			for (bx = negx; bx < posx; bx++) {
+
+			}
+		}
+
+		console.log(points.length, negx, negy, posx, posy);
+	}
 
 	canvas.zBuffer = function(voxels, direction) {
 		var voxel = [];
