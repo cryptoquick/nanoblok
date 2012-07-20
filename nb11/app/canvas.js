@@ -1,10 +1,9 @@
 define([
 	'app/colors',
-	'app/geom'
+	'app/utils'
 ],
-function (colors, geom) {
-	var canvas = {},
-	colors = colors;
+function (colors, utils) {
+	var canvas = {};
 
 	canvas.init = function () {
 		// Grab all canvas elements present in the document
@@ -30,6 +29,9 @@ function (colors, geom) {
 		// zBuffer Arrays
 		canvas.buf = [];
 		canvas.buf[0] = [];
+
+		// lineBuffer
+		canvas.lineBuffer = {};
 	};
 
 /*	function initBuffer () {
@@ -71,7 +73,7 @@ function (colors, geom) {
 						break;
 
 					// Set pixel data, times size
-					data[index + 0] = color[0];
+					data[index] = color[0];
 					data[index + 1] = color[1];
 					data[index + 2] = color[2];
 					data[index + 3] = 255;
@@ -83,18 +85,55 @@ function (colors, geom) {
 		canvas.ctx[0].putImageData(img, 0, 0);
 	};
 
+	// http://stackoverflow.com/questions/4672279/bresenham-algorithm-in-javascript
+	canvas.line = function (x0, y0, x1, y1) {
+		var dx = Math.abs(x1-x0),
+			dy = Math.abs(y1-y0),
+			sx = (x0 < x1) ? 1 : -1,
+			sy = (y0 < y1) ? 1 : -1,
+			err = dx-dy;
+
+		while(true){
+			// Put our pixels into a lineBuffer object with pixel indices as keys.
+			canvas.lineBuffer[utils.encode2(x0, y0, canvas.els[0].width)] = [x0, y0];
+
+			if ((x0==x1) && (y0==y1)) break;
+
+			var e2 = 2*err;
+
+			if (e2>-dy){
+				err -= dy;
+				x0  += sx;
+			}
+
+			if (e2 < dx){
+				err += dx;
+				y0  += sy;
+			}
+		}
+	}
+
 	canvas.drawPoly = function (points) {
-		var x = 0, y = 0,
-			negx = Number.MAX_VALUE, posx = Number.MIN_VALUE,
-			negy = Number.MAX_VALUE, posy = Number.MIN_VALUE,
-			bx = 0, by = 0,
-			slopes = [];
+		var x0 = 0, y0 = 0,
+			x1 = 0, y1 = 0;
 
 		for (var p = 0, pp = points.length; p < pp; p += 2) {
-			x = points[p];
-			y = points[p + 1];
+			if (p == pp - 2) {
+				x0 = points[0];
+				y0 = points[1];
+				x1 = points[p];
+				y1 = points[p + 1];
+			}
+			else {
+				x0 = points[p];
+				y0 = points[p + 1];
+				x1 = points[p + 2];
+				y1 = points[p + 3];
+			}
 
-			// Find bounds
+			canvas.line(x0, y0, x1, y1);
+
+		/*	// Find bounds
 			if (x < negx)
 				negx = x;
 			if (x > posx)
@@ -104,21 +143,38 @@ function (colors, geom) {
 			if (y > posy)
 				posy = y;
 
-			if (p == pp - 2) {
-				
-			}
-			else {
-				
-			}
+				*/
 		}
 
-		for (by = negy; by < posy; by++) {
+		canvas.drawIndices();
+
+	/*	for (by = negy; by < posy; by++) {
 			for (bx = negx; bx < posx; bx++) {
 
 			}
 		}
 
-		console.log(points.length, negx, negy, posx, posy);
+		console.log(points.length, negx, negy, posx, posy);	*/
+	}
+
+	canvas.drawIndices = function () {
+		var lineBuffer = canvas.lineBuffer,
+			line = [],
+			img = canvas.img[0],
+			data = img.data,
+			index = 0;
+
+		for (var l in lineBuffer) {
+			line = lineBuffer[l];
+			index = l * 4;
+			data[index] 	= 0;
+			data[index + 1] = 0;
+			data[index + 2] = 0;
+			data[index + 3] = 255;
+		}
+
+		img.data = data;
+		canvas.ctx[0].putImageData(img, 50, 50);
 	}
 
 	canvas.zBuffer = function(voxels, direction) {

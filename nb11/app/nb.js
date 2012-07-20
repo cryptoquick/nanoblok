@@ -1,13 +1,16 @@
 define([
 	'app/render',
+	'app/utils',
 	'data/examples'
 ],
-function (render, EXAMPLES) {
+function (render, utils, EXAMPLES) {
 	// Global nanoblok object.
 	var nb = {};
 
 	nb.init = function () {
-		render.full(EXAMPLES[0]);
+		utils.benchmark(function () {
+			render.full(EXAMPLES[0]);
+		}, 100);
 	};
 
 	nb.init();
