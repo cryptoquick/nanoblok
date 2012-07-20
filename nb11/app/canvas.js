@@ -24,14 +24,13 @@ function (colors, utils) {
 
 		// Initialize canvas image objects
 		canvas.img = [];
-		canvas.img[0] = canvas.ctx[0].createImageData(canvas.els[0].width, canvas.els[0].height);
 
 		// zBuffer Arrays
 		canvas.buf = [];
 		canvas.buf[0] = [];
 
 		// lineBuffer
-		canvas.lineBuffer = {};
+		canvas.lineBuffer = [];
 	};
 
 /*	function initBuffer () {
@@ -96,7 +95,7 @@ function (colors, utils) {
 
 		while(true){
 			// Put our pixels into a lineBuffer object with pixel indices as keys.
-			canvas.lineBuffer[utils.encode2(x0, y0, width)] = [x0, y0];
+			canvas.lineBuffer.push(y0 * width + x0);
 
 			if ((x0==x1) && (y0==y1)) break;
 
@@ -116,9 +115,16 @@ function (colors, utils) {
 
 	canvas.drawPoly = function (points) {
 		var x0 = 0, y0 = 0,
-			x1 = 0, y1 = 0;
+			x1 = 0, y1 = 0,
+			ctx = canvas.ctx[0];
+
+		// Fill polygon first.
+		ctx.beginPath();
+		ctx.moveTo(points[0], points[1]);
 
 		for (var p = 0, pp = points.length; p < pp; p += 2) {
+			ctx.lineTo(points[p], points[p + 1]);
+
 			if (p == pp - 2) {
 				x0 = points[0];
 				y0 = points[1];
@@ -135,36 +141,36 @@ function (colors, utils) {
 			canvas.line(x0, y0, x1, y1);
 		}
 
+		ctx.fill();
+
+		// Draw indices computed by line().
 		canvas.drawIndices();
 	}
 
 	canvas.drawIndices = function () {
 		var lineBuffer = canvas.lineBuffer,
 			line = [],
-			img = canvas.img[0],
+			img = canvas.ctx[0].getImageData(0, 0, canvas.els[0].width, canvas.els[0].height),
 			data = img.data,
 			index = 0,
 			width = canvas.els[0].width,
 			ylast = 0,
 			x = 0, y = 0,
-			x0 = width + 1, x1 = -1;
+			x0 = width + 1, x1 = -1,
+			bufflen = lineBuffer.length;
 	
 		// console.log(lineBuffer[406080]);
 
-		for (var l in lineBuffer) {
-			line = lineBuffer[l];
-			x = line[0];
-			y = line[1];
-
-			index = l * 4;
-			data[index] 	= 0;
+		while (bufflen--) {
+			index = lineBuffer[bufflen] * 4;
+			data[index] 	= 255;
 			data[index + 1] = 0;
 			data[index + 2] = 0;
 			data[index + 3] = 255;
 		}
 
 		img.data = data;
-		canvas.ctx[0].putImageData(img, 50, 50);
+		canvas.ctx[0].putImageData(img, 0, 0);
 	}
 
 	canvas.zBuffer = function(voxels, direction) {
