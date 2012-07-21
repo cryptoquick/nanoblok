@@ -115,69 +115,63 @@ function (colors, utils) {
 
 	// Digital Differential Analyzer, DDA. Ported to JS by CQ.
 	canvas.dda = function (x0, y0, x1, y1) {
-		var dx = x1 - x0, // Distance
-			dy = y1 - y0,
+		var dx = (x1 - x0), // Distance
+			dy = (y1 - y0),
 			steps = 0, k = 0,	// Steps / Iterations
 			xincr = 0.0, yincr = 0.0, // Increment per step
 			x = x0, y = y0; // Start
-			ax = Math.abs(dx), ay = Math.abs(dy), // |distance|
-			width = canvas.els[0].width;
+			ax = Math.abs(dx), ay = Math.abs(dy); // |distance|
 
-		// Get the most steps
-	/*	if (ax >= ay)
+		// Get the most steps, in order to draw the diagonals correctly
+		if (ax >= ay)
 			steps = ax;
 		else
-			steps = ay;	*/
-
-		steps = ay; // Not sure when this 'fix' will become a bug...
+			steps = ay; // Not sure when this 'fix' will become a bug...
 
 		// Determine step increments
 		xincr = dx / steps;
 		yincr = dy / steps;
 
 		// Debug
-		console.log(steps, xincr, yincr, width);
+		// console.log(steps, xincr, yincr);
+
+		canvas.lineBuffer.push(x | 0, y | 0);
 
 		// Loop~
 		for (k = 0; k < steps; k++) {
 			x += xincr;
 			y += yincr;
-			canvas.lineBuffer.push(y * width + x | 0);
+			canvas.lineBuffer.push(x | 0, y | 0);
 		}
 	}
 
-	canvas.drawPoly = function (points) {
+	canvas.drawPoly = function (points, pxsize) {
 		var x0 = 0, y0 = 0,
-			x1 = 0, y1 = 0,
-			ctx = canvas.ctx[0];
+			x1 = 0, y1 = 0;
 
-		// Fill polygon first.
+		for (var p = 0, pp = points.length - 2; p < pp; p += 2) {
+			x0 = points[p    ] / pxsize | 0;
+			y0 = points[p + 1] / pxsize | 0;
+			x1 = points[p + 2] / pxsize | 0;
+			y1 = points[p + 3] / pxsize | 0;
+
+			canvas.dda(x0, y0, x1, y1, pxsize);
+		}
+
+		// Draw indices computed by line().
+		canvas.drawIndices(pxsize);
+	}
+
+	canvas.fillPoly = function (points) {
+		var ctx = canvas.ctx[0];
 		ctx.beginPath();
 		ctx.moveTo(points[0], points[1]);
 
 		for (var p = 0, pp = points.length; p < pp; p += 2) {
 			ctx.lineTo(points[p], points[p + 1]);
-
-			if (p == pp - 2) {
-				x0 = points[0];
-				y0 = points[1];
-				x1 = points[p];
-				y1 = points[p + 1];
-			}
-			else {
-				x0 = points[p];
-				y0 = points[p + 1];
-				x1 = points[p + 2];
-				y1 = points[p + 3];
-			}
-
-			canvas.dda(x0, y0, x1, y1);
 		}
-
+		
 		ctx.fill();
-
-		// Draw indices computed by line().
-		canvas.drawIndices(2);
 	}
 
 	canvas.drawIndices = function (pxsize) {
@@ -189,11 +183,14 @@ function (colors, utils) {
 			x = 0, y = 0,
 			bufflen = canvas.lineBuffer.length;
 
-		while (bufflen--) {
-			bufferindex = canvas.lineBuffer[bufflen];
-			for (y = -pxsize; y < pxsize; y++) {
-				for (x = -pxsize; x < pxsize; x++) {
-					index = (y * width + bufferindex + x) * 4;
+		while (bufflen-=2) {
+			x = canvas.lineBuffer[bufflen] * pxsize;
+			y = canvas.lineBuffer[bufflen + 1] * pxsize;
+
+			for (py = y, ppy = y + pxsize; py < ppy; py++) {
+				for (px = x, ppx = x + pxsize; px < ppx; px++) {
+					// index = (py + width * (y * pxsize) + (x * pxsize) + px) * 4;
+					index = (py * width + px) * 4;
 					data[index] 	= 255;
 					data[index + 1] = 0;
 					data[index + 2] = 0;
