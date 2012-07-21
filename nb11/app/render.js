@@ -11,15 +11,31 @@ function (canvas, matrix) {
 
 	// Render
 	render.full = function (data) {
-		// canvas.simpleDraw(data, 16, 0, 0.5);
+		var pxsize = 4; // 4 is a great value!
+
+		// Outline
 		canvas.drawPoly([
 			250, 0,
 			500, 125,
 			500, 375,
 			250, 500,
 			0  , 375,
-			0  , 125
-		]);
+			0  , 125,
+			250, 0
+		], pxsize); 
+
+		// Inlay
+		canvas.drawPoly([
+			0, 125,
+			250, 250,
+			500, 125
+		], pxsize);
+		canvas.drawPoly([
+			250, 250,
+			250, 500
+		], pxsize);
+
+		// Faces
 	};
 
 	render.init();
