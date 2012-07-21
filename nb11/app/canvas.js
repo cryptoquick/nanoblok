@@ -113,6 +113,34 @@ function (colors, utils) {
 		}
 	}
 
+	// Digital Differential Analyzer, DDA. Ported to JS by CQ.
+	canvas.dda = function (x0, y0, x1, y1) {
+		var Dx = x1 - x0,
+			Dy = y1 - y0,
+			steps = 0,
+			k = 0,
+			xincr = 0.0, yincr = 0.0,
+			x = x0, y = y0;
+			ax = Math.abs(Dx), ay = Math.abs(Dy),
+			width = canvas.els[0].width;
+
+		if (ax > ay)
+			steps = ax;
+		else
+			steps = ay;
+
+		xincr = Dx / steps;
+		yincr = Dy / steps;
+
+		// console.log(steps, x, y, xincr, yincr, width);
+
+		for (k = 0; k < steps; k++) {
+			x += xincr;
+			y += yincr;
+			canvas.lineBuffer.push(y * width + x | 0);
+		}
+	}
+
 	canvas.drawPoly = function (points) {
 		var x0 = 0, y0 = 0,
 			x1 = 0, y1 = 0,
@@ -138,7 +166,7 @@ function (colors, utils) {
 				y1 = points[p + 3];
 			}
 
-			canvas.line(x0, y0, x1, y1);
+			canvas.dda(x0, y0, x1, y1);
 		}
 
 		ctx.fill();

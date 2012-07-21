@@ -10,7 +10,7 @@ function (render, utils, EXAMPLES) {
 	nb.init = function () {
 		utils.benchmark(function () {
 			render.full(EXAMPLES[0]);
-		}, 3);
+		}, 50);
 	};
 
 	nb.init();
