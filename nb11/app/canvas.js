@@ -144,15 +144,16 @@ function (colors, utils) {
 		ctx.fill();
 
 		// Draw indices computed by line().
-		canvas.drawIndices();
+		canvas.drawIndices(4);
 	}
 
-	canvas.drawIndices = function () {
+	canvas.drawIndices = function (pxsize) {
 		var lineBuffer = canvas.lineBuffer,
 			line = [],
 			img = canvas.ctx[0].getImageData(0, 0, canvas.els[0].width, canvas.els[0].height),
 			data = img.data,
 			index = 0,
+			bufferindex = 0,
 			width = canvas.els[0].width,
 			ylast = 0,
 			x = 0, y = 0,
@@ -162,11 +163,17 @@ function (colors, utils) {
 		// console.log(lineBuffer[406080]);
 
 		while (bufflen--) {
-			index = lineBuffer[bufflen] * 4;
-			data[index] 	= 255;
-			data[index + 1] = 0;
-			data[index + 2] = 0;
-			data[index + 3] = 255;
+			for (y = 0; y < pxsize; y++) {
+				for (x = 0; x < pxsize; x++) {
+					bufferindex = lineBuffer[bufflen];
+					index = y * width + bufferindex + x;
+					index *= 4;
+					data[index] 	= 255;
+					data[index + 1] = 0;
+					data[index + 2] = 0;
+					data[index + 3] = 255;
+				}
+			}
 		}
 
 		img.data = data;
