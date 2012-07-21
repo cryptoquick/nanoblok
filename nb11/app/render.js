@@ -20,41 +20,6 @@ function (canvas, matrix) {
 			0  , 375,
 			0  , 125
 		]);
-	/*	canvas.drawPoly([
-			0, 375,
-			250, 250,
-			0, 125
-		]);
-		canvas.drawPoly([
-			250, 0,
-			250, 250,
-			500, 125
-		]); // :(
-		canvas.drawPoly([
-			500, 125,
-			250, 250,
-			500, 375
-		]);  // :)
-		canvas.drawPoly([
-			500, 375,
-			250, 250,
-			250, 500
-		]); // :( 
-		canvas.drawPoly([
-			250, 500,
-			250, 250,
-			0, 375
-		]);   // :T 
-		canvas.drawPoly([
-			0, 375,
-			250, 250,
-			0, 125
-		]); // :(
-		canvas.drawPoly([
-			0, 125,
-			250, 250,
-			250, 0
-		]);*/
 	};
 
 	render.init();
