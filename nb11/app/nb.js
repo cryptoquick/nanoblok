@@ -9,7 +9,7 @@ function (render, utils, EXAMPLES) {
 
 	nb.init = function () {
 		utils.benchmark(function () {
-			render.full(EXAMPLES[0]);
+			render.blok();
 		}, 1);
 	};
 

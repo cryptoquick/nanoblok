@@ -162,7 +162,7 @@ function (colors, utils) {
 		canvas.drawIndices(pxsize);
 	}
 
-	canvas.fillPoly = function (points) {
+	canvas.fillPoly = function (points, color) {
 		var ctx = canvas.ctx[0];
 		ctx.beginPath();
 		ctx.moveTo(points[0], points[1]);
@@ -171,6 +171,7 @@ function (colors, utils) {
 			ctx.lineTo(points[p], points[p + 1]);
 		}
 		
+		ctx.fillStyle = color;
 		ctx.fill();
 	}
 
@@ -191,7 +192,7 @@ function (colors, utils) {
 				for (px = x, ppx = x + pxsize; px < ppx; px++) {
 					// index = (py + width * (y * pxsize) + (x * pxsize) + px) * 4;
 					index = (py * width + px) * 4;
-					data[index] 	= 255;
+					data[index] 	= 0;
 					data[index + 1] = 0;
 					data[index + 2] = 0;
 					data[index + 3] = 255;
