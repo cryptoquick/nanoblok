@@ -145,21 +145,21 @@ function (colors, utils) {
 		}
 	}
 
-	canvas.drawPoly = function (points, pxsize, color) {
+	canvas.drawPoly = function (points, dims, color) {
 		var x0 = 0, y0 = 0,
 			x1 = 0, y1 = 0;
 
 		for (var p = 0, pp = points.length - 2; p < pp; p += 2) {
-			x0 = points[p    ] / pxsize | 0;
-			y0 = points[p + 1] / pxsize | 0;
-			x1 = points[p + 2] / pxsize | 0;
-			y1 = points[p + 3] / pxsize | 0;
+			x0 = points[p    ] / dims.pxsize | 0;
+			y0 = points[p + 1] / dims.pxsize | 0;
+			x1 = points[p + 2] / dims.pxsize | 0;
+			y1 = points[p + 3] / dims.pxsize | 0;
 
-			canvas.dda(x0, y0, x1, y1, pxsize);
+			canvas.dda(x0, y0, x1, y1, dims.pxsize);
 		}
 
 		// Draw indices computed by line().
-		canvas.drawIndices(pxsize, color);
+		canvas.drawIndices(dims, color);
 	}
 
 	canvas.fillPoly = function (points, color) {
@@ -172,26 +172,24 @@ function (colors, utils) {
 		}
 
 		ctx.fillStyle = 'rgba(' + color.join(',') + ')';
-		console.log(ctx.fillStyle);
 		ctx.fill();
 	}
 
-	canvas.drawIndices = function (pxsize, color) {
-		var img = canvas.ctx[0].getImageData(0, 0, canvas.els[0].width, canvas.els[0].height),
+	canvas.drawIndices = function (dims, color) {
+		var img = canvas.ctx[0].getImageData(dims.x, dims.y, dims.width + dims.pxsize, dims.height + dims.pxsize),
 			data = img.data,
 			index = 0,
 			bufferindex = 0,
-			width = canvas.els[0].width,
+			width = dims.width + dims.pxsize,
 			x = 0, y = 0,
 			bufflen = canvas.lineBuffer.length;
 
 		while (bufflen-=2) {
-			x = canvas.lineBuffer[bufflen] * pxsize;
-			y = canvas.lineBuffer[bufflen + 1] * pxsize;
+			x = canvas.lineBuffer[bufflen] * dims.pxsize;
+			y = canvas.lineBuffer[bufflen + 1] * dims.pxsize;
 
-			for (py = y, ppy = y + pxsize; py < ppy; py++) {
-				for (px = x, ppx = x + pxsize; px < ppx; px++) {
-					// index = (py + width * (y * pxsize) + (x * pxsize) + px) * 4;
+			for (py = y, ppy = y + dims.pxsize; py < ppy; py++) {
+				for (px = x, ppx = x + dims.pxsize; px < ppx; px++) {
 					index = (py * width + px) * 4;
 					data[index    ] = color[0];
 					data[index + 1] = color[1];
@@ -202,7 +200,7 @@ function (colors, utils) {
 		}
 
 		img.data = data;
-		canvas.ctx[0].putImageData(img, 0, 0);
+		canvas.ctx[0].putImageData(img, dims.x, dims.y);
 	}
 
 	canvas.zBuffer = function(voxels, direction) {
