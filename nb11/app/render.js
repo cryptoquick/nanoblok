@@ -12,20 +12,20 @@ function (canvas, geom, matrix) {
 
 	// Render
 	render.blok = function () {
-		var size = 500,
-			pxsize = 4; // 4 is a great value!
+		var size = 64,
+			pxsize = 2;
 
 		// Faces
-		canvas.fillPoly(geom.pointsToHex([1, 2, 0, 6], size), '#42F21D'); // Top
-		canvas.fillPoly(geom.pointsToHex([2, 3, 4, 0], size), '#22C000'); // Left
-		canvas.fillPoly(geom.pointsToHex([0, 4, 5, 6], size), '#30D700'); // Right
+		canvas.fillPoly(geom.pointsToHex([1, 2, 0, 6], size), [53, 249, 0, 255]); // Top
+		canvas.fillPoly(geom.pointsToHex([2, 3, 4, 0], size), [38, 215, 0, 255]); // Left
+		canvas.fillPoly(geom.pointsToHex([0, 4, 5, 6], size), [28, 186, 0, 255]); // Right
 		
 		// Outline
-		canvas.drawPoly(geom.pointsToHex([1, 2, 3, 4, 5, 6, 1], size), pxsize);
+		canvas.drawPoly(geom.pointsToHex([1, 2, 3, 4, 5, 6, 1], size), pxsize, [0, 0, 0, 255]);
 
 		// Inlay
-		canvas.drawPoly(geom.pointsToHex([6, 0, 2], size), pxsize);
-		canvas.drawPoly(geom.pointsToHex([0, 4], size), pxsize);
+		canvas.drawPoly(geom.pointsToHex([6, 0, 2], size), pxsize, [0, 0, 0, 255]);
+		canvas.drawPoly(geom.pointsToHex([0, 4], size), pxsize, [0, 0, 0, 255]);
 	};
 
 	render.init();
