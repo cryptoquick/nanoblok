@@ -145,7 +145,7 @@ function (colors, utils) {
 		}
 	}
 
-	canvas.drawPoly = function (points, pxsize) {
+	canvas.drawPoly = function (points, pxsize, color) {
 		var x0 = 0, y0 = 0,
 			x1 = 0, y1 = 0;
 
@@ -159,7 +159,7 @@ function (colors, utils) {
 		}
 
 		// Draw indices computed by line().
-		canvas.drawIndices(pxsize);
+		canvas.drawIndices(pxsize, color);
 	}
 
 	canvas.fillPoly = function (points, color) {
@@ -170,12 +170,13 @@ function (colors, utils) {
 		for (var p = 0, pp = points.length; p < pp; p += 2) {
 			ctx.lineTo(points[p], points[p + 1]);
 		}
-		
-		ctx.fillStyle = color;
+
+		ctx.fillStyle = 'rgba(' + color.join(',') + ')';
+		console.log(ctx.fillStyle);
 		ctx.fill();
 	}
 
-	canvas.drawIndices = function (pxsize) {
+	canvas.drawIndices = function (pxsize, color) {
 		var img = canvas.ctx[0].getImageData(0, 0, canvas.els[0].width, canvas.els[0].height),
 			data = img.data,
 			index = 0,
@@ -192,10 +193,10 @@ function (colors, utils) {
 				for (px = x, ppx = x + pxsize; px < ppx; px++) {
 					// index = (py + width * (y * pxsize) + (x * pxsize) + px) * 4;
 					index = (py * width + px) * 4;
-					data[index] 	= 0;
-					data[index + 1] = 0;
-					data[index + 2] = 0;
-					data[index + 3] = 255;
+					data[index    ] = color[0];
+					data[index + 1] = color[1];
+					data[index + 2] = color[2];
+					data[index + 3] = color[3];
 				}
 			}
 		}
