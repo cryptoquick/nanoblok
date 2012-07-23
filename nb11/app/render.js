@@ -13,7 +13,7 @@ function (canvas, geom, matrix) {
 	// Render
 	render.blok = function () {
 		var size = 64,
-			pxsize = 2;
+			pxsize = 4;
 
 		// Faces
 		canvas.fillPoly(geom.pointsToHex([1, 2, 0, 6], size), [53, 249, 0, 255]); // Top
@@ -26,18 +26,52 @@ function (canvas, geom, matrix) {
 			y: 0,
 			width: size,
 			height: size,
-			pxsize: pxsize
+			pxsize: pxsize,
+			offsetXY: 0
 		};
 
 		canvas.drawPoly(geom.pointsToHex([1, 2, 3, 4, 5, 6, 1], size), dims, [0, 0, 0, 255]);
 
 		// Inlay
-		// canvas.drawPoly(geom.pointsToHex([6, 0, 2], size), pxsize, [0, 0, 0, 255]);
-		// canvas.drawPoly(geom.pointsToHex([0, 4], size), pxsize, [0, 0, 0, 255]);
+		// canvas.drawPoly(geom.pointsToHex([6, 0, 2], size), dims, [0, 0, 0, 255]);
+		// canvas.drawPoly(geom.pointsToHex([0, 4], size), dims, [0, 0, 0, 255]);
 	};
 
 	render.test2 = function () {
+		var persp = matrix.mat4.create(),
+			modelView = [],
+			modelVecs = [
+				[	-1.0,	-1.0,	-1.0	],
+				[	 1.0,	-1.0,	-1.0	],
+				[	-1.0,	-1.0,	 1.0	],
+				[	-1.0,	 1.0,	 1.0	],
+				[	 1.0,	-1.0,	 1.0	],
+				[	 1.0,	 1.0,	-1.0	],
+				[	 1.0,	 1.0,	 1.0	]
+			];
+		// matrix.mat4.perspective(45, 4/3, 1, 100, persp);
+		mat4.identity(modelView);
+		// mat4.translate(modelView, [0, 0, -10]); // Translate back 10 units
+		mat4.rotate(modelView, Math.PI/2, [0, 0.5, 0]); // Rotate 90 degrees around the Y axis
+		// mat4.scale(modelView, [2, 2, 2]); // Scale by 200%
 
+		// for()
+
+		console.log(modelView);
+
+		var persp = matrix.mat4.create(),
+			wid2 = window.innerWidth / 2 | 0,
+			hei2 = window.innerHeight / 2 | 0,
+			left = -wid2,
+			right = wid2,
+			bottom = -hei2,
+			top = hei2,
+			near = 0,
+			far = 10000,
+			dest = {};
+		// matrix.mat4.perspective(45, 4/3, 1, 100, persp);
+		matrix.mat4.ortho(left, right, bottom, top, near, far, dest);
+		console.log(dest);
 	}
 
 	render.init();

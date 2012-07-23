@@ -176,7 +176,13 @@ function (colors, utils) {
 	}
 
 	canvas.drawIndices = function (dims, color) {
-		var img = canvas.ctx[0].getImageData(dims.x, dims.y, dims.width + dims.pxsize, dims.height + dims.pxsize),
+		var halfOffset = dims.pxsize / 2 + dims.offsetXY | 0;
+			img = canvas.ctx[0].getImageData(
+				dims.x - halfOffset,
+				dims.y - halfOffset,
+				dims.width + dims.pxsize,
+				dims.height + dims.pxsize
+			),
 			data = img.data,
 			index = 0,
 			bufferindex = 0,
@@ -200,7 +206,7 @@ function (colors, utils) {
 		}
 
 		img.data = data;
-		canvas.ctx[0].putImageData(img, dims.x, dims.y);
+		canvas.ctx[0].putImageData(img, dims.x - halfOffset, dims.y - halfOffset);
 	}
 
 	canvas.zBuffer = function(voxels, direction) {
