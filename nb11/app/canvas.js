@@ -176,8 +176,15 @@ function (colors, utils) {
 	}
 
 	canvas.drawIndices = function (dims, color) {
-		var halfOffset = dims.pxsize / 2 + dims.offsetXY | 0;
-			img = canvas.ctx[0].getImageData(
+		function imgMethod (x, y, w, h) {
+			if (dims.clear)
+				return canvas.ctx[0].createImageData(w, h);
+			else
+				return canvas.ctx[0].getImageData(x, y, w, h);
+		}
+
+		var halfOffset = dims.pxsize / 2 + dims.offsetXY | 0,
+			img = imgMethod(
 				dims.x - halfOffset,
 				dims.y - halfOffset,
 				dims.width + dims.pxsize,

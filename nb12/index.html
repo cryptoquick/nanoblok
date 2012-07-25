@@ -8,12 +8,13 @@
 	<link type="text/css" rel="stylesheet" href="styles/styles.css">
 	<script type="text/javascript" src="lib/curl.js"></script>
 	<script type="text/javascript">
-		var nb = nb || {}, date0 = new Date();
+		var date0 = new Date();
+		var x = 0, y = 0, rx = 0, ry = 0, rz = 0;
 		curl([
 			'js!lib/processing',
 			'app/nb',
 			'domReady!'
-		]).then(function (nb) {
+		]).then(function () {
 			var date1 = new Date();
 			console.log('Nanoblok took', date1 - date0, 'ms to start.');
 		});
