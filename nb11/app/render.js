@@ -47,28 +47,33 @@ function (canvas, geom, matrix) {
 	render.test2 = function () {
 		var persp = matrix.mat4.create(),
 			modelView = [],
-			modelVecs = [
-				[	-1.0,	-1.0,	-1.0	],
-				[	 1.0,	-1.0,	-1.0	],
-				[	-1.0,	-1.0,	 1.0	],
-				[	-1.0,	 1.0,	 1.0	],
-				[	 1.0,	-1.0,	 1.0	],
-				[	 1.0,	 1.0,	-1.0	],
-				[	 1.0,	 1.0,	 1.0	]
+			modelVecs =
+			[
+				[
+					[	-1.0,	-1.0,	-1.0	],
+					[	-1.0,	 1.0,	-1.0	],
+					[	 1.0,	-1.0,	-1.0	],
+					[	-1.0,	-1.0,	 1.0	]
+				],
+				/*[
+					[	-1.0,	 1.0,	 1.0	],
+					[	 1.0,	-1.0,	 1.0	],
+					[	 1.0,	 1.0,	-1.0	],
+					[	 1.0,	 1.0,	 1.0	]
+				]*/
 			],
 			size = 128,
 			pxsize = 4,
-			points = [];
-
-		var dims = {
-			x: 0,
-			y: 0,
-			width: 512,
-			height: 512,
-			pxsize: pxsize,
-			offsetXY: 0,
-			clear: true
-		};
+			points = [],
+			dims = {
+				x: 0,
+				y: 0,
+				width: 512,
+				height: 512,
+				pxsize: pxsize,
+				offsetXY: 0,
+				clear: false
+			};
 		
 		mat4.identity(modelView);
 
@@ -101,31 +106,26 @@ function (canvas, geom, matrix) {
 
 		// console.log(modelView);
 
-		for(var v = 0, vv = modelVecs.length; v < vv; v++) {
-			var dest = vec3.create();
-			mat4.multiplyVec3(modelView, modelVecs[v], dest)
-			points.push(dest[0], dest[1]);
+		for (var m = 0, mm = modelVecs.length; m < mm; m++) {
+			dims.clear = modelVecs != 0;
+			points = [];
+			canvas.lineBuffer = [];
+
+			for (var v = 0, vv = modelVecs[m].length; v < vv; v++) {
+				var dest = vec3.create();
+				mat4.multiplyVec3(modelView, modelVecs[m][v], dest)
+				points.push(dest[0], dest[1]);
+			}
+
+			canvas.drawPoly(points, dims, [255, 0, 0, 255]);
 		}
 
 		// console.log(points);
-		canvas.lineBuffer = [];
-		canvas.drawPoly(points, dims, [255, 0, 0, 255]);
 
-		// console.log(modelView);
+		// console.log(modelView)
 
-	/*	var persp = matrix.mat4.create(),
-			wid2 = window.innerWidth / 2 | 0,
-			hei2 = window.innerHeight / 2 | 0,
-			left = -wid2,
-			right = wid2,
-			bottom = -hei2,
-			top = hei2,
-			near = 0,
-			far = 10000,
-			dest = {};
-		// matrix.mat4.perspective(45, 4/3, 1, 100, persp);
-		matrix.mat4.ortho(left, right, bottom, top, near, far, dest);*/
-		// console.log(dest);
+		// For testing purposes only
+		window.location.hash = JSON.stringify(render.axes);
 	}
 
 	render.init();
