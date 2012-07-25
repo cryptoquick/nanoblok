@@ -10,8 +10,16 @@ function (colors, utils) {
 		canvas.els = document.getElementById('nb').getElementsByTagName('canvas');
 
 		// Adjust the canvas for high-DPI displays
-		canvas.els[0].setAttribute("width", window.innerWidth * window.devicePixelRatio);
-		canvas.els[0].setAttribute("height", window.innerHeight * window.devicePixelRatio);
+		var width = window.innerWidth,
+			height = window.innerHeight;
+
+		if (window.devicePixelRatio) {
+			width *= window.devicePixelRatio;
+			height *= window.devicePixelRatio;
+		}
+
+		canvas.els[0].setAttribute("width", window.innerWidth);
+		canvas.els[0].setAttribute("height", window.innerHeight);
 		canvas.els[0].style.width = window.innerWidth + 'px';
 		canvas.els[0].style.height = window.innerHeight + 'px';
 
@@ -176,6 +184,8 @@ function (colors, utils) {
 	}
 
 	canvas.drawIndices = function (dims, color) {
+		console.log(dims);
+
 		function imgMethod (x, y, w, h) {
 			if (dims.clear)
 				return canvas.ctx[0].createImageData(w, h);

@@ -1,9 +1,10 @@
 define([
 	'app/render',
+	'app/input',
 	'app/utils',
 	'data/examples'
 ],
-function (render, utils, EXAMPLES) {
+function (render, input, utils, EXAMPLES) {
 	// Global nanoblok object.
 	var nb = {},
 	x = 0, y = 0, rx = 0, ry = 0, rz = 0;
@@ -13,48 +14,20 @@ function (render, utils, EXAMPLES) {
 			render.blok();
 		}, 1);
 
-		window.addEventListener('keydown', function(evt) {
-			var rd = 0.1,
-				td = 10.0,
-				actions = {};
+		var rd = 0.1,
+			td = 10.0,
+			actions = {};
 
-			actions[65] = function () {
-				ry -= rd;
-			}
-			actions[68] = function () {
-				ry += rd;
-			}
-			actions[87] = function () {
-				rx -= rd;
-			}
-			actions[83] = function () {
-				rx += rd;
-			}
-			actions[81] = function () {
-				rz -= rd;
-			}
-			actions[69] = function () {
-				rz += rd;
-			}
-			actions[37] = function () {
-				x -= td;
-			}
-			actions[39] = function () {
-				x += td;
-			}
-			actions[38] = function () {
-				y -= td;
-			}
-			actions[40] = function () {
-				y += td;
-			}
-
-			if (actions[evt.keyCode]) {
-				evt.preventDefault();
-				render.test2(x, y, rx, ry, rz);
-				console.log('keypress', evt.keyCode, x, y, rx, ry, rz);
-			}
-		}, false);
+		input.addKeydown(document, 65, render.test2, input.addToTransform, -rd, 'rx', 1); // W
+		input.addKeydown(document, 83, render.test2, input.addToTransform, rd, 'rx', 1); // S
+		input.addKeydown(document, 87, render.test2, input.addToTransform, -rd, 'ry', 1); // A
+		input.addKeydown(document, 68, render.test2, input.addToTransform, rd, 'ry', 1); // D
+		input.addKeydown(document, 81, render.test2, input.addToTransform, -rd, 'rz', 1); // Q
+		input.addKeydown(document, 69, render.test2, input.addToTransform, rd, 'rz', 1); // E
+		input.addKeydown(document, 37, render.test2, input.addToTransform, -td, 'x'); // Left
+		input.addKeydown(document, 39, render.test2, input.addToTransform, td, 'x'); // Right
+		input.addKeydown(document, 38, render.test2, input.addToTransform, -td, 'y'); // Up
+		input.addKeydown(document, 40, render.test2, input.addToTransform, td, 'y'); // Down
 	};
 
 	nb.init();

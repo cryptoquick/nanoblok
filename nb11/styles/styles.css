@@ -12,6 +12,7 @@ body, html {
 	-o-user-select: none;
 	user-select: none;
 	height: 100%;
+	overflow: hidden;
 }
 
 * {
