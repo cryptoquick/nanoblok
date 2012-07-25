@@ -19,15 +19,20 @@ function (render, input, utils, EXAMPLES) {
 			actions = {};
 
 		input.addKeydown(document, 65, render.test2, input.addToTransform, -rd, 'rx', 1); // W
-		input.addKeydown(document, 83, render.test2, input.addToTransform, rd, 'rx', 1); // S
+		input.addKeydown(document, 68, render.test2, input.addToTransform, rd, 'rx', 1); // S
 		input.addKeydown(document, 87, render.test2, input.addToTransform, -rd, 'ry', 1); // A
-		input.addKeydown(document, 68, render.test2, input.addToTransform, rd, 'ry', 1); // D
+		input.addKeydown(document, 83, render.test2, input.addToTransform, rd, 'ry', 1); // D
 		input.addKeydown(document, 81, render.test2, input.addToTransform, -rd, 'rz', 1); // Q
 		input.addKeydown(document, 69, render.test2, input.addToTransform, rd, 'rz', 1); // E
 		input.addKeydown(document, 37, render.test2, input.addToTransform, -td, 'x'); // Left
 		input.addKeydown(document, 39, render.test2, input.addToTransform, td, 'x'); // Right
 		input.addKeydown(document, 38, render.test2, input.addToTransform, -td, 'y'); // Up
 		input.addKeydown(document, 40, render.test2, input.addToTransform, td, 'y'); // Down
+
+		if (window.location.hash)
+			render.axes = JSON.parse(window.location.hash.substr(1));
+
+		render.test2();
 	};
 
 	nb.init();

@@ -18,8 +18,8 @@ function (colors, utils) {
 			height *= window.devicePixelRatio;
 		}
 
-		canvas.els[0].setAttribute("width", window.innerWidth);
-		canvas.els[0].setAttribute("height", window.innerHeight);
+		canvas.els[0].setAttribute("width", width);
+		canvas.els[0].setAttribute("height", height);
 		canvas.els[0].style.width = window.innerWidth + 'px';
 		canvas.els[0].style.height = window.innerHeight + 'px';
 
@@ -184,8 +184,6 @@ function (colors, utils) {
 	}
 
 	canvas.drawIndices = function (dims, color) {
-		console.log(dims);
-
 		function imgMethod (x, y, w, h) {
 			if (dims.clear)
 				return canvas.ctx[0].createImageData(w, h);
