@@ -15,10 +15,11 @@ function (canvas, geom, matrix) {
 	// Render
 	render.blok = function () {
 		var size = 64,
-			pxsize = 4;
+			pxsize = 2;
 
 		if (window.devicePixelRatio) {
 			size *= window.devicePixelRatio;
+			pxsize *= window.devicePixelRatio;
 		}
 
 		// Faces
@@ -50,17 +51,20 @@ function (canvas, geom, matrix) {
 			modelVecs =
 			[
 				[
-					[	-1.0,	-1.0,	-1.0	],
-					[	-1.0,	 1.0,	-1.0	],
 					[	 1.0,	-1.0,	-1.0	],
-					[	-1.0,	-1.0,	 1.0	]
+					[	-1.0,	-1.0,	-1.0	],
+					[	-1.0,	-1.0,	 1.0	],
+					
+					[	 1.0,	-1.0,	 1.0	],
+					[	 1.0,	-1.0,	-1.0	],
+					
 				],
-				/*[
+				[
 					[	-1.0,	 1.0,	 1.0	],
 					[	 1.0,	-1.0,	 1.0	],
 					[	 1.0,	 1.0,	-1.0	],
 					[	 1.0,	 1.0,	 1.0	]
-				]*/
+				]
 			],
 			size = 128,
 			pxsize = 4,
@@ -106,11 +110,14 @@ function (canvas, geom, matrix) {
 
 		// console.log(modelView);
 
+		dims.clear = true;
+
 		for (var m = 0, mm = modelVecs.length; m < mm; m++) {
-			dims.clear = modelVecs != 0;
 			points = [];
 			canvas.lineBuffer = [];
+			dims.clear = m == 0;
 
+			// Push each vector as a point, using the x/y values of that vector.
 			for (var v = 0, vv = modelVecs[m].length; v < vv; v++) {
 				var dest = vec3.create();
 				mat4.multiplyVec3(modelView, modelVecs[m][v], dest)
