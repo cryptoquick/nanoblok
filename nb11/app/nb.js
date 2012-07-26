@@ -14,7 +14,9 @@ function (render, input, utils, EXAMPLES) {
 			render.blok();
 		}, 1);*/
 
-		var rd = 0.1,
+		render.init();
+
+		var rd = 5,
 			td = 10.0,
 			sd = 10.0,
 			actions = {};
@@ -44,14 +46,12 @@ function (render, input, utils, EXAMPLES) {
 			render.addRot(45, 0, 0, 1);
 		}); // N
 		input.addKeydown(document, 67, nb.renderTest, function () {
-			render.axes = {x: 100, y: 100, z: 0, sx: 50, sy: 50, sz: 50, r: 0, rx: 0, ry: 0, rz: 0};
+			render.axes = {x: 100, y: 100, z: 0, sx: 50, sy: 50, sz: 50, r: 0, rx: 0, ry: 0, rz: 0, q: quat4.identity()};
 			render.rots = [];
 		}); // C
 
 		if (window.location.hash) {
-			var jsonData = JSON.parse(window.location.hash.substr(1));
-			render.axes = jsonData[0];
-			render.rots = jsonData[1];
+			render.axes = JSON.parse(window.location.hash.substr(1));
 		}
 
 		nb.renderTest();
