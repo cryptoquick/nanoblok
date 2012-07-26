@@ -29,6 +29,16 @@ function (render, input, utils, EXAMPLES) {
 		input.addKeydown(document, 39, nb.renderTest, input.addToTransform, td, 'x'); // Right
 		input.addKeydown(document, 38, nb.renderTest, input.addToTransform, -td, 'y'); // Up
 		input.addKeydown(document, 40, nb.renderTest, input.addToTransform, td, 'y'); // Down
+		input.addKeydown(document, 189, nb.renderTest, function () {
+			render.axes.sx -= sd;
+			render.axes.sy -= sd;
+			render.axes.sz -= sd;
+		}); // -
+		input.addKeydown(document, 187, nb.renderTest, function () {
+			render.axes.sx += sd;
+			render.axes.sy += sd;
+			render.axes.sz += sd;
+		}); // +
 		input.addKeydown(document, 78, nb.renderTest, function () {
 			render.addRot(45, 0, 1, 0);
 			render.addRot(45, 0, 0, 1);
