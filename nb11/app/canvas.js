@@ -153,19 +153,24 @@ function (colors, utils) {
 		}
 	}
 
-	canvas.drawPoly = function (points, dims, color) {
+	canvas.drawPolygons = function (gons, dims, color) {
 		var x0 = 0, y0 = 0,
-			x1 = 0, y1 = 0;
+			x1 = 0, y1 = 0,
+			p = 0, gon = 0,
+			points = [];
 
-		for (var p = 0, pp = points.length - 2; p < pp; p += 2) {
-			x0 = points[p    ] / dims.pxsize | 0;
-			y0 = points[p + 1] / dims.pxsize | 0;
-			x1 = points[p + 2] / dims.pxsize | 0;
-			y1 = points[p + 3] / dims.pxsize | 0;
+		for (gon = 0, gong = gons.length; gon < gong; gon++) {
+			points = gons[gon];
+			for (p = 0, pp = points.length - 2; p < pp; p += 2) {
+				x0 = points[p    ] / dims.pxsize | 0;
+				y0 = points[p + 1] / dims.pxsize | 0;
+				x1 = points[p + 2] / dims.pxsize | 0;
+				y1 = points[p + 3] / dims.pxsize | 0;
 
-			canvas.dda(x0, y0, x1, y1, dims.pxsize);
+				canvas.dda(x0, y0, x1, y1, dims.pxsize);
+			}
 		}
-
+		
 		// Draw indices computed by line().
 		canvas.drawIndices(dims, color);
 	}
