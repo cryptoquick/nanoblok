@@ -16,6 +16,7 @@ function (render, input, utils, EXAMPLES) {
 
 		var rd = 0.1,
 			td = 10.0,
+			sd = 10.0,
 			actions = {};
 
 		input.addKeydown(document, 65, nb.renderTest, input.addToTransform, -rd, 'rx', 1); // W
@@ -29,14 +30,19 @@ function (render, input, utils, EXAMPLES) {
 		input.addKeydown(document, 38, nb.renderTest, input.addToTransform, -td, 'y'); // Up
 		input.addKeydown(document, 40, nb.renderTest, input.addToTransform, td, 'y'); // Down
 		input.addKeydown(document, 78, nb.renderTest, function () {
-			render.axes['rx'] = 0;
-			render.axes['ry'] = 0;
-			render.axes['rz'] = 1;
-			render.axes['r'] = 45 * (Math.PI / 180);
+			render.addRot(45, 0, 1, 0);
+			render.addRot(45, 0, 0, 1);
 		}); // N
+		input.addKeydown(document, 67, nb.renderTest, function () {
+			render.axes = {x: 100, y: 100, z: 0, sx: 50, sy: 50, sz: 50, r: 0, rx: 0, ry: 0, rz: 0};
+			render.rots = [];
+		}); // C
 
-		if (window.location.hash)
-			render.axes = JSON.parse(window.location.hash.substr(1));
+		if (window.location.hash) {
+			var jsonData = JSON.parse(window.location.hash.substr(1));
+			render.axes = jsonData[0];
+			render.rots = jsonData[1];
+		}
 
 		nb.renderTest();
 	};
