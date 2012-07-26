@@ -29,10 +29,10 @@ function (render, input, utils, EXAMPLES) {
 		input.addKeydown(document, 38, nb.renderTest, input.addToTransform, -td, 'y'); // Up
 		input.addKeydown(document, 40, nb.renderTest, input.addToTransform, td, 'y'); // Down
 		input.addKeydown(document, 78, nb.renderTest, function () {
-			render.axes['rx'] = 1;
-			render.axes['ry'] = 1;
-			render.axes['rz'] = 0;
-			render.axes['r'] = Math.PI * 0.5;
+			render.axes['rx'] = 0;
+			render.axes['ry'] = 0;
+			render.axes['rz'] = 1;
+			render.axes['r'] = 45 * (Math.PI / 180);
 		}); // N
 
 		if (window.location.hash)
