@@ -6,21 +6,23 @@ define([
 function (canvas, geom, matrix) {
 	var render = {};
 
-	render.axes = {x: 100, y: 100, z: 0, sx: 50, sy: 50, sz: 50, r: 0, rx: 0, ry: 0, rz: 0};
+	render.axes = {x: 100, y: 100, z: 0, sx: 50, sy: 50, sz: 50};
 	render.rots = [];
 	render.lastRotAxis = '';
 
 	render.init = function () {
-		
+		render.axes.q = quat4.identity();
 	};
 
-	render.addRot = function (deg, rx, ry, rz) {
-		render.rots.push({
-			r: deg * (Math.PI / 180),
-			rx: rx,
-			ry: ry,
-			rz: rz
-		});
+	render.addRot = function (deg, addRotAxis, ry, rz) {
+		render.axes.q = quat4.multiply(render.axes.q, quat4.fromAngleAxis(
+			deg * (Math.PI / 180),
+			[
+				rx,
+				ry,
+				rz
+			]
+		));
 	}
 
 	render.addRotAxis = function (deg, axis) {
@@ -31,7 +33,15 @@ function (canvas, geom, matrix) {
 			rz: 0
 		};
 		rotObj[axis] = 1;
-		render.rots.push(rotObj);
+
+		render.axes.q = quat4.multiply(render.axes.q, quat4.fromAngleAxis(
+			deg * (Math.PI / 180),
+			[
+				rotObj.rx,
+				rotObj.ry,
+				rotObj.rz
+			]
+		));
 	}
 
 	// Render
@@ -68,8 +78,7 @@ function (canvas, geom, matrix) {
 	};
 
 	render.test2 = function () {
-		var persp = matrix.mat4.create(),
-			modelView = [],
+		var modelView = mat4.create(),
 			modelVecs =
 			[
 				[
@@ -100,18 +109,30 @@ function (canvas, geom, matrix) {
 				clear: false
 			};
 		
-		mat4.identity(modelView);
+		// mat4.identity(modelView);
 
-		mat4.translate(
+		console.log(render.axes, [
+			render.axes.sx + render.axes.x,
+			render.axes.sy + render.axes.y,
+			render.axes.sz + render.axes.z
+		], modelView);
+
+		mat4.fromRotationTranslation(render.axes.q, [
+			render.axes.sx + render.axes.x,
+			render.axes.sy + render.axes.y,
+			render.axes.sz + render.axes.z
+		], modelView);
+
+/*		mat4.translate(
 			modelView,
 			[
 				render.axes.sx + render.axes.x,
 				render.axes.sy + render.axes.y,
 				render.axes.sz + render.axes.z
 			]
-		);
+		);*/
 
-		for (var r = 0, rr = render.rots.length; r < rr; r++) {
+	/*	for (var r = 0, rr = render.rots.length; r < rr; r++) {
 			mat4.rotate(
 				modelView,
 				render.rots[r].r,
@@ -121,7 +142,9 @@ function (canvas, geom, matrix) {
 					render.rots[r].rz
 				]
 			);
-		}
+		}	*/
+
+
 
 		mat4.scale(modelView,
 			[
@@ -155,7 +178,7 @@ function (canvas, geom, matrix) {
 		// console.log(modelView)
 
 		// For testing purposes only
-		window.location.hash = JSON.stringify([render.axes, render.rots]);
+		window.location.hash = JSON.stringify(render.axes);
 	}
 
 	render.init();
