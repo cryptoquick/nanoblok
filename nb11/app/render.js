@@ -6,11 +6,33 @@ define([
 function (canvas, geom, matrix) {
 	var render = {};
 
-	render.axes = {x: 0, y: 0, z: 0, sx: 50, sy: 50, sz: 50, r: 0, rx: 0, ry: 0, rz: 0};
+	render.axes = {x: 100, y: 100, z: 0, sx: 50, sy: 50, sz: 50, r: 0, rx: 0, ry: 0, rz: 0};
+	render.rots = [];
+	render.lastRotAxis = '';
 
 	render.init = function () {
 		
 	};
+
+	render.addRot = function (deg, rx, ry, rz) {
+		render.rots.push({
+			r: deg * (Math.PI / 180),
+			rx: rx,
+			ry: ry,
+			rz: rz
+		});
+	}
+
+	render.addRotAxis = function (deg, axis) {
+		var rotObj = {
+			r: deg * (Math.PI / 180),
+			rx: 0,
+			ry: 0,
+			rz: 0
+		};
+		rotObj[axis] = 1;
+		render.rots.push(rotObj);
+	}
 
 	// Render
 	render.blok = function () {
@@ -89,15 +111,17 @@ function (canvas, geom, matrix) {
 			]
 		);
 
-		mat4.rotate(
-			modelView,
-			render.axes.r,
-			[
-				render.axes.rx,
-				render.axes.ry,
-				render.axes.rz
-			]
-		);
+		for (var r = 0, rr = render.rots.length; r < rr; r++) {
+			mat4.rotate(
+				modelView,
+				render.rots[r].r,
+				[
+					render.rots[r].rx,
+					render.rots[r].ry,
+					render.rots[r].rz
+				]
+			);
+		}
 
 		mat4.scale(modelView,
 			[
@@ -131,7 +155,7 @@ function (canvas, geom, matrix) {
 		// console.log(modelView)
 
 		// For testing purposes only
-		window.location.hash = JSON.stringify(render.axes);
+		window.location.hash = JSON.stringify([render.axes, render.rots]);
 	}
 
 	render.init();

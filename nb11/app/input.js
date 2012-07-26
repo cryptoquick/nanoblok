@@ -34,9 +34,13 @@ function (render) {
 
 	input.addToTransform = function (addend, axis, rotAxis) {
 		if (rotAxis) {
-			render.axes['r'] += addend;
-			render.axes['rx'] = render.axes['ry'] = render.axes['rz'] = 0;
-			render.axes[axis] = rotAxis;
+			if (render.lastRotAxis == axis) {
+				render.rots[render.rots.length - 1].r += addend;
+			}
+			else {
+				render.addRotAxis(addend, axis);
+				render.lastRotAxis = axis;
+			}
 		}
 		else {
 			render.axes[axis] += addend;
