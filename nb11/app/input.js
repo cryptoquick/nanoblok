@@ -33,10 +33,13 @@ function (render) {
 	};
 
 	input.addToTransform = function (addend, axis, rotAxis) {
-		render.axes[axis] += addend;
-
 		if (rotAxis) {
-			render.axes['r'] = rotAxis;
+			render.axes['r'] += addend;
+			render.axes['rx'] = render.axes['ry'] = render.axes['rz'] = 0;
+			render.axes[axis] = rotAxis;
+		}
+		else {
+			render.axes[axis] += addend;
 		}
 	};
 
