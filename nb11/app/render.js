@@ -94,6 +94,22 @@ function (canvas, geom, matrix) {
 					[	 1.0,	 1.0,	-1.0	],
 					[	-1.0,	 1.0,	-1.0	],
 					[	-1.0,	 1.0,	 1.0	]
+				],
+				[
+					[	 1.0,	-1.0,	-1.0	],
+					[	 1.0,	 1.0,	-1.0	]
+				],
+				[
+					[	-1.0,	-1.0,	-1.0	],
+					[	-1.0,	 1.0,	-1.0	]
+				],
+				[
+					[	-1.0,	-1.0,	 1.0	],
+					[	-1.0,	 1.0,	 1.0	]
+				],
+				[
+					[	 1.0,	-1.0,	 1.0	],
+					[	 1.0,	 1.0,	 1.0	]
 				]
 			],
 			size = 128,
@@ -107,15 +123,17 @@ function (canvas, geom, matrix) {
 				pxsize: pxsize,
 				offsetXY: 0,
 				clear: false
-			};
+			},
+			gons = [];
 		
 		// mat4.identity(modelView);
 
-		console.log(render.axes, [
-			render.axes.sx + render.axes.x,
-			render.axes.sy + render.axes.y,
-			render.axes.sz + render.axes.z
-		], modelView);
+		if (debug)
+			console.log(render.axes, [
+				render.axes.sx + render.axes.x,
+				render.axes.sy + render.axes.y,
+				render.axes.sz + render.axes.z
+			], modelView);
 
 		mat4.fromRotationTranslation(render.axes.q, [
 			render.axes.sx + render.axes.x,
@@ -156,12 +174,13 @@ function (canvas, geom, matrix) {
 
 		// console.log(modelView);
 
+		/* Apply transformation matrix to polygons */
 		dims.clear = true;
 
 		for (var m = 0, mm = modelVecs.length; m < mm; m++) {
 			points = [];
 			canvas.lineBuffer = [];
-			dims.clear = m == 0;
+			dims.clear = true;
 
 			// Push each vector as a point, using the x/y values of that vector.
 			for (var v = 0, vv = modelVecs[m].length; v < vv; v++) {
@@ -170,15 +189,18 @@ function (canvas, geom, matrix) {
 				points.push(dest[0], dest[1]);
 			}
 
-			canvas.drawPoly(points, dims, [255, 0, 0, 255]);
+			gons.push(points);
 		}
+
+		canvas.drawPolygons(gons, dims, [255, 0, 0, 255]);
 
 		// console.log(points);
 
 		// console.log(modelView)
 
 		// For testing purposes only
-		window.location.hash = JSON.stringify(render.axes);
+		if (debug)
+			window.location.hash = JSON.stringify(render.axes);
 	}
 
 	render.init();
