@@ -208,14 +208,16 @@ function (colors, utils) {
 			bufferindex = 0,
 			width = dims.width + dims.pxsize,
 			x = 0, y = 0,
-			bufflen = canvas.lineBuffer.length;
+			bufflen = canvas.lineBuffer.length,
+			px2 = Math.round(dims.pxsize / 2),
+			offs = dims.offset;
 
 		while (bufflen-=2) {
 			x = canvas.lineBuffer[bufflen] * dims.pxsize;
 			y = canvas.lineBuffer[bufflen + 1] * dims.pxsize;
 
-			for (py = y, ppy = y + dims.pxsize; py < ppy; py++) {
-				for (px = x, ppx = x + dims.pxsize; px < ppx; px++) {
+			for (py = y + offs, ppy = y + dims.pxsize + offs; py < ppy; py++) {
+				for (px = x + offs, ppx = x + dims.pxsize + offs; px < ppx; px++) {
 					index = (py * width + px) * 4;
 					data[index    ] = color[0];
 					data[index + 1] = color[1];

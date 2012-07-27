@@ -119,7 +119,8 @@ function (canvas, geom, matrix) {
 				height: 512,
 				pxsize: pxsize,
 				offsetXY: 0,
-				clear: false
+				clear: false,
+				offset: 2
 			},
 			gons = [];
 
@@ -192,7 +193,7 @@ function (canvas, geom, matrix) {
 		var ctx = canvas.ctx[0];
 		ctx.fillStyle = '#000';
 		ctx.font = 12 * (window.devicePixelRatio || 1) + 'px monospace';
-		ctx.fillText('KEYS -- X: WS, Y: AD, Z: QE, Translate: Arrows, Scale: +/-', 10 * (window.devicePixelRatio || 1), 15 * (window.devicePixelRatio || 1));
+		ctx.fillText('KEYS -- Rotate X: W/S, Y: A/D, Z: Q/E, Translate: Arrows, Scale: +/-', 10 * (window.devicePixelRatio || 1), 15 * (window.devicePixelRatio || 1));
 	}
 
 	return render;
