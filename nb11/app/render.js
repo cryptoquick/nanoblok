@@ -94,19 +94,31 @@ function (canvas, geom, matrix) {
 				],
 				[
 					[	 1.0,	-1.0,	-1.0	],
-					[	 1.0,	 1.0,	-1.0	]
-				],
-				[
+					[	 1.0,	 1.0,	-1.0	],
+					[	-1.0,	 1.0,	-1.0	],
 					[	-1.0,	-1.0,	-1.0	],
-					[	-1.0,	 1.0,	-1.0	]
+					[	 1.0,	-1.0,	-1.0	]
 				],
 				[
 					[	-1.0,	-1.0,	 1.0	],
-					[	-1.0,	 1.0,	 1.0	]
-				],
+					[	-1.0,	-1.0,	-1.0	],
+					[	-1.0,	 1.0,	-1.0	],
+					[	-1.0,	 1.0,	 1.0	],
+					[	-1.0,	-1.0,	 1.0	]
+				], 
 				[
 					[	 1.0,	-1.0,	 1.0	],
-					[	 1.0,	 1.0,	 1.0	]
+					[	-1.0,	-1.0,	 1.0	],
+					[	-1.0,	 1.0,	 1.0	],
+					[	 1.0,	 1.0,	 1.0	],
+					[	 1.0,	-1.0,	 1.0	]
+				],
+				[
+					[	 1.0,	-1.0,	-1.0	],
+					[	 1.0,	-1.0,	 1.0	],
+					[	 1.0,	 1.0,	 1.0	],
+					[	 1.0,	 1.0,	-1.0	],
+					[	 1.0,	-1.0,	-1.0	]
 				]
 			],
 			size = 128,
@@ -169,16 +181,25 @@ function (canvas, geom, matrix) {
 
 		render.instructions();
 
+		var fillColors = [
+			[53, 249, 0, 255],
+			[38, 215, 0, 255],
+			[28, 186, 0, 255],
+			[53, 249, 0, 255],
+			[38, 215, 0, 255],
+			[28, 186, 0, 255]
+		];
+
 		// Faces
 		for (var fg = 0, fgg = gons.length; fg < fgg; fg++) {
-			canvas.fillPoly(gons[fg], [53, 249, 0, 255]); // Top
+			canvas.fillPoly(gons[fg], fillColors[fg] || [0, 0, 0, 0]); // Top
 		}
 	//	canvas.fillPoly(geom.pointsToHex([1, 2, 0, 6], size), [53, 249, 0, 255]); // Top
 	//	canvas.fillPoly(geom.pointsToHex([2, 3, 4, 0], size), [38, 215, 0, 255]); // Left
 	//	canvas.fillPoly(geom.pointsToHex([0, 4, 5, 6], size), [28, 186, 0, 255]); // Right
 
 		dims.clear = false;
-		canvas.drawPolygons(gons, dims, [255, 0, 0, 255]);
+		canvas.drawPolygons(gons, dims, [0, 0, 0, 255]);
 
 		// console.log(points);
 
