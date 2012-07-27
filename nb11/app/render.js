@@ -11,6 +11,8 @@ function (canvas, geom, matrix) {
 	render.lastRotAxis = '';
 
 	render.init = function () {
+		canvas.init();
+
 		render.axes.q = quat4.identity();
 	};
 
@@ -53,11 +55,6 @@ function (canvas, geom, matrix) {
 			size *= window.devicePixelRatio;
 			pxsize *= window.devicePixelRatio;
 		}
-
-		// Faces
-		canvas.fillPoly(geom.pointsToHex([1, 2, 0, 6], size), [53, 249, 0, 255]); // Top
-		canvas.fillPoly(geom.pointsToHex([2, 3, 4, 0], size), [38, 215, 0, 255]); // Left
-		canvas.fillPoly(geom.pointsToHex([0, 4, 5, 6], size), [28, 186, 0, 255]); // Right
 		
 		// Outline
 		var dims = {
@@ -113,7 +110,7 @@ function (canvas, geom, matrix) {
 				]
 			],
 			size = 128,
-			pxsize = 4,
+			pxsize = 2,
 			points = [],
 			dims = {
 				x: 0,
@@ -125,8 +122,11 @@ function (canvas, geom, matrix) {
 				clear: false
 			},
 			gons = [];
-		
-		// mat4.identity(modelView);
+
+		if (window.devicePixelRatio) {
+			size *= window.devicePixelRatio;
+			pxsize *= window.devicePixelRatio;
+		}
 
 		if (debug)
 			console.log(render.axes, [
@@ -141,29 +141,6 @@ function (canvas, geom, matrix) {
 			render.axes.sz + render.axes.z
 		], modelView);
 
-/*		mat4.translate(
-			modelView,
-			[
-				render.axes.sx + render.axes.x,
-				render.axes.sy + render.axes.y,
-				render.axes.sz + render.axes.z
-			]
-		);*/
-
-	/*	for (var r = 0, rr = render.rots.length; r < rr; r++) {
-			mat4.rotate(
-				modelView,
-				render.rots[r].r,
-				[
-					render.rots[r].rx,
-					render.rots[r].ry,
-					render.rots[r].rz
-				]
-			);
-		}	*/
-
-
-
 		mat4.scale(modelView,
 			[
 				render.axes.sx,
@@ -172,26 +149,34 @@ function (canvas, geom, matrix) {
 			]
 		);
 
-		// console.log(modelView);
-
 		/* Apply transformation matrix to polygons */
-		dims.clear = true;
-
 		for (var m = 0, mm = modelVecs.length; m < mm; m++) {
 			points = [];
 			canvas.lineBuffer = [];
-			dims.clear = true;
 
 			// Push each vector as a point, using the x/y values of that vector.
 			for (var v = 0, vv = modelVecs[m].length; v < vv; v++) {
 				var dest = vec3.create();
-				mat4.multiplyVec3(modelView, modelVecs[m][v], dest)
+				mat4.multiplyVec3(modelView, modelVecs[m][v], dest);
 				points.push(dest[0], dest[1]);
 			}
 
 			gons.push(points);
 		}
 
+		canvas.clear();
+
+		render.instructions();
+
+		// Faces
+		for (var fg = 0, fgg = gons.length; fg < fgg; fg++) {
+			canvas.fillPoly(gons[fg], [53, 249, 0, 255]); // Top
+		}
+	//	canvas.fillPoly(geom.pointsToHex([1, 2, 0, 6], size), [53, 249, 0, 255]); // Top
+	//	canvas.fillPoly(geom.pointsToHex([2, 3, 4, 0], size), [38, 215, 0, 255]); // Left
+	//	canvas.fillPoly(geom.pointsToHex([0, 4, 5, 6], size), [28, 186, 0, 255]); // Right
+
+		dims.clear = false;
 		canvas.drawPolygons(gons, dims, [255, 0, 0, 255]);
 
 		// console.log(points);
@@ -203,7 +188,12 @@ function (canvas, geom, matrix) {
 			window.location.hash = JSON.stringify(render.axes);
 	}
 
-	render.init();
+	render.instructions = function () {
+		var ctx = canvas.ctx[0];
+		ctx.fillStyle = '#000';
+		ctx.font = 12 * (window.devicePixelRatio || 1) + 'px monospace';
+		ctx.fillText('KEYS -- X: WS, Y: AD, Z: QE, Translate: Arrows, Scale: +/-', 10 * (window.devicePixelRatio || 1), 15 * (window.devicePixelRatio || 1));
+	}
 
 	return render;
-})
+});
