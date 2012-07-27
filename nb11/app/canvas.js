@@ -229,6 +229,10 @@ function (colors, utils) {
 		canvas.ctx[0].putImageData(img, dims.x - halfOffset, dims.y - halfOffset);
 	}
 
+	canvas.clear = function () {
+		canvas.ctx[0].clearRect(0, 0, canvas.els[0].width, canvas.els[0].height);
+	}
+
 	canvas.zBuffer = function(voxels, direction) {
 		var voxel = [];
 
@@ -239,7 +243,5 @@ function (colors, utils) {
 		}
 	}
 
-	canvas.init();
-
 	return canvas;
-})
+});

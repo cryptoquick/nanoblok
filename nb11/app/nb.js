@@ -13,7 +13,7 @@ function (render, input, utils, EXAMPLES) {
 		/*utils.benchmark(function () {
 			render.blok();
 		}, 1);*/
-
+		
 		render.init();
 
 		var rd = 5,

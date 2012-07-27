@@ -41,4 +41,4 @@ define(function () {
 	}
 
 	return utils;
-})
+});
