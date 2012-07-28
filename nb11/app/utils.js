@@ -40,5 +40,27 @@ define(function () {
 		console.log('Function took an average of ', avg, 'ms, after', i, 'runs.');
 	}
 
+	utils.bitIndicesEncode = function (model, d) {
+		var voxel = 0,
+			voxelbits = 0;
+		for (var i = 1, ii = model.length; i < ii; i++) {
+			voxel = model[i];
+			voxelbits |= utils.encode3(voxel[0], voxel[1], voxel[2], d);
+		}
+
+		return voxelbits;
+	}
+
+	utils.bitIndicesDecode = function (voxelbits, d) {
+		var indices = [];
+		for (var i = 1, ii = Math.pow(d, 3); i < ii; i *= 2) {
+			if (voxelbits & i) {
+				indices.push(utils.decode3(i, d));
+			}
+		}
+
+		return indices;
+	}
+
 	return utils;
 });

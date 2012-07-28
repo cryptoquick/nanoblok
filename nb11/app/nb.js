@@ -61,6 +61,11 @@ function (render, input, utils, EXAMPLES) {
 		utils.benchmark(function () {
 			render.test2();
 		}, 1);
+
+		utils.benchmark(function () {
+			var voxelbits = utils.bitIndicesEncode(EXAMPLES[0], 32);
+			console.log(voxelbits, utils.bitIndicesDecode(voxelbits, 32).length, EXAMPLES[0].length);
+		}, 1);
 	}
 
 	nb.init();

@@ -180,8 +180,10 @@ function (canvas, geom, matrix) {
 
 			// Backface culling
 			normal = render.surfaceNormal(trigons);
-			normalDot = vec3.dot([1, 1, -1], normal);
-			console.log(normal, normalDot);
+			normalDot = vec3.dot([-1, 1, 1], normal);
+			
+			if (debug)
+				console.log(normal, normalDot);
 
 			if (normalDot > 0.0)
 				gons.push(points);
@@ -192,9 +194,6 @@ function (canvas, geom, matrix) {
 		render.instructions();
 
 		var fillColors = [
-			[53, 249, 0, 255],
-			[38, 215, 0, 255],
-			[28, 186, 0, 255],
 			[53, 249, 0, 255],
 			[38, 215, 0, 255],
 			[28, 186, 0, 255]
