@@ -76,51 +76,50 @@ function (canvas, geom, matrix) {
 
 	render.test2 = function () {
 		var modelView = mat4.create(),
-			modelVecs =
-			[
+			modelVerts = [
+				// Front face
 				[
-					[	 1.0,	-1.0,	-1.0	],
-					[	-1.0,	-1.0,	-1.0	],
-					[	-1.0,	-1.0,	 1.0	],
-					[	 1.0,	-1.0,	 1.0	],
-					[	 1.0,	-1.0,	-1.0	]
+					[-1.0, -1.0,  1.0],
+					[1.0, -1.0,  1.0],
+					[1.0,  1.0,  1.0],
+					[-1.0,  1.0,  1.0]
 				],
+				// Back face
 				[
-					[	-1.0,	 1.0,	 1.0	],
-					[	 1.0,	 1.0,	 1.0	],
-					[	 1.0,	 1.0,	-1.0	],
-					[	-1.0,	 1.0,	-1.0	],
-					[	-1.0,	 1.0,	 1.0	]
+					[-1.0, -1.0, -1.0],
+					[-1.0,  1.0, -1.0],
+					[1.0,  1.0, -1.0],
+					[1.0, -1.0, -1.0]
 				],
+				// Top face
 				[
-					[	 1.0,	-1.0,	-1.0	],
-					[	 1.0,	 1.0,	-1.0	],
-					[	-1.0,	 1.0,	-1.0	],
-					[	-1.0,	-1.0,	-1.0	],
-					[	 1.0,	-1.0,	-1.0	]
+					[-1.0,  1.0, -1.0],
+					[-1.0,  1.0,  1.0],
+					[1.0,  1.0,  1.0],
+					[1.0,  1.0, -1.0]
 				],
+				// Bottom face
 				[
-					[	-1.0,	-1.0,	 1.0	],
-					[	-1.0,	-1.0,	-1.0	],
-					[	-1.0,	 1.0,	-1.0	],
-					[	-1.0,	 1.0,	 1.0	],
-					[	-1.0,	-1.0,	 1.0	]
-				], 
-				[
-					[	 1.0,	-1.0,	 1.0	],
-					[	-1.0,	-1.0,	 1.0	],
-					[	-1.0,	 1.0,	 1.0	],
-					[	 1.0,	 1.0,	 1.0	],
-					[	 1.0,	-1.0,	 1.0	]
+					[-1.0, -1.0, -1.0],
+					[1.0, -1.0, -1.0],
+					[1.0, -1.0,  1.0],
+					[-1.0, -1.0,  1.0]
 				],
+				// Right face
 				[
-					[	 1.0,	-1.0,	-1.0	],
-					[	 1.0,	-1.0,	 1.0	],
-					[	 1.0,	 1.0,	 1.0	],
-					[	 1.0,	 1.0,	-1.0	],
-					[	 1.0,	-1.0,	-1.0	]
+					[1.0, -1.0, -1.0],
+					[1.0,  1.0, -1.0],
+					[1.0,  1.0,  1.0],
+					[1.0, -1.0,  1.0]
+				],
+				// Left face
+				[
+					[-1.0, -1.0, -1.0],
+					[-1.0, -1.0,  1.0],
+					[-1.0,  1.0,  1.0],
+					[-1.0,  1.0, -1.0]
 				]
-			],
+			];
 			size = 128,
 			pxsize = 2,
 			points = [],
@@ -134,7 +133,8 @@ function (canvas, geom, matrix) {
 				clear: false,
 				offset: 2
 			},
-			gons = [];
+			gons = [],
+			trigons = [];
 
 		if (window.devicePixelRatio) {
 			size *= window.devicePixelRatio;
@@ -163,18 +163,28 @@ function (canvas, geom, matrix) {
 		);
 
 		/* Apply transformation matrix to polygons */
-		for (var m = 0, mm = modelVecs.length; m < mm; m++) {
+		for (var m = 0, mm = modelVerts.length; m < mm; m++) {
 			points = [];
-			canvas.lineBuffer = [];
+			trigons = [];
+			canvas.lineBuffer = [],
+			normal = [];
+			normalDot = 0.0;
 
 			// Push each vector as a point, using the x/y values of that vector.
-			for (var v = 0, vv = modelVecs[m].length; v < vv; v++) {
+			for (var v = 0, vv = modelVerts[m].length; v < vv; v++) {
 				var dest = vec3.create();
-				mat4.multiplyVec3(modelView, modelVecs[m][v], dest);
+				mat4.multiplyVec3(modelView, modelVerts[m][v], dest);
 				points.push(dest[0], dest[1]);
+				trigons.push([dest[0], dest[1], dest[2]]);
 			}
 
-			gons.push(points);
+			// Backface culling
+			normal = render.surfaceNormal(trigons);
+			normalDot = vec3.dot([1, 1, -1], normal);
+			console.log(normal, normalDot);
+
+			if (normalDot > 0.0)
+				gons.push(points);
 		}
 
 		canvas.clear();
@@ -194,20 +204,35 @@ function (canvas, geom, matrix) {
 		for (var fg = 0, fgg = gons.length; fg < fgg; fg++) {
 			canvas.fillPoly(gons[fg], fillColors[fg] || [0, 0, 0, 0]); // Top
 		}
-	//	canvas.fillPoly(geom.pointsToHex([1, 2, 0, 6], size), [53, 249, 0, 255]); // Top
-	//	canvas.fillPoly(geom.pointsToHex([2, 3, 4, 0], size), [38, 215, 0, 255]); // Left
-	//	canvas.fillPoly(geom.pointsToHex([0, 4, 5, 6], size), [28, 186, 0, 255]); // Right
 
-		dims.clear = false;
+		// Lines
 		canvas.drawPolygons(gons, dims, [0, 0, 0, 255]);
-
-		// console.log(points);
-
-		// console.log(modelView)
 
 		// For testing purposes only
 		if (debug)
 			window.location.hash = JSON.stringify(render.axes);
+	}
+
+	// Newell's method
+	render.surfaceNormal = function (polygon) {
+		var normal = [0, 0, 0],
+			currentVertex = [0, 0, 0],
+			nextVertex = [0, 0, 0];
+
+		for (var v = 0, vv = polygon.length; v < vv; v++) {
+			currentVertex = polygon[v];
+			nextVertex = polygon[(v + 1) % polygon.length];
+
+			normal[0] += (currentVertex[1] - nextVertex[1]) * (currentVertex[2] + nextVertex[2]);
+			normal[1] += (currentVertex[2] - nextVertex[2]) * (currentVertex[0] + nextVertex[0]);
+			normal[2] += (currentVertex[0] - nextVertex[0]) * (currentVertex[1] + nextVertex[1]);
+		}
+
+		return vec3.normalize(normal);
+	}
+
+	render.dot = function (a, b) {
+		return(a[0]*b[0] + a[1]*b[1] + a[2]*b[2]);
 	}
 
 	render.instructions = function () {
