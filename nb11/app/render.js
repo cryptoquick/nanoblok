@@ -180,7 +180,7 @@ function (canvas, geom, matrix) {
 
 			// Backface culling
 			normal = render.surfaceNormal(trigons);
-			normalDot = vec3.dot([-1, 1, 1], normal);
+			normalDot = vec3.dot([0, 0, -1], normal);
 			
 			if (debug)
 				console.log(normal, normalDot);
