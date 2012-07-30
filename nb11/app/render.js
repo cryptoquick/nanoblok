@@ -121,7 +121,7 @@ function (canvas, geom, matrix) {
 				]
 			];
 			size = 128,
-			pxsize = 2,
+			pxsize = 1,
 			points = [],
 			dims = {
 				x: 0,
@@ -223,7 +223,7 @@ function (canvas, geom, matrix) {
 		}*/
 
 		// Lines
-		canvas.drawPolygons(gons, dims, [0, 0, 0, 255]);
+		canvas.drawPolygons(gons, dims, [0, 0, 0, 255], fillColors);
 
 		// For testing purposes only
 		if (debug)
