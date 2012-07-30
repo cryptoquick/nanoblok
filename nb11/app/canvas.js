@@ -39,18 +39,19 @@ function (colors, utils) {
 
 		// lineBuffer
 		canvas.lineBuffer = [];
-		canvas.fillBounds = {};
+		canvas.fillBounds = [];
 	};
 
-	// Digital Differential Analyzer, DDA. Ported to JS by CQ.
-	canvas.dda = function (x0, y0, x1, y1, dims) {
+	// Digital Differential Analyzer, DDA.
+	// Perhaps Optimized Bresenham's is more efficient, but it may not be as flexible. That can be explored later.
+	canvas.dda = function (x0, y0, x1, y1, dims, colorindex) {
 		var dx = (x1 - x0), // Distance
 			dy = (y1 - y0),
 			steps = 0, k = 0,	// Steps / Iterations
 			xincr = 0.0, yincr = 0.0, // Increment per step
 			x = x0, y = y0; // Start
 			ax = Math.abs(dx), ay = Math.abs(dy), // |distance|
-			by = []; // For fill bounds
+			by = [], fly = 0, flx = 0; // For fill bounds, floored y
 
 		// Get the most steps, in order to draw the diagonals correctly
 		if (ax >= ay)
@@ -71,25 +72,41 @@ function (colors, utils) {
 		for (k = 0; k < steps; k++) {
 			x += xincr;
 			y += yincr;
-			canvas.lineBuffer.push(x | 0, y | 0);
+
+			flx = x | 0;
+			fly = Math.round(y);
+
+			canvas.lineBuffer.push(flx, fly);
 
 			// Fill Bounds
-			if (by = canvas.fillBounds[y]) {
-				if (by[0] > x)
-				canvas.fillBounds[y][1] = x;
-			}
-			else {
-				canvas.fillBounds[y] = [dims.bx0, dims.bx1];
-			}
+			if (typeof canvas.fillBounds[colorindex] == 'undefined')
+				continue;
+
+			by = canvas.fillBounds[colorindex][fly];
+			
+			if (typeof by == 'undefined')
+				by = canvas.fillBounds[colorindex][fly] = [dims.bounds.bx1 + 1, dims.bounds.bx0 - 1];
+
+			if (by[0] > flx)
+				canvas.fillBounds[colorindex][fly][0] = Math.floor(x);
+			if (by[1] < flx)
+				canvas.fillBounds[colorindex][fly][1] = Math.ceil(x);
 		}
 	}
 
-	canvas.drawPolygons = function (gons, dims, color) {
+	canvas.drawPolygons = function (gons, dims, color, fillColors) {
 		var x0 = 0, y0 = 0,
 			x1 = 0, y1 = 0,
 			p = 0, gon = 0,
 			plen = 0,
-			points = [];
+			points = [],
+			fb = 0, fbb = 0;
+
+		// Initialize fillBounds
+		canvas.fillBounds = [];
+		for (fb = 0, fbb = fillColors.length; fb < fbb; fb++) {
+			canvas.fillBounds.push({});
+		}
 
 		for (gon = 0, gong = gons.length; gon < gong; gon++) {
 			points = gons[gon];
@@ -100,12 +117,12 @@ function (colors, utils) {
 				x1 = points[(p + 2) % plen] / dims.pxsize | 0;
 				y1 = points[(p + 3) % plen] / dims.pxsize | 0;
 
-				canvas.dda(x0, y0, x1, y1, dims);
+				canvas.dda(x0, y0, x1, y1, dims, gon);
 			}
 		}
-		
+
 		// Draw indices computed by line().
-		canvas.drawIndices(dims, color);
+		canvas.drawIndices(dims, color, fillColors);
 	}
 
 	canvas.fillPoly = function (points, color) {
@@ -121,7 +138,7 @@ function (colors, utils) {
 		ctx.fill();
 	}
 
-	canvas.drawIndices = function (dims, color) {
+	canvas.drawIndices = function (dims, lineColor, fillColors) {
 		function imgMethod (x, y, w, h) {
 			if (dims.clear)
 				return canvas.ctx[0].createImageData(w, h);
@@ -129,27 +146,70 @@ function (colors, utils) {
 				return canvas.ctx[0].getImageData(x, y, w, h);
 		}
 
-		// Bounds needs some padding.
-		dims.bounds.bx0 -= dims.offset * 4;
-		dims.bounds.bx1 += dims.offset * 4;
-		dims.bounds.by0 -= dims.offset * 4;
-		dims.bounds.by1 += dims.offset * 4;
+		// bounds
 
-		var halfOffset = dims.pxsize / 2,
+		// Bounds needs some padding.
+		var bx0 = dims.bounds.bx0 - dims.offset * 4,
+			bx1 = dims.bounds.bx1 + dims.offset * 4,
+			by0 = dims.bounds.by0 - dims.offset * 4,
+			by1 = dims.bounds.by1 + dims.offset * 4,
+			halfOffset = dims.pxsize / 2,
 			img = imgMethod(
-				dims.bounds.bx0,
-				dims.bounds.by0,
-				dims.bounds.bx1 - dims.bounds.bx0,
-				dims.bounds.by1 - dims.bounds.by0
+				bx0,
+				by0,
+				bx1 - bx0,
+				by1 - by0
 			),
 			data = img.data,
 			index = 0,
 			bufferindex = 0,
-			width = dims.bounds.bx1 - dims.bounds.bx0,
+			width = bx1 - bx0,
 			x = 0, y = 0,
 			bufflen = canvas.lineBuffer.length,
 			px2 = Math.round(dims.pxsize / 2),
-			offs = dims.offset;
+			offs = dims.offset,
+			by = 0, byy = 0, fb = [], // Fill Bounds loop
+			fc = 0, fcc = 0,
+			color = []; // Fill Colors loop
+
+		console.log(canvas.fillBounds, fillColors, dims.bounds.by0, dims.bounds.by1);
+
+		// Fill
+		for (fc = 0, fcc = fillColors.length; fc < fcc; fc++) {
+			// for (by = dims.bounds.by0, byy = dims.bounds.by1; by < byy; by++) {
+			for (by in canvas.fillBounds[fc]) {
+				fb = canvas.fillBounds[fc][by];
+
+				if (typeof fb == 'undefined')
+					continue;
+
+				color = fillColors[fc];
+
+				// Reverses values if out of order. (Probably not necessary, can take out later)
+				/*var fbx0 = 0, fbx1 = 0;
+				if (fb[0] < fb[1]) {
+					fbx0 = fb[0];
+					fbx1 = fb[1];
+				}
+				else {
+					fbx0 = fb[1];
+					fbx1 = fb[0];
+				}*/
+				fbx0 = fb[0];
+				fbx1 = fb[1];
+
+				for (px = fbx0 + offs + 1, ppx = fbx1 + offs; px < ppx; px++) {
+					index = ((by - by0 + 1) * width + px - bx0) * 4;
+					data[index    ] = color[0];
+					data[index + 1] = color[1];
+					data[index + 2] = color[2];
+					data[index + 3] = color[3];
+				}
+			}
+		}
+
+		// Lines
+		color = lineColor;
 
 		while (bufflen-=2) {
 			x = canvas.lineBuffer[bufflen] * dims.pxsize;
@@ -157,7 +217,7 @@ function (colors, utils) {
 
 			for (py = y + offs, ppy = y + dims.pxsize + offs; py < ppy; py++) {
 				for (px = x + offs, ppx = x + dims.pxsize + offs; px < ppx; px++) {
-					index = ((py - dims.bounds.by0) * width + px - dims.bounds.bx0) * 4;
+					index = ((py - by0) * width + px - bx0) * 4;
 					data[index    ] = color[0];
 					data[index + 1] = color[1];
 					data[index + 2] = color[2];
