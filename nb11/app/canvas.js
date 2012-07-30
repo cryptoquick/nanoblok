@@ -85,7 +85,7 @@ function (colors, utils) {
 			by = canvas.fillBounds[colorindex][fly];
 			
 			if (typeof by == 'undefined')
-				by = canvas.fillBounds[colorindex][fly] = [dims.bounds.bx1 + 1, dims.bounds.bx0 - 1];
+				by = canvas.fillBounds[colorindex][fly] = [dims.bounds.bx1 + 1, -100];
 
 			if (by[0] > flx)
 				canvas.fillBounds[colorindex][fly][0] = Math.floor(x);
@@ -165,6 +165,7 @@ function (colors, utils) {
 			bufferindex = 0,
 			width = bx1 - bx0,
 			x = 0, y = 0,
+			px = 0, py = 0, ppx = 0, ppy = 0,
 			bufflen = canvas.lineBuffer.length,
 			px2 = Math.round(dims.pxsize / 2),
 			offs = dims.offset,
@@ -172,7 +173,8 @@ function (colors, utils) {
 			fc = 0, fcc = 0,
 			color = []; // Fill Colors loop
 
-		console.log(canvas.fillBounds, fillColors, dims.bounds.by0, dims.bounds.by1);
+		if (debug)
+			console.log(canvas.fillBounds, fillColors, dims.bounds.by0, dims.bounds.by1);
 
 		// Fill
 		for (fc = 0, fcc = fillColors.length; fc < fcc; fc++) {
@@ -185,25 +187,17 @@ function (colors, utils) {
 
 				color = fillColors[fc];
 
-				// Reverses values if out of order. (Probably not necessary, can take out later)
-				/*var fbx0 = 0, fbx1 = 0;
-				if (fb[0] < fb[1]) {
-					fbx0 = fb[0];
-					fbx1 = fb[1];
-				}
-				else {
-					fbx0 = fb[1];
-					fbx1 = fb[0];
-				}*/
-				fbx0 = fb[0];
-				fbx1 = fb[1];
+				y = parseInt(by, 10) * dims.pxsize;
 
-				for (px = fbx0 + offs + 1, ppx = fbx1 + offs; px < ppx; px++) {
-					index = ((by - by0 + 1) * width + px - bx0) * 4;
-					data[index    ] = color[0];
-					data[index + 1] = color[1];
-					data[index + 2] = color[2];
-					data[index + 3] = color[3];
+				for (py = y + offs, ppy = y + offs + dims.pxsize; py < ppy; py++) {
+					for (px = fb[0] * dims.pxsize + offs, ppx = fb[1] * dims.pxsize + offs; px < ppx; px++) {
+						index = ((py - by0) * width + px - bx0) * 4;
+						// index = ((py - by0) * width + px - bx0) * 4;
+						data[index    ] = color[0];
+						data[index + 1] = color[1];
+						data[index + 2] = color[2];
+						data[index + 3] = color[3];
+					}
 				}
 			}
 		}
