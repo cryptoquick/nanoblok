@@ -2,9 +2,10 @@ define([
 	'app/render',
 	'app/input',
 	'app/utils',
+	'app/canvas',
 	'data/examples'
 ],
-function (render, input, utils, EXAMPLES) {
+function (render, input, utils, canvas, EXAMPLES) {
 	// Global nanoblok object.
 	var nb = {},
 	x = 0, y = 0, rx = 0, ry = 0, rz = 0;
@@ -58,17 +59,26 @@ function (render, input, utils, EXAMPLES) {
 	};
 
 	nb.renderTest = function () {
-		utils.benchmark(function () {
-			render.test2();
-		}, 1);
+		var ctx = canvas.ctx[0],
+			avg = 0;
 
-		utils.benchmark(function () {
+		if (!debug) {			
+			avg = utils.benchmark(function () {
+				render.test2();
+			}, 1, true);
+
+			ctx.fillStyle = 'blue';
+			ctx.font = 12 * (window.devicePixelRatio || 1) + 'px monospace';
+			ctx.fillText('FPS ' + ((1000 / avg) | 0), 10 * (window.devicePixelRatio || 1), 30 * (window.devicePixelRatio || 1));
+		}
+		else
+			render.test2();
+
+	/*	utils.benchmark(function () {
 			var voxelbits = utils.bitIndicesEncode(EXAMPLES[0], 32);
 			console.log(voxelbits, utils.bitIndicesDecode(voxelbits, 32).length, EXAMPLES[0].length);
-		}, 1);
+		}, 1);*/
 	}
-
-	nb.init();
 
 	return nb;
 });
