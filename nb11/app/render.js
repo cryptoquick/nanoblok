@@ -121,7 +121,7 @@ function (canvas, geom, matrix) {
 				]
 			];
 			size = 128,
-			pxsize = 1,
+			pxsize = 2,
 			points = [],
 			dims = {
 				x: 0,
