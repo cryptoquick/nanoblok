@@ -3,23 +3,23 @@ define([
 	'app/utils'
 ],
 function (colors, utils) {
-	var canvas = {};
+	var canvas = canvas || {};
 
 	canvas.init = function () {
 		// Grab all canvas elements present in the document
 		canvas.els = document.getElementById('nb').getElementsByTagName('canvas');
 
 		// Adjust the canvas for high-DPI displays
-		var width = window.innerWidth,
-			height = window.innerHeight;
+		canvas.width = window.innerWidth,
+		canvas.height = window.innerHeight;
 
 		if (window.devicePixelRatio) {
-			width *= window.devicePixelRatio;
-			height *= window.devicePixelRatio;
+			canvas.width *= window.devicePixelRatio;
+			canvas.height *= window.devicePixelRatio;
 		}
 
-		canvas.els[0].setAttribute("width", width);
-		canvas.els[0].setAttribute("height", height);
+		canvas.els[0].setAttribute("width", canvas.width);
+		canvas.els[0].setAttribute("height", canvas.height);
 		canvas.els[0].style.width = window.innerWidth + 'px';
 		canvas.els[0].style.height = window.innerHeight + 'px';
 
@@ -39,16 +39,18 @@ function (colors, utils) {
 
 		// lineBuffer
 		canvas.lineBuffer = [];
+		canvas.fillBounds = {};
 	};
 
 	// Digital Differential Analyzer, DDA. Ported to JS by CQ.
-	canvas.dda = function (x0, y0, x1, y1) {
+	canvas.dda = function (x0, y0, x1, y1, dims) {
 		var dx = (x1 - x0), // Distance
 			dy = (y1 - y0),
 			steps = 0, k = 0,	// Steps / Iterations
 			xincr = 0.0, yincr = 0.0, // Increment per step
 			x = x0, y = y0; // Start
-			ax = Math.abs(dx), ay = Math.abs(dy); // |distance|
+			ax = Math.abs(dx), ay = Math.abs(dy), // |distance|
+			by = []; // For fill bounds
 
 		// Get the most steps, in order to draw the diagonals correctly
 		if (ax >= ay)
@@ -70,6 +72,15 @@ function (colors, utils) {
 			x += xincr;
 			y += yincr;
 			canvas.lineBuffer.push(x | 0, y | 0);
+
+			// Fill Bounds
+			if (by = canvas.fillBounds[y]) {
+				if (by[0] > x)
+				canvas.fillBounds[y][1] = x;
+			}
+			else {
+				canvas.fillBounds[y] = [dims.bx0, dims.bx1];
+			}
 		}
 	}
 
@@ -89,7 +100,7 @@ function (colors, utils) {
 				x1 = points[(p + 2) % plen] / dims.pxsize | 0;
 				y1 = points[(p + 3) % plen] / dims.pxsize | 0;
 
-				canvas.dda(x0, y0, x1, y1, dims.pxsize);
+				canvas.dda(x0, y0, x1, y1, dims);
 			}
 		}
 		
@@ -118,17 +129,23 @@ function (colors, utils) {
 				return canvas.ctx[0].getImageData(x, y, w, h);
 		}
 
-		var halfOffset = dims.pxsize / 2 + dims.offsetXY | 0,
+		// Bounds needs some padding.
+		dims.bounds.bx0 -= dims.offset * 4;
+		dims.bounds.bx1 += dims.offset * 4;
+		dims.bounds.by0 -= dims.offset * 4;
+		dims.bounds.by1 += dims.offset * 4;
+
+		var halfOffset = dims.pxsize / 2,
 			img = imgMethod(
-				dims.x - halfOffset,
-				dims.y - halfOffset,
-				dims.width + dims.pxsize,
-				dims.height + dims.pxsize
+				dims.bounds.bx0,
+				dims.bounds.by0,
+				dims.bounds.bx1 - dims.bounds.bx0,
+				dims.bounds.by1 - dims.bounds.by0
 			),
 			data = img.data,
 			index = 0,
 			bufferindex = 0,
-			width = dims.width + dims.pxsize,
+			width = dims.bounds.bx1 - dims.bounds.bx0,
 			x = 0, y = 0,
 			bufflen = canvas.lineBuffer.length,
 			px2 = Math.round(dims.pxsize / 2),
@@ -140,7 +157,7 @@ function (colors, utils) {
 
 			for (py = y + offs, ppy = y + dims.pxsize + offs; py < ppy; py++) {
 				for (px = x + offs, ppx = x + dims.pxsize + offs; px < ppx; px++) {
-					index = (py * width + px) * 4;
+					index = ((py - dims.bounds.by0) * width + px - dims.bounds.bx0) * 4;
 					data[index    ] = color[0];
 					data[index + 1] = color[1];
 					data[index + 2] = color[2];
@@ -150,7 +167,7 @@ function (colors, utils) {
 		}
 
 		img.data = data;
-		canvas.ctx[0].putImageData(img, dims.x - halfOffset, dims.y - halfOffset);
+		canvas.ctx[0].putImageData(img, dims.bounds.bx0, dims.bounds.by0);
 	}
 
 	canvas.clear = function () {

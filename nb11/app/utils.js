@@ -1,4 +1,4 @@
-define(function () {
+define(function (canvas) {
 	var utils = {};
 
 	utils.encode2 = function (x, y, d) {
@@ -27,7 +27,7 @@ define(function () {
 		return coors;
 	}
 
-	utils.benchmark = function (f, i) {
+	utils.benchmark = function (f, i, fps) {
 		var ii = i || 100,
 			d0 = new Date();
 
@@ -37,7 +37,10 @@ define(function () {
 
 		var avg = (((new Date()) - d0) / i) | 0;
 
-		console.log('Function took an average of ', avg, 'ms, after', i, 'runs.');
+		if (fps)
+			return avg;
+		else
+			console.log('Function took an average of ', avg, 'ms, after', i, 'runs.');
 	}
 
 	utils.bitIndicesEncode = function (model, d) {

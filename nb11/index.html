@@ -17,6 +17,7 @@
 			'app/nb',
 			'domReady!'
 		]).then(function (nb) {
+			nb.init();
 			var date1 = new Date();
 			console.log('Nanoblok took', date1 - date0, 'ms to start.');
 		});

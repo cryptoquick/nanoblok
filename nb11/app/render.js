@@ -129,12 +129,17 @@ function (canvas, geom, matrix) {
 				width: 512,
 				height: 512,
 				pxsize: pxsize,
-				offsetXY: 0,
 				clear: false,
-				offset: 2
+				offset: 1,
+				bounds: {bx0: canvas.width, by0: canvas.height, bx1: -1, by1: -1}
 			},
 			gons = [],
-			trigons = [];
+			trigons = [],
+			fillColors = [
+				[53, 249, 0, 255],
+				[38, 215, 0, 255],
+				[28, 186, 0, 255]
+			];
 
 		if (window.devicePixelRatio) {
 			size *= window.devicePixelRatio;
@@ -176,6 +181,16 @@ function (canvas, geom, matrix) {
 				mat4.multiplyVec3(modelView, modelVerts[m][v], dest);
 				points.push(dest[0], dest[1]);
 				trigons.push([dest[0], dest[1], dest[2]]);
+
+				// Calculate bounding box.
+				if (dest[0] < dims.bounds.bx0)
+					dims.bounds.bx0 = Math.floor(dest[0]);
+				if (dest[0] > dims.bounds.bx1)
+					dims.bounds.bx1 = Math.ceil(dest[0]);
+				if (dest[1] < dims.bounds.by0)
+					dims.bounds.by0 = Math.floor(dest[1]);
+				if (dest[1] > dims.bounds.by1)
+					dims.bounds.by1 = Math.ceil(dest[1]);
 			}
 
 			// Backface culling
@@ -189,20 +204,23 @@ function (canvas, geom, matrix) {
 				gons.push(points);
 		}
 
+		// Debug Bounds
+		if (debug)
+			gons.push([
+				dims.bounds.bx0, dims.bounds.by0,
+				dims.bounds.bx1, dims.bounds.by0,
+				dims.bounds.bx1, dims.bounds.by1,
+				dims.bounds.bx0, dims.bounds.by1
+			]);
+
 		canvas.clear();
 
 		render.instructions();
 
-		var fillColors = [
-			[53, 249, 0, 255],
-			[38, 215, 0, 255],
-			[28, 186, 0, 255]
-		];
-
 		// Faces
-		for (var fg = 0, fgg = gons.length; fg < fgg; fg++) {
+		/*for (var fg = 0, fgg = gons.length; fg < fgg; fg++) {
 			canvas.fillPoly(gons[fg], fillColors[fg] || [0, 0, 0, 0]); // Top
-		}
+		}*/
 
 		// Lines
 		canvas.drawPolygons(gons, dims, [0, 0, 0, 255]);
