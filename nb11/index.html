@@ -9,6 +9,10 @@
 	<script type="text/javascript" src="lib/curl.js"></script>
 	<script type="text/javascript">
 		var nb = nb || {}, date0 = new Date(), debug = false;
+
+		if (window.location.search == '?debug=true')
+			debug = true;
+
 		curl([
 			'app/nb',
 			'domReady!'
