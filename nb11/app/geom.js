@@ -35,5 +35,41 @@ define(function () {
 		return arr;
 	}
 
+	// More generic version of DDA used by voxrender
+	geom.dda = function (x0, y0, x1, y1) {
+		var dx = (x1 - x0), // Distance
+			dy = (y1 - y0),
+			steps = 0, k = 0,	// Steps / Iterations
+			xincr = 0.0, yincr = 0.0, // Increment per step
+			x = x0, y = y0; // Start
+			ax = Math.abs(dx), ay = Math.abs(dy), // |distance|
+			line = [], fly = 0, flx = 0;
+
+		// Get the most steps, in order to draw the diagonals correctly
+		if (ax >= ay)
+			steps = ax;
+		else
+			steps = ay; // Not sure when this 'fix' will become a bug...
+
+		// Determine step increments
+		xincr = dx / steps;
+		yincr = dy / steps;
+
+		line.push(x | 0, y | 0);
+
+		// Loop~
+		for (k = 0; k < steps; k++) {
+			x += xincr;
+			y += yincr;
+
+			flx = x | 0;
+			fly = Math.round(y);
+
+			line.push(flx, fly);
+		}
+
+		return line;
+	}
+
 	return geom;
 });
