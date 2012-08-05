@@ -85,7 +85,7 @@ function (colors, utils) {
 			by = canvas.fillBounds[colorindex][fly];
 			
 			if (typeof by == 'undefined')
-				by = canvas.fillBounds[colorindex][fly] = [dims.bounds.bx1 + 1, -100];
+				by = canvas.fillBounds[colorindex][fly] = [dims.bounds.bx1 + 1, -10000];
 
 			if (by[0] > flx)
 				canvas.fillBounds[colorindex][fly][0] = Math.floor(x);

@@ -6,26 +6,16 @@ define([
 function (canvas, geom, matrix) {
 	var render = {};
 
-	render.axes = {x: 100, y: 100, z: 0, sx: 50, sy: 50, sz: 50};
+	render.axes = {x: 150, y: 150, z: 0, sx: 100, sy: 100, sz: 100, r: 0, rx: 0, ry: 0, rz: 0, q: quat4.identity()};
 	render.rots = [];
 	render.lastRotAxis = '';
+	render.bounds = {};
 
 	render.init = function () {
 		canvas.init();
 
 		render.axes.q = quat4.identity();
 	};
-
-	render.addRot = function (deg, addRotAxis, ry, rz) {
-		render.axes.q = quat4.multiply(render.axes.q, quat4.fromAngleAxis(
-			deg * (Math.PI / 180),
-			[
-				rx,
-				ry,
-				rz
-			]
-		));
-	}
 
 	render.addRotAxis = function (deg, axis) {
 		var rotObj = {
@@ -34,10 +24,11 @@ function (canvas, geom, matrix) {
 			ry: 0,
 			rz: 0
 		};
+
 		rotObj[axis] = 1;
 
 		render.axes.q = quat4.multiply(render.axes.q, quat4.fromAngleAxis(
-			deg * (Math.PI / 180),
+			rotObj.r,
 			[
 				rotObj.rx,
 				rotObj.ry,
@@ -153,19 +144,7 @@ function (canvas, geom, matrix) {
 				render.axes.sz + render.axes.z
 			], modelView);
 
-		mat4.fromRotationTranslation(render.axes.q, [
-			render.axes.sx + render.axes.x,
-			render.axes.sy + render.axes.y,
-			render.axes.sz + render.axes.z
-		], modelView);
-
-		mat4.scale(modelView,
-			[
-				render.axes.sx,
-				render.axes.sy,
-				render.axes.sz
-			]
-		);
+		modelView = render.viewMatrix(render.axes);
 
 		/* Apply transformation matrix to polygons */
 		for (var m = 0, mm = modelVerts.length; m < mm; m++) {
@@ -213,6 +192,9 @@ function (canvas, geom, matrix) {
 				dims.bounds.bx0, dims.bounds.by1
 			]);
 
+		render.bounds = dims.bounds;
+
+		/* Rasterization */
 		canvas.clear();
 
 		render.instructions();
@@ -228,6 +210,26 @@ function (canvas, geom, matrix) {
 		// For testing purposes only
 		if (debug)
 			window.location.hash = JSON.stringify(render.axes);
+	}
+
+	render.viewMatrix = function (axes) {
+		var modelView = mat4.create();
+
+		mat4.fromRotationTranslation(axes.q, [
+			axes.sx + axes.x,
+			axes.sy + axes.y,
+			axes.sz + axes.z
+		], modelView);
+
+		mat4.scale(modelView,
+			[
+				axes.sx,
+				axes.sy,
+				axes.sz
+			]
+		);
+
+		return modelView;
 	}
 
 	// Newell's method
