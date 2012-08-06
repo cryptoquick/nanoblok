@@ -55,6 +55,9 @@ function (vr, render, input, utils, canvas, EXAMPLES) {
 		input.addKeydown(document, 80, nb.renderTest, function () {
 			window.location.hash = JSON.stringify(render.axes);
 		}); // P - Printout (to URL)
+		input.addKeydown(document, 80, nb.renderTest, function () {
+			window.location.hash = JSON.stringify(render.axes);
+		}); // R - Render
 
 		if (window.location.hash) {
 			render.axes = JSON.parse(window.location.hash.substr(1));
@@ -91,8 +94,8 @@ function (vr, render, input, utils, canvas, EXAMPLES) {
 			scale: 32
 		}
 
-		vr.normalizeViewMatrix(dims.scale);
-		vr.initRays(dims, render.axes);
+		// vr.initRays(dims, render.axes);
+		vr.expand(EXAMPLES[0], render.axes, dims.scale);
 	}
 
 	return nb;

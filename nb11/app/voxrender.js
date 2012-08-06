@@ -7,11 +7,73 @@ define([
 	var vr = {};
 	vr.rays = [];
 	vr.axes = [];
+	vr.cube = [];
 
-	vr.normalizeViewMatrix = function (scale) {
-		console.log(render.bounds);
+	vr.normalizedViewMatrix = function (axes, scale) {
+		// console.log(render.bounds);
 
+		var view = render.viewMatrix(axes),
+			scale = 0;
+
+		for (var i = 0, ii = view.length; i < ii; i++) {
+			if (Math.abs(view[i]) > scale)
+				scale = view[i];
+		}
+
+		scale = 1 / scale;
+
+		nview = mat4.scale(view, vec3.create([scale, scale, scale])); // Normalized view
+		// Reset translation.
+		nview[12] = 0;
+		nview[13] = 0;
+		nview[14] = 0;
+
+		return nview;
 		// render.bounds.bx0
+	}
+
+	vr.initArray3 = function (scale) {
+		var xarr = [],
+			yarr = [],
+			zarr = [];
+
+		for (var z = 0; z < scale; z++) {
+			yarr = [];
+			for (var y = 0; y < scale; y++) {
+				xarr = [];
+				for (var x = 0; x < scale; x++) {
+					xarr.push(0);
+				}
+				yarr.push(xarr);
+			}
+			zarr.push(yarr);
+		}
+
+		vr.cube = zarr;
+	}
+
+	vr.expand = function (example, axes, scale) {
+		var view = vr.normalizedViewMatrix(axes, scale),
+			scale2 = scale * 2;
+
+		vr.initArray3(scale2);
+
+		for (var i = 0, ii = example.length; i < ii; i++) {
+			var ex = example[i],
+				vec = vec3.create();
+
+			mat4.multiplyVec3(view, [ex[0], ex[1], ex[2]], vec);
+
+			if (vec[0] > 0 && vec[0] < scale2 &&
+				vec[1] > 0 && vec[1] < scale2 &&
+				vec[2] > 0 && vec[2] < scale2) {
+				var x = Math.round(vec[0]),
+					y = Math.round(vec[1]),
+					z = Math.round(vec[2]);
+
+				vr.cube[z][y][x] = ex[3];
+			}
+		}
 	}
 
 	vr.initRays = function (dims, axes) {
