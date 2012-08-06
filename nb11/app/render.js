@@ -15,7 +15,7 @@ function (canvas, geom, matrix) {
 		canvas.init();
 
 		render.axes.q = quat4.identity();
-	};
+		};
 
 	render.addRotAxis = function (deg, axis) {
 		var rotObj = {
