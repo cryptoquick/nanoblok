@@ -64,7 +64,7 @@ function (vr, render, input, utils, canvas, EXAMPLES) {
 		}
 
 		nb.renderTest();
-		nb.voxRender();
+		// nb.voxRender();
 	};
 
 	nb.renderTest = function () {
@@ -91,11 +91,29 @@ function (vr, render, input, utils, canvas, EXAMPLES) {
 
 	nb.voxRender = function () {
 		var dims = {
-			scale: 32
+				x: 0,
+				y: 0,
+				width: 512,
+				height: 512,
+				pxsize: pxsize,
+				clear: false,
+				offset: 1,
+				bounds: {bx0: canvas.width, by0: canvas.height, bx1: -1, by1: -1},
+				size: 128,
+				pxsize: 2,
+				scale: 32
+			};
+
+		if (window.devicePixelRatio) {
+			dims.size *= window.devicePixelRatio;
+			dims.pxsize *= window.devicePixelRatio;
 		}
 
-		// vr.initRays(dims, render.axes);
-		vr.expand(EXAMPLES[0], render.axes, dims.scale);
+		var view = vr.normalizedViewMatrix(render.axes, dims.scale),
+			voxels = vr.expand(EXAMPLES[0], view, dims.scale);
+
+		render.dims = dims;
+		render.drawVoxels(voxels, view);
 	}
 
 	return nb;

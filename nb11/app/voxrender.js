@@ -52,9 +52,9 @@ define([
 		vr.cube = zarr;
 	}
 
-	vr.expand = function (example, axes, scale) {
-		var view = vr.normalizedViewMatrix(axes, scale),
-			scale2 = scale * 2;
+	vr.expand = function (example, view, scale) {
+		var scale2 = scale * 2,
+			voxels = [];
 
 		vr.initArray3(scale2);
 
@@ -71,12 +71,16 @@ define([
 					y = Math.round(vec[1]),
 					z = Math.round(vec[2]);
 
-				vr.cube[z][y][x] = ex[3];
+				voxels.push([x, y, z, ex[3]]);
+
+				// vr.cube[z][y][x] = ex[3];
 			}
 		}
+
+		return voxels;
 	}
 
-	vr.initRays = function (dims, axes) {
+/*	vr.initRays = function (dims, axes) {
 		var x = 0, y = 0, z = 0,
 			scale2 = dims.scale * 2,
 			sides0 = [], sides1 = [],
@@ -84,14 +88,6 @@ define([
 			view = [];
 
 		// Construct ray array
-		/*for (z = 0; z < dims2; z++) {
-			for (y = 0; y < dims2; y++) {
-				for (x = 0; x < dims2; x++) {
-
-				}
-			}
-		}*/
-
 		for (y = 0; y < scale2; y++) {
 			for (x = 0; x < scale2; x++) {
 				sides0.push(x, y, 1);
@@ -119,7 +115,7 @@ define([
 		}
 
 		console.log(lines0, lines1);
-	}
+	}*/
 
 	return vr;
 });
