@@ -1,9 +1,10 @@
 define([
 	'app/canvas',
 	'app/geom',
+	'app/colors',
 	'lib/gl-matrix'
 ],
-function (canvas, geom, matrix) {
+function (canvas, geom, colors, matrix) {
 	var render = {};
 
 	render.axes = {x: 150, y: 150, z: 0, sx: 100, sy: 100, sz: 100, r: 0, rx: 0, ry: 0, rz: 0, q: quat4.identity()};
@@ -65,52 +66,54 @@ function (canvas, geom, matrix) {
 		canvas.drawPoly(geom.pointsToHex([0, 4], size), dims, [0, 0, 0, 255]);
 	};
 
+	render.cubeVerts = [
+		// Front face
+		[
+			[-1.0, -1.0,  1.0],
+			[ 1.0, -1.0,  1.0],
+			[ 1.0,  1.0,  1.0],
+			[-1.0,  1.0,  1.0]
+		],
+		// Back face
+		[
+			[-1.0, -1.0, -1.0],
+			[-1.0,  1.0, -1.0],
+			[ 1.0,  1.0, -1.0],
+			[ 1.0, -1.0, -1.0]
+		],
+		// Top face
+		[
+			[-1.0,  1.0, -1.0],
+			[-1.0,  1.0,  1.0],
+			[ 1.0,  1.0,  1.0],
+			[ 1.0,  1.0, -1.0]
+		],
+		// Bottom face
+		[
+			[-1.0, -1.0, -1.0],
+			[ 1.0, -1.0, -1.0],
+			[ 1.0, -1.0,  1.0],
+			[-1.0, -1.0,  1.0]
+		],
+		// Right face
+		[
+			[ 1.0, -1.0, -1.0],
+			[ 1.0,  1.0, -1.0],
+			[ 1.0,  1.0,  1.0],
+			[ 1.0, -1.0,  1.0]
+		],
+		// Left face
+		[
+			[-1.0, -1.0, -1.0],
+			[-1.0, -1.0,  1.0],
+			[-1.0,  1.0,  1.0],
+			[-1.0,  1.0, -1.0]
+		]
+	];
+
 	render.test2 = function () {
 		var modelView = mat4.create(),
-			modelVerts = [
-				// Front face
-				[
-					[-1.0, -1.0,  1.0],
-					[1.0, -1.0,  1.0],
-					[1.0,  1.0,  1.0],
-					[-1.0,  1.0,  1.0]
-				],
-				// Back face
-				[
-					[-1.0, -1.0, -1.0],
-					[-1.0,  1.0, -1.0],
-					[1.0,  1.0, -1.0],
-					[1.0, -1.0, -1.0]
-				],
-				// Top face
-				[
-					[-1.0,  1.0, -1.0],
-					[-1.0,  1.0,  1.0],
-					[1.0,  1.0,  1.0],
-					[1.0,  1.0, -1.0]
-				],
-				// Bottom face
-				[
-					[-1.0, -1.0, -1.0],
-					[1.0, -1.0, -1.0],
-					[1.0, -1.0,  1.0],
-					[-1.0, -1.0,  1.0]
-				],
-				// Right face
-				[
-					[1.0, -1.0, -1.0],
-					[1.0,  1.0, -1.0],
-					[1.0,  1.0,  1.0],
-					[1.0, -1.0,  1.0]
-				],
-				// Left face
-				[
-					[-1.0, -1.0, -1.0],
-					[-1.0, -1.0,  1.0],
-					[-1.0,  1.0,  1.0],
-					[-1.0,  1.0, -1.0]
-				]
-			];
+			modelVerts = render.cubeVerts;
 			size = 128,
 			pxsize = 2,
 			points = [],
@@ -210,6 +213,77 @@ function (canvas, geom, matrix) {
 		// For testing purposes only
 		if (debug)
 			window.location.hash = JSON.stringify(render.axes);
+	}
+
+	render.generatePolygons = function (pos, view) {
+		var gons = [];
+
+		/* Apply transformation matrix to polygons */
+		for (var m = 0, mm = render.cubeVerts.length; m < mm; m++) {
+			var points = [],
+				trigons = [],
+				normal = [],
+				normalDot = 0.0;
+
+			canvas.lineBuffer = [];
+
+			// Push each vector as a point, using the x/y values of that vector.
+			for (var v = 0, vv = render.cubeVerts[m].length; v < vv; v++) {
+				var vert = render.cubeVerts[m][v];
+
+				vec3.add(vert, pos);
+				var dest = mat4.multiplyVec3(view, vert);
+
+				console.log(dest);
+
+				points.push(dest[0], dest[1]);
+				trigons.push([dest[0], dest[1], dest[2]]);
+
+				// Calculate bounding box.
+				var bounds = render.dims.bounds;
+
+				if (dest[0] < bounds.bx0)
+					bounds.bx0 = Math.floor(dest[0]);
+				if (dest[0] > bounds.bx1)
+					bounds.bx1 = Math.ceil(dest[0]);
+				if (dest[1] < bounds.by0)
+					bounds.by0 = Math.floor(dest[1]);
+				if (dest[1] > bounds.by1)
+					bounds.by1 = Math.ceil(dest[1]);
+
+				render.dims.bounds = bounds;
+			}
+
+			// Backface culling
+			normal = render.surfaceNormal(trigons);
+			normalDot = vec3.dot([0, 0, -1], normal);
+
+			if (normalDot > 0.0)
+				gons.push(points);
+		}
+
+		return gons;
+	}
+
+	render.drawVoxels = function (voxels, view) {
+		var vox = [],
+			gons = [],
+			fillColors = [];
+
+		for (var v = 0, vv = 5; v < vv; v++) { //voxels.length
+			var vox = voxels[v];
+
+			gons.push(render.generatePolygons(vox.slice(0, 3), view));
+			fillColors.push(colors.swatch[vox[3]].push(255));
+		}
+
+		console.log(dims.bounds, gons[3]);
+
+		/* Rasterization */
+		canvas.clear();
+
+		// Lines
+		// canvas.drawPolygons(gons, dims, [0, 0, 0, 255], fillColors);
 	}
 
 	render.viewMatrix = function (axes) {
