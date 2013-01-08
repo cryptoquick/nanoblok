@@ -5,24 +5,32 @@ define([
 	'lib/gl-matrix'
 ], function (canvas, geom, render, matrix) {
 	var vr = {};
+	
 	vr.rays = [];
 	vr.axes = [];
 	vr.cube = [];
 
-	vr.normalizedViewMatrix = function (axes, scale) {
+	vr.normalizedViewMatrix = function (axes, orig_scale) {
 		// console.log(render.bounds);
 
 		var view = render.viewMatrix(axes),
-			scale = 0;
+			scale = orig_scale;
 
 		for (var i = 0, ii = view.length; i < ii; i++) {
 			if (Math.abs(view[i]) > scale)
 				scale = view[i];
 		}
 
-		scale = 1 / scale;
+		console.log(scale);
 
-		nview = mat4.scale(view, vec3.create([scale, scale, scale])); // Normalized view
+		scale = orig_scale / scale;
+
+		console.log(scale);
+
+		var nview = mat4.create();
+
+		mat4.scale(view, vec3.create([scale, scale, scale]), nview); // Normalized view
+
 		// Reset translation.
 		nview[12] = 0;
 		nview[13] = 0;
