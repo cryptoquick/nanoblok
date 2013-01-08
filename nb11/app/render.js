@@ -2,9 +2,10 @@ define([
 	'app/canvas',
 	'app/geom',
 	'app/colors',
-	'lib/gl-matrix'
+	'lib/gl-matrix',
+	'lib/lodash',
 ],
-function (canvas, geom, colors, matrix) {
+function (canvas, geom, colors, matrix, _) {
 	var render = {};
 
 	render.axes = {x: 150, y: 150, z: 0, sx: 100, sy: 100, sz: 100, r: 0, rx: 0, ry: 0, rz: 0, q: quat4.identity()};
@@ -16,7 +17,7 @@ function (canvas, geom, colors, matrix) {
 		canvas.init();
 
 		render.axes.q = quat4.identity();
-		};
+	};
 
 	render.addRotAxis = function (deg, axis) {
 		var rotObj = {
@@ -28,7 +29,7 @@ function (canvas, geom, colors, matrix) {
 
 		rotObj[axis] = 1;
 
-		render.axes.q = quat4.multiply(render.axes.q, quat4.fromAngleAxis(
+		quat4.multiply(render.axes.q, quat4.fromAngleAxis(
 			rotObj.r,
 			[
 				rotObj.rx,
@@ -221,10 +222,11 @@ function (canvas, geom, colors, matrix) {
 		/* Apply transformation matrix to polygons */
 		for (var m = 0, mm = render.cubeVerts.length; m < mm; m++) {
 			var points = [],
-				trigons = [],
+				trixels = [],
 				normal = [],
 				normalDot = 0.0;
 
+			// TODO make this work with multiple polygons
 			canvas.lineBuffer = [];
 
 			// Push each vector as a point, using the x/y values of that vector.
@@ -232,12 +234,15 @@ function (canvas, geom, colors, matrix) {
 				var vert = render.cubeVerts[m][v];
 
 				vec3.add(vert, pos);
-				var dest = mat4.multiplyVec3(view, vert);
+				var dest = vec3.create();
 
-				console.log(dest);
+				mat4.multiplyVec3(view, vert, dest);
 
+				// Pixel points
 				points.push(dest[0], dest[1]);
-				trigons.push([dest[0], dest[1], dest[2]]);
+
+				// For normals
+				trixels.push([dest[0], dest[1], dest[2]]);
 
 				// Calculate bounding box.
 				var bounds = render.dims.bounds;
@@ -255,11 +260,13 @@ function (canvas, geom, colors, matrix) {
 			}
 
 			// Backface culling
-			normal = render.surfaceNormal(trigons);
+			normal = render.surfaceNormal(trixels);
 			normalDot = vec3.dot([0, 0, -1], normal);
 
 			if (normalDot > 0.0)
 				gons.push(points);
+			else
+				console.log('points rejected');
 		}
 
 		return gons;
@@ -273,17 +280,23 @@ function (canvas, geom, colors, matrix) {
 		for (var v = 0, vv = 5; v < vv; v++) { //voxels.length
 			var vox = voxels[v];
 
-			gons.push(render.generatePolygons(vox.slice(0, 3), view));
+			console.log('voxel', vox);
+
+			gons.push(render.generatePolygons([vox[0], vox[1], vox[2]], view));
+			
+			console.log('polygons', gons);
+			
 			fillColors.push(colors.swatch[vox[3]].push(255));
 		}
 
-		console.log(dims.bounds, gons[3]);
+		console.log('bounds', render.dims.bounds, gons);
 
 		/* Rasterization */
 		canvas.clear();
 
-		// Lines
-		// canvas.drawPolygons(gons, dims, [0, 0, 0, 255], fillColors);
+		for (var g = 0, gg = gons.length; g < gg; g++) {
+			canvas.drawPolygons(gons[g], render.dims, [0, 0, 0, 255], fillColors);
+		}
 	}
 
 	render.viewMatrix = function (axes) {
